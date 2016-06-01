@@ -1,0 +1,70 @@
+name: TrollCommandsPlusPlus
+main: me.egg82.tcpp.TrollCommandsPlusPlus
+version: 1.0.0
+commands:
+  troll:
+    description: Same as /help TrollCommandsPlsPlus [page]
+    usage: /troll [page]
+  vaporize:
+    description: Explodes target with a specified power. To disable block damage, use a negative value.
+    usage: /vaporize <player> [power]
+    aliases: [vap]
+  lift:
+    description: It's like flying, but only in one direction. And without a soft landing.
+    usage: /lift <player>
+  creep:
+    description: Spawns a charged creeper at the target's location.
+    usage: /creep <player>
+  swap:
+    description: Swaps two players' locations.
+    usage: /swap <player> <player>
+  entomb:
+    description: Suffocates the target player underground.
+    usage: /entomb <player>
+  slowpoke:
+    description: Applies a Potion of Slowness to the target.
+    usage: /slowpoke <player> [time (s)]
+  electrify:
+    description: Spams the target with lightning bolts.
+    usage: /electrify <player>
+    aliases: [elec]
+  zombify:
+    description: Spawns a horde of zombies next to the target.
+    usage: /zombify <player>
+    aliases: [zomb]
+  slap:
+    description: Slaps the target.
+    usage: /slap <player> [force]
+  cannon:
+    description: Shoots a primed TNT wherever you're looking.
+    usage: /cannon [speed]
+  banish:
+    description: Teleports the target to a random location.
+    usage: /banish <player> [range]
+  bomb:
+    description: May balls of fire rain down upon thine enemy.
+    usage: /bomb <player>
+  freeze:
+    description: Toggles whether the player is frozen in place.
+    usage: /freeze <player>
+  comet:
+    description: Shoots a fireball of adjustable power.
+    usage: /comet [power]
+  stampede:
+    description: Unleashes a herd of mad cows on the target.
+    usage: /stampede <player>
+  haunt:
+    description: Toggles creepy sounds near the target.
+    usage: /haunt <player>
+  lure:
+    description: Attracts nearby monsters to the target player.
+    usage: /lure <player>
+  garble:
+    description: Toggles target's chat messages as gibberish or normal.
+    usage: /garble <player>
+  weakling:
+    description: Toggles target as super-weak or normal.
+    usage: /weakling <player>
+  spin:
+    description: Toggles target as spinning or not.
+    usage: /spin <player>
