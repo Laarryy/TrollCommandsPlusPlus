@@ -49,7 +49,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		
 		tickHandler.addTickCommand("bomb", BombTickCommand.class, 10);
 		
-		getLogger().info("Enabled");
+		getLogger().info("--== TrollCommands++ Enabled ==--");
 	}
 	public void onDisable() {
 		commandHandler.clearCommands();
@@ -57,7 +57,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		permissionsManager.clearPermissions();
 		tickHandler.clearTickCommands();
 		
-		getLogger().info("Disabled");
+		getLogger().info("--== TrollCommands++ Disabled ==--");
 	}
 	
 	//private
