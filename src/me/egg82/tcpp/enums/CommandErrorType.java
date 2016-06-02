@@ -6,6 +6,7 @@ public class CommandErrorType {
 	public static final String INCORRECT_USAGE = "incorrectUsage";
 	public static final String PLAYER_IMMUNE = "playerImmune";
 	public static final String PLAYER_NOT_FOUND = "playerNotFound";
+	public static final String CONSOLE_NOT_ALLOWED = "consoleNotAllowed";
 	
 	//constructor
 	public CommandErrorType() {

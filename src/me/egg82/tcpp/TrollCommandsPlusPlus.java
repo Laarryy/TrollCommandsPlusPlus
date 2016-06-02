@@ -11,6 +11,7 @@ import com.egg82.utils.Util;
 
 import me.egg82.tcpp.commands.BanishCommand;
 import me.egg82.tcpp.commands.BombCommand;
+import me.egg82.tcpp.commands.CannonCommand;
 import me.egg82.tcpp.commands.TrollCommand;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.enums.PluginServiceType;
@@ -38,6 +39,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		commandHandler.addCommand("troll", TrollCommand.class);
 		commandHandler.addCommand("banish", BanishCommand.class);
 		commandHandler.addCommand("bomb", BombCommand.class);
+		commandHandler.addCommand("cannon", CannonCommand.class);
 		
 		eventListener.addEvent(PlayerDeathEvent.class, PlayerDeathEventCommand.class);
 		

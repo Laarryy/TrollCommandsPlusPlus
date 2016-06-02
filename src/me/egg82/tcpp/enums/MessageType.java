@@ -6,6 +6,7 @@ public class MessageType {
 	public static final String INCORRECT_USAGE = "Incorrect usage.";
 	public static final String PLAYER_IMMUNE = "Player is immune.";
 	public static final String PLAYER_NOT_FOUND = "Player not found.";
+	public static final String CONSOLE_NOT_ALLOWED = "The console is not allowed to perform this action.";
 	
 	//constructor
 	public MessageType() {

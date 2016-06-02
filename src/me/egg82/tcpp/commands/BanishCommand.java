@@ -34,15 +34,10 @@ public class BanishCommand extends PluginCommand {
 		}
 		
 		if (args.length == 1) {
-			try {
-				banish(Bukkit.getPlayer(args[0]), MathUtil.random(-20000.0d, 20000.0d));
-			} catch (Exception ex) {
-				sender.sendMessage(MessageType.INCORRECT_USAGE);
-				dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
-			}
+			banish(Bukkit.getPlayer(args[0]), MathUtil.random(-20000.0d, 20000.0d));
 		} else if (args.length == 2) {
 			try {
-				banish(Bukkit.getPlayer(args[0]), Integer.parseInt(args[1]));
+				banish(Bukkit.getPlayer(args[0]), Double.parseDouble(args[1]));
 			} catch (Exception ex) {
 				sender.sendMessage(MessageType.INCORRECT_USAGE);
 				dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
