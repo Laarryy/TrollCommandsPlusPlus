@@ -29,7 +29,7 @@ public class CometCommand extends PluginCommand {
 			dispatch(CommandEvent.ERROR, CommandErrorType.CONSOLE_NOT_ALLOWED);
 			return;
 		}
-		if (!permissionsManager.playerHasPermission((Player) sender, PermissionsType.COMMAND_USE)) {
+		if (!permissionsManager.playerHasPermission((Player) sender, PermissionsType.COMMAND_COMET)) {
 			sender.sendMessage(MessageType.NO_PERMISSIONS);
 			dispatch(CommandEvent.ERROR, CommandErrorType.NO_PERMISSIONS);
 			return;
