@@ -3,24 +3,22 @@ package me.egg82.tcpp.commands;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Player;
 
 import com.egg82.events.patterns.command.CommandEvent;
-import com.egg82.patterns.ServiceLocator;
 import com.egg82.plugin.commands.PluginCommand;
-import com.egg82.registry.interfaces.IRegistry;
+import com.egg82.utils.MathUtil;
 
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.enums.PluginServiceType;
 
-public class BombCommand extends PluginCommand {
+public class CreepCommand extends PluginCommand {
 	//vars
-	IRegistry bombRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.BOMB_REGISTRY);
 	
 	//constructor
-	public BombCommand(CommandSender sender, Command command, String label, String[] args) {
+	public CreepCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
 	}
 	
@@ -35,15 +33,14 @@ public class BombCommand extends PluginCommand {
 		}
 		
 		if (args.length == 1) {
-			bomb(args[0], Bukkit.getPlayer(args[0]));
+			creep(Bukkit.getPlayer(args[0]));
 		} else {
 			sender.sendMessage(MessageType.INCORRECT_USAGE);
 			sender.getServer().dispatchCommand(sender, "help " + command.getName());
 			dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
 		}
 	}
-	
-	private void bomb(String name, Player player) {
+	private void creep(Player player) {
 		if (player == null) {
 			sender.sendMessage(MessageType.PLAYER_NOT_FOUND);
 			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_NOT_FOUND);
@@ -55,13 +52,14 @@ public class BombCommand extends PluginCommand {
 			return;
 		}
 		
-		if (bombRegistry.contains(name.toLowerCase())) {
-			sender.sendMessage(name + " is no longer being bombed.");
-			bombRegistry.setRegister(name.toLowerCase(), null);
-		} else {
-			sender.sendMessage(name + " is being bombed.");
-			bombRegistry.setRegister(name.toLowerCase(), player);
+		int rand = MathUtil.fairRoundedRandom(2, 5);
+		for (int i = 0; i < rand; i++) {
+			Creeper c = (Creeper) player.getWorld().spawn(player.getLocation(), Creeper.class);
+			c.setPowered(true);
+			c.setTarget(player);
 		}
+		
+		sender.sendMessage(player.getName() + " is now playing with explosives.");
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}

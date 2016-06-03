@@ -34,7 +34,7 @@ public class BombTickCommand extends Command {
 		int rand = (int) (MathUtil.random(5.0d, 10.0d));
 		Vector vec = player.getLocation().getDirection().multiply(3.0d);
 		for (int i = 0; i < rand; i++) {
-			Fireball fireball = (Fireball) player.getWorld().spawn(player.getLocation().subtract(MathUtil.random(-10.0d, 10.0d), MathUtil.random(5.0d, 10.0d), MathUtil.random(-10.0d, 10.0d)), Fireball.class);
+			Fireball fireball = (Fireball) player.getWorld().spawn(player.getLocation().add(MathUtil.random(-10.0d, 10.0d), MathUtil.random(5.0d, 10.0d), MathUtil.random(-10.0d, 10.0d)), Fireball.class);
 			fireball.setVelocity(vec);
 		}
 	}

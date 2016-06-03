@@ -1,26 +1,23 @@
 package me.egg82.tcpp.commands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.egg82.events.patterns.command.CommandEvent;
-import com.egg82.patterns.ServiceLocator;
 import com.egg82.plugin.commands.PluginCommand;
-import com.egg82.registry.interfaces.IRegistry;
 
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.enums.PluginServiceType;
 
-public class BombCommand extends PluginCommand {
+public class VaporizeCommand extends PluginCommand {
 	//vars
-	IRegistry bombRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.BOMB_REGISTRY);
 	
 	//constructor
-	public BombCommand(CommandSender sender, Command command, String label, String[] args) {
+	public VaporizeCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
 	}
 	
@@ -35,15 +32,22 @@ public class BombCommand extends PluginCommand {
 		}
 		
 		if (args.length == 1) {
-			bomb(args[0], Bukkit.getPlayer(args[0]));
+			vaporize(Bukkit.getPlayer(args[0]), 4.0f);
+		} else if (args.length == 2) {
+			try {
+				vaporize(Bukkit.getPlayer(args[0]), Float.parseFloat(args[1]));
+			} catch (Exception ex) {
+				sender.sendMessage(MessageType.INCORRECT_USAGE);
+				sender.getServer().dispatchCommand(sender, "help " + command.getName());
+				dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
+			}
 		} else {
 			sender.sendMessage(MessageType.INCORRECT_USAGE);
 			sender.getServer().dispatchCommand(sender, "help " + command.getName());
 			dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
 		}
 	}
-	
-	private void bomb(String name, Player player) {
+	private void vaporize(Player player, float power) {
 		if (player == null) {
 			sender.sendMessage(MessageType.PLAYER_NOT_FOUND);
 			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_NOT_FOUND);
@@ -55,13 +59,10 @@ public class BombCommand extends PluginCommand {
 			return;
 		}
 		
-		if (bombRegistry.contains(name.toLowerCase())) {
-			sender.sendMessage(name + " is no longer being bombed.");
-			bombRegistry.setRegister(name.toLowerCase(), null);
-		} else {
-			sender.sendMessage(name + " is being bombed.");
-			bombRegistry.setRegister(name.toLowerCase(), player);
-		}
+		Location loc = player.getLocation();
+		player.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), Math.abs(power), (power > 0) ? true : false, (power > 0) ? true : false);
+		
+		sender.sendMessage(player.getName() + " has been vaporized.");
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}

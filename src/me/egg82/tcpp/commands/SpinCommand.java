@@ -15,12 +15,12 @@ import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.enums.PluginServiceType;
 
-public class BombCommand extends PluginCommand {
+public class SpinCommand extends PluginCommand {
 	//vars
-	IRegistry bombRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.BOMB_REGISTRY);
+	IRegistry spinRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SPIN_REGISTRY);
 	
 	//constructor
-	public BombCommand(CommandSender sender, Command command, String label, String[] args) {
+	public SpinCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
 	}
 	
@@ -35,15 +35,14 @@ public class BombCommand extends PluginCommand {
 		}
 		
 		if (args.length == 1) {
-			bomb(args[0], Bukkit.getPlayer(args[0]));
+			spin(args[0], Bukkit.getPlayer(args[0]));
 		} else {
 			sender.sendMessage(MessageType.INCORRECT_USAGE);
 			sender.getServer().dispatchCommand(sender, "help " + command.getName());
 			dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
 		}
 	}
-	
-	private void bomb(String name, Player player) {
+	private void spin(String name, Player player) {
 		if (player == null) {
 			sender.sendMessage(MessageType.PLAYER_NOT_FOUND);
 			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_NOT_FOUND);
@@ -55,12 +54,12 @@ public class BombCommand extends PluginCommand {
 			return;
 		}
 		
-		if (bombRegistry.contains(name.toLowerCase())) {
-			sender.sendMessage(name + " is no longer being bombed.");
-			bombRegistry.setRegister(name.toLowerCase(), null);
+		if (spinRegistry.contains(name.toLowerCase())) {
+			sender.sendMessage(name + " is no longer spinning.");
+			spinRegistry.setRegister(name.toLowerCase(), null);
 		} else {
-			sender.sendMessage(name + " is being bombed.");
-			bombRegistry.setRegister(name.toLowerCase(), player);
+			sender.sendMessage(name + " is spinning.");
+			spinRegistry.setRegister(name.toLowerCase(), player);
 		}
 		
 		dispatch(CommandEvent.COMPLETE, null);

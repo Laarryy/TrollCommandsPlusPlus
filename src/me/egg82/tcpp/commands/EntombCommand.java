@@ -1,26 +1,24 @@
 package me.egg82.tcpp.commands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.egg82.events.patterns.command.CommandEvent;
-import com.egg82.patterns.ServiceLocator;
 import com.egg82.plugin.commands.PluginCommand;
-import com.egg82.registry.interfaces.IRegistry;
 
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.enums.PluginServiceType;
 
-public class BombCommand extends PluginCommand {
+public class EntombCommand extends PluginCommand {
 	//vars
-	IRegistry bombRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.BOMB_REGISTRY);
 	
 	//constructor
-	public BombCommand(CommandSender sender, Command command, String label, String[] args) {
+	public EntombCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
 	}
 	
@@ -35,15 +33,14 @@ public class BombCommand extends PluginCommand {
 		}
 		
 		if (args.length == 1) {
-			bomb(args[0], Bukkit.getPlayer(args[0]));
+			entomb(Bukkit.getPlayer(args[0]));
 		} else {
 			sender.sendMessage(MessageType.INCORRECT_USAGE);
 			sender.getServer().dispatchCommand(sender, "help " + command.getName());
 			dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
 		}
 	}
-	
-	private void bomb(String name, Player player) {
+	private void entomb(Player player) {
 		if (player == null) {
 			sender.sendMessage(MessageType.PLAYER_NOT_FOUND);
 			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_NOT_FOUND);
@@ -55,13 +52,14 @@ public class BombCommand extends PluginCommand {
 			return;
 		}
 		
-		if (bombRegistry.contains(name.toLowerCase())) {
-			sender.sendMessage(name + " is no longer being bombed.");
-			bombRegistry.setRegister(name.toLowerCase(), null);
-		} else {
-			sender.sendMessage(name + " is being bombed.");
-			bombRegistry.setRegister(name.toLowerCase(), player);
-		}
+		Location loc = player.getLocation();
+		Location loc1 = new Location(loc.getWorld(), loc.getX(), 5.0d, loc.getZ());
+		Location loc2 = new Location(loc.getWorld(), loc.getX(), 6.0d, loc.getZ());
+		loc1.getBlock().setType(Material.OBSIDIAN);
+		loc2.getBlock().setType(Material.OBSIDIAN);
+		player.teleport(loc1);
+		
+		sender.sendMessage(player.getName() + " has been entombed.");
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}

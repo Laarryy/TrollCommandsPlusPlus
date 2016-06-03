@@ -2,13 +2,13 @@ package me.egg82.tcpp.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.egg82.events.patterns.command.CommandEvent;
 import com.egg82.plugin.commands.PluginCommand;
+import com.egg82.plugin.utils.BlockUtil;
 import com.egg82.utils.MathUtil;
 
 import me.egg82.tcpp.enums.CommandErrorType;
@@ -27,7 +27,7 @@ public class BanishCommand extends PluginCommand {
 	
 	//private
 	protected void execute() {
-		if (sender instanceof Player && !permissionsManager.playerHasPermission((Player) sender, PermissionsType.COMMAND_BANISH)) {
+		if (sender instanceof Player && !permissionsManager.playerHasPermission((Player) sender, PermissionsType.COMMAND_USE)) {
 			sender.sendMessage(MessageType.NO_PERMISSIONS);
 			dispatch(CommandEvent.ERROR, CommandErrorType.NO_PERMISSIONS);
 			return;
@@ -40,10 +40,12 @@ public class BanishCommand extends PluginCommand {
 				banish(Bukkit.getPlayer(args[0]), Double.parseDouble(args[1]));
 			} catch (Exception ex) {
 				sender.sendMessage(MessageType.INCORRECT_USAGE);
+				sender.getServer().dispatchCommand(sender, "help " + command.getName());
 				dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
 			}
 		} else {
 			sender.sendMessage(MessageType.INCORRECT_USAGE);
+			sender.getServer().dispatchCommand(sender, "help " + command.getName());
 			dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
 		}
 	}
@@ -60,21 +62,11 @@ public class BanishCommand extends PluginCommand {
 			return;
 		}
 		
-		Location banish = getTopAirBlock(new Location(player.getWorld(), -radius + Math.random() * (2.0d * radius + 1.0d), 5.0d + Math.random() * 66.0d, -radius + Math.random() * (2.0d * radius + 1.0d)));
+		Location banish = BlockUtil.getTopAirBlock(new Location(player.getWorld(), -radius + Math.random() * (2.0d * radius + 1.0d), MathUtil.random(5.0d, 66.0d), -radius + Math.random() * (2.0d * radius + 1.0d)));
 		player.teleport(banish);
 		
-		dispatch(CommandEvent.COMPLETE, null);
-	}
-	private Location getTopAirBlock(Location l) {
-		do {
-			while (l.getBlock().getType() != Material.AIR) {
-				l = l.subtract(0, 1, 0);
-			}
-			while (l.subtract(0, 1, 0).getBlock().getType() != Material.AIR) {
-				l = l.subtract(0, 1, 0);
-			}
-		} while (l.getBlock().getType() != Material.AIR || l.subtract(0, 1, 0).getBlock().getType() != Material.AIR);
+		sender.sendMessage(player.getName() + " has been banished.");
 		
-		return l;
+		dispatch(CommandEvent.COMPLETE, null);
 	}
 }

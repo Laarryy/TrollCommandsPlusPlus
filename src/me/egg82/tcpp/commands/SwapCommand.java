@@ -1,26 +1,23 @@
 package me.egg82.tcpp.commands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.egg82.events.patterns.command.CommandEvent;
-import com.egg82.patterns.ServiceLocator;
 import com.egg82.plugin.commands.PluginCommand;
-import com.egg82.registry.interfaces.IRegistry;
 
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.enums.PluginServiceType;
 
-public class BombCommand extends PluginCommand {
+public class SwapCommand extends PluginCommand {
 	//vars
-	IRegistry bombRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.BOMB_REGISTRY);
 	
 	//constructor
-	public BombCommand(CommandSender sender, Command command, String label, String[] args) {
+	public SwapCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
 	}
 	
@@ -34,34 +31,38 @@ public class BombCommand extends PluginCommand {
 			return;
 		}
 		
-		if (args.length == 1) {
-			bomb(args[0], Bukkit.getPlayer(args[0]));
+		if (args.length == 2) {
+			try {
+				swap(Bukkit.getPlayer(args[0]), Bukkit.getPlayer(args[1]));
+			} catch (Exception ex) {
+				sender.sendMessage(MessageType.INCORRECT_USAGE);
+				sender.getServer().dispatchCommand(sender, "help " + command.getName());
+				dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
+			}
 		} else {
 			sender.sendMessage(MessageType.INCORRECT_USAGE);
 			sender.getServer().dispatchCommand(sender, "help " + command.getName());
 			dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
 		}
 	}
-	
-	private void bomb(String name, Player player) {
-		if (player == null) {
+	private void swap(Player p1, Player p2) {
+		if (p1 == null || p2 == null) {
 			sender.sendMessage(MessageType.PLAYER_NOT_FOUND);
 			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_NOT_FOUND);
 			return;
 		}
-		if (permissionsManager.playerHasPermission(player, PermissionsType.IMMUNE)) {
+		if (permissionsManager.playerHasPermission(p1, PermissionsType.IMMUNE) || permissionsManager.playerHasPermission(p2, PermissionsType.IMMUNE)) {
 			sender.sendMessage(MessageType.PLAYER_IMMUNE);
 			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
 			return;
 		}
 		
-		if (bombRegistry.contains(name.toLowerCase())) {
-			sender.sendMessage(name + " is no longer being bombed.");
-			bombRegistry.setRegister(name.toLowerCase(), null);
-		} else {
-			sender.sendMessage(name + " is being bombed.");
-			bombRegistry.setRegister(name.toLowerCase(), player);
-		}
+		Location l1 = p1.getLocation();
+		Location l2 = p2.getLocation();
+		p1.teleport(l2);
+		p2.teleport(l1);
+		
+		sender.sendMessage(p1.getName() + " and " + p2.getName() + "have been swapped.");
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}

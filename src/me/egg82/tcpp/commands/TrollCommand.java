@@ -22,7 +22,7 @@ public class TrollCommand extends PluginCommand {
 	
 	//private
 	protected void execute() {
-		if (sender instanceof Player && !permissionsManager.playerHasPermission((Player) sender, PermissionsType.COMMAND_TROLL)) {
+		if (sender instanceof Player && !permissionsManager.playerHasPermission((Player) sender, PermissionsType.COMMAND_USE)) {
 			sender.sendMessage(MessageType.NO_PERMISSIONS);
 			dispatch(CommandEvent.ERROR, CommandErrorType.NO_PERMISSIONS);
 			return;
@@ -34,6 +34,7 @@ public class TrollCommand extends PluginCommand {
 			sender.getServer().dispatchCommand(sender, "help trollcommandsplusplus" + args[0]);
 		} else {
 			sender.sendMessage(MessageType.INCORRECT_USAGE);
+			sender.getServer().dispatchCommand(sender, "help " + command.getName());
 			dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
 			return;
 		}

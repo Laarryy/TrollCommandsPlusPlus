@@ -1,26 +1,30 @@
 package me.egg82.tcpp.commands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Cow;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Silverfish;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 import com.egg82.events.patterns.command.CommandEvent;
-import com.egg82.patterns.ServiceLocator;
 import com.egg82.plugin.commands.PluginCommand;
-import com.egg82.registry.interfaces.IRegistry;
+import com.egg82.plugin.utils.BlockUtil;
+import com.egg82.utils.MathUtil;
 
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.enums.PluginServiceType;
 
-public class BombCommand extends PluginCommand {
+public class StampedeCommand extends PluginCommand {
 	//vars
-	IRegistry bombRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.BOMB_REGISTRY);
 	
 	//constructor
-	public BombCommand(CommandSender sender, Command command, String label, String[] args) {
+	public StampedeCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
 	}
 	
@@ -35,15 +39,14 @@ public class BombCommand extends PluginCommand {
 		}
 		
 		if (args.length == 1) {
-			bomb(args[0], Bukkit.getPlayer(args[0]));
+			stampede(Bukkit.getPlayer(args[0]));
 		} else {
 			sender.sendMessage(MessageType.INCORRECT_USAGE);
 			sender.getServer().dispatchCommand(sender, "help " + command.getName());
 			dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
 		}
 	}
-	
-	private void bomb(String name, Player player) {
+	private void stampede(Player player) {
 		if (player == null) {
 			sender.sendMessage(MessageType.PLAYER_NOT_FOUND);
 			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_NOT_FOUND);
@@ -55,14 +58,25 @@ public class BombCommand extends PluginCommand {
 			return;
 		}
 		
-		if (bombRegistry.contains(name.toLowerCase())) {
-			sender.sendMessage(name + " is no longer being bombed.");
-			bombRegistry.setRegister(name.toLowerCase(), null);
-		} else {
-			sender.sendMessage(name + " is being bombed.");
-			bombRegistry.setRegister(name.toLowerCase(), player);
+		int rand = MathUtil.fairRoundedRandom(10, 20);
+		Location tloc = player.getLocation();
+		Location loc = BlockUtil.getTopAirBlock(new Location(tloc.getWorld(), MathUtil.random(tloc.getX() - 5.0d, tloc.getX() + 5.0d), tloc.getY(), MathUtil.random(tloc.getZ() - 5.0d, tloc.getZ() + 5.0d)));
+		Vector vel = loc.clone().subtract(tloc).toVector().normalize().multiply(3.0d);
+		for (int i = 0; i < rand; i++) {
+			spawnCow(player, loc, vel);
 		}
 		
+		sender.sendMessage("The angry cows have been unleashed on " + player.getName() + ".");
+		
 		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void spawnCow(Player p, Location l, Vector v) {
+		Cow cow = (Cow) p.getWorld().spawn(l, Cow.class);
+		Silverfish fish = (Silverfish) p.getWorld().spawn(l, Silverfish.class);
+		fish.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1200, 3), true);
+		fish.setPassenger(cow);
+		fish.setVelocity(v);
+		cow.setVelocity(v);
+		fish.setTarget(p);
 	}
 }

@@ -33,6 +33,10 @@
                   <pattern>com.egg82</pattern>
                   <shadedPattern>me.egg82.tcpp.lib.com.egg82</shadedPattern>
                 </relocation>
+                <relocation>
+                  <pattern>org.mcstats</pattern>
+                  <shadedPattern>me.egg82.tcpp.lib.org.mcstats</shadedPattern>
+                </relocation>
               </relocations>
             </configuration>
           </execution>
@@ -45,8 +49,17 @@
       <id>spigot-repo</id>
       <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
     </repository>
+    <repository>
+      <id>Plugin Metrics</id>
+      <url>http://repo.mcstats.org/content/repositories/public</url>
+    </repository>
   </repositories>
   <dependencies>
+    <dependency>
+      <groupId>org.mcstats.bukkit</groupId>
+      <artifactId>metrics</artifactId>
+      <version>R8-SNAPSHOT</version>
+    </dependency>
   	<dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>

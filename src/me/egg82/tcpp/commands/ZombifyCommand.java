@@ -1,26 +1,28 @@
 package me.egg82.tcpp.commands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Zombie;
+import org.bukkit.util.Vector;
 
 import com.egg82.events.patterns.command.CommandEvent;
-import com.egg82.patterns.ServiceLocator;
 import com.egg82.plugin.commands.PluginCommand;
-import com.egg82.registry.interfaces.IRegistry;
+import com.egg82.plugin.utils.BlockUtil;
+import com.egg82.utils.MathUtil;
 
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.enums.PluginServiceType;
 
-public class BombCommand extends PluginCommand {
+public class ZombifyCommand extends PluginCommand {
 	//vars
-	IRegistry bombRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.BOMB_REGISTRY);
 	
 	//constructor
-	public BombCommand(CommandSender sender, Command command, String label, String[] args) {
+	public ZombifyCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
 	}
 	
@@ -35,15 +37,14 @@ public class BombCommand extends PluginCommand {
 		}
 		
 		if (args.length == 1) {
-			bomb(args[0], Bukkit.getPlayer(args[0]));
+			zombify(Bukkit.getPlayer(args[0]));
 		} else {
 			sender.sendMessage(MessageType.INCORRECT_USAGE);
 			sender.getServer().dispatchCommand(sender, "help " + command.getName());
 			dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
 		}
 	}
-	
-	private void bomb(String name, Player player) {
+	private void zombify(Player player) {
 		if (player == null) {
 			sender.sendMessage(MessageType.PLAYER_NOT_FOUND);
 			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_NOT_FOUND);
@@ -55,13 +56,17 @@ public class BombCommand extends PluginCommand {
 			return;
 		}
 		
-		if (bombRegistry.contains(name.toLowerCase())) {
-			sender.sendMessage(name + " is no longer being bombed.");
-			bombRegistry.setRegister(name.toLowerCase(), null);
-		} else {
-			sender.sendMessage(name + " is being bombed.");
-			bombRegistry.setRegister(name.toLowerCase(), player);
+		int rand = MathUtil.fairRoundedRandom(10, 15);
+		Location loc = player.getLocation();
+		for (int i = 0; i < rand; i++) {
+			Location r = BlockUtil.getTopAirBlock(new Location(loc.getWorld(), MathUtil.random(loc.getX() - 10.0d, loc.getX() + 10.0d), loc.getY(), MathUtil.random(loc.getZ() - 10.0d, loc.getZ() + 10.0d)));
+			Vector velocity = r.clone().subtract(player.getLocation()).toVector().normalize().multiply(1.0d);
+			Zombie z = (Zombie) player.getWorld().spawn(r, Zombie.class);
+			z.setVelocity(velocity);
+			z.setTarget(player);
 		}
+		
+		sender.sendMessage(player.getName() + " has been zombified.");
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
