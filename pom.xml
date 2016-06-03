@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>TrollCommandsPlusPlus</groupId>
   <artifactId>TrollCommandsPlusPlus</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
   <name>TrollCommandsPlusPlus</name>
   <description>TCPP for Bukkit</description>
   <build>
