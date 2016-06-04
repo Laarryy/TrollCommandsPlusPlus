@@ -15,12 +15,12 @@ import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.enums.PluginServiceType;
 
-public class SlowpokeCommand extends PluginCommand {
+public class BurnCommand extends PluginCommand {
 	//vars
-	IRegistry slowpokeRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOWPOKE_REGISTRY);
+	IRegistry burnRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.BURN_REGISTRY);
 	
 	//constructor
-	public SlowpokeCommand(CommandSender sender, Command command, String label, String[] args) {
+	public BurnCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
 	}
 	
@@ -28,21 +28,21 @@ public class SlowpokeCommand extends PluginCommand {
 	
 	//private
 	protected void execute() {
-		if (sender instanceof Player && !permissionsManager.playerHasPermission((Player) sender, PermissionsType.COMMAND_SLOWPOKE)) {
+		if (sender instanceof Player && !permissionsManager.playerHasPermission((Player) sender, PermissionsType.COMMAND_BURN)) {
 			sender.sendMessage(MessageType.NO_PERMISSIONS);
 			dispatch(CommandEvent.ERROR, CommandErrorType.NO_PERMISSIONS);
 			return;
 		}
 		
 		if (args.length == 1) {
-			slowpoke(args[0], Bukkit.getPlayer(args[0]));
+			burn(args[0], Bukkit.getPlayer(args[0]));
 		} else {
 			sender.sendMessage(MessageType.INCORRECT_USAGE);
 			sender.getServer().dispatchCommand(sender, "help " + command.getName());
 			dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
 		}
 	}
-	private void slowpoke(String name, Player player) {
+	private void burn(String name, Player player) {
 		if (player == null) {
 			sender.sendMessage(MessageType.PLAYER_NOT_FOUND);
 			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_NOT_FOUND);
@@ -54,12 +54,12 @@ public class SlowpokeCommand extends PluginCommand {
 			return;
 		}
 		
-		if (slowpokeRegistry.contains(name.toLowerCase())) {
-			sender.sendMessage(name + " is no longer a slowpoke.");
-			slowpokeRegistry.setRegister(name.toLowerCase(), null);
+		if (burnRegistry.contains(name.toLowerCase())) {
+			sender.sendMessage(name + " is no longer being burned.");
+			burnRegistry.setRegister(name.toLowerCase(), null);
 		} else {
-			sender.sendMessage(name + " is now a slowpoke.");
-			slowpokeRegistry.setRegister(name.toLowerCase(), player);
+			sender.sendMessage(name + " is now being burned.");
+			burnRegistry.setRegister(name.toLowerCase(), player);
 		}
 		
 		dispatch(CommandEvent.COMPLETE, null);

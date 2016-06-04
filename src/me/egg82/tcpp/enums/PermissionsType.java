@@ -24,6 +24,15 @@ public class PermissionsType {
 	public static final String COMMAND_GARBLE = "tcpp.command.garble";
 	public static final String COMMAND_WEAKLING = "tcpp.command.weakling";
 	public static final String COMMAND_SPIN = "tcpp.command.spin";
+	public static final String COMMAND_BURN = "tcpp.command.burn";
+	public static final String COMMAND_SPAM = "tcpp.command.spam";
+	public static final String COMMAND_DELAYKILL = "tcpp.command.delaykill";
+	public static final String COMMAND_POTATO = "tcpp.command.potato";
+	public static final String COMMAND_STARVE = "tcpp.command.starve";
+	public static final String COMMAND_HURT = "tcpp.command.hurt";
+	public static final String COMMAND_VOID = "tcpp.command.void";
+	public static final String COMMAND_SLOWMINE = "tcpp.command.slowmine";
+	public static final String COMMAND_NAUSEA = "tcpp.command.nausea";
 	
 	//constructor
 	public PermissionsType() {

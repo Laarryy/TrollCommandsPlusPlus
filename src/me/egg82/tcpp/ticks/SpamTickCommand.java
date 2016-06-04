@@ -1,32 +1,31 @@
-package me.egg82.tcpp.events;
+package me.egg82.tcpp.ticks;
 
-import org.bukkit.event.Event;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.entity.Player;
 
 import com.egg82.patterns.ServiceLocator;
-import com.egg82.plugin.commands.EventCommand;
+import com.egg82.patterns.command.Command;
 import com.egg82.registry.interfaces.IRegistry;
 import com.egg82.utils.MathUtil;
 
 import me.egg82.tcpp.enums.PluginServiceType;
 
-public class AsyncPlayerChatEventCommand extends EventCommand {
+public class SpamTickCommand extends Command {
 	//vars
-	private IRegistry garbleRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.GARBLE_REGISTRY);
+	private IRegistry spamRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SPAM_REGISTRY);
 	private static final char [] subset = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+{}|:\"<>?`-=[]\\;',./".toCharArray();
 	
 	//constructor
-	public AsyncPlayerChatEventCommand(Event event) {
-		super(event);
+	public SpamTickCommand() {
+		super();
 	}
 	
 	//public
 	
 	//private
 	protected void execute() {
-		AsyncPlayerChatEvent e = (AsyncPlayerChatEvent) event;
-		if (garbleRegistry.contains(e.getPlayer().getName())) {
-			e.setMessage(randString(e.getMessage().length()));
+		String[] names = spamRegistry.registryNames();
+		for (String name : names) {
+			((Player) spamRegistry.getRegister(name)).sendMessage(randString(MathUtil.fairRoundedRandom(15, 50)));
 		}
 	}
 	private String randString(int length) {

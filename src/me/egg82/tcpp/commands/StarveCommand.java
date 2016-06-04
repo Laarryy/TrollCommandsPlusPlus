@@ -15,12 +15,12 @@ import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.enums.PluginServiceType;
 
-public class SlowpokeCommand extends PluginCommand {
+public class StarveCommand extends PluginCommand {
 	//vars
-	IRegistry slowpokeRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOWPOKE_REGISTRY);
+	IRegistry starveRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.STARVE_REGISTRY);
 	
 	//constructor
-	public SlowpokeCommand(CommandSender sender, Command command, String label, String[] args) {
+	public StarveCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
 	}
 	
@@ -28,21 +28,21 @@ public class SlowpokeCommand extends PluginCommand {
 	
 	//private
 	protected void execute() {
-		if (sender instanceof Player && !permissionsManager.playerHasPermission((Player) sender, PermissionsType.COMMAND_SLOWPOKE)) {
+		if (sender instanceof Player && !permissionsManager.playerHasPermission((Player) sender, PermissionsType.COMMAND_STARVE)) {
 			sender.sendMessage(MessageType.NO_PERMISSIONS);
 			dispatch(CommandEvent.ERROR, CommandErrorType.NO_PERMISSIONS);
 			return;
 		}
 		
 		if (args.length == 1) {
-			slowpoke(args[0], Bukkit.getPlayer(args[0]));
+			starve(args[0], Bukkit.getPlayer(args[0]));
 		} else {
 			sender.sendMessage(MessageType.INCORRECT_USAGE);
 			sender.getServer().dispatchCommand(sender, "help " + command.getName());
 			dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
 		}
 	}
-	private void slowpoke(String name, Player player) {
+	private void starve(String name, Player player) {
 		if (player == null) {
 			sender.sendMessage(MessageType.PLAYER_NOT_FOUND);
 			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_NOT_FOUND);
@@ -54,12 +54,12 @@ public class SlowpokeCommand extends PluginCommand {
 			return;
 		}
 		
-		if (slowpokeRegistry.contains(name.toLowerCase())) {
-			sender.sendMessage(name + " is no longer a slowpoke.");
-			slowpokeRegistry.setRegister(name.toLowerCase(), null);
+		if (starveRegistry.contains(name.toLowerCase())) {
+			sender.sendMessage(name + " is no longer starving.");
+			starveRegistry.setRegister(name.toLowerCase(), null);
 		} else {
-			sender.sendMessage(name + " is now a slowpoke.");
-			slowpokeRegistry.setRegister(name.toLowerCase(), player);
+			sender.sendMessage(name + " is now starving.");
+			starveRegistry.setRegister(name.toLowerCase(), player);
 		}
 		
 		dispatch(CommandEvent.COMPLETE, null);

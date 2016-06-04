@@ -1,26 +1,25 @@
 package me.egg82.tcpp.commands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import com.egg82.events.patterns.command.CommandEvent;
-import com.egg82.patterns.ServiceLocator;
 import com.egg82.plugin.commands.PluginCommand;
-import com.egg82.registry.interfaces.IRegistry;
 
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.enums.PluginServiceType;
 
-public class SlowpokeCommand extends PluginCommand {
+public class PotatoCommand extends PluginCommand {
 	//vars
-	IRegistry slowpokeRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOWPOKE_REGISTRY);
 	
 	//constructor
-	public SlowpokeCommand(CommandSender sender, Command command, String label, String[] args) {
+	public PotatoCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
 	}
 	
@@ -28,21 +27,21 @@ public class SlowpokeCommand extends PluginCommand {
 	
 	//private
 	protected void execute() {
-		if (sender instanceof Player && !permissionsManager.playerHasPermission((Player) sender, PermissionsType.COMMAND_SLOWPOKE)) {
+		if (sender instanceof Player && !permissionsManager.playerHasPermission((Player) sender, PermissionsType.COMMAND_POTATO)) {
 			sender.sendMessage(MessageType.NO_PERMISSIONS);
 			dispatch(CommandEvent.ERROR, CommandErrorType.NO_PERMISSIONS);
 			return;
 		}
 		
 		if (args.length == 1) {
-			slowpoke(args[0], Bukkit.getPlayer(args[0]));
+			potato(Bukkit.getPlayer(args[0]));
 		} else {
 			sender.sendMessage(MessageType.INCORRECT_USAGE);
 			sender.getServer().dispatchCommand(sender, "help " + command.getName());
 			dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
 		}
 	}
-	private void slowpoke(String name, Player player) {
+	private void potato(Player player) {
 		if (player == null) {
 			sender.sendMessage(MessageType.PLAYER_NOT_FOUND);
 			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_NOT_FOUND);
@@ -54,13 +53,18 @@ public class SlowpokeCommand extends PluginCommand {
 			return;
 		}
 		
-		if (slowpokeRegistry.contains(name.toLowerCase())) {
-			sender.sendMessage(name + " is no longer a slowpoke.");
-			slowpokeRegistry.setRegister(name.toLowerCase(), null);
-		} else {
-			sender.sendMessage(name + " is now a slowpoke.");
-			slowpokeRegistry.setRegister(name.toLowerCase(), player);
+		PlayerInventory inv = player.getInventory();
+		ItemStack[] items = inv.getContents();
+		
+		for (int i = 0; i < items.length; i++) {
+			if (items[i] != null && items[i].getType() != Material.AIR) {
+				items[i] = new ItemStack(Material.POTATO_ITEM, items[i].getAmount());
+			}
 		}
+		
+		inv.setContents(items);
+		
+		sender.sendMessage(player.getName() + "'s inventory is now potato.");
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}

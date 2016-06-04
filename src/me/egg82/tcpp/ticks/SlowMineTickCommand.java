@@ -10,12 +10,12 @@ import com.egg82.registry.interfaces.IRegistry;
 
 import me.egg82.tcpp.enums.PluginServiceType;
 
-public class SlowpokeTickCommand extends Command {
+public class SlowMineTickCommand extends Command {
 	//vars
-	private IRegistry slowpokeRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOWPOKE_REGISTRY);
+	private IRegistry slowmineRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOWMINE_REGISTRY);
 	
 	//constructor
-	public SlowpokeTickCommand() {
+	public SlowMineTickCommand() {
 		super();
 	}
 	
@@ -23,9 +23,9 @@ public class SlowpokeTickCommand extends Command {
 	
 	//private
 	protected void execute() {
-		String[] names = slowpokeRegistry.registryNames();
+		String[] names = slowmineRegistry.registryNames();
 		for (String name : names) {
-			((Player) slowpokeRegistry.getRegister(name)).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 3), true);
+			((Player) slowmineRegistry.getRegister(name)).addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 60, 3), true);
 		}
 	}
 }

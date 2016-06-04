@@ -58,7 +58,7 @@ public class ElectrifyCommand extends PluginCommand {
 			sender.sendMessage(name + " is no longer being electrified.");
 			electrifyRegistry.setRegister(name.toLowerCase(), null);
 		} else {
-			sender.sendMessage(name + " is being electrified.");
+			sender.sendMessage(name + " is now being electrified.");
 			electrifyRegistry.setRegister(name.toLowerCase(), player);
 		}
 		

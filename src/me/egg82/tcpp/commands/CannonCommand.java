@@ -40,7 +40,7 @@ public class CannonCommand extends PluginCommand {
 			cannon((Player) sender, 2.0d);
 		} else if (args.length == 1) {
 			try {
-				cannon((Player) sender, Double.parseDouble(args[1]));
+				cannon((Player) sender, Double.parseDouble(args[0]));
 			} catch (Exception ex) {
 				sender.sendMessage(MessageType.INCORRECT_USAGE);
 				sender.getServer().dispatchCommand(sender, "help " + command.getName());

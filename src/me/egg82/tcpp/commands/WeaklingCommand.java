@@ -58,7 +58,7 @@ public class WeaklingCommand extends PluginCommand {
 			sender.sendMessage(name + " is no longer a weakling.");
 			weaklingRegistry.setRegister(name.toLowerCase(), null);
 		} else {
-			sender.sendMessage(name + " is a weakling.");
+			sender.sendMessage(name + " is now a weakling.");
 			weaklingRegistry.setRegister(name.toLowerCase(), player);
 		}
 		

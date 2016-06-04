@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>TrollCommandsPlusPlus</groupId>
   <artifactId>TrollCommandsPlusPlus</artifactId>
-  <version>1.0.2</version>
+  <version>1.1.3</version>
   <name>TrollCommandsPlusPlus</name>
   <description>TCPP for Bukkit</description>
   <build>
@@ -37,6 +37,10 @@
                   <pattern>org.mcstats</pattern>
                   <shadedPattern>me.egg82.tcpp.lib.org.mcstats</shadedPattern>
                 </relocation>
+                <relocation>
+                  <pattern>net.gravitydevelopment</pattern>
+                  <shadedPattern>me.egg82.tcpp.lib.net.gravitydevelopment</shadedPattern>
+                </relocation>
               </relocations>
             </configuration>
           </execution>
@@ -52,6 +56,10 @@
     <repository>
       <id>Plugin Metrics</id>
       <url>http://repo.mcstats.org/content/repositories/public</url>
+    </repository>
+    <repository>
+      <id>gravity-repo</id>
+      <url>http://repo.gravitydevelopment.net</url>
     </repository>
   </repositories>
   <dependencies>
@@ -85,9 +93,14 @@
       <scope>provided</scope>
     </dependency>-->
     <dependency>
-    	<groupId>PluginLibrary</groupId>
-    	<artifactId>PluginLibrary</artifactId>
-    	<version>1.0.0</version>
+      <groupId>PluginLibrary</groupId>
+      <artifactId>PluginLibrary</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>net.gravitydevelopment.updater</groupId>
+      <artifactId>updater</artifactId>
+      <version>2.3</version>
     </dependency>
   </dependencies>
 </project>

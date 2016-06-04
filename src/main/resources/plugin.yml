@@ -1,19 +1,19 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 1.0.2
+version: 1.1.3
 commands:
   troll:
     description: Same as /help TrollCommandsPlusPlus [page]
     usage: /troll [page]
   vaporize:
-    description: Explodes target with a specified power. To disable block damage, use a negative value.
+    description: Explodes the player with a specified power. To disable block damage, use a negative value.
     usage: /vaporize <player> [power]
     aliases: [vap]
   lift:
     description: It's like flying, but only in one direction. And probably without a soft landing.
     usage: /lift <player>
   creep:
-    description: Spawns a charged creeper at the target's location.
+    description: Spawns a charged creeper at the player's location.
     usage: /creep <player>
   swap:
     description: Swaps two players' locations.
@@ -54,10 +54,10 @@ commands:
     description: Unleashes a herd of mad cows on the player.
     usage: /stampede <player>
   haunt:
-    description: Toggles random sounds near the target.
+    description: Toggles random sounds near the player.
     usage: /haunt <player>
   lure:
-    description: Attracts nearby monsters to the target player.
+    description: Attracts nearby monsters to the player.
     usage: /lure <player>
   garble:
     description: ..And now the player makes even less sense!
@@ -68,3 +68,30 @@ commands:
   spin:
     description: This might make them a bit dizzy.
     usage: /spin <player>
+  burn:
+    description: AHH! FIRE! FIRE! FIIREE!!
+    usage: /burn <player>
+  spam:
+    description: Spams the player's chat with useless junk.
+    usage: /spam <player>
+  delaykill:
+    description: Kills a player with a delay.
+    usage: /delaykill <player> <seconds>
+  potato:
+    description: I hope they REALLY like potatoes.
+    usage: /potato <player>
+  starve:
+    description: They must have a REALLY fast metabolism!
+    usage: /starve <player>
+  hurt:
+    description: Where is all this damage coming from?!
+    usage: /hurt <player>
+  void:
+    description: Think Journey to the Center of the Earth, except with death at the end.
+    usage: /void <player>
+  slowmine:
+    description: Applies a mining fatigue effect to the player.
+    usage: /slowmine <player>
+  nausea:
+    description: Applies a nausea effect to the player.
+    usage: /nausea <player>

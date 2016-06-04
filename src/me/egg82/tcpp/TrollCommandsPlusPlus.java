@@ -18,23 +18,32 @@ import com.egg82.utils.Util;
 
 import me.egg82.tcpp.commands.BanishCommand;
 import me.egg82.tcpp.commands.BombCommand;
+import me.egg82.tcpp.commands.BurnCommand;
 import me.egg82.tcpp.commands.CannonCommand;
 import me.egg82.tcpp.commands.CometCommand;
 import me.egg82.tcpp.commands.CreepCommand;
+import me.egg82.tcpp.commands.DelayKillCommand;
 import me.egg82.tcpp.commands.ElectrifyCommand;
 import me.egg82.tcpp.commands.EntombCommand;
 import me.egg82.tcpp.commands.FreezeCommand;
 import me.egg82.tcpp.commands.GarbleCommand;
 import me.egg82.tcpp.commands.HauntCommand;
+import me.egg82.tcpp.commands.HurtCommand;
 import me.egg82.tcpp.commands.LiftCommand;
 import me.egg82.tcpp.commands.LureCommand;
+import me.egg82.tcpp.commands.NauseaCommand;
+import me.egg82.tcpp.commands.PotatoCommand;
 import me.egg82.tcpp.commands.SlapCommand;
+import me.egg82.tcpp.commands.SlowMineCommand;
 import me.egg82.tcpp.commands.SlowpokeCommand;
+import me.egg82.tcpp.commands.SpamCommand;
 import me.egg82.tcpp.commands.SpinCommand;
 import me.egg82.tcpp.commands.StampedeCommand;
+import me.egg82.tcpp.commands.StarveCommand;
 import me.egg82.tcpp.commands.SwapCommand;
 import me.egg82.tcpp.commands.TrollCommand;
 import me.egg82.tcpp.commands.VaporizeCommand;
+import me.egg82.tcpp.commands.VoidCommand;
 import me.egg82.tcpp.commands.WeaklingCommand;
 import me.egg82.tcpp.commands.ZombifyCommand;
 import me.egg82.tcpp.enums.PermissionsType;
@@ -45,11 +54,19 @@ import me.egg82.tcpp.events.PlayerKickEventCommand;
 import me.egg82.tcpp.events.PlayerMoveEventCommand;
 import me.egg82.tcpp.events.PlayerQuitEventCommand;
 import me.egg82.tcpp.ticks.BombTickCommand;
+import me.egg82.tcpp.ticks.BurnTickCommand;
 import me.egg82.tcpp.ticks.ElectrifyTickCommand;
 import me.egg82.tcpp.ticks.HauntTickCommand;
+import me.egg82.tcpp.ticks.HurtTickCommand;
+import me.egg82.tcpp.ticks.NauseaTickCommand;
+import me.egg82.tcpp.ticks.SlowMineTickCommand;
 import me.egg82.tcpp.ticks.SlowpokeTickCommand;
+import me.egg82.tcpp.ticks.SpamTickCommand;
 import me.egg82.tcpp.ticks.SpinTickCommand;
+import me.egg82.tcpp.ticks.StarveTickCommand;
 import me.egg82.tcpp.ticks.WeaklingTickCommand;
+import net.gravitydevelopment.updater.Updater;
+import net.gravitydevelopment.updater.Updater.UpdateType;
 
 public class TrollCommandsPlusPlus extends BasePlugin {
 	//vars
@@ -63,14 +80,11 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	public void onLoad() {
 		super.onLoad();
 		
-		ServiceLocator.provideService(PluginServiceType.BOMB_REGISTRY, Registry.class);
-		ServiceLocator.provideService(PluginServiceType.ELECTRIFY_REGISTRY, Registry.class);
-		ServiceLocator.provideService(PluginServiceType.FREEZE_REGISTRY, Registry.class);
-		ServiceLocator.provideService(PluginServiceType.GARBLE_REGISTRY, Registry.class);
-		ServiceLocator.provideService(PluginServiceType.HAUNT_REGISTRY, Registry.class);
-		ServiceLocator.provideService(PluginServiceType.SLOWPOKE_REGISTRY, Registry.class);
-		ServiceLocator.provideService(PluginServiceType.SPIN_REGISTRY, Registry.class);
-		ServiceLocator.provideService(PluginServiceType.WEAKLING_REGISTRY, Registry.class);
+		Object[] enums = Util.getStaticFields(PluginServiceType.class);
+		String[] services = Arrays.copyOf(enums, enums.length, String[].class);
+		for (String s : services) {
+			ServiceLocator.provideService(s, Registry.class);
+		}
 	}
 	
 	public void onEnable() {
@@ -82,6 +96,8 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
+		
+		Updater updater = new Updater(this, 100359, getFile(), UpdateType.DEFAULT, false);
 		
 		commandHandler.addCommand("banish", BanishCommand.class);
 		commandHandler.addCommand("bomb", BombCommand.class);
@@ -104,6 +120,15 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		commandHandler.addCommand("vaporize", VaporizeCommand.class);
 		commandHandler.addCommand("weakling", WeaklingCommand.class);
 		commandHandler.addCommand("zombify", ZombifyCommand.class);
+		commandHandler.addCommand("burn", BurnCommand.class);
+		commandHandler.addCommand("spam", SpamCommand.class);
+		commandHandler.addCommand("delaykill", DelayKillCommand.class);
+		commandHandler.addCommand("potato", PotatoCommand.class);
+		commandHandler.addCommand("starve", StarveCommand.class);
+		commandHandler.addCommand("hurt", HurtCommand.class);
+		commandHandler.addCommand("void", VoidCommand.class);
+		commandHandler.addCommand("slowmine", SlowMineCommand.class);
+		commandHandler.addCommand("nausea", NauseaCommand.class);
 		
 		eventListener.addEvent(PlayerDeathEvent.class, PlayerDeathEventCommand.class);
 		eventListener.addEvent(PlayerQuitEvent.class, PlayerQuitEventCommand.class);
@@ -123,6 +148,12 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		tickHandler.addTickCommand("slowpoke", SlowpokeTickCommand.class, 60);
 		tickHandler.addTickCommand("spin", SpinTickCommand.class, 1);
 		tickHandler.addTickCommand("weakling", WeaklingTickCommand.class, 60);
+		tickHandler.addTickCommand("burn", BurnTickCommand.class, 60);
+		tickHandler.addTickCommand("spam", SpamTickCommand.class, 10);
+		tickHandler.addTickCommand("starve", StarveTickCommand.class, 20);
+		tickHandler.addTickCommand("hurt", HurtTickCommand.class, 20);
+		tickHandler.addTickCommand("slowmine", SlowMineTickCommand.class, 60);
+		tickHandler.addTickCommand("nausea", NauseaTickCommand.class, 200);
 		
 		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "--== " + ChatColor.LIGHT_PURPLE + "TrollCommands++ Enabled" + ChatColor.GREEN + " ==--");
 	}

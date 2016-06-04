@@ -1,5 +1,6 @@
 package me.egg82.tcpp.ticks;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -32,10 +33,14 @@ public class BombTickCommand extends Command {
 	
 	private void shoot(Player player) {
 		int rand = (int) (MathUtil.random(5.0d, 10.0d));
-		Vector vec = player.getLocation().getDirection().multiply(3.0d);
+		Location pl = player.getLocation();
+		Vector vec = null;
+		Location fl = null;
 		for (int i = 0; i < rand; i++) {
 			Fireball fireball = (Fireball) player.getWorld().spawn(player.getLocation().add(MathUtil.random(-10.0d, 10.0d), MathUtil.random(5.0d, 10.0d), MathUtil.random(-10.0d, 10.0d)), Fireball.class);
-			fireball.setVelocity(vec);
+			fl = fireball.getLocation();
+			vec = new Vector(pl.getX() - fl.getX(), pl.getY() - fl.getY(), pl.getZ() - fl.getZ());
+			fireball.setVelocity(vec.normalize().multiply(2.0d));
 		}
 	}
 }

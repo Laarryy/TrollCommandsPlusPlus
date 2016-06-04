@@ -25,10 +25,7 @@ public class WeaklingTickCommand extends Command {
 	protected void execute() {
 		String[] names = weaklingRegistry.registryNames();
 		for (String name : names) {
-			weakling((Player) weaklingRegistry.getRegister(name));
+			((Player) weaklingRegistry.getRegister(name)).addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 60, 3), true);
 		}
-	}
-	private void weakling(Player player) {
-		player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 60, 3), true);
 	}
 }

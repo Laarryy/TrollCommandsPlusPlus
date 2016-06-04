@@ -11,8 +11,11 @@ import me.egg82.tcpp.enums.PluginServiceType;
 
 public class PlayerKickEventCommand extends EventCommand {
 	//vars
-	IRegistry bombRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.BOMB_REGISTRY);
-	IRegistry electrifyRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.ELECTRIFY_REGISTRY);
+	private IRegistry bombRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.BOMB_REGISTRY);
+	private IRegistry electrifyRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.ELECTRIFY_REGISTRY);
+	private IRegistry burnRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.BURN_REGISTRY);
+	private IRegistry starveRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.STARVE_REGISTRY);
+	private IRegistry hurtRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.HURT_REGISTRY);
 	
 	//constructor
 	public PlayerKickEventCommand(Event event) {
@@ -23,8 +26,11 @@ public class PlayerKickEventCommand extends EventCommand {
 	
 	//private
 	protected void execute() {
-		PlayerKickEvent e = (PlayerKickEvent) event;
-		bombRegistry.setRegister(e.getPlayer().getName(), null);
-		electrifyRegistry.setRegister(e.getPlayer().getName(), null);
+		String name = ((PlayerKickEvent) event).getPlayer().getName();
+		bombRegistry.setRegister(name, null);
+		electrifyRegistry.setRegister(name, null);
+		burnRegistry.setRegister(name, null);
+		starveRegistry.setRegister(name, null);
+		hurtRegistry.setRegister(name, null);
 	}
 }

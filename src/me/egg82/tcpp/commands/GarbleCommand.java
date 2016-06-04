@@ -58,7 +58,7 @@ public class GarbleCommand extends PluginCommand {
 			sender.sendMessage(name + "'s speech is no longer being garbled.");
 			garbleRegistry.setRegister(name.toLowerCase(), null);
 		} else {
-			sender.sendMessage(name + "'s speech is being garbled.");
+			sender.sendMessage(name + "'s speech is now being garbled.");
 			garbleRegistry.setRegister(name.toLowerCase(), player);
 		}
 		

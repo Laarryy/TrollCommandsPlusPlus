@@ -58,7 +58,7 @@ public class HauntCommand extends PluginCommand {
 			sender.sendMessage(name + " is no longer being haunted.");
 			hauntRegistry.setRegister(name.toLowerCase(), null);
 		} else {
-			sender.sendMessage(name + " is being haunted.");
+			sender.sendMessage(name + " is now being haunted.");
 			hauntRegistry.setRegister(name.toLowerCase(), player);
 		}
 		

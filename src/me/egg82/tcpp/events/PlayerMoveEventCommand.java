@@ -11,7 +11,7 @@ import me.egg82.tcpp.enums.PluginServiceType;
 
 public class PlayerMoveEventCommand extends EventCommand {
 	//vars
-	IRegistry freezeRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.FREEZE_REGISTRY);
+	private IRegistry freezeRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.FREEZE_REGISTRY);
 	
 	//constructor
 	public PlayerMoveEventCommand(Event event) {

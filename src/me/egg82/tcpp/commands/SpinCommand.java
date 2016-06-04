@@ -58,7 +58,7 @@ public class SpinCommand extends PluginCommand {
 			sender.sendMessage(name + " is no longer spinning.");
 			spinRegistry.setRegister(name.toLowerCase(), null);
 		} else {
-			sender.sendMessage(name + " is spinning.");
+			sender.sendMessage(name + " is now spinning.");
 			spinRegistry.setRegister(name.toLowerCase(), player);
 		}
 		

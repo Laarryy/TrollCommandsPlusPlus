@@ -59,7 +59,7 @@ public class BombCommand extends PluginCommand {
 			sender.sendMessage(name + " is no longer being bombed.");
 			bombRegistry.setRegister(name.toLowerCase(), null);
 		} else {
-			sender.sendMessage(name + " is being bombed.");
+			sender.sendMessage(name + " is now being bombed.");
 			bombRegistry.setRegister(name.toLowerCase(), player);
 		}
 		

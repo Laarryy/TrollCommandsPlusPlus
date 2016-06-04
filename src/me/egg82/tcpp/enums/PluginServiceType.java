@@ -10,6 +10,13 @@ public class PluginServiceType {
 	public static final String SLOWPOKE_REGISTRY = "slowpokeRegistry";
 	public static final String SPIN_REGISTRY = "spinRegistry";
 	public static final String WEAKLING_REGISTRY = "weaklingRegistry";
+	public static final String BURN_REGISTRY = "burnRegistry";
+	public static final String SPAM_REGISTRY = "spamRegistry";
+	public static final String STARVE_REGISTRY = "starveRegistry";
+	public static final String HURT_REGISTRY = "hurtRegistry";
+	public static final String SLOWMINE_REGISTRY = "slowmineRegistry";
+	public static final String NAUSEA_REGISTRY = "nauseaRegistry";
+	public static final String VOID_REGISTRY = "voidRegistry";
 	
 	//constructor
 	public PluginServiceType() {
