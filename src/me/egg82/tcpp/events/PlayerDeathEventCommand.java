@@ -3,11 +3,10 @@ package me.egg82.tcpp.events;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-import com.egg82.patterns.ServiceLocator;
-import com.egg82.plugin.commands.EventCommand;
-import com.egg82.registry.interfaces.IRegistry;
-
 import me.egg82.tcpp.enums.PluginServiceType;
+import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.registry.interfaces.IRegistry;
 
 public class PlayerDeathEventCommand extends EventCommand {
 	//vars

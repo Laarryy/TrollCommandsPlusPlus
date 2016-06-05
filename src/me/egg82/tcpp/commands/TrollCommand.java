@@ -1,16 +1,12 @@
 package me.egg82.tcpp.commands;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
-import com.egg82.events.patterns.command.CommandEvent;
-import com.egg82.plugin.commands.PluginCommand;
-
-import me.egg82.tcpp.enums.CommandErrorType;
-import me.egg82.tcpp.enums.MessageType;
+import me.egg82.tcpp.commands.base.BasePluginCommand;
 import me.egg82.tcpp.enums.PermissionsType;
+import ninja.egg82.events.patterns.command.CommandEvent;
 
-public class TrollCommand extends PluginCommand {
+public class TrollCommand extends BasePluginCommand {
 	//vars
 	
 	//constructor
@@ -22,23 +18,14 @@ public class TrollCommand extends PluginCommand {
 	
 	//private
 	protected void execute() {
-		if (sender instanceof Player && !permissionsManager.playerHasPermission((Player) sender, PermissionsType.COMMAND_TROLL)) {
-			sender.sendMessage(MessageType.NO_PERMISSIONS);
-			dispatch(CommandEvent.ERROR, CommandErrorType.NO_PERMISSIONS);
-			return;
+		if (isValid(false, PermissionsType.COMMAND_TROLL, new int[]{0,1}, new int[]{0})) {
+			if (args.length == 0) {
+				sender.getServer().dispatchCommand(sender, "help trollcommandsplusplus");
+			} else if (args.length == 1) {
+				sender.getServer().dispatchCommand(sender, "help trollcommandsplusplus" + args[0]);
+			}
+			
+			dispatch(CommandEvent.COMPLETE, null);
 		}
-		
-		if (args.length == 0) {
-			sender.getServer().dispatchCommand(sender, "help trollcommandsplusplus");
-		} else if (args.length == 1) {
-			sender.getServer().dispatchCommand(sender, "help trollcommandsplusplus" + args[0]);
-		} else {
-			sender.sendMessage(MessageType.INCORRECT_USAGE);
-			sender.getServer().dispatchCommand(sender, "help " + command.getName());
-			dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
-			return;
-		}
-		
-		dispatch(CommandEvent.COMPLETE, null);
 	}
 }

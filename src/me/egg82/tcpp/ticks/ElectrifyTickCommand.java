@@ -4,16 +4,15 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import com.egg82.patterns.ServiceLocator;
-import com.egg82.patterns.command.Command;
-import com.egg82.registry.interfaces.IRegistry;
-import com.egg82.utils.MathUtil;
-
 import me.egg82.tcpp.enums.PluginServiceType;
+import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.command.Command;
+import ninja.egg82.registry.interfaces.IRegistry;
+import ninja.egg82.utils.MathUtil;
 
 public class ElectrifyTickCommand extends Command {
 	//vars
-	private IRegistry electrifyRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.ELECTRIFY_REGISTRY);
+	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.ELECTRIFY_REGISTRY);
 	
 	//constructor
 	public ElectrifyTickCommand() {
@@ -24,13 +23,17 @@ public class ElectrifyTickCommand extends Command {
 	
 	//private
 	protected void execute() {
-		String[] names = electrifyRegistry.registryNames();
+		String[] names = reg.registryNames();
 		for (String name : names) {
-			strike((Player) electrifyRegistry.getRegister(name));
+			e((Player) reg.getRegister(name));
 		}
 	}
 	
-	private void strike(Player player) {
+	private void e(Player player) {
+		if (player == null) {
+			return;
+		}
+		
 		int rand = (int) (MathUtil.random(2.0d, 5.0d));
 		Location loc = player.getLocation();
 		World world = player.getWorld();

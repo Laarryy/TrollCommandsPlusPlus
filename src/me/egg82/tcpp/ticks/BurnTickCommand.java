@@ -2,15 +2,14 @@ package me.egg82.tcpp.ticks;
 
 import org.bukkit.entity.Player;
 
-import com.egg82.patterns.ServiceLocator;
-import com.egg82.patterns.command.Command;
-import com.egg82.registry.interfaces.IRegistry;
-
 import me.egg82.tcpp.enums.PluginServiceType;
+import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.command.Command;
+import ninja.egg82.registry.interfaces.IRegistry;
 
 public class BurnTickCommand extends Command {
 	//vars
-	private IRegistry burnRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.BURN_REGISTRY);
+	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.BURN_REGISTRY);
 	
 	//constructor
 	public BurnTickCommand() {
@@ -21,9 +20,16 @@ public class BurnTickCommand extends Command {
 	
 	//private
 	protected void execute() {
-		String[] names = burnRegistry.registryNames();
+		String[] names = reg.registryNames();
 		for (String name : names) {
-			((Player) burnRegistry.getRegister(name)).setFireTicks(60);
+			e((Player) reg.getRegister(name));
 		}
+	}
+	private void e(Player player) {
+		if (player == null) {
+			return;
+		}
+		
+		player.setFireTicks(60);
 	}
 }

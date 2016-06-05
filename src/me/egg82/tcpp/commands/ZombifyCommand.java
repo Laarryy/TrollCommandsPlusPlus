@@ -8,16 +8,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 import org.bukkit.util.Vector;
 
-import com.egg82.events.patterns.command.CommandEvent;
-import com.egg82.plugin.commands.PluginCommand;
-import com.egg82.plugin.utils.BlockUtil;
-import com.egg82.utils.MathUtil;
-
-import me.egg82.tcpp.enums.CommandErrorType;
-import me.egg82.tcpp.enums.MessageType;
+import me.egg82.tcpp.commands.base.BasePluginCommand;
 import me.egg82.tcpp.enums.PermissionsType;
+import ninja.egg82.events.patterns.command.CommandEvent;
+import ninja.egg82.plugin.utils.BlockUtil;
+import ninja.egg82.utils.MathUtil;
 
-public class ZombifyCommand extends PluginCommand {
+public class ZombifyCommand extends BasePluginCommand {
 	//vars
 	
 	//constructor
@@ -29,32 +26,15 @@ public class ZombifyCommand extends PluginCommand {
 	
 	//private
 	protected void execute() {
-		if (sender instanceof Player && !permissionsManager.playerHasPermission((Player) sender, PermissionsType.COMMAND_ZOMBIFY)) {
-			sender.sendMessage(MessageType.NO_PERMISSIONS);
-			dispatch(CommandEvent.ERROR, CommandErrorType.NO_PERMISSIONS);
-			return;
-		}
-		
-		if (args.length == 1) {
-			zombify(Bukkit.getPlayer(args[0]));
-		} else {
-			sender.sendMessage(MessageType.INCORRECT_USAGE);
-			sender.getServer().dispatchCommand(sender, "help " + command.getName());
-			dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
+		if (isValid(false, PermissionsType.COMMAND_ZOMBIFY, new int[]{1}, new int[]{0})) {
+			if (args.length == 1) {
+				e(Bukkit.getPlayer(args[0]));
+			}
+			
+			dispatch(CommandEvent.COMPLETE, null);
 		}
 	}
-	private void zombify(Player player) {
-		if (player == null) {
-			sender.sendMessage(MessageType.PLAYER_NOT_FOUND);
-			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_NOT_FOUND);
-			return;
-		}
-		if (permissionsManager.playerHasPermission(player, PermissionsType.IMMUNE)) {
-			sender.sendMessage(MessageType.PLAYER_IMMUNE);
-			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
-			return;
-		}
-		
+	private void e(Player player) {
 		int rand = MathUtil.fairRoundedRandom(10, 15);
 		Location loc = player.getLocation();
 		for (int i = 0; i < rand; i++) {
@@ -66,7 +46,5 @@ public class ZombifyCommand extends PluginCommand {
 		}
 		
 		sender.sendMessage(player.getName() + " has been zombified.");
-		
-		dispatch(CommandEvent.COMPLETE, null);
 	}
 }

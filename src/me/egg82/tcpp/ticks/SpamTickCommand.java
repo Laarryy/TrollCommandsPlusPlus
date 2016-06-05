@@ -2,16 +2,15 @@ package me.egg82.tcpp.ticks;
 
 import org.bukkit.entity.Player;
 
-import com.egg82.patterns.ServiceLocator;
-import com.egg82.patterns.command.Command;
-import com.egg82.registry.interfaces.IRegistry;
-import com.egg82.utils.MathUtil;
-
 import me.egg82.tcpp.enums.PluginServiceType;
+import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.command.Command;
+import ninja.egg82.registry.interfaces.IRegistry;
+import ninja.egg82.utils.MathUtil;
 
 public class SpamTickCommand extends Command {
 	//vars
-	private IRegistry spamRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SPAM_REGISTRY);
+	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.SPAM_REGISTRY);
 	private static final char [] subset = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+{}|:\"<>?`-=[]\\;',./".toCharArray();
 	
 	//constructor
@@ -23,10 +22,17 @@ public class SpamTickCommand extends Command {
 	
 	//private
 	protected void execute() {
-		String[] names = spamRegistry.registryNames();
+		String[] names = reg.registryNames();
 		for (String name : names) {
-			((Player) spamRegistry.getRegister(name)).sendMessage(randString(MathUtil.fairRoundedRandom(15, 50)));
+			e((Player) reg.getRegister(name));
 		}
+	}
+	private void e(Player player) {
+		if (player == null) {
+			return;
+		}
+		
+		player.sendMessage(randString(MathUtil.fairRoundedRandom(15, 50)));
 	}
 	private String randString(int length) {
 		char buffer[] = new char[length];

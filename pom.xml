@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>tcpp</artifactId>
-  <version>1.1.3</version>
+  <artifactId>TrollCommandsPlusPlus</artifactId>
+  <version>1.1.4</version>
   <name>TrollCommandsPlusPlus</name>
   <description>TCPP for Spigot/Bukkit</description>
   <build>
@@ -46,13 +46,6 @@
         </executions>
       </plugin>
     </plugins>
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-ssh</artifactId>
-        <version>2.10</version>
-      </extension>
-    </extensions>
   </build>
   <repositories>
     <repository>
@@ -114,11 +107,5 @@
     </dependency>
   </dependencies>
   <url>https://egg82.ninja</url>
-  <distributionManagement>
-    <repository>
-      <id>egg82-ninja</id>
-      <url>scp://egg82.ninja/var/www/egg82.ninja/public_html/repo</url>
-    </repository>
-  </distributionManagement>
   <groupId>ninja.egg82.plugins</groupId>
 </project>

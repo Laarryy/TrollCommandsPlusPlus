@@ -4,15 +4,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.egg82.patterns.ServiceLocator;
-import com.egg82.patterns.command.Command;
-import com.egg82.registry.interfaces.IRegistry;
-
 import me.egg82.tcpp.enums.PluginServiceType;
+import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.command.Command;
+import ninja.egg82.registry.interfaces.IRegistry;
 
 public class WeaklingTickCommand extends Command {
 	//vars
-	private IRegistry weaklingRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.WEAKLING_REGISTRY);
+	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.WEAKLING_REGISTRY);
 	
 	//constructor
 	public WeaklingTickCommand() {
@@ -23,9 +22,16 @@ public class WeaklingTickCommand extends Command {
 	
 	//private
 	protected void execute() {
-		String[] names = weaklingRegistry.registryNames();
+		String[] names = reg.registryNames();
 		for (String name : names) {
-			((Player) weaklingRegistry.getRegister(name)).addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 60, 3), true);
+			e((Player) reg.getRegister(name));
 		}
+	}
+	private void e(Player player) {
+		if (player == null) {
+			return;
+		}
+		
+		player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 60, 3), true);
 	}
 }

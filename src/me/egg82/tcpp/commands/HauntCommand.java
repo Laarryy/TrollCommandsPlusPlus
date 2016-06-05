@@ -5,19 +5,16 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.egg82.events.patterns.command.CommandEvent;
-import com.egg82.patterns.ServiceLocator;
-import com.egg82.plugin.commands.PluginCommand;
-import com.egg82.registry.interfaces.IRegistry;
-
-import me.egg82.tcpp.enums.CommandErrorType;
-import me.egg82.tcpp.enums.MessageType;
+import me.egg82.tcpp.commands.base.BasePluginCommand;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.enums.PluginServiceType;
+import ninja.egg82.events.patterns.command.CommandEvent;
+import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.registry.interfaces.IRegistry;
 
-public class HauntCommand extends PluginCommand {
+public class HauntCommand extends BasePluginCommand {
 	//vars
-	IRegistry hauntRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.HAUNT_REGISTRY);
+	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.HAUNT_REGISTRY);
 	
 	//constructor
 	public HauntCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -28,40 +25,20 @@ public class HauntCommand extends PluginCommand {
 	
 	//private
 	protected void execute() {
-		if (sender instanceof Player && !permissionsManager.playerHasPermission((Player) sender, PermissionsType.COMMAND_HAUNT)) {
-			sender.sendMessage(MessageType.NO_PERMISSIONS);
-			dispatch(CommandEvent.ERROR, CommandErrorType.NO_PERMISSIONS);
-			return;
-		}
-		
-		if (args.length == 1) {
-			haunt(args[0], Bukkit.getPlayer(args[0]));
-		} else {
-			sender.sendMessage(MessageType.INCORRECT_USAGE);
-			sender.getServer().dispatchCommand(sender, "help " + command.getName());
-			dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
+		if (isValid(false, PermissionsType.COMMAND_HAUNT, new int[]{1}, new int[]{0})) {
+			Player player = Bukkit.getPlayer(args[0]);
+			e(player.getName(), player);
+			
+			dispatch(CommandEvent.COMPLETE, null);
 		}
 	}
-	private void haunt(String name, Player player) {
-		if (player == null) {
-			sender.sendMessage(MessageType.PLAYER_NOT_FOUND);
-			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_NOT_FOUND);
-			return;
-		}
-		if (permissionsManager.playerHasPermission(player, PermissionsType.IMMUNE)) {
-			sender.sendMessage(MessageType.PLAYER_IMMUNE);
-			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
-			return;
-		}
-		
-		if (hauntRegistry.contains(name.toLowerCase())) {
-			sender.sendMessage(name + " is no longer being haunted.");
-			hauntRegistry.setRegister(name.toLowerCase(), null);
+	private void e(String name, Player player) {
+		if (reg.contains(name.toLowerCase())) {
+			sender.sendMessage(name + " is no longer being haunted by mysterious sounds.");
+			reg.setRegister(name.toLowerCase(), null);
 		} else {
-			sender.sendMessage(name + " is now being haunted.");
-			hauntRegistry.setRegister(name.toLowerCase(), player);
+			sender.sendMessage(name + " is now being haunted by mysterious sounds.");
+			reg.setRegister(name.toLowerCase(), player);
 		}
-		
-		dispatch(CommandEvent.COMPLETE, null);
 	}
 }

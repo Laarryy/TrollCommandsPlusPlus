@@ -1,6 +1,6 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 1.1.3
+version: 1.1.4
 commands:
   troll:
     description: Same as /help TrollCommandsPlusPlus [page]
@@ -22,7 +22,7 @@ commands:
     description: A premature burial.
     usage: /entomb <player>
   slowpoke:
-    description: Applies a slowness effect to the player.
+    description: Applies a slowness effect to the player. Like a pokemon!
     usage: /slowpoke <player>
   electrify:
     description: Thine enemy shalt feel the wrath of many angry gods.

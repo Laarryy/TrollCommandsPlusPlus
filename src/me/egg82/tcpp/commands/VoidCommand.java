@@ -10,23 +10,21 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.egg82.events.patterns.command.CommandEvent;
-import com.egg82.patterns.ServiceLocator;
-import com.egg82.plugin.commands.PluginCommand;
-import com.egg82.plugin.enums.CustomServiceType;
-import com.egg82.plugin.utils.interfaces.ITickHandler;
-import com.egg82.registry.interfaces.IRegistry;
 import com.google.common.collect.ImmutableMap;
 
-import me.egg82.tcpp.enums.CommandErrorType;
-import me.egg82.tcpp.enums.MessageType;
+import me.egg82.tcpp.commands.base.BasePluginCommand;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.enums.PluginServiceType;
 import me.egg82.tcpp.ticks.VoidTickCommand;
+import ninja.egg82.events.patterns.command.CommandEvent;
+import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.plugin.enums.CustomServiceType;
+import ninja.egg82.plugin.utils.interfaces.ITickHandler;
+import ninja.egg82.registry.interfaces.IRegistry;
 
-public class VoidCommand extends PluginCommand {
+public class VoidCommand extends BasePluginCommand {
 	//vars
-	IRegistry voidRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.VOID_REGISTRY);
+	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.VOID_REGISTRY);
 	ITickHandler tickHandler = (ITickHandler) ServiceLocator.getService(CustomServiceType.TICK_HANDLER);
 	
 	//constructor
@@ -38,32 +36,15 @@ public class VoidCommand extends PluginCommand {
 	
 	//private
 	protected void execute() {
-		if (sender instanceof Player && !permissionsManager.playerHasPermission((Player) sender, PermissionsType.COMMAND_VOID)) {
-			sender.sendMessage(MessageType.NO_PERMISSIONS);
-			dispatch(CommandEvent.ERROR, CommandErrorType.NO_PERMISSIONS);
-			return;
-		}
-		
-		if (args.length == 1) {
-			v(Bukkit.getPlayer(args[0]));
-		} else {
-			sender.sendMessage(MessageType.INCORRECT_USAGE);
-			sender.getServer().dispatchCommand(sender, "help " + command.getName());
-			dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
+		if (isValid(false, PermissionsType.COMMAND_VOID, new int[]{1}, new int[]{0})) {
+			if (args.length == 1) {
+				e(Bukkit.getPlayer(args[0]));
+			}
+			
+			dispatch(CommandEvent.COMPLETE, null);
 		}
 	}
-	private void v(Player player) {
-		if (player == null) {
-			sender.sendMessage(MessageType.PLAYER_NOT_FOUND);
-			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_NOT_FOUND);
-			return;
-		}
-		if (permissionsManager.playerHasPermission(player, PermissionsType.IMMUNE)) {
-			sender.sendMessage(MessageType.PLAYER_IMMUNE);
-			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
-			return;
-		}
-		
+	private void e(Player player) {
 		ArrayList<Material[]> blocks = new ArrayList<Material[]>();
 		Location loc = player.getLocation();
 		
@@ -77,12 +58,10 @@ public class VoidCommand extends PluginCommand {
 		blocks.add(removeBlocks(loc.clone().add(1.0d, 0.0d, 0.0d)));
 		blocks.add(removeBlocks(loc.clone().add(1.0d, 0.0d, 1.0d)));
 		
-		voidRegistry.setRegister(player.getName(), ImmutableMap.of("time", System.currentTimeMillis(), "loc", loc, "blocks", blocks));
+		reg.setRegister(player.getName(), ImmutableMap.of("time", System.currentTimeMillis(), "loc", loc, "blocks", blocks));
 		tickHandler.addDelayedTickCommand("void-" + player.getName(), VoidTickCommand.class, 202);
 		
 		sender.sendMessage(player.getName() + " is now very confused as to why they are suddenly falling through the world.");
-		
-		dispatch(CommandEvent.COMPLETE, null);
 	}
 	
 	private Material[] removeBlocks(Location l) {

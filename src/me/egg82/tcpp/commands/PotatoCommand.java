@@ -8,14 +8,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import com.egg82.events.patterns.command.CommandEvent;
-import com.egg82.plugin.commands.PluginCommand;
-
-import me.egg82.tcpp.enums.CommandErrorType;
-import me.egg82.tcpp.enums.MessageType;
+import me.egg82.tcpp.commands.base.BasePluginCommand;
 import me.egg82.tcpp.enums.PermissionsType;
+import ninja.egg82.events.patterns.command.CommandEvent;
 
-public class PotatoCommand extends PluginCommand {
+public class PotatoCommand extends BasePluginCommand {
 	//vars
 	
 	//constructor
@@ -27,36 +24,20 @@ public class PotatoCommand extends PluginCommand {
 	
 	//private
 	protected void execute() {
-		if (sender instanceof Player && !permissionsManager.playerHasPermission((Player) sender, PermissionsType.COMMAND_POTATO)) {
-			sender.sendMessage(MessageType.NO_PERMISSIONS);
-			dispatch(CommandEvent.ERROR, CommandErrorType.NO_PERMISSIONS);
-			return;
-		}
-		
-		if (args.length == 1) {
-			potato(Bukkit.getPlayer(args[0]));
-		} else {
-			sender.sendMessage(MessageType.INCORRECT_USAGE);
-			sender.getServer().dispatchCommand(sender, "help " + command.getName());
-			dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
+		if (isValid(false, PermissionsType.COMMAND_POTATO, new int[]{1}, new int[]{0})) {
+			if (args.length == 1) {
+				e(Bukkit.getPlayer(args[0]));
+			}
+			
+			dispatch(CommandEvent.COMPLETE, null);
 		}
 	}
-	private void potato(Player player) {
-		if (player == null) {
-			sender.sendMessage(MessageType.PLAYER_NOT_FOUND);
-			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_NOT_FOUND);
-			return;
-		}
-		if (permissionsManager.playerHasPermission(player, PermissionsType.IMMUNE)) {
-			sender.sendMessage(MessageType.PLAYER_IMMUNE);
-			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
-			return;
-		}
-		
+	private void e(Player player) {
 		PlayerInventory inv = player.getInventory();
 		ItemStack[] items = inv.getContents();
 		
 		for (int i = 0; i < items.length; i++) {
+			//Material.AIR because.. Well, you never fucking know with Minecraft.
 			if (items[i] != null && items[i].getType() != Material.AIR) {
 				items[i] = new ItemStack(Material.POTATO_ITEM, items[i].getAmount());
 			}
@@ -65,7 +46,5 @@ public class PotatoCommand extends PluginCommand {
 		inv.setContents(items);
 		
 		sender.sendMessage(player.getName() + "'s inventory is now potato.");
-		
-		dispatch(CommandEvent.COMPLETE, null);
 	}
 }

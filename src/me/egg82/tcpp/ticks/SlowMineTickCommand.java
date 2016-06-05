@@ -4,15 +4,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.egg82.patterns.ServiceLocator;
-import com.egg82.patterns.command.Command;
-import com.egg82.registry.interfaces.IRegistry;
-
 import me.egg82.tcpp.enums.PluginServiceType;
+import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.command.Command;
+import ninja.egg82.registry.interfaces.IRegistry;
 
 public class SlowMineTickCommand extends Command {
 	//vars
-	private IRegistry slowmineRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOWMINE_REGISTRY);
+	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOWMINE_REGISTRY);
 	
 	//constructor
 	public SlowMineTickCommand() {
@@ -23,9 +22,16 @@ public class SlowMineTickCommand extends Command {
 	
 	//private
 	protected void execute() {
-		String[] names = slowmineRegistry.registryNames();
+		String[] names = reg.registryNames();
 		for (String name : names) {
-			((Player) slowmineRegistry.getRegister(name)).addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 60, 3), true);
+			e((Player) reg.getRegister(name));
 		}
+	}
+	private void e(Player player){
+		if (player == null) {
+			return;
+		}
+		
+		player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 60, 3), true);
 	}
 }

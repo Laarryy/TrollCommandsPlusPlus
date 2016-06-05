@@ -5,16 +5,15 @@ import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import com.egg82.patterns.ServiceLocator;
-import com.egg82.patterns.command.Command;
-import com.egg82.registry.interfaces.IRegistry;
-import com.egg82.utils.MathUtil;
-
 import me.egg82.tcpp.enums.PluginServiceType;
+import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.command.Command;
+import ninja.egg82.registry.interfaces.IRegistry;
+import ninja.egg82.utils.MathUtil;
 
 public class BombTickCommand extends Command {
 	//vars
-	private IRegistry bombRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.BOMB_REGISTRY);
+	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.BOMB_REGISTRY);
 	
 	//constructor
 	public BombTickCommand() {
@@ -25,13 +24,17 @@ public class BombTickCommand extends Command {
 	
 	//private
 	protected void execute() {
-		String[] names = bombRegistry.registryNames();
+		String[] names = reg.registryNames();
 		for (String name : names) {
-			shoot((Player) bombRegistry.getRegister(name));
+			e((Player) reg.getRegister(name));
 		}
 	}
 	
-	private void shoot(Player player) {
+	private void e(Player player) {
+		if (player == null) {
+			return;
+		}
+		
 		int rand = (int) (MathUtil.random(5.0d, 10.0d));
 		Location pl = player.getLocation();
 		Vector vec = null;

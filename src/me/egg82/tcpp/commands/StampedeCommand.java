@@ -11,16 +11,13 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import com.egg82.events.patterns.command.CommandEvent;
-import com.egg82.plugin.commands.PluginCommand;
-import com.egg82.plugin.utils.BlockUtil;
-import com.egg82.utils.MathUtil;
-
-import me.egg82.tcpp.enums.CommandErrorType;
-import me.egg82.tcpp.enums.MessageType;
+import me.egg82.tcpp.commands.base.BasePluginCommand;
 import me.egg82.tcpp.enums.PermissionsType;
+import ninja.egg82.events.patterns.command.CommandEvent;
+import ninja.egg82.plugin.utils.BlockUtil;
+import ninja.egg82.utils.MathUtil;
 
-public class StampedeCommand extends PluginCommand {
+public class StampedeCommand extends BasePluginCommand {
 	//vars
 	
 	//constructor
@@ -32,32 +29,15 @@ public class StampedeCommand extends PluginCommand {
 	
 	//private
 	protected void execute() {
-		if (sender instanceof Player && !permissionsManager.playerHasPermission((Player) sender, PermissionsType.COMMAND_STAMPEDE)) {
-			sender.sendMessage(MessageType.NO_PERMISSIONS);
-			dispatch(CommandEvent.ERROR, CommandErrorType.NO_PERMISSIONS);
-			return;
-		}
-		
-		if (args.length == 1) {
-			stampede(Bukkit.getPlayer(args[0]));
-		} else {
-			sender.sendMessage(MessageType.INCORRECT_USAGE);
-			sender.getServer().dispatchCommand(sender, "help " + command.getName());
-			dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
+		if (isValid(false, PermissionsType.COMMAND_STAMPEDE, new int[]{1}, new int[]{0})) {
+			if (args.length == 1) {
+				e(Bukkit.getPlayer(args[0]));
+			}
+			
+			dispatch(CommandEvent.COMPLETE, null);
 		}
 	}
-	private void stampede(Player player) {
-		if (player == null) {
-			sender.sendMessage(MessageType.PLAYER_NOT_FOUND);
-			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_NOT_FOUND);
-			return;
-		}
-		if (permissionsManager.playerHasPermission(player, PermissionsType.IMMUNE)) {
-			sender.sendMessage(MessageType.PLAYER_IMMUNE);
-			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
-			return;
-		}
-		
+	private void e(Player player) {
 		int rand = MathUtil.fairRoundedRandom(10, 20);
 		Location tloc = player.getLocation();
 		Location loc = BlockUtil.getTopAirBlock(new Location(tloc.getWorld(), MathUtil.random(tloc.getX() - 5.0d, tloc.getX() + 5.0d), tloc.getY(), MathUtil.random(tloc.getZ() - 5.0d, tloc.getZ() + 5.0d)));
@@ -67,8 +47,6 @@ public class StampedeCommand extends PluginCommand {
 		}
 		
 		sender.sendMessage("The angry cows have been unleashed on " + player.getName() + ".");
-		
-		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void spawnCow(Player p, Location l, Vector v) {
 		Cow cow = (Cow) p.getWorld().spawn(l, Cow.class);

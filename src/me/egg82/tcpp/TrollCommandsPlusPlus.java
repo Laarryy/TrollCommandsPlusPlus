@@ -11,11 +11,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.mcstats.Metrics;
 
-import com.egg82.patterns.ServiceLocator;
-import com.egg82.plugin.BasePlugin;
-import com.egg82.registry.Registry;
-import com.egg82.utils.Util;
-
 import me.egg82.tcpp.commands.BanishCommand;
 import me.egg82.tcpp.commands.BombCommand;
 import me.egg82.tcpp.commands.BurnCommand;
@@ -68,6 +63,10 @@ import me.egg82.tcpp.ticks.WeaklingTickCommand;
 import net.gravitydevelopment.updater.Updater;
 import net.gravitydevelopment.updater.Updater.UpdateResult;
 import net.gravitydevelopment.updater.Updater.UpdateType;
+import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.plugin.BasePlugin;
+import ninja.egg82.registry.Registry;
+import ninja.egg82.utils.Util;
 
 public class TrollCommandsPlusPlus extends BasePlugin {
 	//vars

@@ -12,14 +12,11 @@ import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import com.egg82.events.patterns.command.CommandEvent;
-import com.egg82.plugin.commands.PluginCommand;
-
-import me.egg82.tcpp.enums.CommandErrorType;
-import me.egg82.tcpp.enums.MessageType;
+import me.egg82.tcpp.commands.base.BasePluginCommand;
 import me.egg82.tcpp.enums.PermissionsType;
+import ninja.egg82.events.patterns.command.CommandEvent;
 
-public class LureCommand extends PluginCommand {
+public class LureCommand extends BasePluginCommand {
 	//vars
 	
 	//constructor
@@ -31,33 +28,16 @@ public class LureCommand extends PluginCommand {
 	
 	//private
 	protected void execute() {
-		if (sender instanceof Player && !permissionsManager.playerHasPermission((Player) sender, PermissionsType.COMMAND_LURE)) {
-			sender.sendMessage(MessageType.NO_PERMISSIONS);
-			dispatch(CommandEvent.ERROR, CommandErrorType.NO_PERMISSIONS);
-			return;
-		}
-		
-		if (args.length == 1) {
-			lure(Bukkit.getPlayer(args[0]));
-		} else {
-			sender.sendMessage(MessageType.INCORRECT_USAGE);
-			sender.getServer().dispatchCommand(sender, "help " + command.getName());
-			dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
+		if (isValid(false, PermissionsType.COMMAND_LURE, new int[]{1}, new int[]{0})) {
+			if (args.length == 1) {
+				e(Bukkit.getPlayer(args[0]));
+			}
+			
+			dispatch(CommandEvent.COMPLETE, null);
 		}
 	}
-	private void lure(Player player) {
-		if (player == null) {
-			sender.sendMessage(MessageType.PLAYER_NOT_FOUND);
-			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_NOT_FOUND);
-			return;
-		}
-		if (permissionsManager.playerHasPermission(player, PermissionsType.IMMUNE)) {
-			sender.sendMessage(MessageType.PLAYER_IMMUNE);
-			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
-			return;
-		}
-		
-		List<Entity> entities = player.getNearbyEntities(1000.0d, 1000.0d, 1000.0d);
+	private void e(Player player) {
+		List<Entity> entities = player.getNearbyEntities(1000.0d, 512.0d, 1000.0d);
 		for (Entity e : entities) {
 			EntityType type = e.getType();
 			if (
@@ -84,18 +64,18 @@ public class LureCommand extends PluginCommand {
 					PigZombie pig = (PigZombie) e;
 					pig.setAngry(true);
 				}
+				
 				try {
 					((Creature) e).setTarget(player);
 				} catch (Exception ex) {
-					System.out.println(ex.getMessage());
+					
 				}
+				
 				Vector velocity = e.getLocation().clone().subtract(player.getLocation()).toVector().normalize().multiply(1.0d);
 				e.setVelocity(velocity);
 			}
 		}
 		
 		sender.sendMessage("Nearby monsters have been lured to " + player.getName() + ".");
-		
-		dispatch(CommandEvent.COMPLETE, null);
 	}
 }

@@ -5,17 +5,17 @@ import java.util.ArrayList;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
-import com.egg82.patterns.ServiceLocator;
-import com.egg82.patterns.command.Command;
-import com.egg82.registry.interfaces.IRegistry;
-import com.egg82.utils.MathUtil;
 import com.google.common.collect.ImmutableMap;
 
 import me.egg82.tcpp.enums.PluginServiceType;
+import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.command.Command;
+import ninja.egg82.registry.interfaces.IRegistry;
+import ninja.egg82.utils.MathUtil;
 
 public class VoidTickCommand extends Command {
 	//vars
-	IRegistry voidRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.VOID_REGISTRY);
+	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.VOID_REGISTRY);
 	
 	//constructor
 	public VoidTickCommand() {
@@ -27,13 +27,13 @@ public class VoidTickCommand extends Command {
 	//private
 	@SuppressWarnings("unchecked")
 	protected void execute() {
-		String[] names = voidRegistry.registryNames();
+		String[] names = reg.registryNames();
 		for (String name : names) {
-			v((ImmutableMap<String, Object>) voidRegistry.getRegister(name));
+			e((ImmutableMap<String, Object>) reg.getRegister(name));
 		}
 	}
 	@SuppressWarnings("unchecked")
-	private void v(ImmutableMap<String, Object> m) {
+	private void e(ImmutableMap<String, Object> m) {
 		long timePassed = System.currentTimeMillis() - (long) m.get("time");
 		
 		if (timePassed < 10000) {
