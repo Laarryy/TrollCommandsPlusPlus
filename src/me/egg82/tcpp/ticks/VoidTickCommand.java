@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import com.egg82.patterns.ServiceLocator;
 import com.egg82.patterns.command.Command;

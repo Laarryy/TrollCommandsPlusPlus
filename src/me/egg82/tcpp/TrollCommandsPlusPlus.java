@@ -66,6 +66,7 @@ import me.egg82.tcpp.ticks.SpinTickCommand;
 import me.egg82.tcpp.ticks.StarveTickCommand;
 import me.egg82.tcpp.ticks.WeaklingTickCommand;
 import net.gravitydevelopment.updater.Updater;
+import net.gravitydevelopment.updater.Updater.UpdateResult;
 import net.gravitydevelopment.updater.Updater.UpdateType;
 
 public class TrollCommandsPlusPlus extends BasePlugin {
@@ -98,6 +99,9 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		}
 		
 		Updater updater = new Updater(this, 100359, getFile(), UpdateType.DEFAULT, false);
+		if (updater.getResult() == UpdateResult.UPDATE_AVAILABLE) {
+			Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "--== " + ChatColor.GREEN + "TrollCommands++ UPDATE AVAILABLE" + ChatColor.YELLOW + " ==--");
+		}
 		
 		commandHandler.addCommand("banish", BanishCommand.class);
 		commandHandler.addCommand("bomb", BombCommand.class);
