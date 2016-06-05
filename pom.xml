@@ -29,8 +29,8 @@
               <minimizeJar>true</minimizeJar>
               <relocations>
                 <relocation>
-                  <pattern>com.egg82</pattern>
-                  <shadedPattern>me.egg82.tcpp.lib.com.egg82</shadedPattern>
+                  <pattern>ninja.egg82</pattern>
+                  <shadedPattern>me.egg82.tcpp.lib.ninja.egg82</shadedPattern>
                 </relocation>
                 <relocation>
                   <pattern>org.mcstats</pattern>
