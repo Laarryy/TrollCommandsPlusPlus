@@ -2,6 +2,7 @@ package me.egg82.tcpp.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -88,11 +89,14 @@ public class ControlCommand extends BasePluginCommand {
 			if (playerInv != null) {
 				playerInv.setContents(controllerInv.getContents());
 			}
-			ImmutableMap<String, Object> map = (ImmutableMap<String, Object>) reg3.getRegister(name);
-			controllerInv.setContents((ItemStack[]) map.get("inventory"));
+			ImmutableMap<String, Object> map = (ImmutableMap<String, Object>) reg3.getRegister(name.toLowerCase());
 			if (player != null) {
 				player.setGameMode((GameMode) map.get("mode"));
 				player.teleport(controller);
+			}
+			if (map != null) {
+				controllerInv.setContents((ItemStack[]) map.get("inventory"));
+				controller.teleport((Location) map.get("location"));
 			}
 			
 			DisguiseAPI.undisguiseToAll(controller);
@@ -106,13 +110,13 @@ public class ControlCommand extends BasePluginCommand {
 			
 			reg.setRegister(name.toLowerCase(), player);
 			reg2.setRegister(controllerName.toLowerCase(), player);
-			reg3.setRegister(name.toLowerCase(), ImmutableMap.of("inventory", controllerInv.getContents(), "mode", player.getGameMode()));
+			reg3.setRegister(name.toLowerCase(), ImmutableMap.of("inventory", controllerInv.getContents(), "location", controller.getLocation(), "mode", player.getGameMode()));
 			
 			controllerInv.setContents(playerInv.getContents());
 			controller.teleport(player);
 			player.setGameMode(GameMode.SPECTATOR);
 			
-			DisguiseAPI.disguiseToAll(controller, new PlayerDisguise(name));
+			DisguiseAPI.disguiseToAll(controller, new PlayerDisguise(name).setViewSelfDisguise(false));
 		}
 	}
 }

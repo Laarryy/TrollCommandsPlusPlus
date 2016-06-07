@@ -184,7 +184,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		}
 	};
 	private void checkUpdate() {
-		Updater updater = new Updater(this, 100359, getFile(), UpdateType.DEFAULT, false);
+		Updater updater = new Updater(this, 100359, getFile(), UpdateType.NO_DOWNLOAD, false);
 		if (updater.getResult() == UpdateResult.UPDATE_AVAILABLE) {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "--== " + ChatColor.GREEN + "TrollCommands++ UPDATE AVAILABLE" + ChatColor.YELLOW + " ==--");
 		}
