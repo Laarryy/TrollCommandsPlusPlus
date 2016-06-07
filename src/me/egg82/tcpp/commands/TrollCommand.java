@@ -22,7 +22,7 @@ public class TrollCommand extends BasePluginCommand {
 			if (args.length == 0) {
 				sender.getServer().dispatchCommand(sender, "help trollcommandsplusplus");
 			} else if (args.length == 1) {
-				sender.getServer().dispatchCommand(sender, "help trollcommandsplusplus" + args[0]);
+				sender.getServer().dispatchCommand(sender, "help trollcommandsplusplus " + args[0]);
 			}
 			
 			dispatch(CommandEvent.COMPLETE, null);
