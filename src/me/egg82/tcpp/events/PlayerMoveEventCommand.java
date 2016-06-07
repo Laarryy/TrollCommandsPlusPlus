@@ -1,29 +1,29 @@
 package me.egg82.tcpp.events;
 
 import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerMoveEvent;
 
-import me.egg82.tcpp.enums.PluginServiceType;
-import ninja.egg82.patterns.ServiceLocator;
+import me.egg82.tcpp.events.individual.moveEvent.ControllerEventCommand;
+import me.egg82.tcpp.events.individual.moveEvent.FreezeEventCommand;
 import ninja.egg82.plugin.commands.EventCommand;
-import ninja.egg82.registry.interfaces.IRegistry;
 
 public class PlayerMoveEventCommand extends EventCommand {
 	//vars
-	private IRegistry freezeRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.FREEZE_REGISTRY);
+	private FreezeEventCommand freeze = null;
+	private ControllerEventCommand controller = null;
 	
 	//constructor
 	public PlayerMoveEventCommand(Event event) {
 		super(event);
+		
+		freeze = new FreezeEventCommand(event);
+		controller = new ControllerEventCommand(event);
 	}
 	
 	//public
 	
 	//private
 	protected void execute() {
-		PlayerMoveEvent e = (PlayerMoveEvent) event;
-		if (freezeRegistry.contains(e.getPlayer().getName())) {
-			e.setCancelled(true);
-		}
+		freeze.start();
+		controller.start();
 	}
 }

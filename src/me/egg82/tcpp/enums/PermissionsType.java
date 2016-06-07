@@ -3,6 +3,9 @@ package me.egg82.tcpp.enums;
 public class PermissionsType {
 	//vars
 	public static final String IMMUNE = "tcpp.immune";
+	public static final String CHAT_WHILE_CONTROLLED = "tcpp.control.chat";
+	public static final String FREECAM_WHILE_CONTROLLED = "tcpp.control.freecam";
+	
 	public static final String COMMAND_TROLL = "tcpp.command.troll";
 	public static final String COMMAND_VAPORIZE = "tcpp.command.vaporize";
 	public static final String COMMAND_LIFT = "tcpp.command.lift";
@@ -33,6 +36,7 @@ public class PermissionsType {
 	public static final String COMMAND_VOID = "tcpp.command.void";
 	public static final String COMMAND_SLOWMINE = "tcpp.command.slowmine";
 	public static final String COMMAND_NAUSEA = "tcpp.command.nausea";
+	public static final String COMMAND_CONTROL = "tcpp.command.control";
 	
 	//constructor
 	public PermissionsType() {

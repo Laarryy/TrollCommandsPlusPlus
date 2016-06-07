@@ -18,7 +18,7 @@ public class TrollCommand extends BasePluginCommand {
 	
 	//private
 	protected void execute() {
-		if (isValid(false, PermissionsType.COMMAND_TROLL, new int[]{0,1}, new int[]{0})) {
+		if (isValid(false, PermissionsType.COMMAND_TROLL, new int[]{0,1}, null)) {
 			if (args.length == 0) {
 				sender.getServer().dispatchCommand(sender, "help trollcommandsplusplus");
 			} else if (args.length == 1) {

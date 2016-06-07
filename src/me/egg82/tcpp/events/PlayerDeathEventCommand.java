@@ -15,6 +15,7 @@ public class PlayerDeathEventCommand extends EventCommand {
 	private IRegistry burnRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.BURN_REGISTRY);
 	private IRegistry starveRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.STARVE_REGISTRY);
 	private IRegistry hurtRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.HURT_REGISTRY);
+	private IRegistry delayKillRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.DELAY_KILL_REGISTRY);
 	
 	//constructor
 	public PlayerDeathEventCommand(Event event) {
@@ -25,11 +26,12 @@ public class PlayerDeathEventCommand extends EventCommand {
 	
 	//private
 	protected void execute() {
-		String name = ((PlayerDeathEvent) event).getEntity().getName();
+		String name = ((PlayerDeathEvent) event).getEntity().getName().toLowerCase();
 		bombRegistry.setRegister(name, null);
 		electrifyRegistry.setRegister(name, null);
 		burnRegistry.setRegister(name, null);
 		starveRegistry.setRegister(name, null);
 		hurtRegistry.setRegister(name, null);
+		delayKillRegistry.setRegister(name, null);
 	}
 }

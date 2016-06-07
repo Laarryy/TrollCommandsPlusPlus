@@ -1,6 +1,6 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 1.1.4
+version: 1.2.5
 commands:
   troll:
     description: Same as /help TrollCommandsPlusPlus [page]
@@ -16,7 +16,7 @@ commands:
     description: Spawns a charged creeper at the player's location.
     usage: /creep <player>
   swap:
-    description: Swaps two players' locations.
+    description: Swaps two players' locations, Freaky Friday style.
     usage: /swap <player> <player>
   entomb:
     description: A premature burial.
@@ -95,3 +95,6 @@ commands:
   nausea:
     description: Applies a nausea effect to the player.
     usage: /nausea <player>
+  control:
+    description: Allows you to take control of a player. Oooh, spoooky!
+    usage: /control <player>

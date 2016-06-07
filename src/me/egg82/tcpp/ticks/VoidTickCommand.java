@@ -29,11 +29,11 @@ public class VoidTickCommand extends Command {
 	protected void execute() {
 		String[] names = reg.registryNames();
 		for (String name : names) {
-			e((ImmutableMap<String, Object>) reg.getRegister(name));
+			e(name, (ImmutableMap<String, Object>) reg.getRegister(name));
 		}
 	}
 	@SuppressWarnings("unchecked")
-	private void e(ImmutableMap<String, Object> m) {
+	private void e(String name, ImmutableMap<String, Object> m) {
 		long timePassed = System.currentTimeMillis() - (long) m.get("time");
 		
 		if (timePassed < 10000) {
@@ -48,6 +48,8 @@ public class VoidTickCommand extends Command {
 				addBlocks(loc.clone().add(i - 1.0d, 0.0d, j - 1.0d), blocks.get(MathUtil.toXY(3, j, i)));
 			}
 		}
+		
+		reg.setRegister(name, null);
 	}
 	
 	private void addBlocks(Location l, Material[] blocks) {

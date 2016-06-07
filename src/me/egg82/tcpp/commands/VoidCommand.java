@@ -58,8 +58,8 @@ public class VoidCommand extends BasePluginCommand {
 		blocks.add(removeBlocks(loc.clone().add(1.0d, 0.0d, 0.0d)));
 		blocks.add(removeBlocks(loc.clone().add(1.0d, 0.0d, 1.0d)));
 		
-		reg.setRegister(player.getName(), ImmutableMap.of("time", System.currentTimeMillis(), "loc", loc, "blocks", blocks));
-		tickHandler.addDelayedTickCommand("void-" + player.getName(), VoidTickCommand.class, 202);
+		reg.setRegister(player.getName().toLowerCase(), ImmutableMap.of("time", System.currentTimeMillis(), "loc", loc, "blocks", blocks));
+		tickHandler.addDelayedTickCommand("void-" + player.getName().toLowerCase(), VoidTickCommand.class, 202);
 		
 		sender.sendMessage(player.getName() + " is now very confused as to why they are suddenly falling through the world.");
 	}

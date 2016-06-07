@@ -17,6 +17,10 @@ public class PluginServiceType {
 	public static final String SLOWMINE_REGISTRY = "slowmineRegistry";
 	public static final String NAUSEA_REGISTRY = "nauseaRegistry";
 	public static final String VOID_REGISTRY = "voidRegistry";
+	public static final String DELAY_KILL_REGISTRY = "delayKillRegistry";
+	public static final String CONTROL_REGISTRY = "controlRegistry";
+	public static final String CONTROLLER_REGISTRY = "controllerRegistry";
+	public static final String CONTROL_DATA_REGISTRY = "controlDataRegistry";
 	
 	//constructor
 	public PluginServiceType() {

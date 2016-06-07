@@ -35,21 +35,24 @@ public class BasePluginCommand extends PluginCommand {
 			return false;
 		}
 		
-		if (ArrayUtils.contains(argsLengths, args.length)) {
-			if (playerArgs != null) {
-				for (int i = 0; i < playerArgs.length; i++) {
-					if (!tryPlayer(Bukkit.getPlayer(args[i]))) {
-						return false;
-					}
-				}
-			}
-			return true;
-		} else {
+		if (!ArrayUtils.contains(argsLengths, args.length)) {
 			sender.sendMessage(MessageType.INCORRECT_USAGE);
 			sender.getServer().dispatchCommand(sender, "help " + command.getName());
 			dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
 			return false;
 		}
+		
+		if (playerArgs != null) {
+			for (int i = 0; i < playerArgs.length; i++) {
+				if (i < args.length) {
+					if (!tryPlayer(Bukkit.getPlayer(args[i]))) {
+						return false;
+					}
+				}
+			}
+		}
+		
+		return true;
 	}
 	private boolean tryPlayer(Player player) {
 		if (player == null) {

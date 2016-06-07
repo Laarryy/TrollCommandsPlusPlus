@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>TrollCommandsPlusPlus</artifactId>
-  <version>1.1.4</version>
+  <version>1.2.5</version>
   <name>TrollCommandsPlusPlus</name>
   <description>TCPP for Spigot/Bukkit</description>
   <build>
@@ -64,6 +64,10 @@
       <id>egg82-ninja</id>
       <url>https://www.egg82.ninja/repo/</url>
     </repository>
+    <repository>
+      <id>md_5-public</id>
+      <url>http://repo.md-5.net/content/groups/public/</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
@@ -104,6 +108,12 @@
       <groupId>net.gravitydevelopment.updater</groupId>
       <artifactId>updater</artifactId>
       <version>2.3</version>
+    </dependency>
+    <dependency>
+       <groupId>LibsDisguises</groupId>
+       <artifactId>LibsDisguises</artifactId>
+       <version>9.0.6-SNAPSHOT</version>
+       <scope>provided</scope>
     </dependency>
   </dependencies>
   <url>https://egg82.ninja</url>

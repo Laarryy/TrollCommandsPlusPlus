@@ -1,6 +1,10 @@
 package me.egg82.tcpp;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
+
+import javax.swing.Timer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,6 +20,7 @@ import me.egg82.tcpp.commands.BombCommand;
 import me.egg82.tcpp.commands.BurnCommand;
 import me.egg82.tcpp.commands.CannonCommand;
 import me.egg82.tcpp.commands.CometCommand;
+import me.egg82.tcpp.commands.ControlCommand;
 import me.egg82.tcpp.commands.CreepCommand;
 import me.egg82.tcpp.commands.DelayKillCommand;
 import me.egg82.tcpp.commands.ElectrifyCommand;
@@ -70,6 +75,7 @@ import ninja.egg82.utils.Util;
 
 public class TrollCommandsPlusPlus extends BasePlugin {
 	//vars
+	private Timer updateTimer = null;
 	
 	//constructor
 	public TrollCommandsPlusPlus() {
@@ -85,6 +91,8 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		for (String s : services) {
 			ServiceLocator.provideService(s, Registry.class);
 		}
+		
+		updateTimer = new Timer(24 * 60 * 60 * 1000, onUpdateTimer);
 	}
 	
 	public void onEnable() {
@@ -97,10 +105,9 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 			System.out.println(ex.getMessage());
 		}
 		
-		Updater updater = new Updater(this, 100359, getFile(), UpdateType.DEFAULT, false);
-		if (updater.getResult() == UpdateResult.UPDATE_AVAILABLE) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "--== " + ChatColor.GREEN + "TrollCommands++ UPDATE AVAILABLE" + ChatColor.YELLOW + " ==--");
-		}
+		checkUpdate();
+		updateTimer.setRepeats(true);
+		updateTimer.start();
 		
 		commandHandler.addCommand("banish", BanishCommand.class);
 		commandHandler.addCommand("bomb", BombCommand.class);
@@ -132,6 +139,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		commandHandler.addCommand("void", VoidCommand.class);
 		commandHandler.addCommand("slowmine", SlowMineCommand.class);
 		commandHandler.addCommand("nausea", NauseaCommand.class);
+		commandHandler.addCommand("control", ControlCommand.class);
 		
 		eventListener.addEvent(PlayerDeathEvent.class, PlayerDeathEventCommand.class);
 		eventListener.addEvent(PlayerQuitEvent.class, PlayerQuitEventCommand.class);
@@ -170,5 +178,15 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	}
 	
 	//private
-	
+	private ActionListener onUpdateTimer = new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			checkUpdate();
+		}
+	};
+	private void checkUpdate() {
+		Updater updater = new Updater(this, 100359, getFile(), UpdateType.DEFAULT, false);
+		if (updater.getResult() == UpdateResult.UPDATE_AVAILABLE) {
+			Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "--== " + ChatColor.GREEN + "TrollCommands++ UPDATE AVAILABLE" + ChatColor.YELLOW + " ==--");
+		}
+	}
 }
