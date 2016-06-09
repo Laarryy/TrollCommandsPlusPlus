@@ -4,6 +4,7 @@ public class PermissionsType {
 	//vars
 	public static final String IMMUNE = "tcpp.immune";
 	public static final String CHAT_WHILE_CONTROLLED = "tcpp.control.chat";
+	public static final String CHAT_WHILE_VEGETABLE = "tcpp.vegetable.chat";
 	public static final String FREECAM_WHILE_CONTROLLED = "tcpp.control.freecam";
 	
 	public static final String COMMAND_TROLL = "tcpp.command.troll";
@@ -37,6 +38,19 @@ public class PermissionsType {
 	public static final String COMMAND_SLOWMINE = "tcpp.command.slowmine";
 	public static final String COMMAND_NAUSEA = "tcpp.command.nausea";
 	public static final String COMMAND_CONTROL = "tcpp.command.control";
+	public static final String COMMAND_VEGETABLE = "tcpp.command.vegetable";
+	public static final String COMMAND_HOUND = "tcpp.command.hound";
+	public static final String COMMAND_INFINITY = "tcpp.command.infinity";
+	public static final String COMMAND_LAVABREAK = "tcpp.command.lavabreak";
+	public static final String COMMAND_GOLEM = "tcpp.command.golem";
+	public static final String COMMAND_PORTAL = "tcpp.command.portal";
+	public static final String COMMAND_FLIP = "tcpp.command.flip";
+	public static final String COMMAND_ALONE = "tcpp.command.alone";
+	public static final String COMMAND_ANNOY = "tcpp.command.annoy";
+	public static final String COMMAND_SPARTA = "tcpp.command.sparta";
+	public static final String COMMAND_NIGHT = "tcpp.command.night";
+	public static final String COMMAND_REWIND = "tcpp.command.rewind";
+	public static final String COMMAND_LAG = "tcpp.command.lag";
 	
 	//constructor
 	public PermissionsType() {

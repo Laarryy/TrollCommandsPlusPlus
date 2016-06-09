@@ -1,9 +1,10 @@
-package me.egg82.tcpp.events.individual.chatEvent;
+package me.egg82.tcpp.events.individual.playerMoveEvent;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 
+import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.enums.PluginServiceType;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
@@ -22,21 +23,17 @@ public class ControllerEventCommand extends EventCommand {
 	
 	//private
 	protected void execute() {
-		AsyncPlayerChatEvent e = (AsyncPlayerChatEvent) event;
+		PlayerMoveEvent e = (PlayerMoveEvent) event;
 		String name = e.getPlayer().getName().toLowerCase();
 		
 		if (controllerRegistry.contains(name)) {
 			Player p = (Player) controllerRegistry.getRegister(name);
-			sendMessageAs(e, e.getPlayer(), p);
+			moveTo(e, e.getPlayer(), p);
 		}
 	}
-	private void sendMessageAs(AsyncPlayerChatEvent e, Player originalPlayer, Player newPlayer) {
-		if (newPlayer == null) {
-			controllerRegistry.setRegister(originalPlayer.getName(), null);
-			return;
+	private void moveTo(PlayerMoveEvent e, Player originalPlayer, Player newPlayer) {
+		if (!permissionsManager.playerHasPermission(newPlayer, PermissionsType.FREECAM_WHILE_CONTROLLED)) {
+			newPlayer.teleport(originalPlayer);
 		}
-		
-		newPlayer.chat(e.getMessage());
-		e.setCancelled(true);
 	}
 }

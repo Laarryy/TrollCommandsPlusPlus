@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,20 +14,20 @@ import org.bukkit.entity.Player;
 import me.egg82.tcpp.commands.base.BasePluginCommand;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.enums.PluginServiceType;
-import me.egg82.tcpp.ticks.VoidTickCommand;
+import me.egg82.tcpp.ticks.PortalTickCommand;
 import ninja.egg82.events.patterns.command.CommandEvent;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.enums.CustomServiceType;
 import ninja.egg82.plugin.utils.interfaces.ITickHandler;
 import ninja.egg82.registry.interfaces.IRegistry;
 
-public class VoidCommand extends BasePluginCommand {
+public class PortalCommand extends BasePluginCommand {
 	//vars
-	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.VOID_REGISTRY);
+	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.PORTAL_REGISTRY);
 	ITickHandler tickHandler = (ITickHandler) ServiceLocator.getService(CustomServiceType.TICK_HANDLER);
 	
 	//constructor
-	public VoidCommand(CommandSender sender, Command command, String label, String[] args) {
+	public PortalCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
 	}
 	
@@ -36,7 +35,7 @@ public class VoidCommand extends BasePluginCommand {
 	
 	//private
 	protected void execute() {
-		if (isValid(false, PermissionsType.COMMAND_VOID, new int[]{1}, new int[]{0})) {
+		if (isValid(false, PermissionsType.COMMAND_PORTAL, new int[]{1}, new int[]{0})) {
 			if (args.length == 1) {
 				e(Bukkit.getPlayer(args[0]));
 			}
@@ -62,33 +61,26 @@ public class VoidCommand extends BasePluginCommand {
 		map.put("blocks", blocks);
 		reg.setRegister(player.getName().toLowerCase(), map);
 		//reg.setRegister(player.getName().toLowerCase(), ImmutableMap.of("time", System.currentTimeMillis(), "loc", loc, "blocks", blocks, "data", data));
-		tickHandler.addDelayedTickCommand("void-" + player.getName().toLowerCase(), VoidTickCommand.class, 202);
+		tickHandler.addDelayedTickCommand("portal-" + player.getName().toLowerCase(), PortalTickCommand.class, 102);
 		
-		sender.sendMessage(player.getName() + " is now very confused as to why they are suddenly falling through the world.");
+		sender.sendMessage(player.getName() + " is now falling to The(ir) End.");
 	}
 	
-	private BlockState[] getBlockState(Location l) {
-		BlockState[] d = new BlockState[l.getBlockY() + 1];
-		int i = 0;
-		
-		do {
-			d[i] = l.getBlock().getState();
-			i++;
-		} while (l.subtract(0.0d, 1.0d, 0.0d).getBlockY() >= 0);
-		
-		return d;
-	}
 	private Material[] removeBlocks(Location l) {
-		Material[] b = new Material[l.getBlockY() + 1];
+		Material[] b = new Material[6];
 		int i = 0;
 		Block block = null;
+		int endY = l.getBlockY() - 5;
 		
 		do {
 			block = l.getBlock();
 			b[i] = block.getType();
 			block.setType(Material.AIR);
 			i++;
-		} while (l.subtract(0.0d, 1.0d, 0.0d).getBlockY() >= 0);
+		} while (l.subtract(0.0d, 1.0d, 0.0d).getBlockY() >= endY);
+		
+		l.add(0.0d, 1.0d, 0.0d);
+		l.getBlock().setType(Material.ENDER_PORTAL);
 		
 		return b;
 	}

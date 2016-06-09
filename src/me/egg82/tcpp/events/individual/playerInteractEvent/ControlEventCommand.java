@@ -1,7 +1,8 @@
-package me.egg82.tcpp.events.individual.chatEvent;
+package me.egg82.tcpp.events.individual.playerInteractEvent;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.enums.PluginServiceType;
@@ -22,10 +23,11 @@ public class ControlEventCommand extends EventCommand {
 	
 	//private
 	protected void execute() {
-		AsyncPlayerChatEvent e = (AsyncPlayerChatEvent) event;
+		PlayerInteractEvent e = (PlayerInteractEvent) event;
+		Player player = e.getPlayer();
 		
-		if (controlRegistry.contains(e.getPlayer().getName().toLowerCase())) {
-			if (!permissionsManager.hasPermission(PermissionsType.CHAT_WHILE_CONTROLLED)) {
+		if (controlRegistry.contains(player.getName().toLowerCase())) {
+			if (!permissionsManager.playerHasPermission(player, PermissionsType.FREECAM_WHILE_CONTROLLED)) {
 				e.setCancelled(true);
 			}
 		}

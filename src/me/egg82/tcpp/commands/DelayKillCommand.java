@@ -1,11 +1,11 @@
 package me.egg82.tcpp.commands;
 
+import java.util.HashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import com.google.common.collect.ImmutableMap;
 
 import me.egg82.tcpp.commands.base.BasePluginCommand;
 import me.egg82.tcpp.enums.CommandErrorType;
@@ -59,7 +59,12 @@ public class DelayKillCommand extends BasePluginCommand {
 		} else {
 			if (delay > -1) {
 				sender.sendMessage(player.getName() + "'s death is inevitable.");
-				reg.setRegister(name.toLowerCase(), ImmutableMap.of("time", System.currentTimeMillis(), "delay", delay, "player", player));
+				
+				HashMap<String, Object> map = new HashMap<String, Object>();
+				map.put("time", System.currentTimeMillis());
+				map.put("delay", delay);
+				map.put("player", player);
+				reg.setRegister(name.toLowerCase(), map);
 				tickHandler.addDelayedTickCommand("delayKill-" + player.getName().toLowerCase(), DelayKillTickCommand.class, 20 * delay + 2);
 			}
 		}

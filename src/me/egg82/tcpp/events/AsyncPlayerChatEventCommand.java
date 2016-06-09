@@ -1,10 +1,13 @@
 package me.egg82.tcpp.events;
 
 import org.bukkit.event.Event;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import me.egg82.tcpp.events.individual.chatEvent.ControlEventCommand;
-import me.egg82.tcpp.events.individual.chatEvent.ControllerEventCommand;
-import me.egg82.tcpp.events.individual.chatEvent.GarbleEventCommand;
+import me.egg82.tcpp.events.individual.playerChatEvent.ControlEventCommand;
+import me.egg82.tcpp.events.individual.playerChatEvent.ControllerEventCommand;
+import me.egg82.tcpp.events.individual.playerChatEvent.GarbleEventCommand;
+import me.egg82.tcpp.events.individual.playerChatEvent.LagEventCommand;
+import me.egg82.tcpp.events.individual.playerChatEvent.VegetableEventCommand;
 import ninja.egg82.plugin.commands.EventCommand;
 
 public class AsyncPlayerChatEventCommand extends EventCommand {
@@ -12,6 +15,8 @@ public class AsyncPlayerChatEventCommand extends EventCommand {
 	private GarbleEventCommand garble = null;
 	private ControlEventCommand control = null;
 	private ControllerEventCommand controller = null;
+	private VegetableEventCommand vegetable = null;
+	private LagEventCommand lag = null;
 	
 	//constructor
 	public AsyncPlayerChatEventCommand(Event event) {
@@ -20,14 +25,24 @@ public class AsyncPlayerChatEventCommand extends EventCommand {
 		garble = new GarbleEventCommand(event);
 		control = new ControlEventCommand(event);
 		controller = new ControllerEventCommand(event);
+		vegetable = new VegetableEventCommand(event);
+		lag = new LagEventCommand(event);
 	}
 	
 	//public
 	
 	//private
 	protected void execute() {
+		AsyncPlayerChatEvent e = (AsyncPlayerChatEvent) event;
+		
+		if (e.isCancelled()) {
+			return;
+		}
+		
 		garble.start();
 		control.start();
 		controller.start();
+		vegetable.start();
+		lag.start();
 	}
 }

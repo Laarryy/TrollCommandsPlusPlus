@@ -1,4 +1,4 @@
-package me.egg82.tcpp.events.individual.moveEvent;
+package me.egg82.tcpp.events.individual.playerMoveEvent;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;

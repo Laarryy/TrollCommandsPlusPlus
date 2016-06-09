@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.BlockState;
 
 import me.egg82.tcpp.enums.PluginServiceType;
 import ninja.egg82.patterns.ServiceLocator;
@@ -13,12 +12,12 @@ import ninja.egg82.patterns.command.Command;
 import ninja.egg82.registry.interfaces.IRegistry;
 import ninja.egg82.utils.MathUtil;
 
-public class VoidTickCommand extends Command {
+public class PortalTickCommand extends Command {
 	//vars
-	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.VOID_REGISTRY);
+	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.PORTAL_REGISTRY);
 	
 	//constructor
-	public VoidTickCommand() {
+	public PortalTickCommand() {
 		super();
 	}
 	
@@ -36,7 +35,7 @@ public class VoidTickCommand extends Command {
 	private void e(String name, HashMap<String, Object> m) {
 		long timePassed = System.currentTimeMillis() - (long) m.get("time");
 		
-		if (timePassed < 10000) {
+		if (timePassed < 5000) {
 			return;
 		}
 		
@@ -54,20 +53,13 @@ public class VoidTickCommand extends Command {
 		reg.setRegister(name, null);
 	}
 	
-	private void setBlockState(Location l, BlockState[] data) {
-		int i = 0;
-		
-		do {
-			l.getBlock().getState().setData(data[i].getData());
-			i++;
-		} while (l.subtract(0.0d, 1.0d, 0.0d).getBlockY() > 0);
-	}
 	private void addBlocks(Location l, Material[] blocks) {
 		int i = 0;
+		int endY = l.getBlockY() - 5;
 		
 		do {
 			l.getBlock().setType(blocks[i]);
 			i++;
-		} while (l.subtract(0.0d, 1.0d, 0.0d).getBlockY() >= 0);
+		} while (l.subtract(0.0d, 1.0d, 0.0d).getBlockY() >= endY);
 	}
 }

@@ -1,5 +1,7 @@
 package me.egg82.tcpp.commands;
 
+import java.util.HashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -10,8 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import com.google.common.collect.ImmutableMap;
 
 import me.egg82.tcpp.commands.base.BasePluginCommand;
 import me.egg82.tcpp.enums.CommandErrorType;
@@ -73,6 +73,7 @@ public class ControlCommand extends BasePluginCommand {
 	private void e(String controllerName, Player controller, String name, Player player) {
 		PlayerInventory controllerInv = controller.getInventory();
 		PlayerInventory playerInv = null;
+		HashMap<String, Object> map = null;
 		
 		if (player != null) {
 			playerInv = player.getInventory();
@@ -89,7 +90,7 @@ public class ControlCommand extends BasePluginCommand {
 			if (playerInv != null) {
 				playerInv.setContents(controllerInv.getContents());
 			}
-			ImmutableMap<String, Object> map = (ImmutableMap<String, Object>) reg3.getRegister(name.toLowerCase());
+			map = (HashMap<String, Object>) reg3.getRegister(name.toLowerCase());
 			if (player != null) {
 				player.setGameMode((GameMode) map.get("mode"));
 				player.teleport(controller);
@@ -110,7 +111,12 @@ public class ControlCommand extends BasePluginCommand {
 			
 			reg.setRegister(name.toLowerCase(), player);
 			reg2.setRegister(controllerName.toLowerCase(), player);
-			reg3.setRegister(name.toLowerCase(), ImmutableMap.of("inventory", controllerInv.getContents(), "location", controller.getLocation(), "mode", player.getGameMode()));
+			
+			map = new HashMap<String, Object>();
+			map.put("inventory", controllerInv.getContents());
+			map.put("location", controller.getLocation());
+			map.put("mode", player.getGameMode());
+			reg3.setRegister(name.toLowerCase(), map);
 			
 			controllerInv.setContents(playerInv.getContents());
 			controller.teleport(player);

@@ -21,6 +21,17 @@ public class PluginServiceType {
 	public static final String CONTROL_REGISTRY = "controlRegistry";
 	public static final String CONTROLLER_REGISTRY = "controllerRegistry";
 	public static final String CONTROL_DATA_REGISTRY = "controlDataRegistry";
+	public static final String VEGETABLE_REGISTRY = "vegetableRegistry";
+	public static final String VEGETABLE_INTERN_REGISTRY = "vegetableInternRegistry";
+	public static final String INFINITY_REGISTRY = "infinityRegistry";
+	public static final String LAVA_BREAK_REGISTRY = "lavaBreakRegistry";
+	public static final String PORTAL_REGISTRY = "portalRegistry";
+	public static final String ALONE_REGISTRY = "aloneRegistry";
+	public static final String ANNOY_REGISTRY = "annoyRegistry";
+	public static final String SPARTA_REGISTRY = "spartaRegistry";
+	public static final String REWIND_REGISTRY = "rewindRegistry";
+	public static final String LAG_REGISTRY = "lagRegistry";
+	public static final String LAG_INTERN_REGISTRY = "lagInternRegistry";
 	
 	//constructor
 	public PluginServiceType() {

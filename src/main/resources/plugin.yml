@@ -1,6 +1,6 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 1.2.6
+version: 1.3.7
 commands:
   troll:
     description: Same as /help TrollCommandsPlusPlus [page]
@@ -98,3 +98,42 @@ commands:
   control:
     description: Allows you to take control of a player. Oooh, spoooky!
     usage: /control <player>
+  vegetable:
+    description: Turns the player into a potato. Potato simulator 20XX!
+    usage: /vegetable <player>
+  hound:
+    description: Releases angry hounds on the player. Who let the dogs out?
+    usage: /hound <player>
+  infinity:
+    description: Makes the player fall indefinitely.
+    usage: /infinity <player>
+  lavabreak:
+    description: The next block a player breaks turns to lava.
+    usage: /lavabreak <player>
+  golem:
+    description: Think War of the Worlds, golem style.
+    usage: /golem <player>
+  portal:
+    description: The quickest way to The End!
+    usage: /portal <player>
+  flip:
+    description: Flips the player around very quickly.
+    usage: /flip <player>
+  alone:
+    description: Hides all other players from the specified player.
+    usage: /alone <player>
+  annoy:
+    description: Hrmm. Hmm.. Hrrm.. Hrm. Hm. Hmm..
+    usage: /annoy <player>
+  sparta:
+    description: Our arrows will blot out the sun! .. Pincushion-y!
+    usage: /sparta <player>
+  night:
+    description: Sets the player's time to night permanently. Does not affect the server.
+    usage: /night <player>
+  rewind:
+    description: Makes the player's time run backwards at speed. Does not affect the server.
+    usage: /rewind <player>
+  lag:
+    description: Makes the player experience fake lag. Does not affect the server.
+    usage: /lag <player>

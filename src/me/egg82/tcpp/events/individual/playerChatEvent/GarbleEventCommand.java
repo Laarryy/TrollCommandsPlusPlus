@@ -1,4 +1,4 @@
-package me.egg82.tcpp.events.individual.chatEvent;
+package me.egg82.tcpp.events.individual.playerChatEvent;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.player.AsyncPlayerChatEvent;

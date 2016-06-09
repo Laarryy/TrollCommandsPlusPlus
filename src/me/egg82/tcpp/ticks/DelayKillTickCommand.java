@@ -1,10 +1,10 @@
 package me.egg82.tcpp.ticks;
 
+import java.util.HashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
-
-import com.google.common.collect.ImmutableMap;
 
 import me.egg82.tcpp.enums.PluginServiceType;
 import ninja.egg82.patterns.ServiceLocator;
@@ -27,11 +27,11 @@ public class DelayKillTickCommand extends Command {
 	protected void execute() {
 		String[] names = reg.registryNames();
 		for (String name : names) {
-			e(name, (ImmutableMap<String, Object>) reg.getRegister(name));
+			e(name, (HashMap<String, Object>) reg.getRegister(name));
 		}
 	}
 	@SuppressWarnings("deprecation")
-	private void e(String name, ImmutableMap<String, Object> m) {
+	private void e(String name, HashMap<String, Object> m) {
 		long timePassed = System.currentTimeMillis() - (long) m.get("time");
 		int delay = (int) m.get("delay");
 		
