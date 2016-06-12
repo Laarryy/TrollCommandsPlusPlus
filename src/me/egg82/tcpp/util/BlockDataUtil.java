@@ -43,6 +43,7 @@ public class BlockDataUtil {
 		} else if (type == Material.BREWING_STAND) {
 			BrewingStand b1 = (BrewingStand) block;
 			BrewingStand b2 = (BrewingStand) data;
+			b1.getInventory().setContents(b2.getInventory().getContents());
 			b1.setBrewingTime(b2.getBrewingTime());
 			b1.setFuelLevel(b2.getFuelLevel());
 		} else if (type == Material.CHEST) {
@@ -94,6 +95,29 @@ public class BlockDataUtil {
 			b1.setRotation(b2.getRotation());
 			b1.setSkullType(b2.getSkullType());
 		}
+	}
+	public static void clearBlockInventory(BlockState block) {
+		Material type = block.getType();
+		
+		if (type == Material.BEACON) {
+			((Beacon) block).getInventory().clear();
+		} else if (type == Material.BREWING_STAND) {
+			((BrewingStand) block).getInventory().clear();
+		} else if (type == Material.CHEST) {
+			((Chest) block).getBlockInventory().clear();
+		} else if (type == Material.FURNACE || type == Material.BURNING_FURNACE) {
+			((Furnace) block).getInventory().clear();
+		} else if (type == Material.DISPENSER) {
+			((Dispenser) block).getInventory().clear();
+		} else if (type == Material.DROPPER) {
+			((Dropper) block).getInventory().clear();
+		}/* else if (type == Material.FLOWER_POT) {
+			((FlowerPot) block).setContents(null);
+		}*/ else if (type == Material.HOPPER) {
+			((Hopper) block).getInventory().clear();
+		}/* else if (type == Material.JUKEBOX) {
+			((Jukebox) block).setPlaying(null);
+		}*/
 	}
 	
 	//private

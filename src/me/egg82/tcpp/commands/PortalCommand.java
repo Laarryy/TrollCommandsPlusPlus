@@ -16,6 +16,7 @@ import me.egg82.tcpp.commands.base.BasePluginCommand;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.enums.PluginServiceType;
 import me.egg82.tcpp.ticks.PortalTickCommand;
+import me.egg82.tcpp.util.BlockDataUtil;
 import ninja.egg82.events.patterns.command.CommandEvent;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.enums.CustomServiceType;
@@ -87,6 +88,7 @@ public class PortalCommand extends BasePluginCommand {
 		do {
 			block = l.getBlock();
 			b[i] = block.getType();
+			BlockDataUtil.clearBlockInventory(block.getState());
 			block.setType(Material.AIR);
 			i++;
 		} while (l.subtract(0.0d, 1.0d, 0.0d).getBlockY() >= endY);
