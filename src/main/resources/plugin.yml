@@ -1,6 +1,6 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 1.3.7
+version: 1.3.8
 commands:
   troll:
     description: Same as /help TrollCommandsPlusPlus [page]

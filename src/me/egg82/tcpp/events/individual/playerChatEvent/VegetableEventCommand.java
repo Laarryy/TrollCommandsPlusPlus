@@ -9,6 +9,7 @@ import me.egg82.tcpp.enums.PluginServiceType;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.registry.interfaces.IRegistry;
+import ninja.egg82.utils.MathUtil;
 
 public class VegetableEventCommand extends EventCommand {
 	//vars
@@ -28,8 +29,15 @@ public class VegetableEventCommand extends EventCommand {
 		
 		if (vegetableRegistry.contains(player.getName().toLowerCase())) {
 			if (!permissionsManager.playerHasPermission(player, PermissionsType.CHAT_WHILE_VEGETABLE)) {
-				e.setCancelled(true);
-				e.getPlayer().sendMessage("Vegetables can't talk, silly!");
+				String potato = "";
+				int num = MathUtil.fairRoundedRandom(1, 6);
+				
+				for (int i = 0; i < num; i++) {
+					potato += "potato ";
+				}
+				potato = potato.trim();
+				
+				e.setMessage(potato);
 			}
 		}
 	}

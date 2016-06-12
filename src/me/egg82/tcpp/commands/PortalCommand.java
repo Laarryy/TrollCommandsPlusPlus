@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -45,12 +46,12 @@ public class PortalCommand extends BasePluginCommand {
 	}
 	private void e(Player player) {
 		ArrayList<Material[]> blocks = new ArrayList<Material[]>();
-		//ArrayList<BlockState[]> data = new ArrayList<BlockState[]>();
+		ArrayList<BlockState[]> data = new ArrayList<BlockState[]>();
 		Location loc = player.getLocation();
 		
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
-				//data.add(getBlockState(loc.clone().add(i - 1.0d, 0.0d, j - 1.0d)));
+				data.add(getBlockState(loc.clone().add(i - 1.0d, 0.0d, j - 1.0d)));
 				blocks.add(removeBlocks(loc.clone().add(i - 1.0d, 0.0d, j - 1.0d)));
 			}
 		}
@@ -59,13 +60,24 @@ public class PortalCommand extends BasePluginCommand {
 		map.put("time", System.currentTimeMillis());
 		map.put("loc", loc);
 		map.put("blocks", blocks);
+		map.put("data",  data);
 		reg.setRegister(player.getName().toLowerCase(), map);
-		//reg.setRegister(player.getName().toLowerCase(), ImmutableMap.of("time", System.currentTimeMillis(), "loc", loc, "blocks", blocks, "data", data));
 		tickHandler.addDelayedTickCommand("portal-" + player.getName().toLowerCase(), PortalTickCommand.class, 102);
 		
 		sender.sendMessage(player.getName() + " is now falling to The(ir) End.");
 	}
 	
+	private BlockState[] getBlockState(Location l) {
+		BlockState[] d = new BlockState[l.getBlockY() + 1];
+		int i = 0;
+		
+		do {
+			d[i] = l.getBlock().getState();
+			i++;
+		} while (l.subtract(0.0d, 1.0d, 0.0d).getBlockY() >= 0);
+		
+		return d;
+	}
 	private Material[] removeBlocks(Location l) {
 		Material[] b = new Material[6];
 		int i = 0;

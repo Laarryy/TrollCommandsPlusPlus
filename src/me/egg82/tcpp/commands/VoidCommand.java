@@ -46,12 +46,12 @@ public class VoidCommand extends BasePluginCommand {
 	}
 	private void e(Player player) {
 		ArrayList<Material[]> blocks = new ArrayList<Material[]>();
-		//ArrayList<BlockState[]> data = new ArrayList<BlockState[]>();
+		ArrayList<BlockState[]> data = new ArrayList<BlockState[]>();
 		Location loc = player.getLocation();
 		
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
-				//data.add(getBlockState(loc.clone().add(i - 1.0d, 0.0d, j - 1.0d)));
+				data.add(getBlockState(loc.clone().add(i - 1.0d, 0.0d, j - 1.0d)));
 				blocks.add(removeBlocks(loc.clone().add(i - 1.0d, 0.0d, j - 1.0d)));
 			}
 		}
@@ -60,8 +60,8 @@ public class VoidCommand extends BasePluginCommand {
 		map.put("time", System.currentTimeMillis());
 		map.put("loc", loc);
 		map.put("blocks", blocks);
+		map.put("data", data);
 		reg.setRegister(player.getName().toLowerCase(), map);
-		//reg.setRegister(player.getName().toLowerCase(), ImmutableMap.of("time", System.currentTimeMillis(), "loc", loc, "blocks", blocks, "data", data));
 		tickHandler.addDelayedTickCommand("void-" + player.getName().toLowerCase(), VoidTickCommand.class, 202);
 		
 		sender.sendMessage(player.getName() + " is now very confused as to why they are suddenly falling through the world.");
