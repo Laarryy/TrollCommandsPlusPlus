@@ -1,6 +1,6 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 1.4.9
+version: 1.5.10
 commands:
   troll:
     description: Same as /help TrollCommandsPlusPlus [page]
@@ -153,3 +153,12 @@ commands:
   display:
     description: Put your friends and enemies on display!
     usage: /display <player>
+  nopickup:
+    description: Stops the player from picking up items.
+    usage: /nopickup <player>
+  brittle:
+    description: They're made of glass!
+    usage: /brittle <player>
+  squid:
+    description: .. Why is it raining squids?
+    usage: /squid <player>

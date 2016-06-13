@@ -3,6 +3,7 @@ package me.egg82.tcpp.events;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+import me.egg82.tcpp.events.individual.playerMoveEvent.BrittleEventCommand;
 import me.egg82.tcpp.events.individual.playerMoveEvent.ControllerEventCommand;
 import me.egg82.tcpp.events.individual.playerMoveEvent.FreezeEventCommand;
 import me.egg82.tcpp.events.individual.playerMoveEvent.InfinityEventCommand;
@@ -17,6 +18,7 @@ public class PlayerMoveEventCommand extends EventCommand {
 	private VegetableEventCommand vegetable = null;
 	private InfinityEventCommand infinity = null;
 	private LagEventCommand lag = null;
+	private BrittleEventCommand brittle = null;
 	
 	//constructor
 	public PlayerMoveEventCommand(Event event) {
@@ -27,6 +29,7 @@ public class PlayerMoveEventCommand extends EventCommand {
 		vegetable = new VegetableEventCommand(event);
 		infinity = new InfinityEventCommand(event);
 		lag = new LagEventCommand(event);
+		brittle = new BrittleEventCommand(event);
 	}
 	
 	//public
@@ -44,5 +47,6 @@ public class PlayerMoveEventCommand extends EventCommand {
 		vegetable.start();
 		infinity.start();
 		lag.start();
+		brittle.start();
 	}
 }

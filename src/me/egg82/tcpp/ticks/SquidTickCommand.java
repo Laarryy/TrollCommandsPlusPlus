@@ -1,9 +1,8 @@
 package me.egg82.tcpp.ticks;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
+import org.bukkit.entity.Squid;
 
 import me.egg82.tcpp.enums.PluginServiceType;
 import ninja.egg82.patterns.ServiceLocator;
@@ -11,12 +10,12 @@ import ninja.egg82.patterns.command.Command;
 import ninja.egg82.registry.interfaces.IRegistry;
 import ninja.egg82.utils.MathUtil;
 
-public class BombTickCommand extends Command {
+public class SquidTickCommand extends Command {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.BOMB_REGISTRY);
+	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.SQUID_REGISTRY);
 	
 	//constructor
-	public BombTickCommand() {
+	public SquidTickCommand() {
 		super();
 	}
 	
@@ -36,13 +35,8 @@ public class BombTickCommand extends Command {
 		
 		int rand = (int) (MathUtil.random(5.0d, 10.0d));
 		Location pl = player.getLocation().clone();
-		Vector vec = null;
-		Location fl = null;
 		for (int i = 0; i < rand; i++) {
-			Fireball fireball = (Fireball) player.getWorld().spawn(pl.clone().add(MathUtil.random(-10.0d, 10.0d), MathUtil.random(5.0d, 10.0d), MathUtil.random(-10.0d, 10.0d)), Fireball.class);
-			fl = fireball.getLocation();
-			vec = new Vector(pl.getX() - fl.getX(), pl.getY() - fl.getY(), pl.getZ() - fl.getZ());
-			fireball.setVelocity(vec.normalize().multiply(2.0d));
+			player.getWorld().spawn(pl.clone().add(MathUtil.random(-10.0d, 10.0d), MathUtil.random(5.0d, 10.0d), MathUtil.random(-10.0d, 10.0d)), Squid.class);
 		}
 	}
 }

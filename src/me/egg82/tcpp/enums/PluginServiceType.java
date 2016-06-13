@@ -36,6 +36,9 @@ public class PluginServiceType {
 	public static final String POPUP_REGISTRY = "popupRegistry";
 	public static final String DISPLAY_REGISTRY = "displayRegistry";
 	public static final String DISPLAY_INTERN_REGISTRY = "displayInternRegistry";
+	public static final String NOPICKUP_REGISTRY = "nopickupRegistry";
+	public static final String BRITTLE_REGISTRY = "brittleRegistry";
+	public static final String SQUID_REGISTRY = "squidRegistry";
 	
 	//constructor
 	public PluginServiceType() {

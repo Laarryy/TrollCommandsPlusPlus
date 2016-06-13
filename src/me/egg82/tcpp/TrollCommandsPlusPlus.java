@@ -2,6 +2,7 @@ package me.egg82.tcpp;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.swing.Timer;
@@ -10,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -21,60 +23,12 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.mcstats.Metrics;
 
-import me.egg82.tcpp.commands.AloneCommand;
-import me.egg82.tcpp.commands.AnnoyCommand;
-import me.egg82.tcpp.commands.AnvilCommand;
-import me.egg82.tcpp.commands.BanishCommand;
-import me.egg82.tcpp.commands.BombCommand;
-import me.egg82.tcpp.commands.BurnCommand;
-import me.egg82.tcpp.commands.CannonCommand;
-import me.egg82.tcpp.commands.CometCommand;
-import me.egg82.tcpp.commands.ControlCommand;
-import me.egg82.tcpp.commands.CreepCommand;
-import me.egg82.tcpp.commands.DelayKillCommand;
-import me.egg82.tcpp.commands.DisplayCommand;
-import me.egg82.tcpp.commands.ElectrifyCommand;
-import me.egg82.tcpp.commands.EntombCommand;
-import me.egg82.tcpp.commands.ExplodeBreakCommand;
-import me.egg82.tcpp.commands.FlipCommand;
-import me.egg82.tcpp.commands.FreezeCommand;
-import me.egg82.tcpp.commands.GarbleCommand;
-import me.egg82.tcpp.commands.GolemCommand;
-import me.egg82.tcpp.commands.HauntCommand;
-import me.egg82.tcpp.commands.HoundCommand;
-import me.egg82.tcpp.commands.HurtCommand;
-import me.egg82.tcpp.commands.InfinityCommand;
-import me.egg82.tcpp.commands.LagCommand;
-import me.egg82.tcpp.commands.LavaBreakCommand;
-import me.egg82.tcpp.commands.LiftCommand;
-import me.egg82.tcpp.commands.LureCommand;
-import me.egg82.tcpp.commands.NauseaCommand;
-import me.egg82.tcpp.commands.NightCommand;
-import me.egg82.tcpp.commands.PopupCommand;
-import me.egg82.tcpp.commands.PortalCommand;
-import me.egg82.tcpp.commands.PotatoCommand;
-import me.egg82.tcpp.commands.RewindCommand;
-import me.egg82.tcpp.commands.SlapCommand;
-import me.egg82.tcpp.commands.SlenderCommand;
-import me.egg82.tcpp.commands.SlowMineCommand;
-import me.egg82.tcpp.commands.SlowpokeCommand;
-import me.egg82.tcpp.commands.SpamCommand;
-import me.egg82.tcpp.commands.SpartaCommand;
-import me.egg82.tcpp.commands.SpinCommand;
-import me.egg82.tcpp.commands.StampedeCommand;
-import me.egg82.tcpp.commands.StarveCommand;
-import me.egg82.tcpp.commands.SwapCommand;
-import me.egg82.tcpp.commands.TrollCommand;
-import me.egg82.tcpp.commands.VaporizeCommand;
-import me.egg82.tcpp.commands.VegetableCommand;
-import me.egg82.tcpp.commands.VoidCommand;
-import me.egg82.tcpp.commands.WeaklingCommand;
-import me.egg82.tcpp.commands.ZombifyCommand;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.enums.PluginServiceType;
 import me.egg82.tcpp.events.AsyncPlayerChatEventCommand;
 import me.egg82.tcpp.events.BlockBreakEventCommand;
 import me.egg82.tcpp.events.BlockPlaceEventCommand;
+import me.egg82.tcpp.events.EntityDamageEventCommand;
 import me.egg82.tcpp.events.ItemDespawnEventCommand;
 import me.egg82.tcpp.events.PlayerDeathEventCommand;
 import me.egg82.tcpp.events.PlayerInteractEventCommand;
@@ -98,6 +52,7 @@ import me.egg82.tcpp.ticks.SlowpokeTickCommand;
 import me.egg82.tcpp.ticks.SpamTickCommand;
 import me.egg82.tcpp.ticks.SpartaTickCommand;
 import me.egg82.tcpp.ticks.SpinTickCommand;
+import me.egg82.tcpp.ticks.SquidTickCommand;
 import me.egg82.tcpp.ticks.StarveTickCommand;
 import me.egg82.tcpp.ticks.VegetableTickCommand;
 import me.egg82.tcpp.ticks.WeaklingTickCommand;
@@ -107,12 +62,15 @@ import net.gravitydevelopment.updater.Updater.UpdateResult;
 import net.gravitydevelopment.updater.Updater.UpdateType;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.BasePlugin;
+import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.registry.Registry;
 import ninja.egg82.utils.Util;
 
 public class TrollCommandsPlusPlus extends BasePlugin {
 	//vars
 	private Timer updateTimer = null;
+	
+	private String commandsPackage = "me.egg82.tcpp.commands";
 	
 	//constructor
 	public TrollCommandsPlusPlus() {
@@ -148,55 +106,18 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		updateTimer.setRepeats(true);
 		updateTimer.start();
 		
-		commandHandler.addCommand("banish", BanishCommand.class);
-		commandHandler.addCommand("bomb", BombCommand.class);
-		commandHandler.addCommand("cannon", CannonCommand.class);
-		commandHandler.addCommand("comet", CometCommand.class);
-		commandHandler.addCommand("creep", CreepCommand.class);
-		commandHandler.addCommand("electrify", ElectrifyCommand.class);
-		commandHandler.addCommand("entomb", EntombCommand.class);
-		commandHandler.addCommand("freeze", FreezeCommand.class);
-		commandHandler.addCommand("garble", GarbleCommand.class);
-		commandHandler.addCommand("haunt", HauntCommand.class);
-		commandHandler.addCommand("lift", LiftCommand.class);
-		commandHandler.addCommand("lure", LureCommand.class);
-		commandHandler.addCommand("slap", SlapCommand.class);
-		commandHandler.addCommand("slowpoke", SlowpokeCommand.class);
-		commandHandler.addCommand("spin", SpinCommand.class);
-		commandHandler.addCommand("stampede", StampedeCommand.class);
-		commandHandler.addCommand("swap", SwapCommand.class);
-		commandHandler.addCommand("troll", TrollCommand.class);
-		commandHandler.addCommand("vaporize", VaporizeCommand.class);
-		commandHandler.addCommand("weakling", WeaklingCommand.class);
-		commandHandler.addCommand("zombify", ZombifyCommand.class);
-		commandHandler.addCommand("burn", BurnCommand.class);
-		commandHandler.addCommand("spam", SpamCommand.class);
-		commandHandler.addCommand("delaykill", DelayKillCommand.class);
-		commandHandler.addCommand("potato", PotatoCommand.class);
-		commandHandler.addCommand("starve", StarveCommand.class);
-		commandHandler.addCommand("hurt", HurtCommand.class);
-		commandHandler.addCommand("void", VoidCommand.class);
-		commandHandler.addCommand("slowmine", SlowMineCommand.class);
-		commandHandler.addCommand("nausea", NauseaCommand.class);
-		commandHandler.addCommand("control", ControlCommand.class);
-		commandHandler.addCommand("vegetable", VegetableCommand.class);
-		commandHandler.addCommand("hound", HoundCommand.class);
-		commandHandler.addCommand("infinity", InfinityCommand.class);
-		commandHandler.addCommand("lavabreak", LavaBreakCommand.class);
-		commandHandler.addCommand("golem", GolemCommand.class);
-		commandHandler.addCommand("portal", PortalCommand.class);
-		commandHandler.addCommand("flip", FlipCommand.class);
-		commandHandler.addCommand("alone", AloneCommand.class);
-		commandHandler.addCommand("annoy", AnnoyCommand.class);
-		commandHandler.addCommand("sparta", SpartaCommand.class);
-		commandHandler.addCommand("night", NightCommand.class);
-		commandHandler.addCommand("rewind", RewindCommand.class);
-		commandHandler.addCommand("lag", LagCommand.class);
-		commandHandler.addCommand("explodebreak", ExplodeBreakCommand.class);
-		commandHandler.addCommand("slender", SlenderCommand.class);
-		commandHandler.addCommand("anvil", AnvilCommand.class);
-		commandHandler.addCommand("popup", PopupCommand.class);
-		commandHandler.addCommand("display", DisplayCommand.class);
+		ArrayList<Class<? extends PluginCommand>> enums = Util.getClasses(PluginCommand.class, commandsPackage);
+		for (Class<? extends PluginCommand> c : enums) {
+			String name = c.getSimpleName();
+			String pkg = c.getName();
+			pkg = pkg.substring(0, pkg.lastIndexOf('.'));
+			
+			if (!pkg.equalsIgnoreCase(commandsPackage)) {
+				continue;
+			}
+			
+			commandHandler.addCommand(name.substring(0, name.length() - 7).toLowerCase(), c);
+		}
 		
 		eventListener.addEvent(PlayerDeathEvent.class, PlayerDeathEventCommand.class);
 		eventListener.addEvent(PlayerQuitEvent.class, PlayerQuitEventCommand.class);
@@ -209,9 +130,10 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		eventListener.addEvent(PlayerInteractEvent.class, PlayerInteractEventCommand.class);
 		eventListener.addEvent(BlockPlaceEvent.class, BlockPlaceEventCommand.class);
 		eventListener.addEvent(PlayerLoginEvent.class, PlayerLoginEventCommand.class);
+		eventListener.addEvent(EntityDamageEvent.class, EntityDamageEventCommand.class);
 		
-		Object[] enums = Util.getStaticFields(PermissionsType.class);
-		String[] permissions = Arrays.copyOf(enums, enums.length, String[].class);
+		Object[] enums2 = Util.getStaticFields(PermissionsType.class);
+		String[] permissions = Arrays.copyOf(enums2, enums2.length, String[].class);
 		for (String p : permissions) {
 			permissionsManager.addPermission(p);
 		}
@@ -234,6 +156,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		tickHandler.addTickCommand("sparta", SpartaTickCommand.class, 10);
 		tickHandler.addTickCommand("rewind", RewindTickCommand.class, 5);
 		tickHandler.addTickCommand("popup", PopupTickCommand.class, 20);
+		tickHandler.addTickCommand("squid", SquidTickCommand.class, 10);
 		
 		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "--== " + ChatColor.LIGHT_PURPLE + "TrollCommands++ Enabled" + ChatColor.GREEN + " ==--");
 	}

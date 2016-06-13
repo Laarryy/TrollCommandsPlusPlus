@@ -49,9 +49,9 @@ public class DelayKillTickCommand extends Command {
 			return;
 		}
 		
-		EntityDamageEvent damageEvent = new EntityDamageEvent(player, EntityDamageEvent.DamageCause.SUICIDE, 1000.0d);
+		player.setHealth(0.0d);
+		EntityDamageEvent damageEvent = new EntityDamageEvent(player, EntityDamageEvent.DamageCause.SUICIDE, Double.MAX_VALUE);
 		Bukkit.getPluginManager().callEvent(damageEvent);
 		damageEvent.getEntity().setLastDamageCause(damageEvent);
-		player.setHealth(0.0d);
 	}
 }

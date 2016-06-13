@@ -36,10 +36,10 @@ public class ZombifyCommand extends BasePluginCommand {
 	}
 	private void e(Player player) {
 		int rand = MathUtil.fairRoundedRandom(10, 15);
-		Location loc = player.getLocation();
+		Location loc = player.getLocation().clone();
 		for (int i = 0; i < rand; i++) {
 			Location r = BlockUtil.getTopAirBlock(new Location(loc.getWorld(), MathUtil.random(loc.getX() - 10.0d, loc.getX() + 10.0d), loc.getY(), MathUtil.random(loc.getZ() - 10.0d, loc.getZ() + 10.0d)));
-			Vector velocity = r.clone().subtract(player.getLocation()).toVector().normalize().multiply(1.0d);
+			Vector velocity = r.clone().subtract(loc.clone()).toVector().normalize().multiply(1.0d);
 			Zombie z = (Zombie) player.getWorld().spawn(r, Zombie.class);
 			z.setVelocity(velocity);
 			z.setTarget(player);

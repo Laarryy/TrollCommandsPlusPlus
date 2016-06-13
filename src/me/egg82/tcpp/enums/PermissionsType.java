@@ -56,6 +56,9 @@ public class PermissionsType {
 	public static final String COMMAND_ANVIL = "tcpp.command.anvil";
 	public static final String COMMAND_POPUP = "tcpp.command.popup";
 	public static final String COMMAND_DISPLAY = "tcpp.command.display";
+	public static final String COMMAND_NOPICKUP = "tcpp.command.nopickup";
+	public static final String COMMAND_BRITTLE = "tcpp.command.brittle";
+	public static final String COMMAND_SQUID = "tcpp.command.squid";
 	
 	//constructor
 	public PermissionsType() {
