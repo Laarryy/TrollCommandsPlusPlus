@@ -1,35 +1,37 @@
 package me.egg82.tcpp.util;
 
-import java.util.HashMap;
-
-import org.bukkit.GameMode;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.enums.PluginServiceType;
-import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.registry.interfaces.IRegistry;
+import me.egg82.tcpp.commands.AloneCommand;
+import me.egg82.tcpp.commands.AnnoyCommand;
+import me.egg82.tcpp.commands.BombCommand;
+import me.egg82.tcpp.commands.BurnCommand;
+import me.egg82.tcpp.commands.ControlCommand;
+import me.egg82.tcpp.commands.DelayKillCommand;
+import me.egg82.tcpp.commands.DisplayCommand;
+import me.egg82.tcpp.commands.ElectrifyCommand;
+import me.egg82.tcpp.commands.ExplodeBreakCommand;
+import me.egg82.tcpp.commands.FreezeCommand;
+import me.egg82.tcpp.commands.GarbleCommand;
+import me.egg82.tcpp.commands.HauntCommand;
+import me.egg82.tcpp.commands.HurtCommand;
+import me.egg82.tcpp.commands.InfinityCommand;
+import me.egg82.tcpp.commands.LagCommand;
+import me.egg82.tcpp.commands.LavaBreakCommand;
+import me.egg82.tcpp.commands.NauseaCommand;
+import me.egg82.tcpp.commands.PopupCommand;
+import me.egg82.tcpp.commands.RewindCommand;
+import me.egg82.tcpp.commands.SlowMineCommand;
+import me.egg82.tcpp.commands.SlowpokeCommand;
+import me.egg82.tcpp.commands.SpamCommand;
+import me.egg82.tcpp.commands.SpartaCommand;
+import me.egg82.tcpp.commands.SpinCommand;
+import me.egg82.tcpp.commands.StarveCommand;
+import me.egg82.tcpp.commands.VegetableCommand;
+import me.egg82.tcpp.commands.WeaklingCommand;
 
 public class RegistryUtil {
 	//vars
-	private static IRegistry bombRegistry = null;
-	private static IRegistry electrifyRegistry = null;
-	private static IRegistry burnRegistry = null;
-	private static IRegistry starveRegistry = null;
-	private static IRegistry hurtRegistry = null;
-	private static IRegistry delayKillRegistry = null;
-	private static IRegistry controlRegistry = null;
-	private static IRegistry controllerRegistry = null;
-	private static IRegistry vegetableRegistry = null;
-	private static IRegistry vegetableInternRegistry = null;
-	private static IRegistry infinityRegistry = null;
-	private static IRegistry lavaBreakRegistry = null;
-	private static IRegistry aloneRegistry = null;
-	private static IRegistry annoyRegistry = null;
-	private static IRegistry spartaRegistry = null;
-	private static IRegistry rewindRegistry = null;
-	private static IRegistry lagRegistry = null;
-	private static IRegistry explodeBreakRegistry = null;
 	
 	//constructor
 	public RegistryUtil() {
@@ -38,73 +40,64 @@ public class RegistryUtil {
 	
 	//public
 	public static void intialize() {
-		bombRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.BOMB_REGISTRY);
-		electrifyRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.ELECTRIFY_REGISTRY);
-		burnRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.BURN_REGISTRY);
-		starveRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.STARVE_REGISTRY);
-		hurtRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.HURT_REGISTRY);
-		delayKillRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.DELAY_KILL_REGISTRY);
-		controlRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.CONTROL_REGISTRY);
-		controllerRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.CONTROLLER_REGISTRY);
-		vegetableRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.VEGETABLE_REGISTRY);
-		vegetableInternRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.VEGETABLE_INTERN_REGISTRY);
-		infinityRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.INFINITY_REGISTRY);
-		lavaBreakRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.LAVA_BREAK_REGISTRY);
-		aloneRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.ALONE_REGISTRY);
-		annoyRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.ANNOY_REGISTRY);
-		spartaRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SPARTA_REGISTRY);
-		rewindRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.REWIND_REGISTRY);
-		lagRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.LAG_REGISTRY);
-		explodeBreakRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.EXPLODE_BREAK_REGISTRY);
+		
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static void onQuit(String name, Player player) {
-		bombRegistry.setRegister(name, null);
-		electrifyRegistry.setRegister(name, null);
-		burnRegistry.setRegister(name, null);
-		starveRegistry.setRegister(name, null);
-		hurtRegistry.setRegister(name, null);
-		controlRegistry.setRegister(name, null);
-		delayKillRegistry.setRegister(name, null);
-		vegetableRegistry.setRegister(name, null);
-		infinityRegistry.setRegister(name, null);
-		lavaBreakRegistry.setRegister(name, null);
-		aloneRegistry.setRegister(name, null);
-		annoyRegistry.setRegister(name, null);
-		spartaRegistry.setRegister(name, null);
-		rewindRegistry.setRegister(name, null);
-		lagRegistry.setRegister(name, null);
-		explodeBreakRegistry.setRegister(name, null);
+		//kills player
+		new DelayKillCommand(null, null, null, null).onQuit(name, player);
 		
-		if (controllerRegistry.contains(name)) {
-			Player p = (Player) controllerRegistry.getRegister(name);
-			if (p != null) {
-				p.kickPlayer("You were being controlled, and your controller was kicked.");
-			}
-			controllerRegistry.setRegister(name, null);
-		}
-		
-		if (vegetableInternRegistry.contains(name)) {
-			HashMap<String, Object> map = (HashMap<String, Object>) vegetableInternRegistry.getRegister(name);
-			Item potato = (Item) map.get("item");
-			
-			player.setGameMode((GameMode) map.get("mode"));
-			
-			vegetableInternRegistry.setRegister(name, null);
-			
-			potato.remove();
-		}
+		//multi-reg
+		new ControlCommand(null, null, null, null).onQuit(name, player);
+		new VegetableCommand(null, null, null, null).onQuit(name, player);
+		new DisplayCommand(null, null, null, null).onQuit(name, player);
 	}
+	
 	public static void onDeath(String name, Player player) {
-		bombRegistry.setRegister(name, null);
-		electrifyRegistry.setRegister(name, null);
-		burnRegistry.setRegister(name, null);
-		starveRegistry.setRegister(name, null);
-		hurtRegistry.setRegister(name, null);
-		delayKillRegistry.setRegister(name, null);
-		infinityRegistry.setRegister(name, null);
-		spartaRegistry.setRegister(name, null);
+		//kills player
+		new BombCommand(null, null, null, null).onDeath(name, player);
+		new ElectrifyCommand(null, null, null, null).onDeath(name, player);
+		new BurnCommand(null, null, null, null).onDeath(name, player);
+		new StarveCommand(null, null, null, null).onDeath(name, player);
+		new HurtCommand(null, null, null, null).onDeath(name, player);
+		new DelayKillCommand(null, null, null, null).onDeath(name, player);
+		new InfinityCommand(null, null, null, null).onDeath(name, player);
+		new SpartaCommand(null, null, null, null).onDeath(name, player);
+		
+		//multi-reg
+		new VegetableCommand(null, null, null, null).onDeath(name, player);
+		new DisplayCommand(null, null, null, null).onDeath(name, player);
+	}
+	
+	
+	public static void onLogin(String name, Player player) {
+		//kills player
+		new BombCommand(null, null, null, null).onLogin(name, player);
+		new ElectrifyCommand(null, null, null, null).onLogin(name, player);
+		new BurnCommand(null, null, null, null).onLogin(name, player);
+		new StarveCommand(null, null, null, null).onLogin(name, player);
+		new HurtCommand(null, null, null, null).onLogin(name, player);
+		new SpartaCommand(null, null, null, null).onLogin(name, player);
+		
+		//tick
+		new HauntCommand(null, null, null, null).onLogin(name, player);
+		new SlowpokeCommand(null, null, null, null).onLogin(name, player);
+		new SpinCommand(null, null, null, null).onLogin(name, player);
+		new WeaklingCommand(null, null, null, null).onLogin(name, player);
+		new SpamCommand(null, null, null, null).onLogin(name, player);
+		new SlowMineCommand(null, null, null, null).onLogin(name, player);
+		new NauseaCommand(null, null, null, null).onLogin(name, player);
+		new AloneCommand(null, null, null, null).onLogin(name, player);
+		new AnnoyCommand(null, null, null, null).onLogin(name, player);
+		new RewindCommand(null, null, null, null).onLogin(name, player);
+		new PopupCommand(null, null, null, null).onLogin(name, player);
+		
+		//event
+		new ExplodeBreakCommand(null, null, null, null).onLogin(name, player);
+		new LagCommand(null, null, null, null).onLogin(name, player);
+		new LavaBreakCommand(null, null, null, null).onLogin(name, player);
+		new GarbleCommand(null, null, null, null).onLogin(name, player);
+		new FreezeCommand(null, null, null, null).onLogin(name, player);
 	}
 	
 	//private

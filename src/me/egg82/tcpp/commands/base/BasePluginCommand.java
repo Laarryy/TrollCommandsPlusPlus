@@ -21,6 +21,15 @@ public class BasePluginCommand extends PluginCommand {
 	}
 	
 	//public
+	public void onQuit(String name, Player player) {
+		
+	}
+	public void onDeath(String name, Player player) {
+		
+	}
+	public void onLogin(String name, Player player) {
+		
+	}
 	
 	//private
 	protected boolean isValid(boolean needsPlayer, String permissions, int[] argsLengths, int[] playerArgs) {

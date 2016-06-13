@@ -45,7 +45,7 @@ public class VoidTickCommand extends Command {
 		long timePassed = System.currentTimeMillis() - (long) m.get("time");
 		
 		if (timePassed < 10000) {
-			tickHandler.addDelayedTickCommand(name, VoidTickCommand.class, 10);
+			tickHandler.addDelayedTickCommand(name, VoidTickCommand.class, 20);
 			return;
 		}
 		

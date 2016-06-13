@@ -54,6 +54,8 @@ public class PermissionsType {
 	public static final String COMMAND_EXPLODEBREAK = "tcpp.command.explodebreak";
 	public static final String COMMAND_SLENDER = "tcpp.command.slender";
 	public static final String COMMAND_ANVIL = "tcpp.command.anvil";
+	public static final String COMMAND_POPUP = "tcpp.command.popup";
+	public static final String COMMAND_DISPLAY = "tcpp.command.display";
 	
 	//constructor
 	public PermissionsType() {

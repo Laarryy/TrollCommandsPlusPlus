@@ -30,6 +30,12 @@ public class DelayKillCommand extends BasePluginCommand {
 	}
 	
 	//public
+	public void onQuit(String name, Player player) {
+		reg.setRegister(name, null);
+	}
+	public void onDeath(String name, Player player) {
+		onQuit(name, player);
+	}
 	
 	//private
 	protected void execute() {

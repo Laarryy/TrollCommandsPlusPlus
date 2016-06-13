@@ -36,6 +36,20 @@ public class ControlCommand extends BasePluginCommand {
 	}
 	
 	//public
+	public void onQuit(String name, Player player) {
+		reg.setRegister(name, null);
+		
+		if (reg2.contains(name)) {
+			Player p = (Player) reg2.getRegister(name);
+			
+			if (p != null) {
+				p.kickPlayer("You were being controlled, and your controller quit/was kicked.");
+			}
+			
+			reg2.setRegister(name, null);
+			reg3.setRegister(name, null);
+		}
+	}
 	
 	//private
 	protected void execute() {
@@ -72,8 +86,8 @@ public class ControlCommand extends BasePluginCommand {
 	@SuppressWarnings("unchecked")
 	private void e(String controllerName, Player controller, String name, Player player) {
 		PlayerInventory controllerInv = controller.getInventory();
-		PlayerInventory playerInv = null;
 		HashMap<String, Object> map = null;
+		PlayerInventory playerInv = null;
 		
 		if (player != null) {
 			playerInv = player.getInventory();

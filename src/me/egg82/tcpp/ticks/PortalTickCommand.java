@@ -45,7 +45,7 @@ public class PortalTickCommand extends Command {
 		long timePassed = System.currentTimeMillis() - (long) m.get("time");
 		
 		if (timePassed < 5000) {
-			tickHandler.addDelayedTickCommand(name, PortalTickCommand.class, 10);
+			tickHandler.addDelayedTickCommand(name, PortalTickCommand.class, 20);
 			return;
 		}
 		

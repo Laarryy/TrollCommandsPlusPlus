@@ -15,6 +15,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -31,6 +32,7 @@ import me.egg82.tcpp.commands.CometCommand;
 import me.egg82.tcpp.commands.ControlCommand;
 import me.egg82.tcpp.commands.CreepCommand;
 import me.egg82.tcpp.commands.DelayKillCommand;
+import me.egg82.tcpp.commands.DisplayCommand;
 import me.egg82.tcpp.commands.ElectrifyCommand;
 import me.egg82.tcpp.commands.EntombCommand;
 import me.egg82.tcpp.commands.ExplodeBreakCommand;
@@ -48,6 +50,7 @@ import me.egg82.tcpp.commands.LiftCommand;
 import me.egg82.tcpp.commands.LureCommand;
 import me.egg82.tcpp.commands.NauseaCommand;
 import me.egg82.tcpp.commands.NightCommand;
+import me.egg82.tcpp.commands.PopupCommand;
 import me.egg82.tcpp.commands.PortalCommand;
 import me.egg82.tcpp.commands.PotatoCommand;
 import me.egg82.tcpp.commands.RewindCommand;
@@ -76,6 +79,7 @@ import me.egg82.tcpp.events.ItemDespawnEventCommand;
 import me.egg82.tcpp.events.PlayerDeathEventCommand;
 import me.egg82.tcpp.events.PlayerInteractEventCommand;
 import me.egg82.tcpp.events.PlayerKickEventCommand;
+import me.egg82.tcpp.events.PlayerLoginEventCommand;
 import me.egg82.tcpp.events.PlayerMoveEventCommand;
 import me.egg82.tcpp.events.PlayerPickupItemEventCommand;
 import me.egg82.tcpp.events.PlayerQuitEventCommand;
@@ -87,6 +91,7 @@ import me.egg82.tcpp.ticks.ElectrifyTickCommand;
 import me.egg82.tcpp.ticks.HauntTickCommand;
 import me.egg82.tcpp.ticks.HurtTickCommand;
 import me.egg82.tcpp.ticks.NauseaTickCommand;
+import me.egg82.tcpp.ticks.PopupTickCommand;
 import me.egg82.tcpp.ticks.RewindTickCommand;
 import me.egg82.tcpp.ticks.SlowMineTickCommand;
 import me.egg82.tcpp.ticks.SlowpokeTickCommand;
@@ -190,6 +195,8 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		commandHandler.addCommand("explodebreak", ExplodeBreakCommand.class);
 		commandHandler.addCommand("slender", SlenderCommand.class);
 		commandHandler.addCommand("anvil", AnvilCommand.class);
+		commandHandler.addCommand("popup", PopupCommand.class);
+		commandHandler.addCommand("display", DisplayCommand.class);
 		
 		eventListener.addEvent(PlayerDeathEvent.class, PlayerDeathEventCommand.class);
 		eventListener.addEvent(PlayerQuitEvent.class, PlayerQuitEventCommand.class);
@@ -201,6 +208,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		eventListener.addEvent(BlockBreakEvent.class, BlockBreakEventCommand.class);
 		eventListener.addEvent(PlayerInteractEvent.class, PlayerInteractEventCommand.class);
 		eventListener.addEvent(BlockPlaceEvent.class, BlockPlaceEventCommand.class);
+		eventListener.addEvent(PlayerLoginEvent.class, PlayerLoginEventCommand.class);
 		
 		Object[] enums = Util.getStaticFields(PermissionsType.class);
 		String[] permissions = Arrays.copyOf(enums, enums.length, String[].class);
@@ -225,6 +233,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		tickHandler.addTickCommand("annoy", AnnoyTickCommand.class, 20);
 		tickHandler.addTickCommand("sparta", SpartaTickCommand.class, 10);
 		tickHandler.addTickCommand("rewind", RewindTickCommand.class, 5);
+		tickHandler.addTickCommand("popup", PopupTickCommand.class, 20);
 		
 		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "--== " + ChatColor.LIGHT_PURPLE + "TrollCommands++ Enabled" + ChatColor.GREEN + " ==--");
 	}

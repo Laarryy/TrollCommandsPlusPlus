@@ -22,6 +22,14 @@ public class StarveCommand extends BasePluginCommand {
 	}
 	
 	//public
+	public void onDeath(String name, Player player) {
+		reg.setRegister(name, null);
+	}
+	public void onLogin(String name, Player player) {
+		if (reg.contains(name)) {
+			reg.setRegister(name, player);
+		}
+	}
 	
 	//private
 	protected void execute() {

@@ -33,6 +33,9 @@ public class PluginServiceType {
 	public static final String LAG_REGISTRY = "lagRegistry";
 	public static final String LAG_INTERN_REGISTRY = "lagInternRegistry";
 	public static final String EXPLODE_BREAK_REGISTRY = "explodeBreakRegistry";
+	public static final String POPUP_REGISTRY = "popupRegistry";
+	public static final String DISPLAY_REGISTRY = "displayRegistry";
+	public static final String DISPLAY_INTERN_REGISTRY = "displayInternRegistry";
 	
 	//constructor
 	public PluginServiceType() {

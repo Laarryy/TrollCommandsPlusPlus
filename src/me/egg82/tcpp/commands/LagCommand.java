@@ -25,6 +25,11 @@ public class LagCommand extends BasePluginCommand {
 	}
 	
 	//public
+	public void onLogin(String name, Player player) {
+		if (reg.contains(name)) {
+			reg.setRegister(name, player);
+		}
+	}
 	
 	//private
 	protected void execute() {

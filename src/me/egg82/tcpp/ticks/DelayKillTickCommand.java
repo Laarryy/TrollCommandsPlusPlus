@@ -9,10 +9,13 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import me.egg82.tcpp.enums.PluginServiceType;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.command.Command;
+import ninja.egg82.plugin.enums.CustomServiceType;
+import ninja.egg82.plugin.utils.interfaces.ITickHandler;
 import ninja.egg82.registry.interfaces.IRegistry;
 
 public class DelayKillTickCommand extends Command {
 	//vars
+	ITickHandler tickHandler = (ITickHandler) ServiceLocator.getService(CustomServiceType.TICK_HANDLER);
 	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.DELAY_KILL_REGISTRY);
 	
 	//constructor
@@ -36,6 +39,7 @@ public class DelayKillTickCommand extends Command {
 		int delay = (int) m.get("delay");
 		
 		if (timePassed < delay * 1000) {
+			tickHandler.addDelayedTickCommand(name, DelayKillTickCommand.class, 20);
 			return;
 		}
 		

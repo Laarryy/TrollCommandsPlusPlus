@@ -23,6 +23,9 @@ public class InfinityCommand extends BasePluginCommand {
 	}
 	
 	//public
+	public void onDeath(String name, Player player) {
+		reg.setRegister(name, null);
+	}
 	
 	//private
 	protected void execute() {

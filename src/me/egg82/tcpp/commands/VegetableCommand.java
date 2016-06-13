@@ -35,6 +35,24 @@ public class VegetableCommand extends BasePluginCommand {
 	}
 	
 	//public
+	@SuppressWarnings("unchecked")
+	public void onQuit(String name, Player player) {
+		reg.setRegister(name, null);
+		
+		if (reg2.contains(name)) {
+			HashMap<String, Object> map = (HashMap<String, Object>) reg2.getRegister(name);
+			Item potato = (Item) map.get("item");
+			
+			player.setGameMode((GameMode) map.get("mode"));
+			
+			reg2.setRegister(name, null);
+			
+			potato.remove();
+		}
+	}
+	public void onDeath(String name, Player player) {
+		onQuit(name, player);
+	}
 	
 	//private
 	protected void execute() {
