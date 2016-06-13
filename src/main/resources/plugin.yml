@@ -137,3 +137,13 @@ commands:
   lag:
     description: Makes the player experience fake lag. Does not affect the server.
     usage: /lag <player>
+  explodebreak:
+    description: The next block the player mines explodes!
+    usage: /explodebreak <player>
+    aliases: [exbreak]
+  slender:
+    description: Blinds and slows the player, then sends an enderman after them.
+    usage: /slender <player>
+  anvil:
+    description: Now who could have put that up there?
+    usage: /anvil <player>

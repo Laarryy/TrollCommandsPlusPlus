@@ -29,6 +29,7 @@ public class RegistryUtil {
 	private static IRegistry spartaRegistry = null;
 	private static IRegistry rewindRegistry = null;
 	private static IRegistry lagRegistry = null;
+	private static IRegistry explodeBreakRegistry = null;
 	
 	//constructor
 	public RegistryUtil() {
@@ -54,6 +55,7 @@ public class RegistryUtil {
 		spartaRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SPARTA_REGISTRY);
 		rewindRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.REWIND_REGISTRY);
 		lagRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.LAG_REGISTRY);
+		explodeBreakRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.EXPLODE_BREAK_REGISTRY);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -73,6 +75,7 @@ public class RegistryUtil {
 		spartaRegistry.setRegister(name, null);
 		rewindRegistry.setRegister(name, null);
 		lagRegistry.setRegister(name, null);
+		explodeBreakRegistry.setRegister(name, null);
 		
 		if (controllerRegistry.contains(name)) {
 			Player p = (Player) controllerRegistry.getRegister(name);

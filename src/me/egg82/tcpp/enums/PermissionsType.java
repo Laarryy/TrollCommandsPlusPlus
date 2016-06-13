@@ -51,6 +51,9 @@ public class PermissionsType {
 	public static final String COMMAND_NIGHT = "tcpp.command.night";
 	public static final String COMMAND_REWIND = "tcpp.command.rewind";
 	public static final String COMMAND_LAG = "tcpp.command.lag";
+	public static final String COMMAND_EXPLODEBREAK = "tcpp.command.explodebreak";
+	public static final String COMMAND_SLENDER = "tcpp.command.slender";
+	public static final String COMMAND_ANVIL = "tcpp.command.anvil";
 	
 	//constructor
 	public PermissionsType() {

@@ -32,6 +32,7 @@ public class PluginServiceType {
 	public static final String REWIND_REGISTRY = "rewindRegistry";
 	public static final String LAG_REGISTRY = "lagRegistry";
 	public static final String LAG_INTERN_REGISTRY = "lagInternRegistry";
+	public static final String EXPLODE_BREAK_REGISTRY = "explodeBreakRegistry";
 	
 	//constructor
 	public PluginServiceType() {

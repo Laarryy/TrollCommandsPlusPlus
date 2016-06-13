@@ -22,6 +22,7 @@ import org.mcstats.Metrics;
 
 import me.egg82.tcpp.commands.AloneCommand;
 import me.egg82.tcpp.commands.AnnoyCommand;
+import me.egg82.tcpp.commands.AnvilCommand;
 import me.egg82.tcpp.commands.BanishCommand;
 import me.egg82.tcpp.commands.BombCommand;
 import me.egg82.tcpp.commands.BurnCommand;
@@ -32,6 +33,7 @@ import me.egg82.tcpp.commands.CreepCommand;
 import me.egg82.tcpp.commands.DelayKillCommand;
 import me.egg82.tcpp.commands.ElectrifyCommand;
 import me.egg82.tcpp.commands.EntombCommand;
+import me.egg82.tcpp.commands.ExplodeBreakCommand;
 import me.egg82.tcpp.commands.FlipCommand;
 import me.egg82.tcpp.commands.FreezeCommand;
 import me.egg82.tcpp.commands.GarbleCommand;
@@ -50,6 +52,7 @@ import me.egg82.tcpp.commands.PortalCommand;
 import me.egg82.tcpp.commands.PotatoCommand;
 import me.egg82.tcpp.commands.RewindCommand;
 import me.egg82.tcpp.commands.SlapCommand;
+import me.egg82.tcpp.commands.SlenderCommand;
 import me.egg82.tcpp.commands.SlowMineCommand;
 import me.egg82.tcpp.commands.SlowpokeCommand;
 import me.egg82.tcpp.commands.SpamCommand;
@@ -184,6 +187,9 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		commandHandler.addCommand("night", NightCommand.class);
 		commandHandler.addCommand("rewind", RewindCommand.class);
 		commandHandler.addCommand("lag", LagCommand.class);
+		commandHandler.addCommand("explodebreak", ExplodeBreakCommand.class);
+		commandHandler.addCommand("slender", SlenderCommand.class);
+		commandHandler.addCommand("anvil", AnvilCommand.class);
 		
 		eventListener.addEvent(PlayerDeathEvent.class, PlayerDeathEventCommand.class);
 		eventListener.addEvent(PlayerQuitEvent.class, PlayerQuitEventCommand.class);
