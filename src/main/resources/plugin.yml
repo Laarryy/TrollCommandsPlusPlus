@@ -1,6 +1,6 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 1.5.10
+version: 1.6.10
 commands:
   troll:
     description: Same as /help TrollCommandsPlusPlus [page]
@@ -162,3 +162,22 @@ commands:
   squid:
     description: .. Why is it raining squids?
     usage: /squid <player>
+  useless:
+    description: Renames all of the player's items to Useless.
+    usage: /useless <player>
+  whoami:
+    description: Seriously, though. Who even am I? (Changes the player's name constantly)
+    usage: /whoami <player>
+  clumsy:
+    description: Careful, or you'll end up dropping all of your stuff!
+    usage: /clumsy <player>
+  amnesia:
+    description: Screws with the player's chat in weird ways.
+    usage: /amnesia <player>
+  explodebuild:
+    description: The next block the player places explodes!
+    usage: /explodebuild <player>
+    aliases: [exbuild]
+  slowundo:
+    description: Slowly undoes any block changes the player makes.
+    usage: /slowundo <player>

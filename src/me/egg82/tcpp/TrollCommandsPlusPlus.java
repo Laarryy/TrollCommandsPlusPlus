@@ -38,9 +38,11 @@ import me.egg82.tcpp.events.PlayerMoveEventCommand;
 import me.egg82.tcpp.events.PlayerPickupItemEventCommand;
 import me.egg82.tcpp.events.PlayerQuitEventCommand;
 import me.egg82.tcpp.ticks.AloneTickCommand;
+import me.egg82.tcpp.ticks.AmnesiaTickCommand;
 import me.egg82.tcpp.ticks.AnnoyTickCommand;
 import me.egg82.tcpp.ticks.BombTickCommand;
 import me.egg82.tcpp.ticks.BurnTickCommand;
+import me.egg82.tcpp.ticks.ClumsyTickCommand;
 import me.egg82.tcpp.ticks.ElectrifyTickCommand;
 import me.egg82.tcpp.ticks.HauntTickCommand;
 import me.egg82.tcpp.ticks.HurtTickCommand;
@@ -48,6 +50,7 @@ import me.egg82.tcpp.ticks.NauseaTickCommand;
 import me.egg82.tcpp.ticks.PopupTickCommand;
 import me.egg82.tcpp.ticks.RewindTickCommand;
 import me.egg82.tcpp.ticks.SlowMineTickCommand;
+import me.egg82.tcpp.ticks.SlowUndoTickCommand;
 import me.egg82.tcpp.ticks.SlowpokeTickCommand;
 import me.egg82.tcpp.ticks.SpamTickCommand;
 import me.egg82.tcpp.ticks.SpartaTickCommand;
@@ -56,6 +59,7 @@ import me.egg82.tcpp.ticks.SquidTickCommand;
 import me.egg82.tcpp.ticks.StarveTickCommand;
 import me.egg82.tcpp.ticks.VegetableTickCommand;
 import me.egg82.tcpp.ticks.WeaklingTickCommand;
+import me.egg82.tcpp.ticks.WhoAmITickCommand;
 import me.egg82.tcpp.util.RegistryUtil;
 import net.gravitydevelopment.updater.Updater;
 import net.gravitydevelopment.updater.Updater.UpdateResult;
@@ -157,6 +161,10 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		tickHandler.addTickCommand("rewind", RewindTickCommand.class, 5);
 		tickHandler.addTickCommand("popup", PopupTickCommand.class, 20);
 		tickHandler.addTickCommand("squid", SquidTickCommand.class, 10);
+		tickHandler.addTickCommand("whoami", WhoAmITickCommand.class, 20);
+		tickHandler.addTickCommand("clumsy", ClumsyTickCommand.class, 10);
+		tickHandler.addTickCommand("amnesia", AmnesiaTickCommand.class, 20);
+		tickHandler.addTickCommand("slowUndo", SlowUndoTickCommand.class, 10);
 		
 		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "--== " + ChatColor.LIGHT_PURPLE + "TrollCommands++ Enabled" + ChatColor.GREEN + " ==--");
 	}

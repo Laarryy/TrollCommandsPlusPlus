@@ -12,7 +12,7 @@ import ninja.egg82.utils.MathUtil;
 public class GarbleEventCommand extends EventCommand {
 	//vars
 	private IRegistry garbleRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.GARBLE_REGISTRY);
-	private static final char [] subset = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+{}|:\"<>?`-=[]\\;',./".toCharArray();
+	private static final char[] subset = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+{}|:\"<>?`-=[]\\;',./".toCharArray();
 	
 	//constructor
 	public GarbleEventCommand(Event event) {

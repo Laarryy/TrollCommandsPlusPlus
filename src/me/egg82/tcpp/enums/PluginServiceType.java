@@ -39,6 +39,14 @@ public class PluginServiceType {
 	public static final String NOPICKUP_REGISTRY = "nopickupRegistry";
 	public static final String BRITTLE_REGISTRY = "brittleRegistry";
 	public static final String SQUID_REGISTRY = "squidRegistry";
+	public static final String WHO_AM_I_REGISTRY = "whoAmIRegistry";
+	public static final String WHO_AM_I_INTERN_REGISTRY = "whoAmIInternRegistry";
+	public static final String CLUMSY_REGISTRY = "clumsyRegistry";
+	public static final String AMNESIA_REGISTRY = "amnesiaRegistry";
+	public static final String AMNESIA_INTERN_REGISTRY = "amnesiaInternRegistry";
+	public static final String EXPLODE_BUILD_REGISTRY = "explodeBuildRegistry";
+	public static final String SLOW_UNDO_REGISTRY = "slowUndoRegistry";
+	public static final String SLOW_UNDO_INTERN_REGISTRY = "slowUndoInternRegistry";
 	
 	//constructor
 	public PluginServiceType() {

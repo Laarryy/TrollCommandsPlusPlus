@@ -16,7 +16,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class LagEventCommand extends EventCommand {
 	//vars
-private IRegistry lagRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.LAG_REGISTRY);
+	private IRegistry lagRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.LAG_REGISTRY);
 	
 	private Timer timer = null;
 	private Object lock = new Object();

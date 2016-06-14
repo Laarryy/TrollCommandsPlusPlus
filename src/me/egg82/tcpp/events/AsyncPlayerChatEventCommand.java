@@ -3,6 +3,7 @@ package me.egg82.tcpp.events;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import me.egg82.tcpp.events.individual.playerChatEvent.AmnesiaEventCommand;
 import me.egg82.tcpp.events.individual.playerChatEvent.ControlEventCommand;
 import me.egg82.tcpp.events.individual.playerChatEvent.ControllerEventCommand;
 import me.egg82.tcpp.events.individual.playerChatEvent.GarbleEventCommand;
@@ -17,6 +18,7 @@ public class AsyncPlayerChatEventCommand extends EventCommand {
 	private ControllerEventCommand controller = null;
 	private VegetableEventCommand vegetable = null;
 	private LagEventCommand lag = null;
+	private AmnesiaEventCommand amnesia = null;
 	
 	//constructor
 	public AsyncPlayerChatEventCommand(Event event) {
@@ -27,6 +29,7 @@ public class AsyncPlayerChatEventCommand extends EventCommand {
 		controller = new ControllerEventCommand(event);
 		vegetable = new VegetableEventCommand(event);
 		lag = new LagEventCommand(event);
+		amnesia = new AmnesiaEventCommand(event);
 	}
 	
 	//public
@@ -44,5 +47,6 @@ public class AsyncPlayerChatEventCommand extends EventCommand {
 		controller.start();
 		vegetable.start();
 		lag.start();
+		amnesia.start();
 	}
 }

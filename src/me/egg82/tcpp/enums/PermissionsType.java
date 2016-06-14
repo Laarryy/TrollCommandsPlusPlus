@@ -59,6 +59,12 @@ public class PermissionsType {
 	public static final String COMMAND_NOPICKUP = "tcpp.command.nopickup";
 	public static final String COMMAND_BRITTLE = "tcpp.command.brittle";
 	public static final String COMMAND_SQUID = "tcpp.command.squid";
+	public static final String COMMAND_USELESS = "tcpp.command.useless";
+	public static final String COMMAND_WHO_AM_I = "tcpp.command.whoami";
+	public static final String COMMAND_CLUMSY = "tcpp.command.clumsy";
+	public static final String COMMAND_AMNESIA = "tcpp.command.amnesia";
+	public static final String COMMAND_EXPLODEBUILD = "tcpp.command.explodebuild";
+	public static final String COMMAND_SLOWUNDO = "tcpp.command.slowundo";
 	
 	//constructor
 	public PermissionsType() {
