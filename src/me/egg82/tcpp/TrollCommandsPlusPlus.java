@@ -9,6 +9,7 @@ import javax.swing.Timer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -68,6 +69,7 @@ import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.BasePlugin;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.registry.Registry;
+import ninja.egg82.registry.interfaces.IRegistry;
 import ninja.egg82.utils.Util;
 
 public class TrollCommandsPlusPlus extends BasePlugin {
@@ -85,11 +87,26 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	public void onLoad() {
 		super.onLoad();
 		
-		Object[] enums = Util.getStaticFields(PluginServiceType.class);
+		Object[] enums = null;
+		
+		enums = Util.getStaticFields(PluginServiceType.class);
 		String[] services = Arrays.copyOf(enums, enums.length, String[].class);
 		for (String s : services) {
 			ServiceLocator.provideService(s, Registry.class);
 		}
+		
+		IRegistry soundsRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SOUNDS_REGISTRY);
+		enums = Util.getStaticFields(Sound.class);
+		Sound[] sounds = Arrays.copyOf(enums, enums.length, Sound[].class);
+		ArrayList<Sound> villagerSounds = new ArrayList<Sound>();
+		for (Sound s : sounds) {
+			String name = s.toString().toLowerCase();
+			if (name.contains("villager") && !name.contains("zombie")) {
+				villagerSounds.add(s);
+			}
+		}
+		soundsRegistry.setRegister("all", sounds);
+		soundsRegistry.setRegister("villager", villagerSounds.toArray(new Sound[0]));
 		
 		RegistryUtil.intialize();
 		
@@ -103,7 +120,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 			Metrics m = new Metrics(this);
 			m.start();
 		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
+			
 		}
 		
 		checkUpdate();

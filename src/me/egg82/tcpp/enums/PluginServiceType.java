@@ -48,6 +48,8 @@ public class PluginServiceType {
 	public static final String SLOW_UNDO_REGISTRY = "slowUndoRegistry";
 	public static final String SLOW_UNDO_INTERN_REGISTRY = "slowUndoInternRegistry";
 	
+	public static final String SOUNDS_REGISTRY = "soundsRegistry";
+	
 	//constructor
 	public PluginServiceType() {
 		

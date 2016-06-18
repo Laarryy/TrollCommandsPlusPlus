@@ -1,7 +1,5 @@
 package me.egg82.tcpp.ticks;
 
-import java.util.Arrays;
-
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -10,7 +8,6 @@ import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.command.Command;
 import ninja.egg82.registry.interfaces.IRegistry;
 import ninja.egg82.utils.MathUtil;
-import ninja.egg82.utils.Util;
 
 public class HauntTickCommand extends Command {
 	//vars
@@ -20,8 +17,7 @@ public class HauntTickCommand extends Command {
 	//constructor
 	public HauntTickCommand() {
 		super();
-		Object[] enums = Util.getStaticFields(Sound.class);
-		sounds = Arrays.copyOf(enums, enums.length, Sound[].class);
+		sounds = (Sound[]) ((IRegistry) ServiceLocator.getService(PluginServiceType.SOUNDS_REGISTRY)).getRegister("all");
 	}
 	
 	//public

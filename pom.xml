@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>TrollCommandsPlusPlus</artifactId>
-  <version>1.6.10</version>
+  <version>1.6.13</version>
   <name>TrollCommandsPlusPlus</name>
   <description>TCPP for Spigot/Bukkit</description>
   <build>
@@ -101,6 +101,11 @@
     </dependency>-->
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
+      <artifactId>egg82-lib</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>ninja.egg82.lib</groupId>
       <artifactId>spigot-lib</artifactId>
       <version>1.0</version>
     </dependency>
@@ -112,7 +117,7 @@
     <dependency>
        <groupId>LibsDisguises</groupId>
        <artifactId>LibsDisguises</artifactId>
-       <version>9.0.6-SNAPSHOT</version>
+       <version>9.0.7-SNAPSHOT</version>
        <scope>provided</scope>
     </dependency>
   </dependencies>

@@ -1,6 +1,5 @@
 package me.egg82.tcpp.events.individual.playerPickupItemEvent;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 

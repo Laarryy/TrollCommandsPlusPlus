@@ -13,6 +13,7 @@ import me.egg82.tcpp.TrollCommandsPlusPlus;
 import me.egg82.tcpp.enums.PluginServiceType;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.plugin.utils.ReflectionUtil;
 import ninja.egg82.registry.interfaces.IRegistry;
 import ninja.egg82.utils.MathUtil;
 
@@ -35,7 +36,7 @@ public class LagEventCommand extends EventCommand {
 			e.setCancelled(true);
 			
 			Player player = e.getPlayer();
-			ItemStack stack = player.getInventory().getItemInMainHand();
+			ItemStack stack = ReflectionUtil.getItemInMainHand(player);
 			Block block = e.getBlock();
 			Material material = e.getBlockPlaced().getType();
 			GameMode mode = player.getGameMode();
@@ -47,7 +48,7 @@ public class LagEventCommand extends EventCommand {
 					if (mode != GameMode.CREATIVE) {
 						int amount = stack.getAmount();
 						if (amount == 1) {
-							player.getInventory().setItemInMainHand(null);
+							ReflectionUtil.setItemInMainHand(player, null);
 						} else {
 							stack.setAmount(amount - 1);
 						}

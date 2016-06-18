@@ -18,12 +18,7 @@ public class AnnoyTickCommand extends Command {
 	public AnnoyTickCommand() {
 		super();
 		
-		sounds  = new Sound[]{
-				Sound.ENTITY_VILLAGER_AMBIENT,
-				Sound.ENTITY_VILLAGER_TRADING,
-				Sound.ENTITY_VILLAGER_NO,
-				Sound.ENTITY_VILLAGER_YES
-		};
+		sounds = (Sound[]) ((IRegistry) ServiceLocator.getService(PluginServiceType.SOUNDS_REGISTRY)).getRegister("villager");
 	}
 	
 	//public
