@@ -1,8 +1,6 @@
 package me.egg82.tcpp.commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.commands.base.BasePluginCommand;
@@ -17,15 +15,15 @@ public class LavaBreakCommand extends BasePluginCommand {
 	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.LAVA_BREAK_REGISTRY);
 	
 	//constructor
-	public LavaBreakCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public LavaBreakCommand() {
+		super();
 	}
 	
 	//public
 	public void onLogin(String name, Player player) {
-		if (reg.contains(name)) {
-			reg.setRegister(name, player);
-		}
+		reg.computeIfPresent(name, (k,v) -> {
+			return player;
+		});
 	}
 	
 	//private
@@ -38,12 +36,14 @@ public class LavaBreakCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String name, Player player) {
-		if (reg.contains(name.toLowerCase())) {
+		String lowerName = name.toLowerCase();
+		
+		if (reg.contains(lowerName)) {
 			sender.sendMessage("The next block " + name + " breaks will no longer be lava.");
-			reg.setRegister(name.toLowerCase(), null);
+			reg.setRegister(lowerName, null);
 		} else {
 			sender.sendMessage("The next block " + name + " breaks will now be lava!");
-			reg.setRegister(name.toLowerCase(), player);
+			reg.setRegister(lowerName, player);
 		}
 	}
 }

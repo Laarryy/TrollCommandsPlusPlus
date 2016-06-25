@@ -1,8 +1,6 @@
 package me.egg82.tcpp.commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -15,8 +13,8 @@ public class LiftCommand extends BasePluginCommand {
 	//vars
 	
 	//constructor
-	public LiftCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public LiftCommand() {
+		super();
 	}
 	
 	//public
@@ -24,16 +22,15 @@ public class LiftCommand extends BasePluginCommand {
 	//private
 	protected void execute() {
 		if (isValid(false, PermissionsType.COMMAND_LIFT, new int[]{1}, new int[]{0})) {
-			if (args.length == 1) {
-				e(Bukkit.getPlayer(args[0]));
-			}
+			Player player = Bukkit.getPlayer(args[0]);
+			e(player.getName(), player);
 			
 			dispatch(CommandEvent.COMPLETE, null);
 		}
 	}
-	private void e(Player player) {
+	private void e(String name, Player player) {
 		player.setVelocity(new Vector(0.0d, MathUtil.random(10.0d, 20.0d), 0.0d));
 		
-		sender.sendMessage(player.getName() + " has been lifted.");
+		sender.sendMessage(name + " has been lifted.");
 	}
 }

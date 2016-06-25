@@ -2,22 +2,20 @@ package me.egg82.tcpp.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.commands.base.BasePluginCommand;
-import me.egg82.tcpp.enums.CommandErrorType;
-import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import ninja.egg82.events.patterns.command.CommandEvent;
+import ninja.egg82.plugin.enums.SpigotCommandErrorType;
+import ninja.egg82.plugin.enums.SpigotMessageType;
 
 public class VaporizeCommand extends BasePluginCommand {
 	//vars
 	
 	//constructor
-	public VaporizeCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public VaporizeCommand() {
+		super();
 	}
 	
 	//public
@@ -28,14 +26,14 @@ public class VaporizeCommand extends BasePluginCommand {
 			Player player = Bukkit.getPlayer(args[0]);
 			
 			if (args.length == 1) {
-				e(player, 4.0f);
+				e(player.getName(), player, 4.0f);
 			} else if (args.length == 2) {
 				try {
-					e(player, Float.parseFloat(args[1]));
+					e(player.getName(), player, Float.parseFloat(args[1]));
 				} catch (Exception ex) {
-					sender.sendMessage(MessageType.INCORRECT_USAGE);
+					sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
 					sender.getServer().dispatchCommand(sender, "help " + command.getName());
-					dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
+					dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
 					return;
 				}
 			}
@@ -43,10 +41,10 @@ public class VaporizeCommand extends BasePluginCommand {
 			dispatch(CommandEvent.COMPLETE, null);
 		}
 	}
-	private void e(Player player, float power) {
+	private void e(String name, Player player, float power) {
 		Location loc = player.getLocation();
 		player.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), Math.abs(power), (power > 0) ? true : false, (power > 0) ? true : false);
 		
-		sender.sendMessage(player.getName() + " has been vaporized.");
+		sender.sendMessage(name + " has been vaporized.");
 	}
 }

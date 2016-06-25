@@ -7,17 +7,18 @@ import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.enums.PluginServiceType;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.command.Command;
+import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.registry.interfaces.IRegistry;
 import ninja.egg82.utils.MathUtil;
 
-public class SpartaTickCommand extends Command {
+public class SpartaTickCommand extends TickCommand {
 	//vars
 	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.SPARTA_REGISTRY);
 	
 	//constructor
 	public SpartaTickCommand() {
 		super();
+		ticks = 10l;
 	}
 	
 	//public

@@ -1,26 +1,28 @@
 package me.egg82.tcpp.events;
 
-import org.bukkit.event.Event;
+import java.util.ArrayList;
+
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import me.egg82.tcpp.events.individual.playerInteractEvent.ControlEventCommand;
-import me.egg82.tcpp.events.individual.playerInteractEvent.LagEventCommand;
-import me.egg82.tcpp.events.individual.playerInteractEvent.VegetableEventCommand;
 import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.utils.Util;
 
 public class PlayerInteractEventCommand extends EventCommand {
 	//vars
-	private ControlEventCommand control = null;
-	private VegetableEventCommand vegetable = null;
-	private LagEventCommand lag = null;
+	private ArrayList<EventCommand> commands = new ArrayList<EventCommand>();
 	
 	//constructor
-	public PlayerInteractEventCommand(Event event) {
-		super(event);
+	public PlayerInteractEventCommand() {
+		super();
 		
-		control = new ControlEventCommand(event);
-		vegetable = new VegetableEventCommand(event);
-		lag = new LagEventCommand(event);
+		ArrayList<Class<? extends EventCommand>> enums = Util.getClasses(EventCommand.class, "me.egg82.tcpp.events.individual.playerInteract");
+		for (Class<? extends EventCommand> c : enums) {
+			try {
+				commands.add(c.newInstance());
+			} catch (Exception ex) {
+				
+			}
+		}
 	}
 	
 	//public
@@ -29,12 +31,15 @@ public class PlayerInteractEventCommand extends EventCommand {
 	protected void execute() {
 		PlayerInteractEvent e = (PlayerInteractEvent) event;
 		
-		if (e.isCancelled()) {
-			return;
+		EventCommand command = null;
+		for (int i = 0; i < commands.size(); i++) {
+			if (e.isCancelled()) {
+				return;
+			}
+			
+			command = commands.get(i);
+			command.setEvent(event);
+			command.start();
 		}
-		
-		control.start();
-		vegetable.start();
-		lag.start();
 	}
 }

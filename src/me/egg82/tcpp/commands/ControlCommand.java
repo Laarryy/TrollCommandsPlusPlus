@@ -5,8 +5,6 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -31,24 +29,26 @@ public class ControlCommand extends BasePluginCommand {
 	private IRegistry reg3 = (IRegistry) ServiceLocator.getService(PluginServiceType.CONTROL_DATA_REGISTRY);
 	
 	//constructor
-	public ControlCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public ControlCommand() {
+		super();
 	}
 	
 	//public
 	public void onQuit(String name, Player player) {
-		reg.setRegister(name, null);
+		reg.computeIfPresent(name, (k,v) -> {
+			return null;
+		});
 		
-		if (reg2.contains(name)) {
-			Player p = (Player) reg2.getRegister(name);
+		reg2.computeIfPresent(name, (k,v) -> {
+			Player p = (Player) v;
 			
 			if (p != null) {
 				p.kickPlayer("You were being controlled, and your controller quit/was kicked.");
 			}
 			
-			reg2.setRegister(name, null);
 			reg3.setRegister(name, null);
-		}
+			return null;
+		});
 	}
 	
 	//private
@@ -57,13 +57,21 @@ public class ControlCommand extends BasePluginCommand {
 			Player p = (Player) sender;
 			Player player = null;
 			
+			String pName = p.getName();
+			String pLowerName = pName.toLowerCase();
+			String playerName = null;
+			String playerLowerName = null;
+			
 			if (args.length == 0) {
-				if (reg2.contains(p.getName().toLowerCase())) {
-					player = (Player) reg2.getRegister(p.getName());
+				if (reg2.contains(pLowerName)) {
+					player = (Player) reg2.getRegister(pLowerName);
+					
 					if (player != null) {
-						e(p.getName(), p, player.getName(), player);
+						playerName = player.getName();
+						playerLowerName = playerName.toLowerCase();
+						e(pName, p, playerName, player);
 					} else {
-						e(p.getName(), p, "Anyone", null);
+						e(pName, p, "Anyone", null);
 					}
 				} else {
 					sender.sendMessage(MessageType.NOT_CONTROLLING);
@@ -72,12 +80,15 @@ public class ControlCommand extends BasePluginCommand {
 				}
 			} else if (args.length == 1) {
 				player = Bukkit.getPlayer(args[0]);
-				if (p.getName().toLowerCase() == player.getName().toLowerCase()) {
+				playerName = player.getName();
+				playerLowerName = playerName.toLowerCase();
+				
+				if (pLowerName == playerLowerName) {
 					sender.sendMessage(MessageType.NO_CONTROL_SELF);
 					dispatch(CommandEvent.ERROR, CommandErrorType.NO_CONTROL_SELF);
 					return;
 				}
-				e(p.getName(), p, player.getName(), player);
+				e(pName, p, playerName, player);
 			}
 			
 			dispatch(CommandEvent.COMPLETE, null);
@@ -85,6 +96,9 @@ public class ControlCommand extends BasePluginCommand {
 	}
 	@SuppressWarnings("unchecked")
 	private void e(String controllerName, Player controller, String name, Player player) {
+		String controllerLowerName = controllerName.toLowerCase();
+		String lowerName = name.toLowerCase();
+		
 		PlayerInventory controllerInv = controller.getInventory();
 		HashMap<String, Object> map = null;
 		PlayerInventory playerInv = null;
@@ -104,7 +118,7 @@ public class ControlCommand extends BasePluginCommand {
 			if (playerInv != null) {
 				playerInv.setContents(controllerInv.getContents());
 			}
-			map = (HashMap<String, Object>) reg3.getRegister(name.toLowerCase());
+			map = (HashMap<String, Object>) reg3.getRegister(lowerName);
 			if (player != null) {
 				player.setGameMode((GameMode) map.get("mode"));
 				player.teleport(controller);
@@ -116,21 +130,21 @@ public class ControlCommand extends BasePluginCommand {
 			
 			DisguiseAPI.undisguiseToAll(controller);
 			
-			reg.setRegister(name.toLowerCase(), null);
-			reg2.setRegister(controllerName.toLowerCase(), null);
-			reg3.setRegister(name.toLowerCase(), null);
+			reg.setRegister(lowerName, null);
+			reg2.setRegister(controllerLowerName, null);
+			reg3.setRegister(lowerName, null);
 		} else {
 			sender.sendMessage("You are now controlling " + name + "!");
 			player.sendMessage("You are now being controlled!");
 			
-			reg.setRegister(name.toLowerCase(), player);
-			reg2.setRegister(controllerName.toLowerCase(), player);
+			reg.setRegister(lowerName, player);
+			reg2.setRegister(controllerLowerName, player);
 			
 			map = new HashMap<String, Object>();
 			map.put("inventory", controllerInv.getContents());
 			map.put("location", controller.getLocation());
 			map.put("mode", player.getGameMode());
-			reg3.setRegister(name.toLowerCase(), map);
+			reg3.setRegister(lowerName, map);
 			
 			controllerInv.setContents(playerInv.getContents());
 			controller.teleport(player);

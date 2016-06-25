@@ -1,20 +1,28 @@
 package me.egg82.tcpp.events;
 
-import org.bukkit.event.Event;
+import java.util.ArrayList;
+
 import org.bukkit.event.entity.EntityDamageEvent;
 
-import me.egg82.tcpp.events.individual.entityDamageEvent.BrittleEventCommand;
 import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.utils.Util;
 
 public class EntityDamageEventCommand extends EventCommand {
 	//vars
-	private BrittleEventCommand brittle = null;
+	private ArrayList<EventCommand> commands = new ArrayList<EventCommand>();
 	
 	//constructor
-	public EntityDamageEventCommand(Event event) {
-		super(event);
+	public EntityDamageEventCommand() {
+		super();
 		
-		brittle = new BrittleEventCommand(event);
+		ArrayList<Class<? extends EventCommand>> enums = Util.getClasses(EventCommand.class, "me.egg82.tcpp.events.individual.entityDamage");
+		for (Class<? extends EventCommand> c : enums) {
+			try {
+				commands.add(c.newInstance());
+			} catch (Exception ex) {
+				
+			}
+		}
 	}
 	
 	//public
@@ -23,10 +31,15 @@ public class EntityDamageEventCommand extends EventCommand {
 	protected void execute() {
 		EntityDamageEvent e = (EntityDamageEvent) event;
 		
-		if (e.isCancelled()) {
-			return;
+		EventCommand command = null;
+		for (int i = 0; i < commands.size(); i++) {
+			if (e.isCancelled()) {
+				return;
+			}
+			
+			command = commands.get(i);
+			command.setEvent(event);
+			command.start();
 		}
-		
-		brittle.start();
 	}
 }

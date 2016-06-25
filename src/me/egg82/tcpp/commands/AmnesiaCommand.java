@@ -3,8 +3,6 @@ package me.egg82.tcpp.commands;
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.google.common.collect.ImmutableMap;
@@ -22,15 +20,15 @@ public class AmnesiaCommand extends BasePluginCommand {
 	private IRegistry reg2 = (IRegistry) ServiceLocator.getService(PluginServiceType.AMNESIA_INTERN_REGISTRY);
 	
 	//constructor
-	public AmnesiaCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public AmnesiaCommand() {
+		super();
 	}
 	
 	//public
 	public void onLogin(String name, Player player) {
-		if (reg.contains(name)) {
-			reg.setRegister(name, player);
-		}
+		reg.computeIfPresent(name, (k,v) -> {
+			return player;
+		});
 	}
 	
 	//private
@@ -43,14 +41,16 @@ public class AmnesiaCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String name, Player player) {
-		if (reg.contains(name.toLowerCase())) {
+		String lowerName = name.toLowerCase();
+		
+		if (reg.contains(lowerName)) {
 			sender.sendMessage(name + " is no longer an amnesiac.");
-			reg.setRegister(name.toLowerCase(), null);
-			reg2.setRegister(name.toLowerCase(), null);
+			reg.setRegister(lowerName, null);
+			reg2.setRegister(lowerName, null);
 		} else {
 			sender.sendMessage(name + " is now an amnesiac.");
-			reg.setRegister(name.toLowerCase(), player);
-			reg2.setRegister(name.toLowerCase(), new ArrayList<ImmutableMap<String, Object>>());
+			reg.setRegister(lowerName, player);
+			reg2.setRegister(lowerName, new ArrayList<ImmutableMap<String, Object>>());
 		}
 	}
 }

@@ -2,8 +2,6 @@ package me.egg82.tcpp.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -18,8 +16,8 @@ public class GolemCommand extends BasePluginCommand {
 	//vars
 	
 	//constructor
-	public GolemCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public GolemCommand() {
+		super();
 	}
 	
 	//public
@@ -27,16 +25,16 @@ public class GolemCommand extends BasePluginCommand {
 	//private
 	protected void execute() {
 		if (isValid(false, PermissionsType.COMMAND_GOLEM, new int[]{1}, new int[]{0})) {
-			if (args.length == 1) {
-				e(Bukkit.getPlayer(args[0]));
-			}
+			Player player = Bukkit.getPlayer(args[0]);
+			e(player.getName(), player);
 			
 			dispatch(CommandEvent.COMPLETE, null);
 		}
 	}
-	private void e(Player player) {
+	private void e(String name, Player player) {
 		int rand = MathUtil.fairRoundedRandom(10, 15);
 		Location loc = player.getLocation();
+		
 		for (int i = 0; i < rand; i++) {
 			Location r = BlockUtil.getTopAirBlock(new Location(loc.getWorld(), MathUtil.random(loc.getX() - 10.0d, loc.getX() + 10.0d), loc.getY(), MathUtil.random(loc.getZ() - 10.0d, loc.getZ() + 10.0d)));
 			Vector velocity = r.clone().subtract(player.getLocation()).toVector().normalize().multiply(1.0d);
@@ -45,6 +43,6 @@ public class GolemCommand extends BasePluginCommand {
 			g.setTarget(player);
 		}
 		
-		sender.sendMessage(player.getName() + " is now having fun with golems.");
+		sender.sendMessage(name + " is now having fun with golems.");
 	}
 }

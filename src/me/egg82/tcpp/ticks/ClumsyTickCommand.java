@@ -6,18 +6,19 @@ import org.bukkit.inventory.PlayerInventory;
 
 import me.egg82.tcpp.enums.PluginServiceType;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.command.Command;
+import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.registry.interfaces.IRegistry;
 import ninja.egg82.utils.MathUtil;
 
-public class ClumsyTickCommand extends Command {
+public class ClumsyTickCommand extends TickCommand {
 	//vars
 	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.CLUMSY_REGISTRY);
 	
 	//constructor
 	public ClumsyTickCommand() {
 		super();
+		ticks = 10l;
 	}
 	
 	//public
@@ -42,8 +43,8 @@ public class ClumsyTickCommand extends Command {
 			for (ItemStack i : items) {
 				if (i != null) {
 					isEmpty = false;
+					break;
 				}
-				break;
 			}
 			
 			if (!isEmpty) {

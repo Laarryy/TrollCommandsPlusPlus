@@ -1,8 +1,6 @@
 package me.egg82.tcpp.commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.commands.base.BasePluginCommand;
@@ -17,18 +15,20 @@ public class StarveCommand extends BasePluginCommand {
 	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.STARVE_REGISTRY);
 	
 	//constructor
-	public StarveCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public StarveCommand() {
+		super();
 	}
 	
 	//public
 	public void onDeath(String name, Player player) {
-		reg.setRegister(name, null);
+		reg.computeIfPresent(name, (k,v) -> {
+			return null;
+		});
 	}
 	public void onLogin(String name, Player player) {
-		if (reg.contains(name)) {
-			reg.setRegister(name, player);
-		}
+		reg.computeIfPresent(name, (k,v) -> {
+			return player;
+		});
 	}
 	
 	//private
@@ -41,12 +41,14 @@ public class StarveCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String name, Player player) {
-		if (reg.contains(name.toLowerCase())) {
+		String lowerName = name.toLowerCase();
+		
+		if (reg.contains(lowerName)) {
 			sender.sendMessage(name + " is no longer starving to death.");
-			reg.setRegister(name.toLowerCase(), null);
+			reg.setRegister(lowerName, null);
 		} else {
 			sender.sendMessage(name + " is now starving to death.");
-			reg.setRegister(name.toLowerCase(), player);
+			reg.setRegister(lowerName, player);
 		}
 	}
 }

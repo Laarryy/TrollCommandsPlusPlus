@@ -1,8 +1,6 @@
 package me.egg82.tcpp.commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.commands.base.BasePluginCommand;
@@ -17,15 +15,15 @@ public class NopickupCommand extends BasePluginCommand {
 	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.NOPICKUP_REGISTRY);
 	
 	//constructor
-	public NopickupCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public NopickupCommand() {
+		super();
 	}
 	
 	//public
 	public void onLogin(String name, Player player) {
-		if (reg.contains(name)) {
-			reg.setRegister(name, player);
-		}
+		reg.computeIfPresent(name, (k,v) -> {
+			return player;
+		});
 	}
 	
 	//private
@@ -38,12 +36,14 @@ public class NopickupCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String name, Player player) {
-		if (reg.contains(name.toLowerCase())) {
+		String lowerName = name.toLowerCase();
+		
+		if (reg.contains(lowerName)) {
 			sender.sendMessage(name + " can now pick items up again.");
-			reg.setRegister(name.toLowerCase(), null);
+			reg.setRegister(lowerName, null);
 		} else {
 			sender.sendMessage(name + " can no longer pick items up.");
-			reg.setRegister(name.toLowerCase(), player);
+			reg.setRegister(lowerName, player);
 		}
 	}
 }

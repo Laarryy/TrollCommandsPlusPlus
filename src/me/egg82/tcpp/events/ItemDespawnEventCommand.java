@@ -1,20 +1,28 @@
 package me.egg82.tcpp.events;
 
-import org.bukkit.event.Event;
+import java.util.ArrayList;
+
 import org.bukkit.event.entity.ItemDespawnEvent;
 
-import me.egg82.tcpp.events.individual.itemDespawnEvent.VegetableEventCommand;
 import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.utils.Util;
 
 public class ItemDespawnEventCommand extends EventCommand {
 	//vars
-	private VegetableEventCommand vegetable = null;
+	private ArrayList<EventCommand> commands = new ArrayList<EventCommand>();
 	
 	//constructor
-	public ItemDespawnEventCommand(Event event) {
-		super(event);
+	public ItemDespawnEventCommand() {
+		super();
 		
-		vegetable = new VegetableEventCommand(event);
+		ArrayList<Class<? extends EventCommand>> enums = Util.getClasses(EventCommand.class, "me.egg82.tcpp.events.individual.itemDespawn");
+		for (Class<? extends EventCommand> c : enums) {
+			try {
+				commands.add(c.newInstance());
+			} catch (Exception ex) {
+				
+			}
+		}
 	}
 	
 	//public
@@ -23,10 +31,15 @@ public class ItemDespawnEventCommand extends EventCommand {
 	protected void execute() {
 		ItemDespawnEvent e = (ItemDespawnEvent) event;
 		
-		if (e.isCancelled()) {
-			return;
+		EventCommand command = null;
+		for (int i = 0; i < commands.size(); i++) {
+			if (e.isCancelled()) {
+				return;
+			}
+			
+			command = commands.get(i);
+			command.setEvent(event);
+			command.start();
 		}
-		
-		vegetable.start();
 	}
 }

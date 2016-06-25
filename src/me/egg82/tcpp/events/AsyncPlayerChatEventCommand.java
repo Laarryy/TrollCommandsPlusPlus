@@ -1,35 +1,28 @@
 package me.egg82.tcpp.events;
 
-import org.bukkit.event.Event;
+import java.util.ArrayList;
+
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import me.egg82.tcpp.events.individual.playerChatEvent.AmnesiaEventCommand;
-import me.egg82.tcpp.events.individual.playerChatEvent.ControlEventCommand;
-import me.egg82.tcpp.events.individual.playerChatEvent.ControllerEventCommand;
-import me.egg82.tcpp.events.individual.playerChatEvent.GarbleEventCommand;
-import me.egg82.tcpp.events.individual.playerChatEvent.LagEventCommand;
-import me.egg82.tcpp.events.individual.playerChatEvent.VegetableEventCommand;
 import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.utils.Util;
 
 public class AsyncPlayerChatEventCommand extends EventCommand {
 	//vars
-	private GarbleEventCommand garble = null;
-	private ControlEventCommand control = null;
-	private ControllerEventCommand controller = null;
-	private VegetableEventCommand vegetable = null;
-	private LagEventCommand lag = null;
-	private AmnesiaEventCommand amnesia = null;
+	private ArrayList<EventCommand> commands = new ArrayList<EventCommand>();
 	
 	//constructor
-	public AsyncPlayerChatEventCommand(Event event) {
-		super(event);
+	public AsyncPlayerChatEventCommand() {
+		super();
 		
-		garble = new GarbleEventCommand(event);
-		control = new ControlEventCommand(event);
-		controller = new ControllerEventCommand(event);
-		vegetable = new VegetableEventCommand(event);
-		lag = new LagEventCommand(event);
-		amnesia = new AmnesiaEventCommand(event);
+		ArrayList<Class<? extends EventCommand>> enums = Util.getClasses(EventCommand.class, "me.egg82.tcpp.events.individual.playerChat");
+		for (Class<? extends EventCommand> c : enums) {
+			try {
+				commands.add(c.newInstance());
+			} catch (Exception ex) {
+				
+			}
+		}
 	}
 	
 	//public
@@ -38,15 +31,15 @@ public class AsyncPlayerChatEventCommand extends EventCommand {
 	protected void execute() {
 		AsyncPlayerChatEvent e = (AsyncPlayerChatEvent) event;
 		
-		if (e.isCancelled()) {
-			return;
+		EventCommand command = null;
+		for (int i = 0; i < commands.size(); i++) {
+			if (e.isCancelled()) {
+				return;
+			}
+			
+			command = commands.get(i);
+			command.setEvent(event);
+			command.start();
 		}
-		
-		garble.start();
-		control.start();
-		controller.start();
-		vegetable.start();
-		lag.start();
-		amnesia.start();
 	}
 }

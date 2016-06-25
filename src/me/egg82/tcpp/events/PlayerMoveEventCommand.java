@@ -1,35 +1,28 @@
 package me.egg82.tcpp.events;
 
-import org.bukkit.event.Event;
+import java.util.ArrayList;
+
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import me.egg82.tcpp.events.individual.playerMoveEvent.BrittleEventCommand;
-import me.egg82.tcpp.events.individual.playerMoveEvent.ControllerEventCommand;
-import me.egg82.tcpp.events.individual.playerMoveEvent.FreezeEventCommand;
-import me.egg82.tcpp.events.individual.playerMoveEvent.InfinityEventCommand;
-import me.egg82.tcpp.events.individual.playerMoveEvent.LagEventCommand;
-import me.egg82.tcpp.events.individual.playerMoveEvent.VegetableEventCommand;
 import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.utils.Util;
 
 public class PlayerMoveEventCommand extends EventCommand {
 	//vars
-	private FreezeEventCommand freeze = null;
-	private ControllerEventCommand controller = null;
-	private VegetableEventCommand vegetable = null;
-	private InfinityEventCommand infinity = null;
-	private LagEventCommand lag = null;
-	private BrittleEventCommand brittle = null;
+	private ArrayList<EventCommand> commands = new ArrayList<EventCommand>();
 	
 	//constructor
-	public PlayerMoveEventCommand(Event event) {
-		super(event);
+	public PlayerMoveEventCommand() {
+		super();
 		
-		freeze = new FreezeEventCommand(event);
-		controller = new ControllerEventCommand(event);
-		vegetable = new VegetableEventCommand(event);
-		infinity = new InfinityEventCommand(event);
-		lag = new LagEventCommand(event);
-		brittle = new BrittleEventCommand(event);
+		ArrayList<Class<? extends EventCommand>> enums = Util.getClasses(EventCommand.class, "me.egg82.tcpp.events.individual.playerMove");
+		for (Class<? extends EventCommand> c : enums) {
+			try {
+				commands.add(c.newInstance());
+			} catch (Exception ex) {
+				
+			}
+		}
 	}
 	
 	//public
@@ -38,15 +31,15 @@ public class PlayerMoveEventCommand extends EventCommand {
 	protected void execute() {
 		PlayerMoveEvent e = (PlayerMoveEvent) event;
 		
-		if (e.isCancelled()) {
-			return;
+		EventCommand command = null;
+		for (int i = 0; i < commands.size(); i++) {
+			if (e.isCancelled()) {
+				return;
+			}
+			
+			command = commands.get(i);
+			command.setEvent(event);
+			command.start();
 		}
-		
-		freeze.start();
-		controller.start();
-		vegetable.start();
-		infinity.start();
-		lag.start();
-		brittle.start();
 	}
 }

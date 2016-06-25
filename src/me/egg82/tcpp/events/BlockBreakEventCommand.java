@@ -1,32 +1,28 @@
 package me.egg82.tcpp.events;
 
-import org.bukkit.event.Event;
+import java.util.ArrayList;
+
 import org.bukkit.event.block.BlockBreakEvent;
 
-import me.egg82.tcpp.events.individual.blockBreakEvent.DisplayEventCommand;
-import me.egg82.tcpp.events.individual.blockBreakEvent.ExplodeBreakEventCommand;
-import me.egg82.tcpp.events.individual.blockBreakEvent.LagEventCommand;
-import me.egg82.tcpp.events.individual.blockBreakEvent.LavaBreakEventCommand;
-import me.egg82.tcpp.events.individual.blockBreakEvent.SlowUndoEventCommand;
 import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.utils.Util;
 
 public class BlockBreakEventCommand extends EventCommand {
 	//vars
-	private LavaBreakEventCommand lavaBreak = null;
-	private LagEventCommand lag = null;
-	private ExplodeBreakEventCommand explodeBreak = null;
-	private DisplayEventCommand display = null;
-	private SlowUndoEventCommand slowUndo = null;
+	private ArrayList<EventCommand> commands = new ArrayList<EventCommand>();
 	
 	//constructor
-	public BlockBreakEventCommand(Event event) {
-		super(event);
+	public BlockBreakEventCommand() {
+		super();
 		
-		lavaBreak = new LavaBreakEventCommand(event);
-		lag = new LagEventCommand(event);
-		explodeBreak = new ExplodeBreakEventCommand(event);
-		display = new DisplayEventCommand(event);
-		slowUndo = new SlowUndoEventCommand(event);
+		ArrayList<Class<? extends EventCommand>> enums = Util.getClasses(EventCommand.class, "me.egg82.tcpp.events.individual.blockBreak");
+		for (Class<? extends EventCommand> c : enums) {
+			try {
+				commands.add(c.newInstance());
+			} catch (Exception ex) {
+				
+			}
+		}
 	}
 	
 	//public
@@ -35,14 +31,15 @@ public class BlockBreakEventCommand extends EventCommand {
 	protected void execute() {
 		BlockBreakEvent e = (BlockBreakEvent) event;
 		
-		if (e.isCancelled()) {
-			return;
+		EventCommand command = null;
+		for (int i = 0; i < commands.size(); i++) {
+			if (e.isCancelled()) {
+				return;
+			}
+			
+			command = commands.get(i);
+			command.setEvent(event);
+			command.start();
 		}
-		
-		lavaBreak.start();
-		lag.start();
-		explodeBreak.start();
-		display.start();
-		slowUndo.start();
 	}
 }

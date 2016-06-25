@@ -2,8 +2,6 @@ package me.egg82.tcpp.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.commands.base.BasePluginCommand;
@@ -18,13 +16,15 @@ public class InfinityCommand extends BasePluginCommand {
 	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.INFINITY_REGISTRY);
 	
 	//constructor
-	public InfinityCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public InfinityCommand() {
+		super();
 	}
 	
 	//public
 	public void onDeath(String name, Player player) {
-		reg.setRegister(name, null);
+		reg.computeIfPresent(name, (k,v) -> {
+			return null;
+		});
 	}
 	
 	//private
@@ -37,16 +37,18 @@ public class InfinityCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String name, Player player) {
-		if (reg.contains(name.toLowerCase())) {
+		String lowerName = name.toLowerCase();
+		
+		if (reg.contains(lowerName)) {
 			sender.sendMessage(name + " is no longer falling forever.");
-			reg.setRegister(name.toLowerCase(), null);
+			reg.setRegister(lowerName, null);
 		} else {
-			Location l = player.getWorld().getHighestBlockAt(player.getLocation()).getLocation();
+			Location l = player.getWorld().getHighestBlockAt(player.getLocation()).getLocation().clone();
 			l.add(0.0d, 30.0d, 0.0d);
 			player.teleport(l);
 			
 			sender.sendMessage(name + " is now falling forever.");
-			reg.setRegister(name.toLowerCase(), player);
+			reg.setRegister(lowerName, player);
 		}
 	}
 }

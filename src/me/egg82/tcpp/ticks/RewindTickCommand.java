@@ -4,16 +4,17 @@ import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.enums.PluginServiceType;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.command.Command;
+import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.registry.interfaces.IRegistry;
 
-public class RewindTickCommand extends Command {
+public class RewindTickCommand extends TickCommand {
 	//vars
 	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.REWIND_REGISTRY);
 	
 	//constructor
 	public RewindTickCommand() {
 		super();
+		ticks = 5l;
 	}
 	
 	//public

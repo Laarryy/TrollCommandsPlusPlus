@@ -1,8 +1,6 @@
 package me.egg82.tcpp.commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.commands.base.BasePluginCommand;
@@ -17,15 +15,15 @@ public class RewindCommand extends BasePluginCommand {
 	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.REWIND_REGISTRY);
 	
 	//constructor
-	public RewindCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public RewindCommand() {
+		super();
 	}
 	
 	//public
 	public void onLogin(String name, Player player) {
-		if (reg.contains(name)) {
-			reg.setRegister(name, player);
-		}
+		reg.computeIfPresent(name, (k,v) -> {
+			return player;
+		});
 	}
 	
 	//private
@@ -38,13 +36,15 @@ public class RewindCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String name, Player player) {
-		if (reg.contains(name.toLowerCase())) {
-			reg.setRegister(name.toLowerCase(), null);
+		String lowerName = name.toLowerCase();
+		
+		if (reg.contains(lowerName)) {
+			reg.setRegister(lowerName, null);
 			player.resetPlayerTime();
 			sender.sendMessage(name + "'s time is not longer rewinding.");
 		} else {
 			sender.sendMessage(name + "'s time is now rewinding.");
-			reg.setRegister(name.toLowerCase(), player);
+			reg.setRegister(lowerName, player);
 		}
 	}
 }

@@ -5,8 +5,6 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.commands.base.BasePluginCommand;
@@ -23,20 +21,22 @@ public class DisplayCommand extends BasePluginCommand {
 	private IRegistry reg2 = (IRegistry) ServiceLocator.getService(PluginServiceType.DISPLAY_INTERN_REGISTRY);
 	
 	//constructor
-	public DisplayCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public DisplayCommand() {
+		super();
 	}
 	
 	//public
 	@SuppressWarnings("unchecked")
 	public void onQuit(String name, Player player) {
-		reg.setRegister(name, null);
+		reg.computeIfPresent(name, (k,v) -> {
+			return null;
+		});
 		
-		if (reg2.contains(name)) {
-			HashMap<String, Object> map = (HashMap<String, Object>) reg2.getRegister(name);
-			reg2.setRegister(name, null);
+		reg2.computeIfPresent(name, (k,v) -> {
+			HashMap<String, Object> map = (HashMap<String, Object>) v;
 			set((Location) map.get("loc"), (boolean) map.get("ground"), Material.AIR, Material.AIR);
-		}
+			return null;
+		});
 	}
 	public void onDeath(String name, Player player) {
 		onQuit(name, player);
@@ -53,17 +53,18 @@ public class DisplayCommand extends BasePluginCommand {
 	}
 	@SuppressWarnings("unchecked")
 	private void e(String name, Player player) {
+		String lowerName = name.toLowerCase();
 		Location loc = null;
 		HashMap<String, Object> map = null;
 		boolean onGround;
 		
-		if (reg.contains(name.toLowerCase())) {
+		if (reg.contains(lowerName)) {
 			sender.sendMessage(name + " is no longer on display.");
 			
-			map = (HashMap<String, Object>) reg2.getRegister(name.toLowerCase());
+			map = (HashMap<String, Object>) reg2.getRegister(lowerName);
 			
-			reg.setRegister(name.toLowerCase(), null);
-			reg2.setRegister(name.toLowerCase(), null);
+			reg.setRegister(lowerName, null);
+			reg2.setRegister(lowerName, null);
 			
 			set((Location) map.get("loc"), (boolean) map.get("ground"), Material.AIR, Material.AIR);
 		} else {
@@ -82,8 +83,8 @@ public class DisplayCommand extends BasePluginCommand {
 			
 			set(loc, onGround, Material.THIN_GLASS, Material.GLASS);
 			
-			reg.setRegister(name.toLowerCase(), player);
-			reg2.setRegister(name.toLowerCase(), map);
+			reg.setRegister(lowerName, player);
+			reg2.setRegister(lowerName, map);
 		}
 	}
 	

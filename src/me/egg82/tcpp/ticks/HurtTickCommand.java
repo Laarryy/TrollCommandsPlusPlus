@@ -4,16 +4,17 @@ import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.enums.PluginServiceType;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.command.Command;
+import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.registry.interfaces.IRegistry;
 
-public class HurtTickCommand extends Command {
+public class HurtTickCommand extends TickCommand {
 	//vars
 	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.HURT_REGISTRY);
 	
 	//constructor
 	public HurtTickCommand() {
 		super();
+		ticks = 20l;
 	}
 	
 	//public

@@ -1,23 +1,28 @@
 package me.egg82.tcpp.events;
 
-import org.bukkit.event.Event;
+import java.util.ArrayList;
+
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
-import me.egg82.tcpp.events.individual.playerPickupItemEvent.NopickupEventCommand;
-import me.egg82.tcpp.events.individual.playerPickupItemEvent.VegetableEventCommand;
 import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.utils.Util;
 
 public class PlayerPickupItemEventCommand extends EventCommand {
 	//vars
-	private VegetableEventCommand vegetable = null;
-	private NopickupEventCommand nopickup = null;
+	private ArrayList<EventCommand> commands = new ArrayList<EventCommand>();
 	
 	//constructor
-	public PlayerPickupItemEventCommand(Event event) {
-		super(event);
+	public PlayerPickupItemEventCommand() {
+		super();
 		
-		vegetable = new VegetableEventCommand(event);
-		nopickup = new NopickupEventCommand(event);
+		ArrayList<Class<? extends EventCommand>> enums = Util.getClasses(EventCommand.class, "me.egg82.tcpp.events.individual.playerPickupItem");
+		for (Class<? extends EventCommand> c : enums) {
+			try {
+				commands.add(c.newInstance());
+			} catch (Exception ex) {
+				
+			}
+		}
 	}
 	
 	//public
@@ -26,11 +31,15 @@ public class PlayerPickupItemEventCommand extends EventCommand {
 	protected void execute() {
 		PlayerPickupItemEvent e = (PlayerPickupItemEvent) event;
 		
-		if (e.isCancelled()) {
-			return;
+		EventCommand command = null;
+		for (int i = 0; i < commands.size(); i++) {
+			if (e.isCancelled()) {
+				return;
+			}
+			
+			command = commands.get(i);
+			command.setEvent(event);
+			command.start();
 		}
-		
-		vegetable.start();
-		nopickup.start();
 	}
 }

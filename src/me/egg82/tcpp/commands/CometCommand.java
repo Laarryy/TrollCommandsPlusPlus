@@ -1,22 +1,20 @@
 package me.egg82.tcpp.commands;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.commands.base.BasePluginCommand;
-import me.egg82.tcpp.enums.CommandErrorType;
-import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import ninja.egg82.events.patterns.command.CommandEvent;
+import ninja.egg82.plugin.enums.SpigotCommandErrorType;
+import ninja.egg82.plugin.enums.SpigotMessageType;
 
 public class CometCommand extends BasePluginCommand {
 	//vars
 	
 	//constructor
-	public CometCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public CometCommand() {
+		super();
 	}
 	
 	//public
@@ -30,9 +28,9 @@ public class CometCommand extends BasePluginCommand {
 				try {
 					e((Player) sender, Float.parseFloat(args[0]));
 				} catch (Exception ex) {
-					sender.sendMessage(MessageType.INCORRECT_USAGE);
+					sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
 					sender.getServer().dispatchCommand(sender, "help " + command.getName());
-					dispatch(CommandEvent.ERROR, CommandErrorType.INCORRECT_USAGE);
+					dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
 					return;
 				}
 			}

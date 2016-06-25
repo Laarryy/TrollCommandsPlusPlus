@@ -8,19 +8,19 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 import me.egg82.tcpp.enums.PluginServiceType;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.command.Command;
-import ninja.egg82.plugin.enums.CustomServiceType;
+import ninja.egg82.plugin.commands.TickCommand;
+import ninja.egg82.plugin.enums.SpigotServiceType;
 import ninja.egg82.plugin.utils.interfaces.ITickHandler;
 import ninja.egg82.registry.interfaces.IRegistry;
 
-public class DelayKillTickCommand extends Command {
+public class DelayKillTickCommand extends TickCommand {
 	//vars
-	ITickHandler tickHandler = (ITickHandler) ServiceLocator.getService(CustomServiceType.TICK_HANDLER);
+	ITickHandler tickHandler = (ITickHandler) ServiceLocator.getService(SpigotServiceType.TICK_HANDLER);
 	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.DELAY_KILL_REGISTRY);
 	
 	//constructor
 	public DelayKillTickCommand() {
-		
+		super();
 	}
 	
 	//public

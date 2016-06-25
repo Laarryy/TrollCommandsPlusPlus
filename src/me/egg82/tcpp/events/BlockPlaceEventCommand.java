@@ -1,26 +1,28 @@
 package me.egg82.tcpp.events;
 
-import org.bukkit.event.Event;
+import java.util.ArrayList;
+
 import org.bukkit.event.block.BlockPlaceEvent;
 
-import me.egg82.tcpp.events.individual.blockPlaceEvent.ExplodeBuildEventCommand;
-import me.egg82.tcpp.events.individual.blockPlaceEvent.LagEventCommand;
-import me.egg82.tcpp.events.individual.blockPlaceEvent.SlowUndoEventCommand;
 import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.utils.Util;
 
 public class BlockPlaceEventCommand extends EventCommand {
 	//vars
-	private LagEventCommand lag = null;
-	private ExplodeBuildEventCommand explodeBuild = null;
-	private SlowUndoEventCommand slowUndo = null;
+	private ArrayList<EventCommand> commands = new ArrayList<EventCommand>();
 	
 	//constructor
-	public BlockPlaceEventCommand(Event event) {
-		super(event);
+	public BlockPlaceEventCommand() {
+		super();
 		
-		lag = new LagEventCommand(event);
-		explodeBuild = new ExplodeBuildEventCommand(event);
-		slowUndo = new SlowUndoEventCommand(event);
+		ArrayList<Class<? extends EventCommand>> enums = Util.getClasses(EventCommand.class, "me.egg82.tcpp.events.individual.blockPlace");
+		for (Class<? extends EventCommand> c : enums) {
+			try {
+				commands.add(c.newInstance());
+			} catch (Exception ex) {
+				
+			}
+		}
 	}
 	
 	//public
@@ -29,12 +31,15 @@ public class BlockPlaceEventCommand extends EventCommand {
 	protected void execute() {
 		BlockPlaceEvent e = (BlockPlaceEvent) event;
 		
-		if (e.isCancelled()) {
-			return;
+		EventCommand command = null;
+		for (int i = 0; i < commands.size(); i++) {
+			if (e.isCancelled()) {
+				return;
+			}
+			
+			command = commands.get(i);
+			command.setEvent(event);
+			command.start();
 		}
-		
-		lag.start();
-		explodeBuild.start();
-		slowUndo.start();
 	}
 }

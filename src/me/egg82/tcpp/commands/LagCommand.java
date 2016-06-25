@@ -3,8 +3,6 @@ package me.egg82.tcpp.commands;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.commands.base.BasePluginCommand;
@@ -20,8 +18,8 @@ public class LagCommand extends BasePluginCommand {
 	private IRegistry reg2 = (IRegistry) ServiceLocator.getService(PluginServiceType.LAG_INTERN_REGISTRY);
 	
 	//constructor
-	public LagCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public LagCommand() {
+		super();
 	}
 	
 	//public
@@ -41,17 +39,20 @@ public class LagCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String name, Player player) {
-		if (reg.contains(name.toLowerCase())) {
+		String lowerName = name.toLowerCase();
+		
+		if (reg.contains(lowerName)) {
 			sender.sendMessage(name + " is no longer lagging.");
-			reg.setRegister(name.toLowerCase(), null);
+			reg.setRegister(lowerName, null);
+			reg2.setRegister(lowerName, null);
 		} else {
 			sender.sendMessage(name + " is now lagging.");
-			reg.setRegister(name.toLowerCase(), player);
+			reg.setRegister(lowerName, player);
 			
 			HashMap<String, Object> map = new HashMap<String, Object>();
 			map.put("loc", player.getLocation());
 			map.put("lastLoc", 0l);
-			reg2.setRegister(name.toLowerCase(), map);
+			reg2.setRegister(lowerName, map);
 		}
 	}
 }

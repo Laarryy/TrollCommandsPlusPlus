@@ -5,16 +5,17 @@ import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.enums.PluginServiceType;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.command.Command;
+import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.registry.interfaces.IRegistry;
 
-public class AloneTickCommand extends Command {
+public class AloneTickCommand extends TickCommand {
 	//vars
 	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.ALONE_REGISTRY);
 	
 	//constructor
 	public AloneTickCommand() {
 		super();
+		ticks = 20l;
 	}
 	
 	//public

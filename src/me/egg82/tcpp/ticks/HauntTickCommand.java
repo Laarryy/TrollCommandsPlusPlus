@@ -5,19 +5,24 @@ import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.enums.PluginServiceType;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.command.Command;
+import ninja.egg82.plugin.commands.TickCommand;
+import ninja.egg82.plugin.enums.SpigotReflectType;
+import ninja.egg82.plugin.enums.SpigotServiceType;
+import ninja.egg82.plugin.reflection.sound.interfaces.ISoundUtil;
 import ninja.egg82.registry.interfaces.IRegistry;
 import ninja.egg82.utils.MathUtil;
 
-public class HauntTickCommand extends Command {
+public class HauntTickCommand extends TickCommand {
 	//vars
 	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.HAUNT_REGISTRY);
+	ISoundUtil soundUtil = (ISoundUtil) ((IRegistry) ServiceLocator.getService(SpigotServiceType.REFLECT_REGISTRY)).getRegister(SpigotReflectType.SOUND);
 	private Sound[] sounds = null;
 	
 	//constructor
 	public HauntTickCommand() {
 		super();
-		sounds = (Sound[]) ((IRegistry) ServiceLocator.getService(PluginServiceType.SOUNDS_REGISTRY)).getRegister("all");
+		ticks = 20l;
+		sounds = soundUtil.getAllSounds();
 	}
 	
 	//public

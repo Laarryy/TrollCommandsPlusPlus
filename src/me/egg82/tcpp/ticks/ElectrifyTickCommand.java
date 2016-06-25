@@ -6,17 +6,18 @@ import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.enums.PluginServiceType;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.command.Command;
+import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.registry.interfaces.IRegistry;
 import ninja.egg82.utils.MathUtil;
 
-public class ElectrifyTickCommand extends Command {
+public class ElectrifyTickCommand extends TickCommand {
 	//vars
 	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.ELECTRIFY_REGISTRY);
 	
 	//constructor
 	public ElectrifyTickCommand() {
 		super();
+		ticks = 10l;
 	}
 	
 	//public

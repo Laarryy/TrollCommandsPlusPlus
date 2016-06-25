@@ -8,10 +8,10 @@ import com.google.common.collect.ImmutableMap;
 
 import me.egg82.tcpp.enums.PluginServiceType;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.command.Command;
+import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.registry.interfaces.IRegistry;
 
-public class AmnesiaTickCommand extends Command {
+public class AmnesiaTickCommand extends TickCommand {
 	//vars
 	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.AMNESIA_REGISTRY);
 	private IRegistry reg2 = (IRegistry) ServiceLocator.getService(PluginServiceType.AMNESIA_INTERN_REGISTRY);
@@ -19,6 +19,7 @@ public class AmnesiaTickCommand extends Command {
 	//constructor
 	public AmnesiaTickCommand() {
 		super();
+		ticks = 20l;
 	}
 	
 	//public

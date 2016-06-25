@@ -1,8 +1,6 @@
 package me.egg82.tcpp.commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -15,8 +13,8 @@ public class UselessCommand extends BasePluginCommand {
 	//vars
 	
 	//constructor
-	public UselessCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public UselessCommand() {
+		super();
 	}
 	
 	//public
@@ -24,14 +22,13 @@ public class UselessCommand extends BasePluginCommand {
 	//private
 	protected void execute() {
 		if (isValid(false, PermissionsType.COMMAND_USELESS, new int[]{1}, new int[]{0})) {
-			if (args.length == 1) {
-				e(Bukkit.getPlayer(args[0]));
-			}
+			Player player = Bukkit.getPlayer(args[0]);
+			e(player.getName(), player);
 			
 			dispatch(CommandEvent.COMPLETE, null);
 		}
 	}
-	private void e(Player player) {
+	private void e(String name, Player player) {
 		ItemStack[] items = player.getInventory().getContents();
 		ItemMeta meta = null;
 		
@@ -45,6 +42,6 @@ public class UselessCommand extends BasePluginCommand {
 			i.setItemMeta(meta);
 		}
 		
-		sender.sendMessage(player.getName() + "'s items are now all \"Useless\"!");
+		sender.sendMessage(name + "'s items are now all \"Useless\"!");
 	}
 }

@@ -10,16 +10,17 @@ import com.google.common.collect.ImmutableMap;
 
 import me.egg82.tcpp.enums.PluginServiceType;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.command.Command;
+import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.registry.interfaces.IRegistry;
 
-public class SlowUndoTickCommand extends Command {
+public class SlowUndoTickCommand extends TickCommand {
 	//vars
 	private IRegistry reg2 = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOW_UNDO_INTERN_REGISTRY);
 	
 	//constructor
 	public SlowUndoTickCommand() {
 		super();
+		ticks = 20l;
 	}
 	
 	//public

@@ -6,36 +6,29 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.FlowerPot;
-import org.bukkit.block.Jukebox;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 
 import me.egg82.tcpp.commands.base.BasePluginCommand;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.enums.PluginServiceType;
 import me.egg82.tcpp.ticks.VoidTickCommand;
-import me.egg82.tcpp.util.BlockDataUtil;
 import ninja.egg82.events.patterns.command.CommandEvent;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.enums.CustomServiceType;
+import ninja.egg82.plugin.enums.SpigotServiceType;
+import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.interfaces.ITickHandler;
 import ninja.egg82.registry.interfaces.IRegistry;
 
 public class VoidCommand extends BasePluginCommand {
 	//vars
 	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.VOID_REGISTRY);
-	ITickHandler tickHandler = (ITickHandler) ServiceLocator.getService(CustomServiceType.TICK_HANDLER);
+	ITickHandler tickHandler = (ITickHandler) ServiceLocator.getService(SpigotServiceType.TICK_HANDLER);
 	
 	//constructor
-	public VoidCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public VoidCommand() {
+		super();
 	}
 	
 	//public
@@ -43,24 +36,28 @@ public class VoidCommand extends BasePluginCommand {
 	//private
 	protected void execute() {
 		if (isValid(false, PermissionsType.COMMAND_VOID, new int[]{1}, new int[]{0})) {
-			if (args.length == 1) {
-				e(Bukkit.getPlayer(args[0]));
-			}
+			Player player = Bukkit.getPlayer(args[0]);
+			e(player.getName(), player);
 			
 			dispatch(CommandEvent.COMPLETE, null);
 		}
 	}
-	private void e(Player player) {
+	private void e(String name, Player player) {
+		String lowerName = name.toLowerCase();
 		ArrayList<Material[]> blocks = new ArrayList<Material[]>();
 		ArrayList<ArrayList<ItemStack[]>> inv = new ArrayList<ArrayList<ItemStack[]>>();
 		ArrayList<BlockState[]> data = new ArrayList<BlockState[]>();
 		Location loc = player.getLocation();
 		
+		Location l = null;
+		
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
-				inv.add(getBlockInventory(loc.clone().add(i - 1.0d, 0.0d, j - 1.0d)));
-				data.add(getBlockState(loc.clone().add(i - 1.0d, 0.0d, j - 1.0d)));
-				blocks.add(removeBlocks(loc.clone().add(i - 1.0d, 0.0d, j - 1.0d)));
+				l = loc.clone().add(i - 1.0d, 0.0d, j - 1.0d);
+				
+				inv.add(BlockUtil.getYLineBlockInventory(l.clone(), 0));
+				data.add(BlockUtil.getYLineBlockState(l.clone(), 0));
+				blocks.add(BlockUtil.removeYLineBlocks(l.clone(), 0));
 			}
 		}
 		
@@ -70,68 +67,9 @@ public class VoidCommand extends BasePluginCommand {
 		map.put("blocks", blocks);
 		map.put("inv", inv);
 		map.put("data", data);
-		reg.setRegister(player.getName().toLowerCase(), map);
-		tickHandler.addDelayedTickCommand("void-" + player.getName().toLowerCase(), VoidTickCommand.class, 202);
+		reg.setRegister(lowerName, map);
+		tickHandler.addDelayedTickCommand("void-" + lowerName, VoidTickCommand.class, 202);
 		
-		sender.sendMessage(player.getName() + " is now very confused as to why they are suddenly falling through the world.");
-	}
-	
-	private ArrayList<ItemStack[]> getBlockInventory(Location l) {
-		ArrayList<ItemStack[]> s = new ArrayList<ItemStack[]>();
-		BlockState state = null;
-		Material type = null;
-		
-		do {
-			state = l.getBlock().getState();
-			type = state.getType();
-			if (state instanceof InventoryHolder) {
-				InventoryHolder holder = (InventoryHolder) state;
-				s.add(holder.getInventory().getContents());
-			} else if (type == Material.FLOWER_POT) {
-				MaterialData contents = ((FlowerPot) state).getContents();
-				if (contents != null) {
-					s.add(new ItemStack[]{contents.toItemStack()});
-				} else {
-					s.add(null);
-				}
-			} else if (type == Material.JUKEBOX) {
-				Material playing = ((Jukebox) state).getPlaying();
-				if (playing != null) {
-					s.add(new ItemStack[]{new ItemStack(playing, 1)});
-				} else {
-					s.add(null);
-				}
-			} else {
-				s.add(null);
-			}
-		} while (l.subtract(0.0d, 1.0d, 0.0d).getBlockY() >= 0);
-		
-		return s;
-	}
-	private BlockState[] getBlockState(Location l) {
-		BlockState[] d = new BlockState[l.getBlockY() + 1];
-		int i = 0;
-		
-		do {
-			d[i] = l.getBlock().getState();
-			i++;
-		} while (l.subtract(0.0d, 1.0d, 0.0d).getBlockY() >= 0);
-		
-		return d;
-	}
-	private Material[] removeBlocks(Location l) {
-		Material[] b = new Material[l.getBlockY() + 1];
-		int i = 0;
-		Block block = null;
-		
-		do {
-			block = l.getBlock();
-			b[i] = block.getType();
-			BlockDataUtil.clearBlockInventory(block.getState());
-			block.setType(Material.AIR);
-			i++;
-		} while (l.subtract(0.0d, 1.0d, 0.0d).getBlockY() >= 0);
-		
-		return b;
+		sender.sendMessage(name + " is now very confused as to why they are suddenly falling through the world.");
 	}
 }

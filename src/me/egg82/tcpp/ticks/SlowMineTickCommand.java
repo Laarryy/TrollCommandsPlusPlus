@@ -6,16 +6,17 @@ import org.bukkit.potion.PotionEffectType;
 
 import me.egg82.tcpp.enums.PluginServiceType;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.command.Command;
+import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.registry.interfaces.IRegistry;
 
-public class SlowMineTickCommand extends Command {
+public class SlowMineTickCommand extends TickCommand {
 	//vars
 	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOWMINE_REGISTRY);
 	
 	//constructor
 	public SlowMineTickCommand() {
 		super();
+		ticks = 60l;
 	}
 	
 	//public

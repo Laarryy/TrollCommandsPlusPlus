@@ -1,8 +1,6 @@
 package me.egg82.tcpp.commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.commands.base.BasePluginCommand;
@@ -13,8 +11,8 @@ public class NightCommand extends BasePluginCommand {
 	//vars
 	
 	//constructor
-	public NightCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public NightCommand() {
+		super();
 	}
 	
 	//public
@@ -22,18 +20,19 @@ public class NightCommand extends BasePluginCommand {
 	//private
 	protected void execute() {
 		if (isValid(false, PermissionsType.COMMAND_NIGHT, new int[]{1}, new int[]{0})) {
-			e(Bukkit.getPlayer(args[0]));
+			Player player = Bukkit.getPlayer(args[0]);
+			e(player.getName(), player);
 			
 			dispatch(CommandEvent.COMPLETE, null);
 		}
 	}
-	private void e(Player player) {
+	private void e(String name, Player player) {
 		if (!player.isPlayerTimeRelative()) {
 			player.resetPlayerTime();
-			sender.sendMessage(player.getName() + "'s time is no longer perma-night.");
+			sender.sendMessage(name + "'s time is no longer perma-night.");
 		} else {
 			player.setPlayerTime(18000, false);
-			sender.sendMessage(player.getName() + "'s time is now perma-night.");
+			sender.sendMessage(name + "'s time is now perma-night.");
 		}
 	}
 }

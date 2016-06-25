@@ -6,16 +6,17 @@ import org.bukkit.potion.PotionEffectType;
 
 import me.egg82.tcpp.enums.PluginServiceType;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.command.Command;
+import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.registry.interfaces.IRegistry;
 
-public class NauseaTickCommand extends Command {
+public class NauseaTickCommand extends TickCommand {
 	//vars
 	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.NAUSEA_REGISTRY);
 	
 	//constructor
 	public NauseaTickCommand() {
 		super();
+		ticks = 200l;
 	}
 	
 	//public
