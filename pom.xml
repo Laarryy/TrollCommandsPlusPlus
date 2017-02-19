@@ -62,7 +62,7 @@
     </repository>
     <repository>
       <id>egg82-ninja</id>
-      <url>https://www.egg82.ninja/repo/</url>
+      <url>https://www.egg82.ninja/repo/minecraft/libs/</url>
     </repository>
     <repository>
       <id>md_5-public</id>
