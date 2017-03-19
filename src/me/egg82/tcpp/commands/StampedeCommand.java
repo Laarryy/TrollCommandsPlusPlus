@@ -12,11 +12,17 @@ import org.bukkit.util.Vector;
 import me.egg82.tcpp.commands.base.BasePluginCommand;
 import me.egg82.tcpp.enums.PermissionsType;
 import ninja.egg82.events.patterns.command.CommandEvent;
+import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.plugin.enums.SpigotReflectType;
+import ninja.egg82.plugin.enums.SpigotServiceType;
+import ninja.egg82.plugin.reflection.entity.interfaces.IEntityUtil;
 import ninja.egg82.plugin.utils.BlockUtil;
+import ninja.egg82.registry.interfaces.IRegistry;
 import ninja.egg82.utils.MathUtil;
 
 public class StampedeCommand extends BasePluginCommand {
 	//vars
+	private IEntityUtil entityUtil = (IEntityUtil) ((IRegistry) ServiceLocator.getService(SpigotServiceType.REFLECT_REGISTRY)).getRegister(SpigotReflectType.ENTITY);
 	
 	//constructor
 	public StampedeCommand() {
@@ -49,7 +55,7 @@ public class StampedeCommand extends BasePluginCommand {
 		Cow cow = (Cow) p.getWorld().spawn(l, Cow.class);
 		Silverfish fish = (Silverfish) p.getWorld().spawn(l, Silverfish.class);
 		fish.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1200, 3), true);
-		fish.setPassenger(cow);
+		entityUtil.addPassenger(fish, cow);
 		fish.setVelocity(v);
 		cow.setVelocity(v);
 		fish.setTarget(p);

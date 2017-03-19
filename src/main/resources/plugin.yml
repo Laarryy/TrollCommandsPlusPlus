@@ -1,6 +1,6 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 2.6.17
+version: 2.6.18
 commands:
   troll:
     description: Same as /help TrollCommandsPlusPlus [page]
@@ -15,6 +15,7 @@ commands:
   creep:
     description: Spawns a charged creeper at the player's location.
     usage: /creep <player>
+    aliases: 
   swap:
     description: Swaps two players' locations, Freaky Friday style.
     usage: /swap <player> <player>
