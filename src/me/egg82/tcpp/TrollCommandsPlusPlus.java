@@ -6,10 +6,10 @@ import java.util.Arrays;
 
 import javax.swing.Timer;
 
+import org.bstats.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
-import org.mcstats.Metrics;
 
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.enums.PluginServiceType;
@@ -59,7 +59,6 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		
 		try {
 			Metrics m = new Metrics(this);
-			m.start();
 		} catch (Exception ex) {
 			
 		}

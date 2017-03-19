@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>TrollCommandsPlusPlus</artifactId>
-  <version>2.6.18</version>
+  <version>2.6.19</version>
   <name>TrollCommandsPlusPlus</name>
   <description>TCPP for Spigot/Bukkit</description>
   <build>
@@ -13,6 +13,11 @@
         <configuration>
           <source>1.8</source>
           <target>1.8</target>
+          <artifactSet>
+            <includes>
+              <include>org.bstats:*</include>
+            </includes>
+          </artifactSet>
         </configuration>
       </plugin>
       <plugin>
@@ -33,8 +38,8 @@
                   <shadedPattern>me.egg82.tcpp.lib.ninja.egg82</shadedPattern>
                 </relocation>
                 <relocation>
-                  <pattern>org.mcstats</pattern>
-                  <shadedPattern>me.egg82.tcpp.lib.org.mcstats</shadedPattern>
+                  <pattern>org.bstats</pattern>
+                  <shadedPattern>>me.egg82.tcpp.lib.org.bstats</shadedPattern>
                 </relocation>
                 <relocation>
                   <pattern>net.gravitydevelopment</pattern>
@@ -53,8 +58,8 @@
       <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
     </repository>
     <repository>
-      <id>Plugin Metrics</id>
-      <url>http://repo.mcstats.org/content/repositories/public</url>
+      <id>bstats-repo</id>
+      <url>http://repo.bstats.org/content/repositories/releases/</url>
     </repository>
     <repository>
       <id>gravity-repo</id>
@@ -71,9 +76,9 @@
   </repositories>
   <dependencies>
     <dependency>
-      <groupId>org.mcstats.bukkit</groupId>
-      <artifactId>metrics</artifactId>
-      <version>R8-SNAPSHOT</version>
+      <groupId>org.bstats</groupId>
+      <artifactId>bstats-bukkit</artifactId>
+      <version>1.1</version>
     </dependency>
   	<dependency>
       <groupId>org.spigotmc</groupId>
