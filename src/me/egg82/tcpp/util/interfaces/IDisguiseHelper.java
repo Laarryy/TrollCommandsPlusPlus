@@ -8,4 +8,5 @@ public interface IDisguiseHelper {
 	void disguiseAsEntity(Player player, EntityType disguise);
 	void undisguise(Player player);
 	EntityType disguiseType(Player player);
+	boolean isValidLibrary();
 }

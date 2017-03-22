@@ -58,10 +58,23 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		PluginManager manager = getServer().getPluginManager();
 		
 		if (manager.getPlugin("LibsDisguises") != null) {
-			ServiceLocator.provideService(PluginServiceType.DISGUISE_HELPER, LibsDisguisesHelper.class);
+			if (manager.getPlugin("ProtocolLib") != null) {
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[TrollCommands++] Enabling support for LibsDisguises.");
+				ServiceLocator.provideService(PluginServiceType.DISGUISE_HELPER, LibsDisguisesHelper.class);
+			} else {
+				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[TrollCommands++] LibsDisguises requires ProtocolLib to function, which was not found. The /control and /scare commands have been disabled.");
+				ServiceLocator.provideService(PluginServiceType.DISGUISE_HELPER, NullDisguiseHelper.class);
+			}
 		} else if (manager.getPlugin("iDisguise") != null) {
-			ServiceLocator.provideService(PluginServiceType.DISGUISE_HELPER, DisguiseHelper.class);
+			if (manager.getPlugin("ProtocolLib") != null) {
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[TrollCommands++] Enabling support for iDisguise.");
+				ServiceLocator.provideService(PluginServiceType.DISGUISE_HELPER, DisguiseHelper.class);
+			} else {
+				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[TrollCommands++] iDisguise requires ProtocolLib to function, which was not found. The /control and /scare commands have been disabled.");
+				ServiceLocator.provideService(PluginServiceType.DISGUISE_HELPER, NullDisguiseHelper.class);
+			}
 		} else {
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[TrollCommands++] Neither LibsDisguises nor iDisguise was found. The /control and /scare commands have been disabled.");
 			ServiceLocator.provideService(PluginServiceType.DISGUISE_HELPER, NullDisguiseHelper.class);
 		}
 		
@@ -106,8 +119,40 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	private void checkUpdate() {
 		Updater updater = new Updater(this, 100359, getFile(), UpdateType.NO_DOWNLOAD, false);
 		if (updater.getResult() == UpdateResult.UPDATE_AVAILABLE) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "--== " + ChatColor.YELLOW + "TrollCommands++ UPDATE AVAILABLE" + ChatColor.GREEN + " ==--");
+			int[] latest = parseVersion(updater.getLatestName());
+			int[] current = parseVersion(getDescription().getVersion());
+			
+			for (int i = 0; i < Math.min(latest.length, current.length); i++) {
+				if (latest[i] < current[i]) {
+					return;
+				}
+			}
+			
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "--== " + ChatColor.YELLOW + "TrollCommands++ UPDATE AVAILABLE (Latest: " + versionToString(latest) + " Current: " + versionToString(current) + ") " + ChatColor.GREEN + " ==--");
 		}
+	}
+	private int[] parseVersion(String name) {
+		int versionIndex = Math.max(0, name.lastIndexOf('v') + 1);
+		String versionString = name.substring(versionIndex);
+		
+		int firstDot = versionString.indexOf('.');
+		int middleDot = versionString.indexOf('.', firstDot + 1);
+		int lastDot = versionString.lastIndexOf('.');
+		
+		int first = Integer.parseInt(versionString.substring(0, firstDot));
+		int middle = Integer.parseInt(versionString.substring(firstDot + 1, middleDot));
+		int last = Integer.parseInt(versionString.substring(lastDot + 1));
+		
+		return new int[] {first, middle, last};
+	}
+	private String versionToString(int[] version) {
+		String retVal = "";
+		for (int i = 0; i < version.length; i++) {
+			retVal += version[i] + ".";
+		}
+		retVal = retVal.substring(0, retVal.length() - 1);
+		
+		return retVal;
 	}
 	
 	private void enableMessage(ConsoleCommandSender sender) {

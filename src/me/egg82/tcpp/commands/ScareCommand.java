@@ -26,6 +26,12 @@ public class ScareCommand extends BasePluginCommand {
 	//private
 	protected void execute() {
 		if (isValid(true, PermissionsType.COMMAND_SCARE, new int[]{0}, null)) {
+			if (!disguiseHelper.isValidLibrary()) {
+				sender.sendMessage(MessageType.NO_LIBRARY);
+				dispatch(CommandEvent.ERROR, CommandErrorType.NO_LIBRARY);
+				return;
+			}
+			
 			Player player = (Player) sender;
 			EntityType type = disguiseHelper.disguiseType(player);
 			

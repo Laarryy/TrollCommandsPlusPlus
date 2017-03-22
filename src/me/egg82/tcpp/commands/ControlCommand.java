@@ -54,6 +54,12 @@ public class ControlCommand extends BasePluginCommand {
 	//private
 	protected void execute() {
 		if (isValid(true, PermissionsType.COMMAND_CONTROL, new int[]{0,1}, new int[]{0})) {
+			if (!disguiseHelper.isValidLibrary()) {
+				sender.sendMessage(MessageType.NO_LIBRARY);
+				dispatch(CommandEvent.ERROR, CommandErrorType.NO_LIBRARY);
+				return;
+			}
+			
 			Player p = (Player) sender;
 			Player player = null;
 			
