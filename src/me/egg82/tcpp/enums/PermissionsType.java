@@ -65,6 +65,7 @@ public class PermissionsType {
 	public static final String COMMAND_AMNESIA = "tcpp.command.amnesia";
 	public static final String COMMAND_EXPLODEBUILD = "tcpp.command.explodebuild";
 	public static final String COMMAND_SLOWUNDO = "tcpp.command.slowundo";
+	public static final String COMMAND_SCARE = "tcpp.command.scare";
 	
 	//constructor
 	public PermissionsType() {

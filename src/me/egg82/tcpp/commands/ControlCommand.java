@@ -16,8 +16,7 @@ import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.enums.PluginServiceType;
-import me.libraryaddict.disguise.DisguiseAPI;
-import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
+import me.egg82.tcpp.util.interfaces.IDisguiseHelper;
 import ninja.egg82.events.patterns.command.CommandEvent;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.registry.interfaces.IRegistry;
@@ -27,6 +26,7 @@ public class ControlCommand extends BasePluginCommand {
 	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.CONTROL_REGISTRY);
 	private IRegistry reg2 = (IRegistry) ServiceLocator.getService(PluginServiceType.CONTROLLER_REGISTRY);
 	private IRegistry reg3 = (IRegistry) ServiceLocator.getService(PluginServiceType.CONTROL_DATA_REGISTRY);
+	private IDisguiseHelper disguiseHelper = (IDisguiseHelper) ServiceLocator.getService(PluginServiceType.DISGUISE_HELPER);
 	
 	//constructor
 	public ControlCommand() {
@@ -128,7 +128,7 @@ public class ControlCommand extends BasePluginCommand {
 				controller.teleport((Location) map.get("location"));
 			}
 			
-			DisguiseAPI.undisguiseToAll(controller);
+			disguiseHelper.undisguise(controller);
 			
 			reg.setRegister(lowerName, null);
 			reg2.setRegister(controllerLowerName, null);
@@ -150,7 +150,7 @@ public class ControlCommand extends BasePluginCommand {
 			controller.teleport(player);
 			player.setGameMode(GameMode.SPECTATOR);
 			
-			DisguiseAPI.disguiseToAll(controller, new PlayerDisguise(name).setViewSelfDisguise(false));
+			disguiseHelper.disguiseAsPlayer(controller, player);
 		}
 	}
 }

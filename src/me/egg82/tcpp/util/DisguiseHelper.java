@@ -1,0 +1,40 @@
+package me.egg82.tcpp.util;
+
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+
+import me.egg82.tcpp.util.interfaces.IDisguiseHelper;
+import de.robingrether.idisguise.api.DisguiseAPI;
+import de.robingrether.idisguise.disguise.DisguiseType;
+import de.robingrether.idisguise.disguise.MobDisguise;
+import de.robingrether.idisguise.disguise.PlayerDisguise;;
+
+public class DisguiseHelper implements IDisguiseHelper {
+	//vars
+	DisguiseAPI api = Bukkit.getServicesManager().getRegistration(DisguiseAPI.class).getProvider();
+	
+	//constructor
+	public DisguiseHelper() {
+		
+	}
+	
+	//public
+	public void disguiseAsPlayer(Player player, Player disguise) {
+		api.disguise(player, new PlayerDisguise(disguise.getName(), disguise.getDisplayName(), false));
+	}
+	public void disguiseAsEntity(Player player, EntityType disguise) {
+		api.disguise(player, new MobDisguise(DisguiseType.valueOf(disguise.toString())));
+	}
+	public void undisguise(Player player) {
+		api.undisguise(player);
+	}
+	public EntityType disguiseType(Player player) {
+		OfflinePlayer p = (OfflinePlayer) player;
+		return (api.isDisguised(p)) ? EntityType.valueOf(api.getDisguise(p).getType().toString().toUpperCase()) : null;
+	}
+	
+	//private
+	
+}

@@ -7,6 +7,7 @@ public class MessageType {
 	public static final String PLAYER_IMMUNE = ChatColor.RED + "Player is immune.";
 	public static final String NOT_CONTROLLING = ChatColor.RED + "You are not controlling anyone.";
 	public static final String NO_CONTROL_SELF = ChatColor.RED + "You cannot control yourself!";
+	public static final String ALREADY_DISGUISED = ChatColor.RED + "You are already disguised as something else!";
 	
 	//constructor
 	public MessageType() {

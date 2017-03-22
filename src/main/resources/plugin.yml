@@ -1,6 +1,7 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 2.6.18
+version: 2.7.20
+softdepend: [LibsDisguises,iDisguise]
 commands:
   troll:
     description: Same as /help TrollCommandsPlusPlus [page]
@@ -182,3 +183,6 @@ commands:
   slowundo:
     description: Slowly undoes any block changes the player makes.
     usage: /slowundo <player>
+  scare:
+    description: SSSSssssssssss..
+    usage: /scare

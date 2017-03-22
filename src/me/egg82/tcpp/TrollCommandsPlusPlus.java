@@ -10,9 +10,13 @@ import org.bstats.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.plugin.PluginManager;
 
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.enums.PluginServiceType;
+import me.egg82.tcpp.util.DisguiseHelper;
+import me.egg82.tcpp.util.LibsDisguisesHelper;
+import me.egg82.tcpp.util.nulls.NullDisguiseHelper;
 import net.gravitydevelopment.updater.Updater;
 import net.gravitydevelopment.updater.Updater.UpdateResult;
 import net.gravitydevelopment.updater.Updater.UpdateType;
@@ -51,6 +55,16 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 			ServiceLocator.provideService(s, Registry.class);
 		}
 		
+		PluginManager manager = getServer().getPluginManager();
+		
+		if (manager.getPlugin("LibsDisguises") != null) {
+			ServiceLocator.provideService(PluginServiceType.DISGUISE_HELPER, LibsDisguisesHelper.class);
+		} else if (manager.getPlugin("iDisguise") != null) {
+			ServiceLocator.provideService(PluginServiceType.DISGUISE_HELPER, DisguiseHelper.class);
+		} else {
+			ServiceLocator.provideService(PluginServiceType.DISGUISE_HELPER, NullDisguiseHelper.class);
+		}
+		
 		updateTimer = new Timer(24 * 60 * 60 * 1000, onUpdateTimer);
 	}
 	
@@ -58,6 +72,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		super.onEnable();
 		
 		try {
+			@SuppressWarnings("unused")
 			Metrics m = new Metrics(this);
 		} catch (Exception ex) {
 			
