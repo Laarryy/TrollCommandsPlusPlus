@@ -7,6 +7,7 @@ public class CommandErrorType {
 	public static final String NO_CONTROL_SELF = "noControlSelf";
 	public static final String ALREADY_DISGUISED = "alreadyDisguised";
 	public static final String NO_LIBRARY = "noLibrary";
+	public static final String ALREADY_USED = "alreadyUsed";
 	
 	//constructor
 	public CommandErrorType() {

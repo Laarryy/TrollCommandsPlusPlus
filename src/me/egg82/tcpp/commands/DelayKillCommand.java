@@ -28,13 +28,13 @@ public class DelayKillCommand extends BasePluginCommand {
 	}
 	
 	//public
-	public void onQuit(String name, Player player) {
-		reg.computeIfPresent(name, (k,v) -> {
+	public void onQuit(String uuid, Player player) {
+		reg.computeIfPresent(uuid, (k,v) -> {
 			return null;
 		});
 	}
-	public void onDeath(String name, Player player) {
-		onQuit(name, player);
+	public void onDeath(String uuid, Player player) {
+		onQuit(uuid, player);
 	}
 	
 	//private
@@ -42,12 +42,12 @@ public class DelayKillCommand extends BasePluginCommand {
 		if (isValid(false, PermissionsType.COMMAND_DELAYKILL, new int[]{1,2}, new int[]{0})) {
 			if (args.length == 1) {
 				Player player = Bukkit.getPlayer(args[0]);
-				e(player.getName(), player, -1);
+				e(player.getUniqueId().toString(), player, -1);
 			} else if (args.length == 2) {
 				Player player = Bukkit.getPlayer(args[0]);
 				
 				try {
-					e(player.getName(), player, Integer.parseInt(args[1]));
+					e(player.getUniqueId().toString(), player, Integer.parseInt(args[1]));
 				} catch (Exception ex) {
 					sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
 					sender.getServer().dispatchCommand(sender, "help " + command.getName());
@@ -59,22 +59,20 @@ public class DelayKillCommand extends BasePluginCommand {
 			dispatch(CommandEvent.COMPLETE, null);
 		}
 	}
-	private void e(String name, Player player, int delay) {
-		String lowerName = name.toLowerCase();
-		
-		if (reg.contains(lowerName)) {
-			sender.sendMessage(name + "'s death is no longer inevitable.");
-			reg.setRegister(lowerName, null);
+	private void e(String uuid, Player player, int delay) {
+		if (reg.contains(uuid)) {
+			sender.sendMessage(player.getName() + "'s death is no longer inevitable.");
+			reg.setRegister(uuid, null);
 		} else {
 			if (delay > -1) {
-				sender.sendMessage(name + "'s death is inevitable.");
+				sender.sendMessage(player.getName() + "'s death is inevitable.");
 				
 				HashMap<String, Object> map = new HashMap<String, Object>();
 				map.put("time", System.currentTimeMillis());
 				map.put("delay", delay);
 				map.put("player", player);
-				reg.setRegister(lowerName, map);
-				tickHandler.addDelayedTickCommand("delayKill-" + lowerName, DelayKillTickCommand.class, 20 * delay + 2);
+				reg.setRegister(uuid, map);
+				tickHandler.addDelayedTickCommand("delayKill-" + uuid, DelayKillTickCommand.class, 20 * delay + 2);
 			}
 		}
 	}

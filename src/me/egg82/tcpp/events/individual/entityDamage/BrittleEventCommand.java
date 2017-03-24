@@ -29,7 +29,7 @@ public class BrittleEventCommand extends EventCommand {
 		if (e.getEntityType() == EntityType.PLAYER) {
 			Player player = (Player) e.getEntity();
 			
-			brittleRegistry.computeIfPresent(player.getName().toLowerCase(), (k,v) -> {
+			brittleRegistry.computeIfPresent(player.getUniqueId().toString(), (k,v) -> {
 				player.setHealth(0.0d);
 				EntityDamageEvent damageEvent = new EntityDamageEvent(player, EntityDamageEvent.DamageCause.FALL, Double.MAX_VALUE);
 				Bukkit.getPluginManager().callEvent(damageEvent);

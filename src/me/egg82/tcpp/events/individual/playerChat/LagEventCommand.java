@@ -31,7 +31,7 @@ public class LagEventCommand extends EventCommand {
 	protected void execute() {
 		AsyncPlayerChatEvent e = (AsyncPlayerChatEvent) event;
 		
-		if (lagRegistry.contains(e.getPlayer().getName().toLowerCase())) {
+		if (lagRegistry.contains(e.getPlayer().getUniqueId().toString())) {
 			timer = new Timer(MathUtil.fairRoundedRandom(2000, 3000), onTimer);
 			timer.setRepeats(false);
 			timer.start();

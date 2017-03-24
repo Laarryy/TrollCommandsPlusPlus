@@ -20,8 +20,8 @@ public class ExplodeBreakCommand extends BasePluginCommand {
 	}
 	
 	//public
-	public void onLogin(String name, Player player) {
-		reg.computeIfPresent(name, (k,v) -> {
+	public void onLogin(String uuid, Player player) {
+		reg.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -30,20 +30,18 @@ public class ExplodeBreakCommand extends BasePluginCommand {
 	protected void execute() {
 		if (isValid(false, PermissionsType.COMMAND_EXPLODEBREAK, new int[]{1}, new int[]{0})) {
 			Player player = Bukkit.getPlayer(args[0]);
-			e(player.getName(), player);
+			e(player.getUniqueId().toString(), player);
 			
 			dispatch(CommandEvent.COMPLETE, null);
 		}
 	}
-	private void e(String name, Player player) {
-		String lowerName = name.toLowerCase();
-		
-		if (reg.contains(lowerName)) {
-			sender.sendMessage("The next block " + name + " breaks will no longer explode.");
-			reg.setRegister(lowerName, null);
+	private void e(String uuid, Player player) {
+		if (reg.contains(uuid)) {
+			sender.sendMessage("The next block " + player.getName() + " breaks will no longer explode.");
+			reg.setRegister(uuid, null);
 		} else {
-			sender.sendMessage("The next block " + name + " breaks will now explode!");
-			reg.setRegister(lowerName, player);
+			sender.sendMessage("The next block " + player.getName() + " breaks will now explode!");
+			reg.setRegister(uuid, player);
 		}
 	}
 }

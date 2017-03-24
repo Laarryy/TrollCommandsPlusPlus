@@ -29,10 +29,10 @@ public class LagEventCommand extends EventCommand {
 		PlayerMoveEvent e = (PlayerMoveEvent) event;
 		Location to = e.getTo();
 		Player player = e.getPlayer();
-		String name = player.getName().toLowerCase();
+		String uuid = player.getUniqueId().toString();
 		
-		if (lagRegistry.contains(name)) {
-			HashMap<String, Object> map = (HashMap<String, Object>) lagInternRegistry.getRegister(name);
+		if (lagRegistry.contains(uuid)) {
+			HashMap<String, Object> map = (HashMap<String, Object>) lagInternRegistry.getRegister(uuid);
 			long lastLoc = (long) map.get("lastLoc");
 			
 			if (System.currentTimeMillis() - lastLoc >= 500 && Math.random() <= 0.05d) {

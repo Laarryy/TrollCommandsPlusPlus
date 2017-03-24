@@ -22,9 +22,9 @@ public class LavaBreakEventCommand extends EventCommand {
 	//private
 	protected void execute() {
 		BlockBreakEvent e = (BlockBreakEvent) event;
-		String name = e.getPlayer().getName().toLowerCase();
+		String uuid = e.getPlayer().getUniqueId().toString();
 		
-		lavaBreakRegistry.computeIfPresent(name, (k,v) -> {
+		lavaBreakRegistry.computeIfPresent(uuid, (k,v) -> {
 			e.setCancelled(true);
 			e.getBlock().setType(Material.LAVA);
 			return null;

@@ -24,7 +24,7 @@ public class PlayerDeathEventCommand extends EventCommand {
 	protected void execute() {
 		PluginCommand[] commands = commandHandler.getInitializedCommands();
 		Player player = ((PlayerDeathEvent) event).getEntity();
-		String lowerName = player.getName().toLowerCase();
+		String lowerName = player.getUniqueId().toString();
 		
 		for (int i = 0; i < commands.length; i++) {
 			commands[i].onDeath(lowerName, player);

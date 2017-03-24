@@ -37,10 +37,10 @@ public class AmnesiaEventCommand extends EventCommand {
 		
 		while (i.hasNext()) {
 			Player p = i.next();
-			String name = p.getName().toLowerCase();
+			String uuid = p.getUniqueId().toString();
 			
-			if (amnesiaRegistry.contains(name)) {
-				ArrayList<ImmutableMap<String, Object>> maps = (ArrayList<ImmutableMap<String, Object>>) amnesiaInternRegistry.getRegister(name);
+			if (amnesiaRegistry.contains(uuid)) {
+				ArrayList<ImmutableMap<String, Object>> maps = (ArrayList<ImmutableMap<String, Object>>) amnesiaInternRegistry.getRegister(uuid);
 				
 				//remove
 				if (Math.random() <= 0.05) {
@@ -48,12 +48,12 @@ public class AmnesiaEventCommand extends EventCommand {
 				} else {
 					//delay
 					if (Math.random() <= 0.2) {
-						maps.add(ImmutableMap.of("message", e.getMessage(), "format", e.getFormat()));
+						maps.add(ImmutableMap.of("player", e.getPlayer().getDisplayName(), "message", e.getMessage(), "format", e.getFormat()));
 						rem.add(p);
 					}
 					//repeat
 					if (Math.random() <= 0.1) {
-						maps.add(ImmutableMap.of("message", e.getMessage(), "format", e.getFormat()));
+						maps.add(ImmutableMap.of("player", e.getPlayer().getDisplayName(), "message", e.getMessage(), "format", e.getFormat()));
 					}
 				}
 			}

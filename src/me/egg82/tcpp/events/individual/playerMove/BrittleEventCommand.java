@@ -27,7 +27,7 @@ public class BrittleEventCommand extends EventCommand {
 	protected void execute() {
 		PlayerMoveEvent e = (PlayerMoveEvent) event;
 		
-		if (brittleRegistry.contains(e.getPlayer().getName().toLowerCase())) {
+		if (brittleRegistry.contains(e.getPlayer().getUniqueId().toString())) {
 			Player player = e.getPlayer();
 			Location to = e.getTo();
 			double toY = to.getY();

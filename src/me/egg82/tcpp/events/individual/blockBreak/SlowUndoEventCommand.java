@@ -27,10 +27,10 @@ public class SlowUndoEventCommand extends EventCommand {
 	@SuppressWarnings("unchecked")
 	protected void execute() {
 		BlockBreakEvent e = (BlockBreakEvent) event;
-		String name = e.getPlayer().getName().toLowerCase();
+		String uuid = e.getPlayer().getUniqueId().toString();
 		
-		if (slowUndoRegistry.contains(name)) {
-			ArrayList<ImmutableMap<String, Object>> list = (ArrayList<ImmutableMap<String, Object>>) slowUndoInternRegistry.getRegister(name);
+		if (slowUndoRegistry.contains(uuid)) {
+			ArrayList<ImmutableMap<String, Object>> list = (ArrayList<ImmutableMap<String, Object>>) slowUndoInternRegistry.getRegister(uuid);
 			list.add(ImmutableMap.of("type", e.getBlock().getType(), "loc", e.getBlock().getLocation(), "mode", e.getPlayer().getGameMode()));
 		}
 	}

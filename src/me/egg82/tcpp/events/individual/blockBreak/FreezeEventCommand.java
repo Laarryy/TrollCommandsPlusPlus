@@ -1,6 +1,6 @@
-package me.egg82.tcpp.events.individual.playerMove;
+package me.egg82.tcpp.events.individual.blockBreak;
 
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.block.BlockBreakEvent;
 
 import me.egg82.tcpp.enums.PluginServiceType;
 import ninja.egg82.patterns.ServiceLocator;
@@ -20,7 +20,8 @@ public class FreezeEventCommand extends EventCommand {
 	
 	//private
 	protected void execute() {
-		PlayerMoveEvent e = (PlayerMoveEvent) event;
+		BlockBreakEvent e = (BlockBreakEvent) event;
+		
 		if (freezeRegistry.contains(e.getPlayer().getUniqueId().toString())) {
 			e.setCancelled(true);
 		}

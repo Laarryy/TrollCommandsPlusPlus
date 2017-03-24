@@ -24,10 +24,10 @@ public class PlayerJoinEventCommand extends EventCommand {
 	protected void execute() {
 		PluginCommand[] commands = commandHandler.getInitializedCommands();
 		Player player = ((PlayerJoinEvent) event).getPlayer();
-		String lowerName = player.getName().toLowerCase();
+		String uuid = player.getUniqueId().toString();
 		
 		for (int i = 0; i < commands.length; i++) {
-			commands[i].onLogin(lowerName, player);
+			commands[i].onLogin(uuid, player);
 		}
 	}
 }

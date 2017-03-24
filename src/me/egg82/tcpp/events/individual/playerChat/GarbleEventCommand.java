@@ -22,7 +22,7 @@ public class GarbleEventCommand extends EventCommand {
 	//private
 	protected void execute() {
 		AsyncPlayerChatEvent e = (AsyncPlayerChatEvent) event;
-		if (garbleRegistry.contains(e.getPlayer().getName().toLowerCase())) {
+		if (garbleRegistry.contains(e.getPlayer().getUniqueId().toString())) {
 			e.setMessage(StringUtil.randomString(e.getMessage().length()));
 		}
 	}

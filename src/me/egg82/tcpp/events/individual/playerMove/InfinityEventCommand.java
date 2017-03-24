@@ -2,6 +2,7 @@ package me.egg82.tcpp.events.individual.playerMove;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.Plugin;
@@ -29,18 +30,37 @@ public class InfinityEventCommand extends EventCommand {
 	protected void execute() {
 		PlayerMoveEvent e = (PlayerMoveEvent) event;
 		Player player = e.getPlayer();
-		Location pl = player.getLocation();
-		Location l = pl.getWorld().getHighestBlockAt(pl).getLocation().add(0.0d, 10.0d, 0.0d);
 		
-		if (infinityRegistry.contains(player.getName().toLowerCase())) {
+		if (infinityRegistry.contains(player.getUniqueId().toString())) {
+			Location pl = player.getLocation();
+			
+			World world = pl.getWorld();
+			Location l = pl.clone();
+			l.setY(0.0d);
+			
+			for (int x = -1; x < 2; x++) {
+				for (int z = -1; z < 2; z++) {
+					Location t = pl.clone();
+					t.add(x, 0.0d, z);
+					
+					Location lt = world.getHighestBlockAt(t).getLocation();
+					if (lt.getY() > l.getY()) {
+						l = lt.clone();
+					}
+				}
+			}
+			
+			l.add(0.0d, 2.0d, 0.0d);
+			
 			if (pl.getBlockY() <= l.getBlockY()) {
 				Location loc = pl.clone().add(0.0d, 30.0d, 0.0d);
+				player.teleport(loc);
 				
-				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((Plugin) initRegistry.getRegister(SpigotRegType.PLUGIN), new Runnable() {
+				/*Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((Plugin) initRegistry.getRegister(SpigotRegType.PLUGIN), new Runnable() {
 					public void run() {
 						player.teleport(loc);
 					}
-				}, 1);
+				}, 1);*/
 			}
 		}
 	}

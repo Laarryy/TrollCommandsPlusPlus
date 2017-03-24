@@ -27,10 +27,10 @@ public class ControllerEventCommand extends EventCommand {
 	//private
 	protected void execute() {
 		PlayerMoveEvent e = (PlayerMoveEvent) event;
-		String name = e.getPlayer().getName().toLowerCase();
+		String uuid = e.getPlayer().getUniqueId().toString();
 		
-		if (controllerRegistry.contains(name)) {
-			Player p = (Player) controllerRegistry.getRegister(name);
+		if (controllerRegistry.contains(uuid)) {
+			Player p = (Player) controllerRegistry.getRegister(uuid);
 			moveTo(e, e.getPlayer(), p);
 		}
 	}

@@ -37,7 +37,7 @@ public class LagEventCommand extends EventCommand {
 	protected void execute() {
 		BlockPlaceEvent e = (BlockPlaceEvent) event;
 		
-		if (lagRegistry.contains(e.getPlayer().getName().toLowerCase())) {
+		if (lagRegistry.contains(e.getPlayer().getUniqueId().toString())) {
 			e.setCancelled(true);
 			
 			Player player = e.getPlayer();

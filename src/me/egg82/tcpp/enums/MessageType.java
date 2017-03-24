@@ -9,6 +9,7 @@ public class MessageType {
 	public static final String NO_CONTROL_SELF = ChatColor.RED + "You cannot control yourself!";
 	public static final String ALREADY_DISGUISED = ChatColor.RED + "You are already disguised as something else!";
 	public static final String NO_LIBRARY = ChatColor.RED + "This command has been disabled because there is no recognized backing library available. Please install one and restart the server to enable this command.";
+	public static final String ALREADY_USED = ChatColor.RED + "This command is currently in use against this player. Please wait for it to finish.";
 	
 	//constructor
 	public MessageType() {

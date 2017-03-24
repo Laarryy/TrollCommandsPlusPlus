@@ -34,19 +34,19 @@ public class ControlCommand extends BasePluginCommand {
 	}
 	
 	//public
-	public void onQuit(String name, Player player) {
-		reg.computeIfPresent(name, (k,v) -> {
+	public void onQuit(String uuid, Player player) {
+		reg.computeIfPresent(uuid, (k,v) -> {
 			return null;
 		});
 		
-		reg2.computeIfPresent(name, (k,v) -> {
+		reg2.computeIfPresent(uuid, (k,v) -> {
 			Player p = (Player) v;
 			
 			if (p != null) {
 				p.kickPlayer("You were being controlled, and your controller quit/was kicked.");
 			}
 			
-			reg3.setRegister(name, null);
+			reg3.setRegister(uuid, null);
 			return null;
 		});
 	}
@@ -63,21 +63,18 @@ public class ControlCommand extends BasePluginCommand {
 			Player p = (Player) sender;
 			Player player = null;
 			
-			String pName = p.getName();
-			String pLowerName = pName.toLowerCase();
-			String playerName = null;
-			String playerLowerName = null;
+			String pUuid = p.getUniqueId().toString();
+			String playerUuid = null;
 			
 			if (args.length == 0) {
-				if (reg2.contains(pLowerName)) {
-					player = (Player) reg2.getRegister(pLowerName);
+				if (reg2.contains(pUuid)) {
+					player = (Player) reg2.getRegister(pUuid);
 					
 					if (player != null) {
-						playerName = player.getName();
-						playerLowerName = playerName.toLowerCase();
-						e(pName, p, playerName, player);
+						playerUuid = player.getUniqueId().toString();
+						e(pUuid, p, playerUuid, player);
 					} else {
-						e(pName, p, "Anyone", null);
+						e(pUuid, p, "Anyone", null);
 					}
 				} else {
 					sender.sendMessage(MessageType.NOT_CONTROLLING);
@@ -86,25 +83,21 @@ public class ControlCommand extends BasePluginCommand {
 				}
 			} else if (args.length == 1) {
 				player = Bukkit.getPlayer(args[0]);
-				playerName = player.getName();
-				playerLowerName = playerName.toLowerCase();
+				playerUuid = player.getUniqueId().toString();
 				
-				if (pLowerName == playerLowerName) {
+				if (pUuid == playerUuid) {
 					sender.sendMessage(MessageType.NO_CONTROL_SELF);
 					dispatch(CommandEvent.ERROR, CommandErrorType.NO_CONTROL_SELF);
 					return;
 				}
-				e(pName, p, playerName, player);
+				e(pUuid, p, playerUuid, player);
 			}
 			
 			dispatch(CommandEvent.COMPLETE, null);
 		}
 	}
 	@SuppressWarnings("unchecked")
-	private void e(String controllerName, Player controller, String name, Player player) {
-		String controllerLowerName = controllerName.toLowerCase();
-		String lowerName = name.toLowerCase();
-		
+	private void e(String controllerUuid, Player controller, String uuid, Player player) {
 		PlayerInventory controllerInv = controller.getInventory();
 		HashMap<String, Object> map = null;
 		PlayerInventory playerInv = null;
@@ -113,8 +106,8 @@ public class ControlCommand extends BasePluginCommand {
 			playerInv = player.getInventory();
 		}
 		
-		if (reg2.contains(controllerName.toLowerCase())) {
-			sender.sendMessage("You are no longer controlling " + name + ".");
+		if (reg2.contains(controllerUuid)) {
+			sender.sendMessage("You are no longer controlling " + player.getName() + ".");
 			if (player != null) {
 				player.sendMessage("You are no longer being controlled.");
 			}
@@ -124,7 +117,7 @@ public class ControlCommand extends BasePluginCommand {
 			if (playerInv != null) {
 				playerInv.setContents(controllerInv.getContents());
 			}
-			map = (HashMap<String, Object>) reg3.getRegister(lowerName);
+			map = (HashMap<String, Object>) reg3.getRegister(uuid);
 			if (player != null) {
 				player.setGameMode((GameMode) map.get("mode"));
 				player.teleport(controller);
@@ -136,21 +129,21 @@ public class ControlCommand extends BasePluginCommand {
 			
 			disguiseHelper.undisguise(controller);
 			
-			reg.setRegister(lowerName, null);
-			reg2.setRegister(controllerLowerName, null);
-			reg3.setRegister(lowerName, null);
+			reg.setRegister(uuid, null);
+			reg2.setRegister(controllerUuid, null);
+			reg3.setRegister(uuid, null);
 		} else {
-			sender.sendMessage("You are now controlling " + name + "!");
+			sender.sendMessage("You are now controlling " + player.getName() + "!");
 			player.sendMessage("You are now being controlled!");
 			
-			reg.setRegister(lowerName, player);
-			reg2.setRegister(controllerLowerName, player);
+			reg.setRegister(uuid, player);
+			reg2.setRegister(controllerUuid, player);
 			
 			map = new HashMap<String, Object>();
 			map.put("inventory", controllerInv.getContents());
 			map.put("location", controller.getLocation());
 			map.put("mode", player.getGameMode());
-			reg3.setRegister(lowerName, map);
+			reg3.setRegister(uuid, map);
 			
 			controllerInv.setContents(playerInv.getContents());
 			controller.teleport(player);

@@ -37,13 +37,13 @@ public class AmnesiaTickCommand extends TickCommand {
 			return;
 		}
 		
-		ArrayList<ImmutableMap<String, Object>> maps = (ArrayList<ImmutableMap<String, Object>>) reg2.getRegister(player.getName().toLowerCase());
+		ArrayList<ImmutableMap<String, Object>> maps = (ArrayList<ImmutableMap<String, Object>>) reg2.getRegister(player.getUniqueId().toString());
 		ArrayList<ImmutableMap<String, Object>> rem = new ArrayList<ImmutableMap<String, Object>>();
 		
 		for (ImmutableMap<String, Object> map : maps) {
 			if (Math.random() <= 0.1d) {
 				try {
-					player.sendMessage(String.format((String) map.get("format"), player.getDisplayName(), (String) map.get("message")));
+					player.sendMessage(String.format((String) map.get("format"), (String) map.get("player"), (String) map.get("message")));
 				} catch (Exception ex) {
 		        	
 		        }

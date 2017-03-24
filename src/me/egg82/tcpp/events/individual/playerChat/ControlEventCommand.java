@@ -28,7 +28,7 @@ public class ControlEventCommand extends EventCommand {
 		AsyncPlayerChatEvent e = (AsyncPlayerChatEvent) event;
 		Player player = e.getPlayer();
 		
-		if (controlRegistry.contains(player.getName().toLowerCase())) {
+		if (controlRegistry.contains(player.getUniqueId().toString())) {
 			if (!permissionsManager.playerHasPermission(player, PermissionsType.CHAT_WHILE_CONTROLLED)) {
 				e.setCancelled(true);
 			}

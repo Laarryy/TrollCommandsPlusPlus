@@ -29,6 +29,7 @@ public class PluginServiceType {
 	public static final String ALONE_REGISTRY = "aloneRegistry";
 	public static final String ANNOY_REGISTRY = "annoyRegistry";
 	public static final String SPARTA_REGISTRY = "spartaRegistry";
+	public static final String NIGHT_REGISTRY = "nightRegistry";
 	public static final String REWIND_REGISTRY = "rewindRegistry";
 	public static final String LAG_REGISTRY = "lagRegistry";
 	public static final String LAG_INTERN_REGISTRY = "lagInternRegistry";

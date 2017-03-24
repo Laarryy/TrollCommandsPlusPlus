@@ -22,9 +22,9 @@ public class ExplodeBreakEventCommand extends EventCommand {
 	//private
 	protected void execute() {
 		BlockBreakEvent e = (BlockBreakEvent) event;
-		String name = e.getPlayer().getName().toLowerCase();
+		String uuid = e.getPlayer().getUniqueId().toString();
 		
-		explodeBreakRegistry.computeIfPresent(name, (k,v) -> {
+		explodeBreakRegistry.computeIfPresent(uuid, (k,v) -> {
 			e.setCancelled(true);
 			Location loc = e.getBlock().getLocation();
 			loc.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), 4.0f, false, false);

@@ -23,8 +23,8 @@ public class WhoAmICommand extends BasePluginCommand {
 	}
 	
 	//public
-	public void onLogin(String name, Player player) {
-		reg.computeIfPresent(name, (k,v) -> {
+	public void onLogin(String uuid, Player player) {
+		reg.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -33,19 +33,17 @@ public class WhoAmICommand extends BasePluginCommand {
 	protected void execute() {
 		if (isValid(false, PermissionsType.COMMAND_WHO_AM_I, new int[]{1}, new int[]{0})) {
 			Player player = Bukkit.getPlayer(args[0]);
-			e(player.getName(), player);
+			e(player.getUniqueId().toString(), player);
 			
 			dispatch(CommandEvent.COMPLETE, null);
 		}
 	}
 	@SuppressWarnings("unchecked")
-	private void e(String name, Player player) {
-		String lowerName = name.toLowerCase();
-		
-		if (reg.contains(lowerName)) {
-			sender.sendMessage(name + " is no longer having an identity crisis.");
+	private void e(String uuid, Player player) {
+		if (reg.contains(uuid)) {
+			sender.sendMessage(player.getName() + " is no longer having an identity crisis.");
 			
-			reg2.computeIfPresent(lowerName, (k,v) -> {
+			reg2.computeIfPresent(uuid, (k,v) -> {
 				HashMap<String, Object> map = (HashMap<String, Object>) v;
 				String displayName = (String) map.get("displayName");
 				String listName = (String) map.get("listName");
@@ -60,16 +58,16 @@ public class WhoAmICommand extends BasePluginCommand {
 				return null;
 			});
 			
-			reg.setRegister(lowerName, null);
+			reg.setRegister(uuid, null);
 		} else {
-			sender.sendMessage(name + " is now having an identity crisis.");
+			sender.sendMessage(player.getName() + " is now having an identity crisis.");
 			
 			HashMap<String, Object> map = new HashMap<String, Object>();
 			map.put("displayName", player.getDisplayName());
 			map.put("listName", player.getPlayerListName());
 			
-			reg.setRegister(lowerName, player);
-			reg2.setRegister(lowerName, map);
+			reg.setRegister(uuid, player);
+			reg2.setRegister(uuid, map);
 		}
 	}
 }

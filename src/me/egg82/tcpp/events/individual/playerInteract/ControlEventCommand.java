@@ -28,7 +28,7 @@ public class ControlEventCommand extends EventCommand {
 		PlayerInteractEvent e = (PlayerInteractEvent) event;
 		Player player = e.getPlayer();
 		
-		if (controlRegistry.contains(player.getName().toLowerCase())) {
+		if (controlRegistry.contains(player.getUniqueId().toString())) {
 			if (!permissionsManager.playerHasPermission(player, PermissionsType.FREECAM_WHILE_CONTROLLED)) {
 				e.setCancelled(true);
 			}

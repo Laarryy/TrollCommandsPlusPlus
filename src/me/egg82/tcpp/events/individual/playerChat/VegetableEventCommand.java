@@ -29,7 +29,7 @@ public class VegetableEventCommand extends EventCommand {
 		AsyncPlayerChatEvent e = (AsyncPlayerChatEvent) event;
 		Player player = e.getPlayer();
 		
-		if (vegetableRegistry.contains(player.getName().toLowerCase())) {
+		if (vegetableRegistry.contains(player.getUniqueId().toString())) {
 			if (!permissionsManager.playerHasPermission(player, PermissionsType.CHAT_WHILE_VEGETABLE)) {
 				String potato = "";
 				int num = MathUtil.fairRoundedRandom(1, 6);

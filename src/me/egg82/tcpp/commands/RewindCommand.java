@@ -20,8 +20,8 @@ public class RewindCommand extends BasePluginCommand {
 	}
 	
 	//public
-	public void onLogin(String name, Player player) {
-		reg.computeIfPresent(name, (k,v) -> {
+	public void onLogin(String uuid, Player player) {
+		reg.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -30,21 +30,19 @@ public class RewindCommand extends BasePluginCommand {
 	protected void execute() {
 		if (isValid(false, PermissionsType.COMMAND_REWIND, new int[]{1}, new int[]{0})) {
 			Player player = Bukkit.getPlayer(args[0]);
-			e(player.getName(), player);
+			e(player.getUniqueId().toString(), player);
 			
 			dispatch(CommandEvent.COMPLETE, null);
 		}
 	}
-	private void e(String name, Player player) {
-		String lowerName = name.toLowerCase();
-		
-		if (reg.contains(lowerName)) {
-			reg.setRegister(lowerName, null);
+	private void e(String uuid, Player player) {
+		if (reg.contains(uuid)) {
+			reg.setRegister(uuid, null);
 			player.resetPlayerTime();
-			sender.sendMessage(name + "'s time is not longer rewinding.");
+			sender.sendMessage(player.getName() + "'s time is not longer rewinding.");
 		} else {
-			sender.sendMessage(name + "'s time is now rewinding.");
-			reg.setRegister(lowerName, player);
+			sender.sendMessage(player.getName() + "'s time is now rewinding.");
+			reg.setRegister(uuid, player);
 		}
 	}
 }

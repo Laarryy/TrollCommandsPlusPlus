@@ -32,12 +32,12 @@ public class VegetableTickCommand extends TickCommand {
 		}
 	}
 	@SuppressWarnings("unchecked")
-	private void e(String name, Player player) {
+	private void e(String uuid, Player player) {
 		if (player == null) {
 			return;
 		}
 		
-		HashMap<String, Object> map = (HashMap<String, Object>) reg2.getRegister(name.toLowerCase());
+		HashMap<String, Object> map = (HashMap<String, Object>) reg2.getRegister(uuid);
 		Item potato = (Item) map.get("item");
 		
 		if (potato == null) {

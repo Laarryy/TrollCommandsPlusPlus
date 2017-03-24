@@ -22,16 +22,16 @@ public class ControllerEventCommand extends EventCommand {
 	//private
 	protected void execute() {
 		AsyncPlayerChatEvent e = (AsyncPlayerChatEvent) event;
-		String name = e.getPlayer().getName().toLowerCase();
+		String uuid = e.getPlayer().getUniqueId().toString();
 		
-		if (controllerRegistry.contains(name)) {
-			Player p = (Player) controllerRegistry.getRegister(name);
+		if (controllerRegistry.contains(uuid)) {
+			Player p = (Player) controllerRegistry.getRegister(uuid);
 			sendMessageAs(e, e.getPlayer(), p);
 		}
 	}
 	private void sendMessageAs(AsyncPlayerChatEvent e, Player originalPlayer, Player newPlayer) {
 		if (newPlayer == null) {
-			controllerRegistry.setRegister(originalPlayer.getName(), null);
+			controllerRegistry.setRegister(originalPlayer.getUniqueId().toString(), null);
 			return;
 		}
 		

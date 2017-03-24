@@ -7,12 +7,12 @@ import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.registry.interfaces.IRegistry;
 
-public class VegetableEventCommand extends EventCommand {
+public class FreezeEventCommand extends EventCommand {
 	//vars
-	private IRegistry vegetableRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.VEGETABLE_REGISTRY);
+	private IRegistry freezeRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.FREEZE_REGISTRY);
 	
 	//constructor
-	public VegetableEventCommand() {
+	public FreezeEventCommand() {
 		super();
 	}
 	
@@ -22,7 +22,7 @@ public class VegetableEventCommand extends EventCommand {
 	protected void execute() {
 		PlayerInteractEvent e = (PlayerInteractEvent) event;
 		
-		if (vegetableRegistry.contains(e.getPlayer().getUniqueId().toString())) {
+		if (freezeRegistry.contains(e.getPlayer().getUniqueId().toString())) {
 			e.setCancelled(true);
 		}
 	}

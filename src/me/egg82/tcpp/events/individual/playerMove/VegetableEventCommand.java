@@ -27,13 +27,13 @@ public class VegetableEventCommand extends EventCommand {
 	@SuppressWarnings("unchecked")
 	protected void execute() {
 		PlayerMoveEvent e = (PlayerMoveEvent) event;
-		String name = e.getPlayer().getName().toLowerCase();
+		String uuid = e.getPlayer().getUniqueId().toString();
 		
 		Location from = e.getFrom();
 		Location to = e.getTo();
 		
-		if (vegetableRegistry.contains(name)) {
-			HashMap<String, Object> map = (HashMap<String, Object>) vegetableInternRegistry.getRegister(name);
+		if (vegetableRegistry.contains(uuid)) {
+			HashMap<String, Object> map = (HashMap<String, Object>) vegetableInternRegistry.getRegister(uuid);
 			Item potato = (Item) map.get("item");
 			
 			if (potato == null) {

@@ -27,48 +27,47 @@ public class DisplayCommand extends BasePluginCommand {
 	
 	//public
 	@SuppressWarnings("unchecked")
-	public void onQuit(String name, Player player) {
-		reg.computeIfPresent(name, (k,v) -> {
+	public void onQuit(String uuid, Player player) {
+		reg.computeIfPresent(uuid, (k,v) -> {
 			return null;
 		});
 		
-		reg2.computeIfPresent(name, (k,v) -> {
+		reg2.computeIfPresent(uuid, (k,v) -> {
 			HashMap<String, Object> map = (HashMap<String, Object>) v;
 			set((Location) map.get("loc"), (boolean) map.get("ground"), Material.AIR, Material.AIR);
 			return null;
 		});
 	}
-	public void onDeath(String name, Player player) {
-		onQuit(name, player);
+	public void onDeath(String uuid, Player player) {
+		onQuit(uuid, player);
 	}
 	
 	//private
 	protected void execute() {
 		if (isValid(false, PermissionsType.COMMAND_DISPLAY, new int[]{1}, new int[]{0})) {
 			Player player = Bukkit.getPlayer(args[0]);
-			e(player.getName(), player);
+			e(player.getUniqueId().toString(), player);
 			
 			dispatch(CommandEvent.COMPLETE, null);
 		}
 	}
 	@SuppressWarnings("unchecked")
-	private void e(String name, Player player) {
-		String lowerName = name.toLowerCase();
+	private void e(String uuid, Player player) {
 		Location loc = null;
 		HashMap<String, Object> map = null;
 		boolean onGround;
 		
-		if (reg.contains(lowerName)) {
-			sender.sendMessage(name + " is no longer on display.");
+		if (reg.contains(uuid)) {
+			sender.sendMessage(player.getName() + " is no longer on display.");
 			
-			map = (HashMap<String, Object>) reg2.getRegister(lowerName);
+			map = (HashMap<String, Object>) reg2.getRegister(uuid);
 			
-			reg.setRegister(lowerName, null);
-			reg2.setRegister(lowerName, null);
+			reg.setRegister(uuid, null);
+			reg2.setRegister(uuid, null);
 			
 			set((Location) map.get("loc"), (boolean) map.get("ground"), Material.AIR, Material.AIR);
 		} else {
-			sender.sendMessage(name + " is now on display.");
+			sender.sendMessage(player.getName() + " is now on display.");
 			
 			map = new HashMap<String, Object>();
 			loc = player.getLocation().clone();
@@ -83,8 +82,8 @@ public class DisplayCommand extends BasePluginCommand {
 			
 			set(loc, onGround, Material.THIN_GLASS, Material.GLASS);
 			
-			reg.setRegister(lowerName, player);
-			reg2.setRegister(lowerName, map);
+			reg.setRegister(uuid, player);
+			reg2.setRegister(uuid, map);
 		}
 	}
 	

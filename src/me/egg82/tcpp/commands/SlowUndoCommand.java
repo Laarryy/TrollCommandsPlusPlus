@@ -25,8 +25,8 @@ public class SlowUndoCommand extends BasePluginCommand {
 	}
 	
 	//public
-	public void onLogin(String name, Player player) {
-		reg.computeIfPresent(name, (k,v) -> {
+	public void onLogin(String uuid, Player player) {
+		reg.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -35,22 +35,20 @@ public class SlowUndoCommand extends BasePluginCommand {
 	protected void execute() {
 		if (isValid(false, PermissionsType.COMMAND_SLOWUNDO, new int[]{1}, new int[]{0})) {
 			Player player = Bukkit.getPlayer(args[0]);
-			e(player.getName(), player);
+			e(player.getUniqueId().toString(), player);
 			
 			dispatch(CommandEvent.COMPLETE, null);
 		}
 	}
-	private void e(String name, Player player) {
-		String lowerName = name.toLowerCase();
-		
-		if (reg.contains(lowerName)) {
-			sender.sendMessage("Any block changes " + name + " makes will no longer be slowly undone.");
-			reg.setRegister(lowerName, null);
-			reg2.setRegister(lowerName, null);
+	private void e(String uuid, Player player) {
+		if (reg.contains(uuid)) {
+			sender.sendMessage("Any block changes " + player.getName() + " makes will no longer be slowly undone.");
+			reg.setRegister(uuid, null);
+			reg2.setRegister(uuid, null);
 		} else {
-			sender.sendMessage("Any block changes " + name + " makes will now be slowly undone.");
-			reg.setRegister(lowerName, player);
-			reg2.setRegister(lowerName, new ArrayList<ImmutableMap<String, Object>>());
+			sender.sendMessage("Any block changes " + player.getName() + " makes will now be slowly undone.");
+			reg.setRegister(uuid, player);
+			reg2.setRegister(uuid, new ArrayList<ImmutableMap<String, Object>>());
 		}
 	}
 }

@@ -20,13 +20,13 @@ public class BombCommand extends BasePluginCommand {
 	}
 	
 	//public
-	public void onDeath(String name, Player player) {
-		reg.computeIfPresent(name, (k,v) -> {
+	public void onDeath(String uuid, Player player) {
+		reg.computeIfPresent(uuid, (k,v) -> {
 			return null;
 		});
 	}
-	public void onLogin(String name, Player player) {
-		reg.computeIfPresent(name, (k,v) -> {
+	public void onLogin(String uuid, Player player) {
+		reg.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -35,20 +35,18 @@ public class BombCommand extends BasePluginCommand {
 	protected void execute() {
 		if (isValid(false, PermissionsType.COMMAND_BOMB, new int[]{1}, new int[]{0})) {
 			Player player = Bukkit.getPlayer(args[0]);
-			e(player.getName(), player);
+			e(player.getUniqueId().toString(), player);
 			
 			dispatch(CommandEvent.COMPLETE, null);
 		}
 	}
-	private void e(String name, Player player) {
-		String lowerName = name.toLowerCase();
-		
-		if (reg.contains(lowerName)) {
-			sender.sendMessage(name + " is no longer being bombed.");
-			reg.setRegister(lowerName, null);
+	private void e(String uuid, Player player) {
+		if (reg.contains(uuid)) {
+			sender.sendMessage(player.getName() + " is no longer being bombed.");
+			reg.setRegister(uuid, null);
 		} else {
-			sender.sendMessage(name + " is now being bombed.");
-			reg.setRegister(lowerName, player);
+			sender.sendMessage(player.getName() + " is now being bombed.");
+			reg.setRegister(uuid, player);
 		}
 	}
 }

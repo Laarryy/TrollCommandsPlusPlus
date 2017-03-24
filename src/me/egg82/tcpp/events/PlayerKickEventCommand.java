@@ -30,10 +30,10 @@ public class PlayerKickEventCommand extends EventCommand {
 		
 		PluginCommand[] commands = commandHandler.getInitializedCommands();
 		Player player = e.getPlayer();
-		String lowerName = player.getName().toLowerCase();
+		String uuid = player.getUniqueId().toString();
 		
 		for (int i = 0; i < commands.length; i++) {
-			commands[i].onQuit(lowerName, player);
+			commands[i].onQuit(uuid, player);
 		}
 	}
 }

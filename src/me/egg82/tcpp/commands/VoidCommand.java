@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.egg82.tcpp.commands.base.BasePluginCommand;
+import me.egg82.tcpp.enums.CommandErrorType;
+import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.enums.PluginServiceType;
 import me.egg82.tcpp.ticks.VoidTickCommand;
@@ -37,13 +39,20 @@ public class VoidCommand extends BasePluginCommand {
 	protected void execute() {
 		if (isValid(false, PermissionsType.COMMAND_VOID, new int[]{1}, new int[]{0})) {
 			Player player = Bukkit.getPlayer(args[0]);
-			e(player.getName(), player);
+			String uuid = player.getUniqueId().toString();
+			
+			if (reg.contains(uuid)) {
+				sender.sendMessage(MessageType.ALREADY_USED);
+				dispatch(CommandEvent.ERROR, CommandErrorType.ALREADY_USED);
+				return;
+			}
+			
+			e(uuid, player);
 			
 			dispatch(CommandEvent.COMPLETE, null);
 		}
 	}
-	private void e(String name, Player player) {
-		String lowerName = name.toLowerCase();
+	private void e(String uuid, Player player) {
 		ArrayList<Material[]> blocks = new ArrayList<Material[]>();
 		ArrayList<ArrayList<ItemStack[]>> inv = new ArrayList<ArrayList<ItemStack[]>>();
 		ArrayList<BlockState[]> data = new ArrayList<BlockState[]>();
@@ -67,9 +76,9 @@ public class VoidCommand extends BasePluginCommand {
 		map.put("blocks", blocks);
 		map.put("inv", inv);
 		map.put("data", data);
-		reg.setRegister(lowerName, map);
-		tickHandler.addDelayedTickCommand("void-" + lowerName, VoidTickCommand.class, 202);
+		reg.setRegister(uuid, map);
+		tickHandler.addDelayedTickCommand("void-" + uuid, VoidTickCommand.class, 202);
 		
-		sender.sendMessage(name + " is now very confused as to why they are suddenly falling through the world.");
+		sender.sendMessage(player.getName() + " is now very confused as to why they are suddenly falling through the world.");
 	}
 }

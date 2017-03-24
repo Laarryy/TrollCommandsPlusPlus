@@ -22,7 +22,7 @@ public class NopickupEventCommand extends EventCommand {
 	protected void execute() {
 		PlayerPickupItemEvent e = (PlayerPickupItemEvent) event;
 		
-		if (nopickupRegistry.contains(e.getPlayer().getName().toLowerCase())) {
+		if (nopickupRegistry.contains(e.getPlayer().getUniqueId().toString())) {
 			e.setCancelled(true);
 		}
 	}
