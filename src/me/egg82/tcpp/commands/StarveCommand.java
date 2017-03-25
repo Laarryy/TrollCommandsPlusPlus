@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class StarveCommand extends BasePluginCommand {
 	//vars
-	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.STARVE_REGISTRY);
+	IRegistry starveRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.STARVE_REGISTRY);
 	
 	//constructor
 	public StarveCommand() {
@@ -21,12 +21,12 @@ public class StarveCommand extends BasePluginCommand {
 	
 	//public
 	public void onDeath(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		starveRegistry.computeIfPresent(uuid, (k,v) -> {
 			return null;
 		});
 	}
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		starveRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -41,12 +41,12 @@ public class StarveCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (starveRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer starving to death.");
-			reg.setRegister(uuid, null);
+			starveRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + " is now starving to death.");
-			reg.setRegister(uuid, player);
+			starveRegistry.setRegister(uuid, player);
 		}
 	}
 }

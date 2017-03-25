@@ -11,7 +11,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class SlowMineTickCommand extends TickCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOWMINE_REGISTRY);
+	private IRegistry slowMineRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOW_MINE_REGISTRY);
 	
 	//constructor
 	public SlowMineTickCommand() {
@@ -23,9 +23,9 @@ public class SlowMineTickCommand extends TickCommand {
 	
 	//private
 	protected void execute() {
-		String[] names = reg.registryNames();
+		String[] names = slowMineRegistry.registryNames();
 		for (String name : names) {
-			e((Player) reg.getRegister(name));
+			e((Player) slowMineRegistry.getRegister(name));
 		}
 	}
 	private void e(Player player){

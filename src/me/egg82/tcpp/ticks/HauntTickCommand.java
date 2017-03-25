@@ -14,8 +14,9 @@ import ninja.egg82.utils.MathUtil;
 
 public class HauntTickCommand extends TickCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.HAUNT_REGISTRY);
-	ISoundUtil soundUtil = (ISoundUtil) ((IRegistry) ServiceLocator.getService(SpigotServiceType.REFLECT_REGISTRY)).getRegister(SpigotReflectType.SOUND);
+	private IRegistry hauntRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.HAUNT_REGISTRY);
+	
+	private ISoundUtil soundUtil = (ISoundUtil) ((IRegistry) ServiceLocator.getService(SpigotServiceType.REFLECT_REGISTRY)).getRegister(SpigotReflectType.SOUND);
 	private Sound[] sounds = null;
 	
 	//constructor
@@ -29,9 +30,9 @@ public class HauntTickCommand extends TickCommand {
 	
 	//private
 	protected void execute() {
-		String[] names = reg.registryNames();
+		String[] names = hauntRegistry.registryNames();
 		for (String name : names) {
-			e((Player) reg.getRegister(name));
+			e((Player) hauntRegistry.getRegister(name));
 		}
 	}
 	private void e(Player player) {

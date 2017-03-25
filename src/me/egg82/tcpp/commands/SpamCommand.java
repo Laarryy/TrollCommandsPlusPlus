@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class SpamCommand extends BasePluginCommand {
 	//vars
-	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.SPAM_REGISTRY);
+	IRegistry spamRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SPAM_REGISTRY);
 	
 	//constructor
 	public SpamCommand() {
@@ -21,7 +21,7 @@ public class SpamCommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		spamRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -36,12 +36,12 @@ public class SpamCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (spamRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + "'s chat is no longer being spammed with junk.");
-			reg.setRegister(uuid, null);
+			spamRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + "'s chat is now being spammed with junk.");
-			reg.setRegister(uuid, player);
+			spamRegistry.setRegister(uuid, player);
 		}
 	}
 }

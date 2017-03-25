@@ -13,8 +13,8 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class VegetableTickCommand extends TickCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.VEGETABLE_REGISTRY);
-	private IRegistry reg2 = (IRegistry) ServiceLocator.getService(PluginServiceType.VEGETABLE_INTERN_REGISTRY);
+	private IRegistry vegetableRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.VEGETABLE_REGISTRY);
+	private IRegistry vegetableInternRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.VEGETABLE_INTERN_REGISTRY);
 	
 	//constructor
 	public VegetableTickCommand() {
@@ -26,9 +26,9 @@ public class VegetableTickCommand extends TickCommand {
 	
 	//private
 	protected void execute() {
-		String[] names = reg.registryNames();
+		String[] names = vegetableRegistry.registryNames();
 		for (String name : names) {
-			e(name, (Player) reg.getRegister(name));
+			e(name, (Player) vegetableRegistry.getRegister(name));
 		}
 	}
 	@SuppressWarnings("unchecked")
@@ -37,7 +37,7 @@ public class VegetableTickCommand extends TickCommand {
 			return;
 		}
 		
-		HashMap<String, Object> map = (HashMap<String, Object>) reg2.getRegister(uuid);
+		HashMap<String, Object> map = (HashMap<String, Object>) vegetableInternRegistry.getRegister(uuid);
 		Item potato = (Item) map.get("item");
 		
 		if (potato == null) {

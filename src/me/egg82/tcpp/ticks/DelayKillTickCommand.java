@@ -16,7 +16,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 public class DelayKillTickCommand extends TickCommand {
 	//vars
 	ITickHandler tickHandler = (ITickHandler) ServiceLocator.getService(SpigotServiceType.TICK_HANDLER);
-	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.DELAY_KILL_REGISTRY);
+	IRegistry delayKillRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.DELAY_KILL_REGISTRY);
 	
 	//constructor
 	public DelayKillTickCommand() {
@@ -28,9 +28,9 @@ public class DelayKillTickCommand extends TickCommand {
 	//private
 	@SuppressWarnings("unchecked")
 	protected void execute() {
-		String[] names = reg.registryNames();
+		String[] names = delayKillRegistry.registryNames();
 		for (String name : names) {
-			e(name, (HashMap<String, Object>) reg.getRegister(name));
+			e(name, (HashMap<String, Object>) delayKillRegistry.getRegister(name));
 		}
 	}
 	@SuppressWarnings("deprecation")

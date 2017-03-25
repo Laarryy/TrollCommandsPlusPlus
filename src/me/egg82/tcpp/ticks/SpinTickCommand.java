@@ -10,7 +10,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class SpinTickCommand extends TickCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.SPIN_REGISTRY);
+	private IRegistry spinRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SPIN_REGISTRY);
 	
 	//constructor
 	public SpinTickCommand() {
@@ -22,9 +22,9 @@ public class SpinTickCommand extends TickCommand {
 	
 	//private
 	protected void execute() {
-		String[] names = reg.registryNames();
+		String[] names = spinRegistry.registryNames();
 		for (String name : names) {
-			e((Player) reg.getRegister(name));
+			e((Player) spinRegistry.getRegister(name));
 		}
 	}
 	private void e(Player player) {

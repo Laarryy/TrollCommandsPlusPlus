@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class HurtCommand extends BasePluginCommand {
 	//vars
-	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.HURT_REGISTRY);
+	IRegistry hurtRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.HURT_REGISTRY);
 	
 	//constructor
 	public HurtCommand() {
@@ -21,12 +21,12 @@ public class HurtCommand extends BasePluginCommand {
 	
 	//public
 	public void onDeath(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		hurtRegistry.computeIfPresent(uuid, (k,v) -> {
 			return null;
 		});
 	}
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		hurtRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -41,12 +41,12 @@ public class HurtCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (hurtRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer being hurt.");
-			reg.setRegister(uuid, null);
+			hurtRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + " is now being hurt.");
-			reg.setRegister(uuid, player);
+			hurtRegistry.setRegister(uuid, player);
 		}
 	}
 }

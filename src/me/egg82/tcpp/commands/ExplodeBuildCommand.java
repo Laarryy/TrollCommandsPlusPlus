@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class ExplodeBuildCommand extends BasePluginCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.EXPLODE_BUILD_REGISTRY);
+	private IRegistry explodeBuildRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.EXPLODE_BUILD_REGISTRY);
 	
 	//constructor
 	public ExplodeBuildCommand() {
@@ -21,7 +21,7 @@ public class ExplodeBuildCommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		explodeBuildRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -36,12 +36,12 @@ public class ExplodeBuildCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (explodeBuildRegistry.contains(uuid)) {
 			sender.sendMessage("The next block " + player.getName() + " places will no longer explode.");
-			reg.setRegister(uuid, null);
+			explodeBuildRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage("The next block " + player.getName() + " places will now explode!");
-			reg.setRegister(uuid, player);
+			explodeBuildRegistry.setRegister(uuid, player);
 		}
 	}
 }

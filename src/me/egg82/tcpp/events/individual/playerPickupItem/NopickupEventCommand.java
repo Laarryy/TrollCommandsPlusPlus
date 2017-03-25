@@ -9,7 +9,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class NopickupEventCommand extends EventCommand {
 	//vars
-	private IRegistry nopickupRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.NOPICKUP_REGISTRY);
+	private IRegistry noPickupRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.NO_PICKUP_REGISTRY);
 	
 	//constructor
 	public NopickupEventCommand() {
@@ -22,7 +22,7 @@ public class NopickupEventCommand extends EventCommand {
 	protected void execute() {
 		PlayerPickupItemEvent e = (PlayerPickupItemEvent) event;
 		
-		if (nopickupRegistry.contains(e.getPlayer().getUniqueId().toString())) {
+		if (noPickupRegistry.contains(e.getPlayer().getUniqueId().toString())) {
 			e.setCancelled(true);
 		}
 	}

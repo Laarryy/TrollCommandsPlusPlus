@@ -27,8 +27,8 @@ import ninja.egg82.registry.interfaces.IRegistry;
 public class VegetableCommand extends BasePluginCommand {
 	//vars
 	private IRegistry initReg = (IRegistry) ServiceLocator.getService(ServiceType.INIT_REGISTRY);
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.VEGETABLE_REGISTRY);
-	private IRegistry reg2 = (IRegistry) ServiceLocator.getService(PluginServiceType.VEGETABLE_INTERN_REGISTRY);
+	private IRegistry vegetableRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.VEGETABLE_REGISTRY);
+	private IRegistry vegetableInternRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.VEGETABLE_INTERN_REGISTRY);
 	
 	//constructor
 	public VegetableCommand() {
@@ -38,11 +38,11 @@ public class VegetableCommand extends BasePluginCommand {
 	//public
 	@SuppressWarnings("unchecked")
 	public void onQuit(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		vegetableRegistry.computeIfPresent(uuid, (k,v) -> {
 			return null;
 		});
 		
-		reg2.computeIfPresent(uuid, (k,v) -> {
+		vegetableInternRegistry.computeIfPresent(uuid, (k,v) -> {
 			HashMap<String, Object> map = (HashMap<String, Object>) v;
 			Item potato = (Item) map.get("item");
 			
@@ -69,14 +69,14 @@ public class VegetableCommand extends BasePluginCommand {
 	private void e(String uuid, Player player) {
 		Location loc = player.getLocation();
 		
-		if (reg.contains(uuid)) {
+		if (vegetableRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer a potato.");
 			
-			reg.setRegister(uuid, null);
+			vegetableRegistry.setRegister(uuid, null);
 			
 			player.teleport(BlockUtil.getTopAirBlock(loc));
 			
-			reg2.computeIfPresent(uuid, (k,v) -> {
+			vegetableInternRegistry.computeIfPresent(uuid, (k,v) -> {
 				HashMap<String, Object> map = (HashMap<String, Object>) v;
 				Item potato = (Item) map.get("item");
 				
@@ -104,11 +104,11 @@ public class VegetableCommand extends BasePluginCommand {
 			HashMap<String, Object> map = new HashMap<String, Object>();
 			map.put("mode", player.getGameMode());
 			map.put("item", potato);
-			reg2.setRegister(uuid, map);
+			vegetableInternRegistry.setRegister(uuid, map);
 			player.setGameMode(GameMode.SPECTATOR);
 			player.teleport(new Location(loc.getWorld(), loc.getX(), loc.getBlockY() - 1.0d, loc.getZ()));
 			
-			reg.setRegister(uuid, player);
+			vegetableRegistry.setRegister(uuid, player);
 		}
 	}
 }

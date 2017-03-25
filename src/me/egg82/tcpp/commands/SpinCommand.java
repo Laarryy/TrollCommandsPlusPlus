@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class SpinCommand extends BasePluginCommand {
 	//vars
-	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.SPIN_REGISTRY);
+	IRegistry spinRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SPIN_REGISTRY);
 	
 	//constructor
 	public SpinCommand() {
@@ -21,7 +21,7 @@ public class SpinCommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		spinRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -36,12 +36,12 @@ public class SpinCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (spinRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer spinning.");
-			reg.setRegister(uuid, null);
+			spinRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + " is now spinning.");
-			reg.setRegister(uuid, player);
+			spinRegistry.setRegister(uuid, player);
 		}
 	}
 }

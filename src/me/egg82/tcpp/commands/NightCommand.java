@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class NightCommand extends BasePluginCommand {
 	//vars
-	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.NIGHT_REGISTRY);
+	IRegistry nightRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.NIGHT_REGISTRY);
 	
 	//constructor
 	public NightCommand() {
@@ -21,7 +21,7 @@ public class NightCommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		nightRegistry.computeIfPresent(uuid, (k,v) -> {
 			player.setPlayerTime(18000, false);
 			return player;
 		});
@@ -37,14 +37,14 @@ public class NightCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (nightRegistry.contains(uuid)) {
 			player.resetPlayerTime();
 			sender.sendMessage(player.getName() + "'s time is no longer perma-night.");
-			reg.setRegister(uuid, null);
+			nightRegistry.setRegister(uuid, null);
 		} else {
 			player.setPlayerTime(18000, false);
 			sender.sendMessage(player.getName() + "'s time is now perma-night.");
-			reg.setRegister(uuid, player);
+			nightRegistry.setRegister(uuid, player);
 		}
 	}
 }

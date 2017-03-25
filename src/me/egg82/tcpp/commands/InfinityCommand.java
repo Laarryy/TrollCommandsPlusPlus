@@ -13,7 +13,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class InfinityCommand extends BasePluginCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.INFINITY_REGISTRY);
+	private IRegistry infinityRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.INFINITY_REGISTRY);
 	
 	//constructor
 	public InfinityCommand() {
@@ -22,7 +22,7 @@ public class InfinityCommand extends BasePluginCommand {
 	
 	//public
 	public void onDeath(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		infinityRegistry.computeIfPresent(uuid, (k,v) -> {
 			return null;
 		});
 	}
@@ -37,16 +37,16 @@ public class InfinityCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (infinityRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer falling forever.");
-			reg.setRegister(uuid, null);
+			infinityRegistry.setRegister(uuid, null);
 		} else {
 			Location l = player.getWorld().getHighestBlockAt(player.getLocation()).getLocation().clone();
 			l.add(0.0d, 30.0d, 0.0d);
 			player.teleport(l);
 			
 			sender.sendMessage(player.getName() + " is now faaaaalling foreeeeveeeeeer.");
-			reg.setRegister(uuid, player);
+			infinityRegistry.setRegister(uuid, player);
 		}
 	}
 }

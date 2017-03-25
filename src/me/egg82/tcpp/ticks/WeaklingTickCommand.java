@@ -11,7 +11,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class WeaklingTickCommand extends TickCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.WEAKLING_REGISTRY);
+	private IRegistry weaklingRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.WEAKLING_REGISTRY);
 	
 	//constructor
 	public WeaklingTickCommand() {
@@ -23,9 +23,9 @@ public class WeaklingTickCommand extends TickCommand {
 	
 	//private
 	protected void execute() {
-		String[] names = reg.registryNames();
+		String[] names = weaklingRegistry.registryNames();
 		for (String name : names) {
-			e((Player) reg.getRegister(name));
+			e((Player) weaklingRegistry.getRegister(name));
 		}
 	}
 	private void e(Player player) {

@@ -13,7 +13,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class ClumsyTickCommand extends TickCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.CLUMSY_REGISTRY);
+	private IRegistry clumsyRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.CLUMSY_REGISTRY);
 	
 	//constructor
 	public ClumsyTickCommand() {
@@ -25,9 +25,9 @@ public class ClumsyTickCommand extends TickCommand {
 	
 	//private
 	protected void execute() {
-		String[] names = reg.registryNames();
+		String[] names = clumsyRegistry.registryNames();
 		for (String name : names) {
-			e((Player) reg.getRegister(name));
+			e((Player) clumsyRegistry.getRegister(name));
 		}
 	}
 	private void e(Player player) {

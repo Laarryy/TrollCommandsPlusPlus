@@ -29,7 +29,7 @@ public class LiftCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String name, Player player) {
-		player.setVelocity(new Vector(0.0d, MathUtil.random(10.0d, 20.0d), 0.0d));
+		player.setVelocity(new Vector(0.0d, MathUtil.random(15.0d, 25.0d), 0.0d));
 		
 		sender.sendMessage(name + " has been lifted.");
 	}

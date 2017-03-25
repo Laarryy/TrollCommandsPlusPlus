@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class BombCommand extends BasePluginCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.BOMB_REGISTRY);
+	private IRegistry bombRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.BOMB_REGISTRY);
 	
 	//constructor
 	public BombCommand() {
@@ -21,12 +21,12 @@ public class BombCommand extends BasePluginCommand {
 	
 	//public
 	public void onDeath(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		bombRegistry.computeIfPresent(uuid, (k,v) -> {
 			return null;
 		});
 	}
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		bombRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -41,12 +41,12 @@ public class BombCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (bombRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer being bombed.");
-			reg.setRegister(uuid, null);
+			bombRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + " is now being bombed.");
-			reg.setRegister(uuid, player);
+			bombRegistry.setRegister(uuid, player);
 		}
 	}
 }

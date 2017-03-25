@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class NauseaCommand extends BasePluginCommand {
 	//vars
-	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.NAUSEA_REGISTRY);
+	IRegistry nauseaRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.NAUSEA_REGISTRY);
 	
 	//constructor
 	public NauseaCommand() {
@@ -21,7 +21,7 @@ public class NauseaCommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		nauseaRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -36,12 +36,12 @@ public class NauseaCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (nauseaRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer nauseous.");
-			reg.setRegister(uuid, null);
+			nauseaRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + " is now nauseous.");
-			reg.setRegister(uuid, player);
+			nauseaRegistry.setRegister(uuid, player);
 		}
 	}
 }

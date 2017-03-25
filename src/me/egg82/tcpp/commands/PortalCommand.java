@@ -25,8 +25,9 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class PortalCommand extends BasePluginCommand {
 	//vars
-	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.PORTAL_REGISTRY);
-	ITickHandler tickHandler = (ITickHandler) ServiceLocator.getService(SpigotServiceType.TICK_HANDLER);
+	private IRegistry portalRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.PORTAL_REGISTRY);
+	
+	private ITickHandler tickHandler = (ITickHandler) ServiceLocator.getService(SpigotServiceType.TICK_HANDLER);
 	
 	//constructor
 	public PortalCommand() {
@@ -41,7 +42,7 @@ public class PortalCommand extends BasePluginCommand {
 			Player player = Bukkit.getPlayer(args[0]);
 			String uuid = player.getUniqueId().toString();
 			
-			if (reg.contains(uuid)) {
+			if (portalRegistry.contains(uuid)) {
 				sender.sendMessage(MessageType.ALREADY_USED);
 				dispatch(CommandEvent.ERROR, CommandErrorType.ALREADY_USED);
 				return;
@@ -79,7 +80,7 @@ public class PortalCommand extends BasePluginCommand {
 		map.put("blocks", blocks);
 		map.put("inv", inv);
 		map.put("data",  data);
-		reg.setRegister(uuid, map);
+		portalRegistry.setRegister(uuid, map);
 		tickHandler.addDelayedTickCommand("portal-" + uuid, PortalTickCommand.class, 102);
 		
 		sender.sendMessage(player.getName() + " is now falling to The(ir) End.");

@@ -11,7 +11,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class NauseaTickCommand extends TickCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.NAUSEA_REGISTRY);
+	private IRegistry nauseaRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.NAUSEA_REGISTRY);
 	
 	//constructor
 	public NauseaTickCommand() {
@@ -23,9 +23,9 @@ public class NauseaTickCommand extends TickCommand {
 	
 	//private
 	protected void execute() {
-		String[] names = reg.registryNames();
+		String[] names = nauseaRegistry.registryNames();
 		for (String name : names) {
-			e((Player) reg.getRegister(name));
+			e((Player) nauseaRegistry.getRegister(name));
 		}
 	}
 	private void e(Player player) {

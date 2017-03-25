@@ -12,7 +12,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class ElectrifyTickCommand extends TickCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.ELECTRIFY_REGISTRY);
+	private IRegistry electrifyRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.ELECTRIFY_REGISTRY);
 	
 	//constructor
 	public ElectrifyTickCommand() {
@@ -24,9 +24,9 @@ public class ElectrifyTickCommand extends TickCommand {
 	
 	//private
 	protected void execute() {
-		String[] names = reg.registryNames();
+		String[] names = electrifyRegistry.registryNames();
 		for (String name : names) {
-			e((Player) reg.getRegister(name));
+			e((Player) electrifyRegistry.getRegister(name));
 		}
 	}
 	

@@ -11,7 +11,7 @@ import ninja.egg82.utils.StringUtil;
 
 public class SpamTickCommand extends TickCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.SPAM_REGISTRY);
+	private IRegistry spamRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SPAM_REGISTRY);
 	
 	//constructor
 	public SpamTickCommand() {
@@ -23,9 +23,9 @@ public class SpamTickCommand extends TickCommand {
 	
 	//private
 	protected void execute() {
-		String[] names = reg.registryNames();
+		String[] names = spamRegistry.registryNames();
 		for (String name : names) {
-			e((Player) reg.getRegister(name));
+			e((Player) spamRegistry.getRegister(name));
 		}
 	}
 	private void e(Player player) {

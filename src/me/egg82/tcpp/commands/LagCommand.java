@@ -14,8 +14,8 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class LagCommand extends BasePluginCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.LAG_REGISTRY);
-	private IRegistry reg2 = (IRegistry) ServiceLocator.getService(PluginServiceType.LAG_INTERN_REGISTRY);
+	private IRegistry lagRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.LAG_REGISTRY);
+	private IRegistry lagInternRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.LAG_INTERN_REGISTRY);
 	
 	//constructor
 	public LagCommand() {
@@ -24,8 +24,8 @@ public class LagCommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		if (reg.contains(uuid)) {
-			reg.setRegister(uuid, player);
+		if (lagRegistry.contains(uuid)) {
+			lagRegistry.setRegister(uuid, player);
 		}
 	}
 	
@@ -39,18 +39,18 @@ public class LagCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (lagRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer lagging.");
-			reg.setRegister(uuid, null);
-			reg2.setRegister(uuid, null);
+			lagRegistry.setRegister(uuid, null);
+			lagInternRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + " is now lagging.");
-			reg.setRegister(uuid, player);
+			lagRegistry.setRegister(uuid, player);
 			
 			HashMap<String, Object> map = new HashMap<String, Object>();
 			map.put("loc", player.getLocation());
 			map.put("lastLoc", 0l);
-			reg2.setRegister(uuid, map);
+			lagInternRegistry.setRegister(uuid, map);
 		}
 	}
 }

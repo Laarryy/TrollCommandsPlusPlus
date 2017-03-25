@@ -14,7 +14,7 @@ public class PluginServiceType {
 	public static final String SPAM_REGISTRY = "spamRegistry";
 	public static final String STARVE_REGISTRY = "starveRegistry";
 	public static final String HURT_REGISTRY = "hurtRegistry";
-	public static final String SLOWMINE_REGISTRY = "slowmineRegistry";
+	public static final String SLOW_MINE_REGISTRY = "slowMineRegistry";
 	public static final String NAUSEA_REGISTRY = "nauseaRegistry";
 	public static final String VOID_REGISTRY = "voidRegistry";
 	public static final String DELAY_KILL_REGISTRY = "delayKillRegistry";
@@ -37,9 +37,10 @@ public class PluginServiceType {
 	public static final String POPUP_REGISTRY = "popupRegistry";
 	public static final String DISPLAY_REGISTRY = "displayRegistry";
 	public static final String DISPLAY_INTERN_REGISTRY = "displayInternRegistry";
-	public static final String NOPICKUP_REGISTRY = "nopickupRegistry";
+	public static final String NO_PICKUP_REGISTRY = "noPickupRegistry";
 	public static final String BRITTLE_REGISTRY = "brittleRegistry";
 	public static final String SQUID_REGISTRY = "squidRegistry";
+	public static final String SQUID_INTERN_REGISTRY = "squidInternRegistry";
 	public static final String WHO_AM_I_REGISTRY = "whoAmIRegistry";
 	public static final String WHO_AM_I_INTERN_REGISTRY = "whoAmIInternRegistry";
 	public static final String CLUMSY_REGISTRY = "clumsyRegistry";

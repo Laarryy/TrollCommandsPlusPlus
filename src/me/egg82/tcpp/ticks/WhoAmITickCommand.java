@@ -11,7 +11,7 @@ import ninja.egg82.utils.StringUtil;
 
 public class WhoAmITickCommand extends TickCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.WHO_AM_I_REGISTRY);
+	private IRegistry whoAmIRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.WHO_AM_I_REGISTRY);
 	
 	//constructor
 	public WhoAmITickCommand() {
@@ -23,9 +23,9 @@ public class WhoAmITickCommand extends TickCommand {
 	
 	//private
 	protected void execute() {
-		String[] names = reg.registryNames();
+		String[] names = whoAmIRegistry.registryNames();
 		for (String name : names) {
-			e((Player) reg.getRegister(name));
+			e((Player) whoAmIRegistry.getRegister(name));
 		}
 	}
 	private void e(Player player) {

@@ -9,7 +9,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class HurtTickCommand extends TickCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.HURT_REGISTRY);
+	private IRegistry hurtRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.HURT_REGISTRY);
 	
 	//constructor
 	public HurtTickCommand() {
@@ -21,9 +21,9 @@ public class HurtTickCommand extends TickCommand {
 	
 	//private
 	protected void execute() {
-		String[] names = reg.registryNames();
+		String[] names = hurtRegistry.registryNames();
 		for (String name : names) {
-			e((Player) reg.getRegister(name));
+			e((Player) hurtRegistry.getRegister(name));
 		}
 	}
 	private void e(Player player) {

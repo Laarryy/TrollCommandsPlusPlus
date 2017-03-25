@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class ExplodeBreakCommand extends BasePluginCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.EXPLODE_BREAK_REGISTRY);
+	private IRegistry explodeBreakRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.EXPLODE_BREAK_REGISTRY);
 	
 	//constructor
 	public ExplodeBreakCommand() {
@@ -21,7 +21,7 @@ public class ExplodeBreakCommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		explodeBreakRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -36,12 +36,12 @@ public class ExplodeBreakCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (explodeBreakRegistry.contains(uuid)) {
 			sender.sendMessage("The next block " + player.getName() + " breaks will no longer explode.");
-			reg.setRegister(uuid, null);
+			explodeBreakRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage("The next block " + player.getName() + " breaks will now explode!");
-			reg.setRegister(uuid, player);
+			explodeBreakRegistry.setRegister(uuid, player);
 		}
 	}
 }

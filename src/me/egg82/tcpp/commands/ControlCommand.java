@@ -23,9 +23,9 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class ControlCommand extends BasePluginCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.CONTROL_REGISTRY);
-	private IRegistry reg2 = (IRegistry) ServiceLocator.getService(PluginServiceType.CONTROLLER_REGISTRY);
-	private IRegistry reg3 = (IRegistry) ServiceLocator.getService(PluginServiceType.CONTROL_DATA_REGISTRY);
+	private IRegistry controlRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.CONTROL_REGISTRY);
+	private IRegistry controllerRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.CONTROLLER_REGISTRY);
+	private IRegistry controlDataRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.CONTROL_DATA_REGISTRY);
 	private IDisguiseHelper disguiseHelper = (IDisguiseHelper) ServiceLocator.getService(PluginServiceType.DISGUISE_HELPER);
 	
 	//constructor
@@ -35,18 +35,18 @@ public class ControlCommand extends BasePluginCommand {
 	
 	//public
 	public void onQuit(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		controlRegistry.computeIfPresent(uuid, (k,v) -> {
 			return null;
 		});
 		
-		reg2.computeIfPresent(uuid, (k,v) -> {
+		controllerRegistry.computeIfPresent(uuid, (k,v) -> {
 			Player p = (Player) v;
 			
 			if (p != null) {
 				p.kickPlayer("You were being controlled, and your controller quit/was kicked.");
 			}
 			
-			reg3.setRegister(uuid, null);
+			controlDataRegistry.setRegister(uuid, null);
 			return null;
 		});
 	}
@@ -67,8 +67,8 @@ public class ControlCommand extends BasePluginCommand {
 			String playerUuid = null;
 			
 			if (args.length == 0) {
-				if (reg2.contains(pUuid)) {
-					player = (Player) reg2.getRegister(pUuid);
+				if (controllerRegistry.contains(pUuid)) {
+					player = (Player) controllerRegistry.getRegister(pUuid);
 					
 					if (player != null) {
 						playerUuid = player.getUniqueId().toString();
@@ -106,7 +106,7 @@ public class ControlCommand extends BasePluginCommand {
 			playerInv = player.getInventory();
 		}
 		
-		if (reg2.contains(controllerUuid)) {
+		if (controllerRegistry.contains(controllerUuid)) {
 			sender.sendMessage("You are no longer controlling " + player.getName() + ".");
 			if (player != null) {
 				player.sendMessage("You are no longer being controlled.");
@@ -117,7 +117,7 @@ public class ControlCommand extends BasePluginCommand {
 			if (playerInv != null) {
 				playerInv.setContents(controllerInv.getContents());
 			}
-			map = (HashMap<String, Object>) reg3.getRegister(uuid);
+			map = (HashMap<String, Object>) controlDataRegistry.getRegister(uuid);
 			if (player != null) {
 				player.setGameMode((GameMode) map.get("mode"));
 				player.teleport(controller);
@@ -129,21 +129,21 @@ public class ControlCommand extends BasePluginCommand {
 			
 			disguiseHelper.undisguise(controller);
 			
-			reg.setRegister(uuid, null);
-			reg2.setRegister(controllerUuid, null);
-			reg3.setRegister(uuid, null);
+			controlRegistry.setRegister(uuid, null);
+			controllerRegistry.setRegister(controllerUuid, null);
+			controlDataRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage("You are now controlling " + player.getName() + "!");
 			player.sendMessage("You are now being controlled!");
 			
-			reg.setRegister(uuid, player);
-			reg2.setRegister(controllerUuid, player);
+			controlRegistry.setRegister(uuid, player);
+			controllerRegistry.setRegister(controllerUuid, player);
 			
 			map = new HashMap<String, Object>();
 			map.put("inventory", controllerInv.getContents());
 			map.put("location", controller.getLocation());
 			map.put("mode", player.getGameMode());
-			reg3.setRegister(uuid, map);
+			controlDataRegistry.setRegister(uuid, map);
 			
 			controllerInv.setContents(playerInv.getContents());
 			controller.teleport(player);

@@ -16,8 +16,8 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class AmnesiaCommand extends BasePluginCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.AMNESIA_REGISTRY);
-	private IRegistry reg2 = (IRegistry) ServiceLocator.getService(PluginServiceType.AMNESIA_INTERN_REGISTRY);
+	private IRegistry amnesiaRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.AMNESIA_REGISTRY);
+	private IRegistry amnesiaInternRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.AMNESIA_INTERN_REGISTRY);
 	
 	//constructor
 	public AmnesiaCommand() {
@@ -26,7 +26,7 @@ public class AmnesiaCommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		amnesiaRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -41,14 +41,14 @@ public class AmnesiaCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (amnesiaRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer an amnesiac.");
-			reg.setRegister(uuid, null);
-			reg2.setRegister(uuid, null);
+			amnesiaRegistry.setRegister(uuid, null);
+			amnesiaInternRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + " is now an amnesiac.");
-			reg.setRegister(uuid, player);
-			reg2.setRegister(uuid, new ArrayList<ImmutableMap<String, Object>>());
+			amnesiaRegistry.setRegister(uuid, player);
+			amnesiaInternRegistry.setRegister(uuid, new ArrayList<ImmutableMap<String, Object>>());
 		}
 	}
 }

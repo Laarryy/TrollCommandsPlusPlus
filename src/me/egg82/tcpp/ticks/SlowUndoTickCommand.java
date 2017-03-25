@@ -15,7 +15,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class SlowUndoTickCommand extends TickCommand {
 	//vars
-	private IRegistry reg2 = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOW_UNDO_INTERN_REGISTRY);
+	private IRegistry slowUndoInternRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOW_UNDO_INTERN_REGISTRY);
 	
 	//constructor
 	public SlowUndoTickCommand() {
@@ -28,9 +28,9 @@ public class SlowUndoTickCommand extends TickCommand {
 	//private
 	@SuppressWarnings("unchecked")
 	protected void execute() {
-		String[] names = reg2.registryNames();
+		String[] names = slowUndoInternRegistry.registryNames();
 		for (String name : names) {
-			e((ArrayList<ImmutableMap<String, Object>>) reg2.getRegister(name));
+			e((ArrayList<ImmutableMap<String, Object>>) slowUndoInternRegistry.getRegister(name));
 		}
 	}
 	private void e(ArrayList<ImmutableMap<String, Object>> maps) {

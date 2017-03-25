@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class GarbleCommand extends BasePluginCommand {
 	//vars
-	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.GARBLE_REGISTRY);
+	IRegistry garbleRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.GARBLE_REGISTRY);
 	
 	//constructor
 	public GarbleCommand() {
@@ -21,7 +21,7 @@ public class GarbleCommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		garbleRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -36,12 +36,12 @@ public class GarbleCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (garbleRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + "'s speech is no longer a garbled mess.");
-			reg.setRegister(uuid, null);
+			garbleRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + "'s speech is now a garbled mess.");
-			reg.setRegister(uuid, player);
+			garbleRegistry.setRegister(uuid, player);
 		}
 	}
 }

@@ -11,7 +11,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class SlowpokeTickCommand extends TickCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOWPOKE_REGISTRY);
+	private IRegistry slowpokeRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOWPOKE_REGISTRY);
 	
 	//constructor
 	public SlowpokeTickCommand() {
@@ -23,9 +23,9 @@ public class SlowpokeTickCommand extends TickCommand {
 	
 	//private
 	protected void execute() {
-		String[] names = reg.registryNames();
+		String[] names = slowpokeRegistry.registryNames();
 		for (String name : names) {
-			e((Player) reg.getRegister(name));
+			e((Player) slowpokeRegistry.getRegister(name));
 		}
 	}
 	private void e(Player player) {

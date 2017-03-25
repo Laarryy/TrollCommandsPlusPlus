@@ -19,8 +19,9 @@ import ninja.egg82.utils.MathUtil;
 
 public class PortalTickCommand extends TickCommand {
 	//vars
-	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.PORTAL_REGISTRY);
-	ITickHandler tickHandler = (ITickHandler) ServiceLocator.getService(SpigotServiceType.TICK_HANDLER);
+	private IRegistry portalRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.PORTAL_REGISTRY);
+	
+	private ITickHandler tickHandler = (ITickHandler) ServiceLocator.getService(SpigotServiceType.TICK_HANDLER);
 	
 	//constructor
 	public PortalTickCommand() {
@@ -32,9 +33,9 @@ public class PortalTickCommand extends TickCommand {
 	//private
 	@SuppressWarnings("unchecked")
 	protected void execute() {
-		String[] names = reg.registryNames();
+		String[] names = portalRegistry.registryNames();
 		for (String name : names) {
-			e(name, (HashMap<String, Object>) reg.getRegister(name));
+			e(name, (HashMap<String, Object>) portalRegistry.getRegister(name));
 		}
 	}
 	@SuppressWarnings("unchecked")
@@ -63,6 +64,6 @@ public class PortalTickCommand extends TickCommand {
 			}
 		}
 		
-		reg.setRegister(name, null);
+		portalRegistry.setRegister(name, null);
 	}
 }

@@ -9,7 +9,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class StarveTickCommand extends TickCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.STARVE_REGISTRY);
+	private IRegistry starveRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.STARVE_REGISTRY);
 	
 	//constructor
 	public StarveTickCommand() {
@@ -21,9 +21,9 @@ public class StarveTickCommand extends TickCommand {
 	
 	//private
 	protected void execute() {
-		String[] names = reg.registryNames();
+		String[] names = starveRegistry.registryNames();
 		for (String name : names) {
-			e((Player) reg.getRegister(name));
+			e((Player) starveRegistry.getRegister(name));
 		}
 	}
 	private void e(Player player) {

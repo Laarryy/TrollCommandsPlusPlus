@@ -19,8 +19,9 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class DelayKillCommand extends BasePluginCommand {
 	//vars
-	ITickHandler tickHandler = (ITickHandler) ServiceLocator.getService(SpigotServiceType.TICK_HANDLER);
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.DELAY_KILL_REGISTRY);
+	private IRegistry delayKillRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.DELAY_KILL_REGISTRY);
+	
+	private ITickHandler tickHandler = (ITickHandler) ServiceLocator.getService(SpigotServiceType.TICK_HANDLER);
 	
 	//constructor
 	public DelayKillCommand() {
@@ -29,7 +30,7 @@ public class DelayKillCommand extends BasePluginCommand {
 	
 	//public
 	public void onQuit(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		delayKillRegistry.computeIfPresent(uuid, (k,v) -> {
 			return null;
 		});
 	}
@@ -60,9 +61,9 @@ public class DelayKillCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player, int delay) {
-		if (reg.contains(uuid)) {
+		if (delayKillRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + "'s death is no longer inevitable.");
-			reg.setRegister(uuid, null);
+			delayKillRegistry.setRegister(uuid, null);
 		} else {
 			if (delay > -1) {
 				sender.sendMessage(player.getName() + "'s death is inevitable.");
@@ -71,7 +72,7 @@ public class DelayKillCommand extends BasePluginCommand {
 				map.put("time", System.currentTimeMillis());
 				map.put("delay", delay);
 				map.put("player", player);
-				reg.setRegister(uuid, map);
+				delayKillRegistry.setRegister(uuid, map);
 				tickHandler.addDelayedTickCommand("delayKill-" + uuid, DelayKillTickCommand.class, 20 * delay + 2);
 			}
 		}

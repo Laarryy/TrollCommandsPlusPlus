@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class ElectrifyCommand extends BasePluginCommand {
 	//vars
-	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.ELECTRIFY_REGISTRY);
+	IRegistry electrifyRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.ELECTRIFY_REGISTRY);
 	
 	//constructor
 	public ElectrifyCommand() {
@@ -21,12 +21,12 @@ public class ElectrifyCommand extends BasePluginCommand {
 	
 	//public
 	public void onDeath(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		electrifyRegistry.computeIfPresent(uuid, (k,v) -> {
 			return null;
 		});
 	}
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		electrifyRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -41,12 +41,12 @@ public class ElectrifyCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (electrifyRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer being electrified.");
-			reg.setRegister(uuid, null);
+			electrifyRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + " is now being electrified.");
-			reg.setRegister(uuid, player);
+			electrifyRegistry.setRegister(uuid, player);
 		}
 	}
 }

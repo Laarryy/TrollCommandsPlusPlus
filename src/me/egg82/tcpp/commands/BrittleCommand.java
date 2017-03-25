@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class BrittleCommand extends BasePluginCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.BRITTLE_REGISTRY);
+	private IRegistry brittleRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.BRITTLE_REGISTRY);
 	
 	//constructor
 	public BrittleCommand() {
@@ -21,12 +21,12 @@ public class BrittleCommand extends BasePluginCommand {
 	
 	//public
 	public void onDeath(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		brittleRegistry.computeIfPresent(uuid, (k,v) -> {
 			return null;
 		});
 	}
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		brittleRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -41,12 +41,12 @@ public class BrittleCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (brittleRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer bittle.");
-			reg.setRegister(uuid, null);
+			brittleRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + " is now very brittle!");
-			reg.setRegister(uuid, player);
+			brittleRegistry.setRegister(uuid, player);
 		}
 	}
 }

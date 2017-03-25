@@ -19,8 +19,9 @@ import ninja.egg82.utils.MathUtil;
 
 public class VoidTickCommand extends TickCommand {
 	//vars
-	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.VOID_REGISTRY);
-	ITickHandler tickHandler = (ITickHandler) ServiceLocator.getService(SpigotServiceType.TICK_HANDLER);
+	private IRegistry voidRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.VOID_REGISTRY);
+	
+	private ITickHandler tickHandler = (ITickHandler) ServiceLocator.getService(SpigotServiceType.TICK_HANDLER);
 	
 	//constructor
 	public VoidTickCommand() {
@@ -32,9 +33,9 @@ public class VoidTickCommand extends TickCommand {
 	//private
 	@SuppressWarnings("unchecked")
 	protected void execute() {
-		String[] names = reg.registryNames();
+		String[] names = voidRegistry.registryNames();
 		for (String name : names) {
-			e(name, (HashMap<String, Object>) reg.getRegister(name));
+			e(name, (HashMap<String, Object>) voidRegistry.getRegister(name));
 		}
 	}
 	@SuppressWarnings("unchecked")
@@ -63,6 +64,6 @@ public class VoidTickCommand extends TickCommand {
 			}
 		}
 		
-		reg.setRegister(name, null);
+		voidRegistry.setRegister(name, null);
 	}
 }

@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class PopupCommand extends BasePluginCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.POPUP_REGISTRY);
+	private IRegistry popupRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.POPUP_REGISTRY);
 	
 	//constructor
 	public PopupCommand() {
@@ -21,7 +21,7 @@ public class PopupCommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		popupRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -36,12 +36,12 @@ public class PopupCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (popupRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + "'s inventory is no longer opening and closing randomly.");
-			reg.setRegister(uuid, null);
+			popupRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + "'s inventory is now opening and closing randomly.");
-			reg.setRegister(uuid, player);
+			popupRegistry.setRegister(uuid, player);
 		}
 	}
 }

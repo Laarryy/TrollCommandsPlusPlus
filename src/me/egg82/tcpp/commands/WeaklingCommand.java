@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class WeaklingCommand extends BasePluginCommand {
 	//vars
-	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.WEAKLING_REGISTRY);
+	IRegistry weaklingRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.WEAKLING_REGISTRY);
 	
 	//constructor
 	public WeaklingCommand() {
@@ -21,7 +21,7 @@ public class WeaklingCommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		weaklingRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -36,12 +36,12 @@ public class WeaklingCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (weaklingRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer a weakling.");
-			reg.setRegister(uuid, null);
+			weaklingRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + " is now a weakling.");
-			reg.setRegister(uuid, player);
+			weaklingRegistry.setRegister(uuid, player);
 		}
 	}
 }

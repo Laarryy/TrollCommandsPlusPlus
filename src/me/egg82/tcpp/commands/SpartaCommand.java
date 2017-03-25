@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class SpartaCommand extends BasePluginCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.SPARTA_REGISTRY);
+	private IRegistry spartaRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SPARTA_REGISTRY);
 	
 	//constructor
 	public SpartaCommand() {
@@ -21,12 +21,12 @@ public class SpartaCommand extends BasePluginCommand {
 	
 	//public
 	public void onDeath(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		spartaRegistry.computeIfPresent(uuid, (k,v) -> {
 			return null;
 		});
 	}
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		spartaRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -41,12 +41,12 @@ public class SpartaCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (spartaRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer a pincushion.");
-			reg.setRegister(uuid, null);
+			spartaRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + " is now a pincushion.");
-			reg.setRegister(uuid, player);
+			spartaRegistry.setRegister(uuid, player);
 		}
 	}
 }

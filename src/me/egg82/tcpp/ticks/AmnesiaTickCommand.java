@@ -13,8 +13,8 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class AmnesiaTickCommand extends TickCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.AMNESIA_REGISTRY);
-	private IRegistry reg2 = (IRegistry) ServiceLocator.getService(PluginServiceType.AMNESIA_INTERN_REGISTRY);
+	private IRegistry amnesiaRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.AMNESIA_REGISTRY);
+	private IRegistry amnesiaInternRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.AMNESIA_INTERN_REGISTRY);
 	
 	//constructor
 	public AmnesiaTickCommand() {
@@ -26,9 +26,9 @@ public class AmnesiaTickCommand extends TickCommand {
 	
 	//private
 	protected void execute() {
-		String[] names = reg2.registryNames();
+		String[] names = amnesiaInternRegistry.registryNames();
 		for (String name : names) {
-			e((Player) reg.getRegister(name));
+			e((Player) amnesiaRegistry.getRegister(name));
 		}
 	}
 	@SuppressWarnings("unchecked")
@@ -37,7 +37,7 @@ public class AmnesiaTickCommand extends TickCommand {
 			return;
 		}
 		
-		ArrayList<ImmutableMap<String, Object>> maps = (ArrayList<ImmutableMap<String, Object>>) reg2.getRegister(player.getUniqueId().toString());
+		ArrayList<ImmutableMap<String, Object>> maps = (ArrayList<ImmutableMap<String, Object>>) amnesiaInternRegistry.getRegister(player.getUniqueId().toString());
 		ArrayList<ImmutableMap<String, Object>> rem = new ArrayList<ImmutableMap<String, Object>>();
 		
 		for (ImmutableMap<String, Object> map : maps) {

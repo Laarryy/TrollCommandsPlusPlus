@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class AloneCommand extends BasePluginCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.ALONE_REGISTRY);
+	private IRegistry aloneRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.ALONE_REGISTRY);
 	
 	//constructor
 	public AloneCommand() {
@@ -21,17 +21,17 @@ public class AloneCommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		Player temp = (Player) reg.getRegister(uuid);
+		Player temp = (Player) aloneRegistry.getRegister(uuid);
 		
 		if (temp != null) {
 			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 				player.hidePlayer(p);
 			}
-			reg.setRegister(uuid, player);
+			aloneRegistry.setRegister(uuid, player);
 		} else {
-			String[] names = reg.registryNames();
+			String[] names = aloneRegistry.registryNames();
 			for (String n : names) {
-				Player p = (Player) reg.getRegister(n);
+				Player p = (Player) aloneRegistry.getRegister(n);
 				if (p != null) {
 					p.hidePlayer(player);
 				}
@@ -49,16 +49,16 @@ public class AloneCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (aloneRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer alone in this wold!");
-			reg.setRegister(uuid, null);
+			aloneRegistry.setRegister(uuid, null);
 			
 			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 				player.showPlayer(p);
 			}
 		} else {
 			sender.sendMessage(player.getName() + " is now all alone :(");
-			reg.setRegister(uuid, player);
+			aloneRegistry.setRegister(uuid, player);
 			
 			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 				player.hidePlayer(p);

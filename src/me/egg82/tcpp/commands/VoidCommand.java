@@ -25,7 +25,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class VoidCommand extends BasePluginCommand {
 	//vars
-	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.VOID_REGISTRY);
+	IRegistry voidRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.VOID_REGISTRY);
 	ITickHandler tickHandler = (ITickHandler) ServiceLocator.getService(SpigotServiceType.TICK_HANDLER);
 	
 	//constructor
@@ -41,7 +41,7 @@ public class VoidCommand extends BasePluginCommand {
 			Player player = Bukkit.getPlayer(args[0]);
 			String uuid = player.getUniqueId().toString();
 			
-			if (reg.contains(uuid)) {
+			if (voidRegistry.contains(uuid)) {
 				sender.sendMessage(MessageType.ALREADY_USED);
 				dispatch(CommandEvent.ERROR, CommandErrorType.ALREADY_USED);
 				return;
@@ -76,7 +76,7 @@ public class VoidCommand extends BasePluginCommand {
 		map.put("blocks", blocks);
 		map.put("inv", inv);
 		map.put("data", data);
-		reg.setRegister(uuid, map);
+		voidRegistry.setRegister(uuid, map);
 		tickHandler.addDelayedTickCommand("void-" + uuid, VoidTickCommand.class, 202);
 		
 		sender.sendMessage(player.getName() + " is now very confused as to why they are suddenly falling through the world.");

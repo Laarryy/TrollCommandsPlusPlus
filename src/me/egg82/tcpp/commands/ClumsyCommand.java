@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class ClumsyCommand extends BasePluginCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.CLUMSY_REGISTRY);
+	private IRegistry clumsyRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.CLUMSY_REGISTRY);
 	
 	//constructor
 	public ClumsyCommand() {
@@ -21,7 +21,7 @@ public class ClumsyCommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		clumsyRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -36,12 +36,12 @@ public class ClumsyCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (clumsyRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer clumsy.");
-			reg.setRegister(uuid, null);
+			clumsyRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + " is now very clumsy!");
-			reg.setRegister(uuid, player);
+			clumsyRegistry.setRegister(uuid, player);
 		}
 	}
 }

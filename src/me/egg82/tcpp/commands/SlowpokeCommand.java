@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class SlowpokeCommand extends BasePluginCommand {
 	//vars
-	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOWPOKE_REGISTRY);
+	IRegistry slowpokeRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOWPOKE_REGISTRY);
 	
 	//constructor
 	public SlowpokeCommand() {
@@ -21,7 +21,7 @@ public class SlowpokeCommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		slowpokeRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -36,12 +36,12 @@ public class SlowpokeCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (slowpokeRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer a slowpoke.");
-			reg.setRegister(uuid, null);
+			slowpokeRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + " is now a slowpoke.");
-			reg.setRegister(uuid, player);
+			slowpokeRegistry.setRegister(uuid, player);
 		}
 	}
 }

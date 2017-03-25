@@ -16,8 +16,8 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class SlowUndoCommand extends BasePluginCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOW_UNDO_REGISTRY);
-	private IRegistry reg2 = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOW_UNDO_INTERN_REGISTRY);
+	private IRegistry slowUndoRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOW_UNDO_REGISTRY);
+	private IRegistry slowUndoInternRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOW_UNDO_INTERN_REGISTRY);
 	
 	//constructor
 	public SlowUndoCommand() {
@@ -26,7 +26,7 @@ public class SlowUndoCommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		slowUndoRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -41,14 +41,14 @@ public class SlowUndoCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (slowUndoRegistry.contains(uuid)) {
 			sender.sendMessage("Any block changes " + player.getName() + " makes will no longer be slowly undone.");
-			reg.setRegister(uuid, null);
-			reg2.setRegister(uuid, null);
+			slowUndoRegistry.setRegister(uuid, null);
+			slowUndoInternRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage("Any block changes " + player.getName() + " makes will now be slowly undone.");
-			reg.setRegister(uuid, player);
-			reg2.setRegister(uuid, new ArrayList<ImmutableMap<String, Object>>());
+			slowUndoRegistry.setRegister(uuid, player);
+			slowUndoInternRegistry.setRegister(uuid, new ArrayList<ImmutableMap<String, Object>>());
 		}
 	}
 }

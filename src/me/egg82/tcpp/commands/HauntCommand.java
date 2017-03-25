@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class HauntCommand extends BasePluginCommand {
 	//vars
-	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.HAUNT_REGISTRY);
+	IRegistry hauntRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.HAUNT_REGISTRY);
 	
 	//constructor
 	public HauntCommand() {
@@ -21,7 +21,7 @@ public class HauntCommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		hauntRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -36,12 +36,12 @@ public class HauntCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (hauntRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer being haunted by mysterious sounds.");
-			reg.setRegister(uuid, null);
+			hauntRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + " is now being haunted by mysterious sounds.");
-			reg.setRegister(uuid, player);
+			hauntRegistry.setRegister(uuid, player);
 		}
 	}
 }

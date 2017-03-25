@@ -14,8 +14,9 @@ import ninja.egg82.utils.MathUtil;
 
 public class AnnoyTickCommand extends TickCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.ANNOY_REGISTRY);
-	ISoundUtil soundUtil = (ISoundUtil) ((IRegistry) ServiceLocator.getService(SpigotServiceType.REFLECT_REGISTRY)).getRegister(SpigotReflectType.SOUND);
+	private IRegistry annoyRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.ANNOY_REGISTRY);
+	
+	private ISoundUtil soundUtil = (ISoundUtil) ((IRegistry) ServiceLocator.getService(SpigotServiceType.REFLECT_REGISTRY)).getRegister(SpigotReflectType.SOUND);
 	private Sound[] sounds = null;
 	
 	//constructor
@@ -29,9 +30,9 @@ public class AnnoyTickCommand extends TickCommand {
 	
 	//private
 	protected void execute() {
-		String[] names = reg.registryNames();
+		String[] names = annoyRegistry.registryNames();
 		for (String name : names) {
-			e((Player) reg.getRegister(name));
+			e((Player) annoyRegistry.getRegister(name));
 		}
 	}
 	private void e(Player player) {

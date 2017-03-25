@@ -14,8 +14,8 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class WhoAmICommand extends BasePluginCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.WHO_AM_I_REGISTRY);
-	private IRegistry reg2 = (IRegistry) ServiceLocator.getService(PluginServiceType.WHO_AM_I_INTERN_REGISTRY);
+	private IRegistry whoAmIRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.WHO_AM_I_REGISTRY);
+	private IRegistry whoAmIInternRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.WHO_AM_I_INTERN_REGISTRY);
 	
 	//constructor
 	public WhoAmICommand() {
@@ -24,7 +24,7 @@ public class WhoAmICommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		whoAmIRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -40,10 +40,10 @@ public class WhoAmICommand extends BasePluginCommand {
 	}
 	@SuppressWarnings("unchecked")
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (whoAmIRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer having an identity crisis.");
 			
-			reg2.computeIfPresent(uuid, (k,v) -> {
+			whoAmIInternRegistry.computeIfPresent(uuid, (k,v) -> {
 				HashMap<String, Object> map = (HashMap<String, Object>) v;
 				String displayName = (String) map.get("displayName");
 				String listName = (String) map.get("listName");
@@ -58,7 +58,7 @@ public class WhoAmICommand extends BasePluginCommand {
 				return null;
 			});
 			
-			reg.setRegister(uuid, null);
+			whoAmIRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + " is now having an identity crisis.");
 			
@@ -66,8 +66,8 @@ public class WhoAmICommand extends BasePluginCommand {
 			map.put("displayName", player.getDisplayName());
 			map.put("listName", player.getPlayerListName());
 			
-			reg.setRegister(uuid, player);
-			reg2.setRegister(uuid, map);
+			whoAmIRegistry.setRegister(uuid, player);
+			whoAmIInternRegistry.setRegister(uuid, map);
 		}
 	}
 }

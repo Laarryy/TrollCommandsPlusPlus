@@ -17,8 +17,8 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class DisplayCommand extends BasePluginCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.DISPLAY_REGISTRY);
-	private IRegistry reg2 = (IRegistry) ServiceLocator.getService(PluginServiceType.DISPLAY_INTERN_REGISTRY);
+	private IRegistry displayRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.DISPLAY_REGISTRY);
+	private IRegistry displayInternRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.DISPLAY_INTERN_REGISTRY);
 	
 	//constructor
 	public DisplayCommand() {
@@ -28,11 +28,11 @@ public class DisplayCommand extends BasePluginCommand {
 	//public
 	@SuppressWarnings("unchecked")
 	public void onQuit(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		displayRegistry.computeIfPresent(uuid, (k,v) -> {
 			return null;
 		});
 		
-		reg2.computeIfPresent(uuid, (k,v) -> {
+		displayInternRegistry.computeIfPresent(uuid, (k,v) -> {
 			HashMap<String, Object> map = (HashMap<String, Object>) v;
 			set((Location) map.get("loc"), (boolean) map.get("ground"), Material.AIR, Material.AIR);
 			return null;
@@ -57,13 +57,13 @@ public class DisplayCommand extends BasePluginCommand {
 		HashMap<String, Object> map = null;
 		boolean onGround;
 		
-		if (reg.contains(uuid)) {
+		if (displayRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer on display.");
 			
-			map = (HashMap<String, Object>) reg2.getRegister(uuid);
+			map = (HashMap<String, Object>) displayInternRegistry.getRegister(uuid);
 			
-			reg.setRegister(uuid, null);
-			reg2.setRegister(uuid, null);
+			displayRegistry.setRegister(uuid, null);
+			displayInternRegistry.setRegister(uuid, null);
 			
 			set((Location) map.get("loc"), (boolean) map.get("ground"), Material.AIR, Material.AIR);
 		} else {
@@ -82,8 +82,8 @@ public class DisplayCommand extends BasePluginCommand {
 			
 			set(loc, onGround, Material.THIN_GLASS, Material.GLASS);
 			
-			reg.setRegister(uuid, player);
-			reg2.setRegister(uuid, map);
+			displayRegistry.setRegister(uuid, player);
+			displayInternRegistry.setRegister(uuid, map);
 		}
 	}
 	

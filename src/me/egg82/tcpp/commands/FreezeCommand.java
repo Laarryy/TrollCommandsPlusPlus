@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class FreezeCommand extends BasePluginCommand {
 	//vars
-	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.FREEZE_REGISTRY);
+	IRegistry freezeRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.FREEZE_REGISTRY);
 	
 	//constructor
 	public FreezeCommand() {
@@ -21,7 +21,7 @@ public class FreezeCommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		freezeRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -36,12 +36,12 @@ public class FreezeCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (freezeRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer frozen.");
-			reg.setRegister(uuid, null);
+			freezeRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + " is now frozen.");
-			reg.setRegister(uuid, player);
+			freezeRegistry.setRegister(uuid, player);
 		}
 	}
 }

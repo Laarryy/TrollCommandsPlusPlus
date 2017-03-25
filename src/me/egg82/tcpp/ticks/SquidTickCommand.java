@@ -12,7 +12,8 @@ import ninja.egg82.utils.MathUtil;
 
 public class SquidTickCommand extends TickCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.SQUID_REGISTRY);
+	private IRegistry squidRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SQUID_REGISTRY);
+	private IRegistry squidInternRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SQUID_INTERN_REGISTRY);
 	
 	//constructor
 	public SquidTickCommand() {
@@ -24,9 +25,9 @@ public class SquidTickCommand extends TickCommand {
 	
 	//private
 	protected void execute() {
-		String[] names = reg.registryNames();
+		String[] names = squidRegistry.registryNames();
 		for (String name : names) {
-			e((Player) reg.getRegister(name));
+			e((Player) squidRegistry.getRegister(name));
 		}
 	}
 	private void e(Player player) {
@@ -37,7 +38,8 @@ public class SquidTickCommand extends TickCommand {
 		int rand = (int) (MathUtil.random(5.0d, 10.0d));
 		Location pl = player.getLocation().clone();
 		for (int i = 0; i < rand; i++) {
-			player.getWorld().spawn(pl.clone().add(MathUtil.random(-10.0d, 10.0d), MathUtil.random(5.0d, 10.0d), MathUtil.random(-10.0d, 10.0d)), Squid.class);
+			Squid s = player.getWorld().spawn(pl.clone().add(MathUtil.random(-10.0d, 10.0d), MathUtil.random(5.0d, 10.0d), MathUtil.random(-10.0d, 10.0d)), Squid.class);
+			squidInternRegistry.setRegister(s.getUniqueId().toString(), s);
 		}
 	}
 }

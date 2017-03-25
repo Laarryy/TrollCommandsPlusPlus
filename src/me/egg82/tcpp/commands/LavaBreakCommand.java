@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class LavaBreakCommand extends BasePluginCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.LAVA_BREAK_REGISTRY);
+	private IRegistry lavaBreakRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.LAVA_BREAK_REGISTRY);
 	
 	//constructor
 	public LavaBreakCommand() {
@@ -21,7 +21,7 @@ public class LavaBreakCommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		lavaBreakRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -36,12 +36,12 @@ public class LavaBreakCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (lavaBreakRegistry.contains(uuid)) {
 			sender.sendMessage("The next block " + player.getName() + " breaks will no longer be lava.");
-			reg.setRegister(uuid, null);
+			lavaBreakRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage("The next block " + player.getName() + " breaks will now be lava!");
-			reg.setRegister(uuid, player);
+			lavaBreakRegistry.setRegister(uuid, player);
 		}
 	}
 }

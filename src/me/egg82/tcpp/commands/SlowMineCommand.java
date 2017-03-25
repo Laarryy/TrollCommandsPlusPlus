@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class SlowMineCommand extends BasePluginCommand {
 	//vars
-	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOWMINE_REGISTRY);
+	IRegistry slowMineRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOW_MINE_REGISTRY);
 	
 	//constructor
 	public SlowMineCommand() {
@@ -21,7 +21,7 @@ public class SlowMineCommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		slowMineRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -36,12 +36,12 @@ public class SlowMineCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (slowMineRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer a slow miner.");
-			reg.setRegister(uuid, null);
+			slowMineRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + " is now a slow miner.");
-			reg.setRegister(uuid, player);
+			slowMineRegistry.setRegister(uuid, player);
 		}
 	}
 }

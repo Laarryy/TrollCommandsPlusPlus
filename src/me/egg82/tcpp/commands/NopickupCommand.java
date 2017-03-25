@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class NopickupCommand extends BasePluginCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.NOPICKUP_REGISTRY);
+	private IRegistry noPickupRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.NO_PICKUP_REGISTRY);
 	
 	//constructor
 	public NopickupCommand() {
@@ -21,7 +21,7 @@ public class NopickupCommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		noPickupRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -36,12 +36,12 @@ public class NopickupCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (noPickupRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " can now pick items up again.");
-			reg.setRegister(uuid, null);
+			noPickupRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + " can no longer pick items up.");
-			reg.setRegister(uuid, player);
+			noPickupRegistry.setRegister(uuid, player);
 		}
 	}
 }

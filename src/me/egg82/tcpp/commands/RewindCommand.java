@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class RewindCommand extends BasePluginCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.REWIND_REGISTRY);
+	private IRegistry rewindRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.REWIND_REGISTRY);
 	
 	//constructor
 	public RewindCommand() {
@@ -21,7 +21,7 @@ public class RewindCommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		rewindRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -36,13 +36,13 @@ public class RewindCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
-			reg.setRegister(uuid, null);
+		if (rewindRegistry.contains(uuid)) {
+			rewindRegistry.setRegister(uuid, null);
 			player.resetPlayerTime();
 			sender.sendMessage(player.getName() + "'s time is not longer rewinding.");
 		} else {
 			sender.sendMessage(player.getName() + "'s time is now rewinding.");
-			reg.setRegister(uuid, player);
+			rewindRegistry.setRegister(uuid, player);
 		}
 	}
 }

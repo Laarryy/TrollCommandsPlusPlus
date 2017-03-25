@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class SquidCommand extends BasePluginCommand {
 	//vars
-	private IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.SQUID_REGISTRY);
+	private IRegistry squidRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SQUID_REGISTRY);
 	
 	//constructor
 	public SquidCommand() {
@@ -21,7 +21,7 @@ public class SquidCommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		squidRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -36,12 +36,12 @@ public class SquidCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (squidRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer being.. Uh.. Squidded?");
-			reg.setRegister(uuid, null);
+			squidRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + " is now being.. Squidded?");
-			reg.setRegister(uuid, player);
+			squidRegistry.setRegister(uuid, player);
 		}
 	}
 }

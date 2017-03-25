@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class AnnoyCommand extends BasePluginCommand {
 	//vars
-	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.ANNOY_REGISTRY);
+	IRegistry annoyRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.ANNOY_REGISTRY);
 	
 	//constructor
 	public AnnoyCommand() {
@@ -21,7 +21,7 @@ public class AnnoyCommand extends BasePluginCommand {
 	
 	//public
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		annoyRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -36,12 +36,12 @@ public class AnnoyCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (annoyRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer being annoyed by villager sounds.");
-			reg.setRegister(uuid, null);
+			annoyRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + " is now being annoyed by villager sounds.");
-			reg.setRegister(uuid, player);
+			annoyRegistry.setRegister(uuid, player);
 		}
 	}
 }

@@ -12,7 +12,7 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class BurnCommand extends BasePluginCommand {
 	//vars
-	IRegistry reg = (IRegistry) ServiceLocator.getService(PluginServiceType.BURN_REGISTRY);
+	IRegistry burnRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.BURN_REGISTRY);
 	
 	//constructor
 	public BurnCommand() {
@@ -21,12 +21,12 @@ public class BurnCommand extends BasePluginCommand {
 	
 	//public
 	public void onDeath(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		burnRegistry.computeIfPresent(uuid, (k,v) -> {
 			return null;
 		});
 	}
 	public void onLogin(String uuid, Player player) {
-		reg.computeIfPresent(uuid, (k,v) -> {
+		burnRegistry.computeIfPresent(uuid, (k,v) -> {
 			return player;
 		});
 	}
@@ -41,12 +41,12 @@ public class BurnCommand extends BasePluginCommand {
 		}
 	}
 	private void e(String uuid, Player player) {
-		if (reg.contains(uuid)) {
+		if (burnRegistry.contains(uuid)) {
 			sender.sendMessage(player.getName() + " is no longer being burned.");
-			reg.setRegister(uuid, null);
+			burnRegistry.setRegister(uuid, null);
 		} else {
 			sender.sendMessage(player.getName() + " is now being burned.");
-			reg.setRegister(uuid, player);
+			burnRegistry.setRegister(uuid, player);
 		}
 	}
 }
