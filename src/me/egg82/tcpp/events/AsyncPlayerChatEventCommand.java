@@ -2,44 +2,32 @@ package me.egg82.tcpp.events;
 
 import java.util.ArrayList;
 
-import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.Event;
 
 import ninja.egg82.plugin.commands.EventCommand;
-import ninja.egg82.utils.Util;
+import ninja.egg82.utils.ReflectUtil;
 
 public class AsyncPlayerChatEventCommand extends EventCommand {
 	//vars
-	private ArrayList<EventCommand> commands = new ArrayList<EventCommand>();
 	
 	//constructor
-	public AsyncPlayerChatEventCommand() {
-		super();
-		
-		ArrayList<Class<? extends EventCommand>> enums = Util.getClasses(EventCommand.class, "me.egg82.tcpp.events.individual.playerChat");
-		for (Class<? extends EventCommand> c : enums) {
-			try {
-				commands.add(c.newInstance());
-			} catch (Exception ex) {
-				
-			}
-		}
+	public AsyncPlayerChatEventCommand(Event event) {
+		super(event);
 	}
 	
 	//public
 	
 	//private
-	protected void execute() {
-		AsyncPlayerChatEvent e = (AsyncPlayerChatEvent) event;
-		
-		EventCommand command = null;
+	protected void onExecute(long elapsedMilliseconds) {
+		ArrayList<Class<EventCommand>> commands = ReflectUtil.getClasses(EventCommand.class, "me.egg82.tcpp.events.player.asyncPlayerChat");
 		for (int i = 0; i < commands.size(); i++) {
-			if (e.isCancelled()) {
-				return;
+			EventCommand c = null;
+			try {
+				c = commands.get(i).getDeclaredConstructor(Event.class).newInstance(event);
+			} catch (Exception ex) {
+				throw new RuntimeException("Event cannot be initialized.", ex);
 			}
-			
-			command = commands.get(i);
-			command.setEvent(event);
-			command.start();
+			c.start();
 		}
 	}
 }

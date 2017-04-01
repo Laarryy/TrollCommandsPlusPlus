@@ -1,53 +1,111 @@
 package me.egg82.tcpp.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.commands.base.BasePluginCommand;
+import me.egg82.tcpp.enums.CommandErrorType;
+import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import ninja.egg82.events.patterns.command.CommandEvent;
+import ninja.egg82.events.CommandEvent;
+import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotCommandErrorType;
 import ninja.egg82.plugin.enums.SpigotMessageType;
 import ninja.egg82.plugin.utils.BlockUtil;
+import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.utils.MathUtil;
 
-public class BanishCommand extends BasePluginCommand {
+public class BanishCommand extends PluginCommand {
 	//vars
 	
 	//constructor
-	public BanishCommand() {
-		super();
+	public BanishCommand(CommandSender sender, Command command, String label, String[] args) {
+		super(sender, command, label, args);
 	}
 	
 	//public
 	
 	//private
-	protected void execute() {
-		if (isValid(false, PermissionsType.COMMAND_BANISH, new int[]{1,2}, new int[]{0})) {
-			Player player = Bukkit.getPlayer(args[0]);
-			
-			if (args.length == 1) {
-				e(player.getName(), player, 20000.0d);
-			} else if (args.length == 2) {
-				try {
-					e(player.getName(), player, Double.parseDouble(args[1]));
-				} catch (Exception ex) {
-					sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
-					sender.getServer().dispatchCommand(sender, "help " + command.getName());
-					dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
-					return;
-				}
+	protected void onExecute(long elapsedMilliseconds) {
+		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_BANISH)) {
+			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
+			return;
+		}
+		if (!CommandUtil.isArrayOfAllowedLength(args, 1, 2)) {
+			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
+			sender.getServer().dispatchCommand(sender, "help " + command.getName());
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+			return;
+		}
+		
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		
+		if (player == null) {
+			sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
+			return;
+		}
+		if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+			sender.sendMessage(MessageType.PLAYER_IMMUNE);
+			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
+			return;
+		}
+		
+		double banishMax = 20000.0d;
+		if (args.length == 2) {
+			try {
+				banishMax = Double.parseDouble(args[1]);
+			} catch (Exception ex) {
+				sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
+				sender.getServer().dispatchCommand(sender, "help " + command.getName());
+				dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+				return;
 			}
-			
+		}
+		
+		if (e(player.getUniqueId().toString(), player, banishMax)) {
 			dispatch(CommandEvent.COMPLETE, null);
+		} else {
+			dispatch(CommandEvent.ERROR, CommandErrorType.NO_SPACE);
 		}
 	}
 	
-	private void e(String name, Player player, double radius) {
-		Location banish = BlockUtil.getTopAirBlock(new Location(player.getWorld(), -radius + Math.random() * (2.0d * radius + 1.0d), MathUtil.random(5.0d, 66.0d), -radius + Math.random() * (2.0d * radius + 1.0d)));
-		player.teleport(banish);
+	private boolean e(String uuid, Player player, double maxRadius) {
+		double minRadius = maxRadius - (maxRadius / 3.0d);
+		Location currentLocation = player.getLocation();
+		double currentX = currentLocation.getX();
+		double newX = currentX;
+		double currentZ = currentLocation.getZ();
+		double newZ = currentZ;
 		
-		sender.sendMessage(name + " has been banished.");
+		while (newX >= currentX - minRadius && newX <= currentX + minRadius) {
+			newX = MathUtil.random(currentX - maxRadius, currentX + maxRadius);
+		}
+		while (newZ >= currentZ - minRadius && newZ <= currentZ + minRadius) {
+			newZ = MathUtil.random(currentZ - maxRadius, currentZ + maxRadius);
+		}
+		
+		Location newLocation = null;
+		Material headBlock = null;
+		int retryCount = 0;
+		
+		do {
+			newLocation = BlockUtil.getTopAirBlock(new Location(currentLocation.getWorld(), newX, MathUtil.random(5.0d, currentLocation.getWorld().getMaxHeight()), newZ));
+			headBlock = newLocation.clone().add(0.0d, 1.0d, 0.0d).getBlock().getType();
+			retryCount++;
+		} while (headBlock != Material.AIR && retryCount < 100);
+		
+		if (headBlock == Material.AIR) {
+			sender.sendMessage(player.getName() + " could not be banished because there was not enough space around them!");
+			return false;
+		}
+		
+		player.teleport(newLocation);
+		
+		sender.sendMessage(player.getName() + " has been banished.");
+		return true;
 	}
 }

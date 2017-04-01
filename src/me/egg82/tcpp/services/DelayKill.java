@@ -1,0 +1,17 @@
+package me.egg82.tcpp.services;
+
+import ninja.egg82.patterns.Registry;
+
+public class DelayKill extends Registry {
+	//vars
+	
+	//constructor
+	public DelayKill() {
+		super();
+	}
+	
+	//public
+	
+	//private
+	
+}

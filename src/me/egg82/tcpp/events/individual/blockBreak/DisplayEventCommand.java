@@ -3,29 +3,30 @@ package me.egg82.tcpp.events.individual.blockBreak;
 import java.util.HashMap;
 
 import org.bukkit.Location;
+import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import me.egg82.tcpp.enums.PluginServiceType;
+import me.egg82.tcpp.services.DisplayInternRegistry;
+import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
-import ninja.egg82.registry.interfaces.IRegistry;
 
 public class DisplayEventCommand extends EventCommand {
 	//vars
-	private IRegistry displayInternRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.DISPLAY_INTERN_REGISTRY);
+	private IRegistry displayInternRegistry = (IRegistry) ServiceLocator.getService(DisplayInternRegistry.class);
 	
 	//constructor
-	public DisplayEventCommand() {
-		super();
+	public DisplayEventCommand(Event event) {
+		super(event);
 	}
 	
 	//public
 	
 	//private
 	@SuppressWarnings("unchecked")
-	protected void execute() {
+	protected void onExecute(long elapsedMilliseconds) {
 		BlockBreakEvent e = (BlockBreakEvent) event;
-		String[] names = displayInternRegistry.registryNames();
+		String[] names = displayInternRegistry.getRegistryNames();
 		
 		for (String name : names) {
 			HashMap<String, Object> map = (HashMap<String, Object>) displayInternRegistry.getRegister(name);
@@ -40,13 +41,13 @@ public class DisplayEventCommand extends EventCommand {
 			int z2 = loc2.getBlockZ();
 			
 			if (
-					x2 >= x1 - 1 &&
-					x2 <= x1 + 1 &&
-					y2 >= y1 - 1 &&
-					y2 <= y1 + 2 &&
-					z2 >= z1 - 1 &&
-					z2 <= z1 + 1
-					) {
+				x2 >= x1 - 1 &&
+				x2 <= x1 + 1 &&
+				y2 >= y1 - 1 &&
+				y2 <= y1 + 2 &&
+				z2 >= z1 - 1 &&
+				z2 <= z1 + 1
+			) {
 				e.setCancelled(true);
 			}
 		}

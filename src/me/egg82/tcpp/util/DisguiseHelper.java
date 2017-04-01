@@ -5,7 +5,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.util.interfaces.IDisguiseHelper;
 import de.robingrether.idisguise.api.DisguiseAPI;
 import de.robingrether.idisguise.disguise.DisguiseType;
 import de.robingrether.idisguise.disguise.MobDisguise;

@@ -1,9 +1,7 @@
-package me.egg82.tcpp.util.nulls;
+package me.egg82.tcpp.util;
 
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-
-import me.egg82.tcpp.util.interfaces.IDisguiseHelper;
 
 public class NullDisguiseHelper implements IDisguiseHelper {
 	//vars

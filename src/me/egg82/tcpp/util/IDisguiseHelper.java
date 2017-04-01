@@ -1,4 +1,4 @@
-package me.egg82.tcpp.util.interfaces;
+package me.egg82.tcpp.util;
 
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;

@@ -3,20 +3,18 @@ package me.egg82.tcpp.ticks;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.enums.PluginServiceType;
+import me.egg82.tcpp.services.AnnoyRegistry;
+import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.plugin.enums.SpigotReflectType;
-import ninja.egg82.plugin.enums.SpigotServiceType;
-import ninja.egg82.plugin.reflection.sound.interfaces.ISoundUtil;
-import ninja.egg82.registry.interfaces.IRegistry;
+import ninja.egg82.plugin.reflection.sound.SoundUtil;
 import ninja.egg82.utils.MathUtil;
 
 public class AnnoyTickCommand extends TickCommand {
 	//vars
-	private IRegistry annoyRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.ANNOY_REGISTRY);
+	private IRegistry annoyRegistry = (IRegistry) ServiceLocator.getService(AnnoyRegistry.class);
 	
-	private ISoundUtil soundUtil = (ISoundUtil) ((IRegistry) ServiceLocator.getService(SpigotServiceType.REFLECT_REGISTRY)).getRegister(SpigotReflectType.SOUND);
+	private SoundUtil soundUtil = (SoundUtil) ServiceLocator.getService(SoundUtil.class);
 	private Sound[] sounds = null;
 	
 	//constructor
@@ -29,8 +27,8 @@ public class AnnoyTickCommand extends TickCommand {
 	//public
 	
 	//private
-	protected void execute() {
-		String[] names = annoyRegistry.registryNames();
+	protected void onExecute(long elapsedMilliseconds) {
+		String[] names = annoyRegistry.getRegistryNames();
 		for (String name : names) {
 			e((Player) annoyRegistry.getRegister(name));
 		}

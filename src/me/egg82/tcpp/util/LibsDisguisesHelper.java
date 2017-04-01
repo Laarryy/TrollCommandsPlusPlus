@@ -3,7 +3,6 @@ package me.egg82.tcpp.util;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.util.interfaces.IDisguiseHelper;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import me.libraryaddict.disguise.disguisetypes.MobDisguise;

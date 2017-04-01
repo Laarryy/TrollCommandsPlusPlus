@@ -1,20 +1,20 @@
 package me.egg82.tcpp.ticks;
 
-import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.bukkit.entity.Player;
 
-import com.google.common.collect.ImmutableMap;
-
-import me.egg82.tcpp.enums.PluginServiceType;
+import me.egg82.tcpp.services.AmnesiaMessageRegistry;
+import me.egg82.tcpp.services.AmnesiaRegistry;
+import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.registry.interfaces.IRegistry;
 
 public class AmnesiaTickCommand extends TickCommand {
 	//vars
-	private IRegistry amnesiaRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.AMNESIA_REGISTRY);
-	private IRegistry amnesiaInternRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.AMNESIA_INTERN_REGISTRY);
+	private IRegistry amnesiaRegistry = (IRegistry) ServiceLocator.getService(AmnesiaRegistry.class);
+	private IRegistry amnesiaMessageRegistry = (IRegistry) ServiceLocator.getService(AmnesiaMessageRegistry.class);
 	
 	//constructor
 	public AmnesiaTickCommand() {
@@ -25,8 +25,8 @@ public class AmnesiaTickCommand extends TickCommand {
 	//public
 	
 	//private
-	protected void execute() {
-		String[] names = amnesiaInternRegistry.registryNames();
+	protected void onExecute(long elapsedMilliseconds) {
+		String[] names = amnesiaMessageRegistry.getRegistryNames();
 		for (String name : names) {
 			e((Player) amnesiaRegistry.getRegister(name));
 		}
@@ -37,21 +37,16 @@ public class AmnesiaTickCommand extends TickCommand {
 			return;
 		}
 		
-		ArrayList<ImmutableMap<String, Object>> maps = (ArrayList<ImmutableMap<String, Object>>) amnesiaInternRegistry.getRegister(player.getUniqueId().toString());
-		ArrayList<ImmutableMap<String, Object>> rem = new ArrayList<ImmutableMap<String, Object>>();
+		List<String> messages = (List<String>) amnesiaMessageRegistry.getRegister(player.getUniqueId().toString());
+		Iterator<String> i = messages.iterator();
 		
-		for (ImmutableMap<String, Object> map : maps) {
+		while (i.hasNext()) {
+			String v = i.next();
+			
 			if (Math.random() <= 0.1d) {
-				try {
-					player.sendMessage(String.format((String) map.get("format"), (String) map.get("player"), (String) map.get("message")));
-				} catch (Exception ex) {
-		        	
-		        }
-				
-				rem.add(map);
+				player.sendMessage(v);
+				i.remove();
 			}
 		}
-		
-		maps.removeAll(rem);
 	}
 }
