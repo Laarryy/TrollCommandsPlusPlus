@@ -30,6 +30,11 @@ public class AmnesiaEventCommand extends EventCommand {
 	@SuppressWarnings("unchecked")
 	protected void onExecute(long elapsedMilliseconds) {
 		AsyncPlayerChatEvent e = (AsyncPlayerChatEvent) event;
+		
+		if (e.isCancelled()) {
+			return;
+		}
+		
 		String playerName = e.getPlayer().getDisplayName();
 		Set<Player> recipients = e.getRecipients();
 		Iterator<Player> i = recipients.iterator();

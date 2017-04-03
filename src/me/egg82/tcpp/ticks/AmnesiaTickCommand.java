@@ -33,7 +33,7 @@ public class AmnesiaTickCommand extends TickCommand {
 	}
 	@SuppressWarnings("unchecked")
 	private void e(Player player) {
-		if(player == null) {
+		if(!player.isOnline()) {
 			return;
 		}
 		

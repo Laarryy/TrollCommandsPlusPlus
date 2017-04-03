@@ -1,6 +1,6 @@
 package me.egg82.tcpp.events;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.event.Event;
 
@@ -19,7 +19,7 @@ public class AsyncPlayerChatEventCommand extends EventCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		ArrayList<Class<EventCommand>> commands = ReflectUtil.getClasses(EventCommand.class, "me.egg82.tcpp.events.player.asyncPlayerChat");
+		List<Class<EventCommand>> commands = ReflectUtil.getClasses(EventCommand.class, "me.egg82.tcpp.events.player.asyncPlayerChat");
 		for (int i = 0; i < commands.size(); i++) {
 			EventCommand c = null;
 			try {

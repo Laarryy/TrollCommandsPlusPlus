@@ -34,7 +34,7 @@ public class AnnoyTickCommand extends TickCommand {
 		}
 	}
 	private void e(Player player) {
-		if(player == null) {
+		if(!player.isOnline()) {
 			return;
 		}
 		

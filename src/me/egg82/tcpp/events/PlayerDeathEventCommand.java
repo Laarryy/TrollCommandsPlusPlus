@@ -1,33 +1,33 @@
 package me.egg82.tcpp.events;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import java.util.List;
 
-import ninja.egg82.patterns.ServiceLocator;
+import org.bukkit.event.Event;
+
 import ninja.egg82.plugin.commands.EventCommand;
-import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.SpigotServiceType;
-import ninja.egg82.plugin.utils.interfaces.ICommandHandler;
+import ninja.egg82.utils.ReflectUtil;
 
 public class PlayerDeathEventCommand extends EventCommand {
 	//vars
-	private static ICommandHandler commandHandler = (ICommandHandler) ServiceLocator.getService(SpigotServiceType.COMMAND_HANDLER);
 	
 	//constructor
-	public PlayerDeathEventCommand() {
-		super();
+	public PlayerDeathEventCommand(Event event) {
+		super(event);
 	}
 	
 	//public
 	
 	//private
-	protected void execute() {
-		PluginCommand[] commands = commandHandler.getInitializedCommands();
-		Player player = ((PlayerDeathEvent) event).getEntity();
-		String lowerName = player.getUniqueId().toString();
-		
-		for (int i = 0; i < commands.length; i++) {
-			commands[i].onDeath(lowerName, player);
+	protected void onExecute(long elapsedMilliseconds) {
+		List<Class<EventCommand>> commands = ReflectUtil.getClasses(EventCommand.class, "me.egg82.tcpp.events.entity.playerDeath");
+		for (int i = 0; i < commands.size(); i++) {
+			EventCommand c = null;
+			try {
+				c = commands.get(i).getDeclaredConstructor(Event.class).newInstance(event);
+			} catch (Exception ex) {
+				throw new RuntimeException("Event cannot be initialized.", ex);
+			}
+			c.start();
 		}
 	}
 }
