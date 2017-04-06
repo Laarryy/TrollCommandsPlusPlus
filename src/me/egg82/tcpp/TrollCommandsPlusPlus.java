@@ -14,6 +14,7 @@ import org.bukkit.plugin.PluginManager;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.util.ControlHelper;
 import me.egg82.tcpp.util.DisguiseHelper;
+import me.egg82.tcpp.util.DisplayHelper;
 import me.egg82.tcpp.util.LibsDisguisesHelper;
 import me.egg82.tcpp.util.NullDisguiseHelper;
 import net.gravitydevelopment.updater.Updater;
@@ -69,6 +70,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		}
 		
 		ServiceLocator.provideService(ControlHelper.class);
+		ServiceLocator.provideService(DisplayHelper.class);
 		
 		updateTimer = new Timer(24 * 60 * 60 * 1000, onUpdateTimer);
 	}

@@ -8,7 +8,7 @@ import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.services.ControlRegistry;
-import me.egg82.tcpp.util.IControlHelper;
+import me.egg82.tcpp.util.ControlHelper;
 import me.egg82.tcpp.util.IDisguiseHelper;
 import ninja.egg82.events.CommandEvent;
 import ninja.egg82.patterns.IRegistry;
@@ -23,7 +23,7 @@ public class ControlCommand extends PluginCommand {
 	private IRegistry controlRegistry = (IRegistry) ServiceLocator.getService(ControlRegistry.class);
 	
 	private IDisguiseHelper disguiseHelper = (IDisguiseHelper) ServiceLocator.getService(IDisguiseHelper.class);
-	private IControlHelper controlHelper = (IControlHelper) ServiceLocator.getService(IControlHelper.class);
+	private ControlHelper controlHelper = (ControlHelper) ServiceLocator.getService(ControlHelper.class);
 	
 	//constructor
 	public ControlCommand(CommandSender sender, Command command, String label, String[] args) {

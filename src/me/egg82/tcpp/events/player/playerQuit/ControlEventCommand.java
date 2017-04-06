@@ -5,7 +5,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import me.egg82.tcpp.services.ControlRegistry;
-import me.egg82.tcpp.util.IControlHelper;
+import me.egg82.tcpp.util.ControlHelper;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
@@ -15,7 +15,7 @@ public class ControlEventCommand extends EventCommand {
 	//vars
 	private IRegistry controlRegistry = (IRegistry) ServiceLocator.getService(ControlRegistry.class);
 	
-	private IControlHelper controlHelper = (IControlHelper) ServiceLocator.getService(IControlHelper.class);
+	private ControlHelper controlHelper = (ControlHelper) ServiceLocator.getService(ControlHelper.class);
 	
 	//constructor
 	public ControlEventCommand(Event event) {

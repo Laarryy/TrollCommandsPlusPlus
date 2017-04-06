@@ -5,28 +5,35 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.commands.base.BasePluginCommand;
+import me.egg82.tcpp.enums.CommandErrorType;
+import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.enums.PluginServiceType;
-import ninja.egg82.events.patterns.command.CommandEvent;
+import me.egg82.tcpp.services.DisplayRegistry;
+import me.egg82.tcpp.util.DisplayHelper;
+import ninja.egg82.events.CommandEvent;
+import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.plugin.commands.PluginCommand;
+import ninja.egg82.plugin.enums.SpigotCommandErrorType;
+import ninja.egg82.plugin.enums.SpigotMessageType;
 import ninja.egg82.plugin.utils.BlockUtil;
-import ninja.egg82.registry.interfaces.IRegistry;
+import ninja.egg82.plugin.utils.CommandUtil;
 
-public class DisplayCommand extends BasePluginCommand {
+public class DisplayCommand extends PluginCommand {
 	//vars
-	private IRegistry displayRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.DISPLAY_REGISTRY);
-	private IRegistry displayInternRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.DISPLAY_INTERN_REGISTRY);
+	private IRegistry displayRegistry = (IRegistry) ServiceLocator.getService(DisplayRegistry.class);
+	private DisplayHelper displayHelper = (DisplayHelper) ServiceLocator.getService(DisplayHelper.class);
 	
 	//constructor
-	public DisplayCommand() {
-		super();
+	public DisplayCommand(CommandSender sender, Command command, String label, String[] args) {
+		super(sender, command, label, args);
 	}
 	
 	//public
-	@SuppressWarnings("unchecked")
 	public void onQuit(String uuid, Player player) {
 		displayRegistry.computeIfPresent(uuid, (k,v) -> {
 			return null;
@@ -43,75 +50,54 @@ public class DisplayCommand extends BasePluginCommand {
 	}
 	
 	//private
-	protected void execute() {
-		if (isValid(false, PermissionsType.COMMAND_DISPLAY, new int[]{1}, new int[]{0})) {
-			Player player = Bukkit.getPlayer(args[0]);
-			e(player.getUniqueId().toString(), player);
-			
-			dispatch(CommandEvent.COMPLETE, null);
+	protected void onExecute(long elapsedMilliseconds) {
+		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_DISPLAY)) {
+			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
+			return;
 		}
+		if (!CommandUtil.isArrayOfAllowedLength(args, 1)) {
+			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
+			sender.getServer().dispatchCommand(sender, "help " + command.getName());
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+			return;
+		}
+		
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		
+		if (player == null) {
+			sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
+			return;
+		}
+		if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+			sender.sendMessage(MessageType.PLAYER_IMMUNE);
+			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
+			return;
+		}
+		
+		e(player.getUniqueId().toString(), player);
+		
+		dispatch(CommandEvent.COMPLETE, null);
 	}
-	@SuppressWarnings("unchecked")
 	private void e(String uuid, Player player) {
-		Location loc = null;
-		HashMap<String, Object> map = null;
-		boolean onGround;
-		
-		if (displayRegistry.contains(uuid)) {
+		if (displayRegistry.hasRegister(uuid)) {
+			displayHelper.unsurround(player.getLocation());
+			displayRegistry.setRegister(uuid, Player.class, null);
+			
 			sender.sendMessage(player.getName() + " is no longer on display.");
-			
-			map = (HashMap<String, Object>) displayInternRegistry.getRegister(uuid);
-			
-			displayRegistry.setRegister(uuid, null);
-			displayInternRegistry.setRegister(uuid, null);
-			
-			set((Location) map.get("loc"), (boolean) map.get("ground"), Material.AIR, Material.AIR);
 		} else {
+			Location playerLocation = player.getLocation().clone();
+			playerLocation.setX(playerLocation.getBlockX() + 0.5d);
+			playerLocation.setY(playerLocation.getBlockY());
+			playerLocation.setZ(playerLocation.getBlockZ() + 0.5d);
+			
+			displayHelper.surround(playerLocation, Material.GLASS, Material.THIN_GLASS);
+			displayRegistry.setRegister(uuid, Player.class, player);
+			
+			player.teleport(playerLocation);
+			
 			sender.sendMessage(player.getName() + " is now on display.");
-			
-			map = new HashMap<String, Object>();
-			loc = player.getLocation().clone();
-			loc.setX(loc.getBlockX() + 0.5d);
-			loc.setY(loc.getBlockY());
-			loc.setZ(loc.getBlockZ() + 0.5d);
-			player.teleport(loc);
-			onGround = (BlockUtil.getTopAirBlock(loc).getBlockY() == loc.getBlockY()) ? true : false;
-			
-			map.put("loc", loc);
-			map.put("ground", onGround);
-			
-			set(loc, onGround, Material.THIN_GLASS, Material.GLASS);
-			
-			displayRegistry.setRegister(uuid, player);
-			displayInternRegistry.setRegister(uuid, map);
 		}
-	}
-	
-	private void set(Location loc, boolean onGround, Material m1, Material m2) {
-		if (!onGround) {
-			loc.add(0.0d, -1.0d, 0.0d);
-			loc.getBlock().setType(m2);
-		}
-		
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) {
-				if (i == 1 && j == 1) {
-					continue;
-				}
-				setMat((onGround) ? 2 : 3, loc.clone().add(i - 1.0d, 0.0d, j - 1.0d), m1);
-			}
-		}
-		loc.clone().add(0.0d, (onGround) ? 2.0d : 3.0d, 0.0d).getBlock().setType(m2);
-		
-		if (!onGround) {
-			loc.add(0.0d, 1.0d, 0.0d);
-		}
-	}
-	private void setMat(int height, Location l, Material m) {
-		int endY = l.getBlockY() + height;
-		
-		do {
-			l.getBlock().setType(m);
-		} while (l.add(0.0d, 1.0d, 0.0d).getBlockY() <= endY);
 	}
 }

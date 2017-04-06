@@ -6,14 +6,14 @@ import org.bukkit.Location;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import me.egg82.tcpp.services.DisplayInternRegistry;
+import me.egg82.tcpp.services.DisplayBlockRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 
 public class DisplayEventCommand extends EventCommand {
 	//vars
-	private IRegistry displayInternRegistry = (IRegistry) ServiceLocator.getService(DisplayInternRegistry.class);
+	private IRegistry displayInternRegistry = (IRegistry) ServiceLocator.getService(DisplayBlockRegistry.class);
 	
 	//constructor
 	public DisplayEventCommand(Event event) {

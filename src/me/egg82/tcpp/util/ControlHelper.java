@@ -13,7 +13,7 @@ import me.egg82.tcpp.services.ControlRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 
-public class ControlHelper implements IControlHelper {
+public class ControlHelper {
 	//vars
 	private IRegistry controlRegistry = (IRegistry) ServiceLocator.getService(ControlRegistry.class);
 	private IRegistry controlModeRegistry = (IRegistry) ServiceLocator.getService(ControlModeRegistry.class);
