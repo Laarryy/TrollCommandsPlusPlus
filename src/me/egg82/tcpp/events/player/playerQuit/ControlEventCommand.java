@@ -4,10 +4,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import me.egg82.tcpp.services.ControlInventoryRegistry;
-import me.egg82.tcpp.services.ControlModeRegistry;
 import me.egg82.tcpp.services.ControlRegistry;
-import me.egg82.tcpp.util.IDisguiseHelper;
+import me.egg82.tcpp.util.IControlHelper;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
@@ -16,9 +14,8 @@ import ninja.egg82.plugin.utils.CommandUtil;
 public class ControlEventCommand extends EventCommand {
 	//vars
 	private IRegistry controlRegistry = (IRegistry) ServiceLocator.getService(ControlRegistry.class);
-	private IRegistry controlModeRegistry = (IRegistry) ServiceLocator.getService(ControlModeRegistry.class);
-	private IRegistry controlInventoryRegistry = (IRegistry) ServiceLocator.getService(ControlInventoryRegistry.class);
-	private IDisguiseHelper disguiseHelper = (IDisguiseHelper) ServiceLocator.getService(IDisguiseHelper.class);
+	
+	private IControlHelper controlHelper = (IControlHelper) ServiceLocator.getService(IControlHelper.class);
 	
 	//constructor
 	public ControlEventCommand(Event event) {
@@ -33,18 +30,19 @@ public class ControlEventCommand extends EventCommand {
 		Player player = e.getPlayer();
 		String uuid = player.getUniqueId().toString();
 		
-		Player controlledPlayer = (Player) controlRegistry.getRegister(uuid);
-		
-		if (controlledPlayer != null) {
+		if (controlRegistry.hasRegister(uuid)) {
 			// The player that quit/got kicked was controlling someone.
-			// TODO finish this
+			player.sendMessage("Your controller has quit or been kicked!");
+			controlHelper.uncontrol(uuid, player);
 		}
 		
-		Player controllingPlayer = CommandUtil.getPlayerByUuid(controlRegistry.getName(player));
+		String controllerUuid = controlRegistry.getName(player);
 		
-		if (controllingPlayer != null) {
+		if (controllerUuid != null) {
 			// The player that quit/got kicked was being controlled by someone.
-			// TODO finish this
+			Player controller = CommandUtil.getPlayerByUuid(controllerUuid);
+			controller.sendMessage(player.getName() + " has quit or been kicked!");
+			controlHelper.uncontrol(controllerUuid, controller);
 		}
 	}
 }

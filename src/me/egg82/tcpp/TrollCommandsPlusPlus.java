@@ -12,6 +12,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.PluginManager;
 
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.util.ControlHelper;
 import me.egg82.tcpp.util.DisguiseHelper;
 import me.egg82.tcpp.util.LibsDisguisesHelper;
 import me.egg82.tcpp.util.NullDisguiseHelper;
@@ -66,6 +67,8 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[TrollCommands++] Neither LibsDisguises nor iDisguise was found. The /control and /scare commands have been disabled.");
 			ServiceLocator.provideService(NullDisguiseHelper.class);
 		}
+		
+		ServiceLocator.provideService(ControlHelper.class);
 		
 		updateTimer = new Timer(24 * 60 * 60 * 1000, onUpdateTimer);
 	}
