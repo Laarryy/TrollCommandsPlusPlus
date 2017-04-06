@@ -20,7 +20,7 @@ public class AnnoyTickCommand extends TickCommand {
 	//constructor
 	public AnnoyTickCommand() {
 		super();
-		ticks = 20l;
+		ticks = 20L;
 		sounds = soundUtil.filter(soundUtil.filter(soundUtil.getAllSounds(), "villager", true), "zombie", false);
 	}
 	
@@ -30,10 +30,10 @@ public class AnnoyTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = annoyRegistry.getRegistryNames();
 		for (String name : names) {
-			e((Player) annoyRegistry.getRegister(name));
+			e(name, (Player) annoyRegistry.getRegister(name));
 		}
 	}
-	private void e(Player player) {
+	private void e(String uuid, Player player) {
 		if(!player.isOnline()) {
 			return;
 		}

@@ -1,71 +1,74 @@
 package me.egg82.tcpp.ticks;
 
+import java.util.ArrayList;
+
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import me.egg82.tcpp.enums.PluginServiceType;
+import me.egg82.tcpp.services.ClumsyRegistry;
+import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.utils.BlockUtil;
-import ninja.egg82.registry.interfaces.IRegistry;
+import ninja.egg82.plugin.utils.LocationUtil;
 import ninja.egg82.utils.MathUtil;
 
 public class ClumsyTickCommand extends TickCommand {
 	//vars
-	private IRegistry clumsyRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.CLUMSY_REGISTRY);
+	private IRegistry clumsyRegistry = (IRegistry) ServiceLocator.getService(ClumsyRegistry.class);
 	
 	//constructor
 	public ClumsyTickCommand() {
 		super();
-		ticks = 10l;
+		ticks = 10L;
 	}
 	
 	//public
 	
 	//private
-	protected void execute() {
-		String[] names = clumsyRegistry.registryNames();
+	protected void onExecute(long elapsedMilliseconds) {
+		String[] names = clumsyRegistry.getRegistryNames();
 		for (String name : names) {
-			e((Player) clumsyRegistry.getRegister(name));
+			e(name, (Player) clumsyRegistry.getRegister(name));
 		}
 	}
-	private void e(Player player) {
-		if (player == null) {
+	private void e(String uuid, Player player) {
+		if (!player.isOnline()) {
 			return;
 		}
 		
 		if (Math.random() <= 0.1) {
-			PlayerInventory inv = player.getInventory();
-			ItemStack[] items = inv.getContents();
-			boolean isEmpty = true;
+			PlayerInventory inventory = player.getInventory();
+			ArrayList<Integer> filledSlots = new ArrayList<Integer>();
 			
-			for (ItemStack i : items) {
-				if (i != null) {
-					isEmpty = false;
-					break;
+			for (int i = 0; i < inventory.getSize(); i++) {
+				ItemStack slot = inventory.getItem(i);
+				if (slot != null && slot.getType() != Material.AIR) {
+					filledSlots.add(i);
 				}
 			}
 			
-			if (!isEmpty) {
-				int droppedItemNum = 0;
-				
-				do {
-					droppedItemNum = MathUtil.fairRoundedRandom(0, items.length - 1);
-				} while (items[droppedItemNum] == null);
-				
-				ItemStack droppedItem = new ItemStack(items[droppedItemNum]);
-				droppedItem.setAmount(1);
-				
-				if (items[droppedItemNum].getAmount() == 0) {
-					items[droppedItemNum] = null;
-				} else {
-					items[droppedItemNum].setAmount(items[droppedItemNum].getAmount() - 1);
-				}
-				
-				inv.setContents(items);
-				player.getWorld().dropItemNaturally(BlockUtil.getTopAirBlock(player.getLocation().clone().add(MathUtil.random(2.0d, 3.0d) * ((Math.random() <= 0.5) ? -1 : 1), 0.0d, MathUtil.random(2.0d, 3.0d) * ((Math.random() <= 0.5) ? -1 : 1))), droppedItem);
+			if (filledSlots.size() == 0) {
+				return;
 			}
+			
+			int droppedItemSlot = filledSlots.get(MathUtil.fairRoundedRandom(0, filledSlots.size() - 1));
+			ItemStack items = inventory.getItem(droppedItemSlot);
+			
+			ItemStack droppedItem = new ItemStack(items);
+			droppedItem.setAmount(1);
+			
+			int itemsAmount = items.getAmount();
+			
+			if (itemsAmount == 1) {
+				inventory.setItem(droppedItemSlot, null);
+			} else {
+				inventory.getItem(droppedItemSlot).setAmount(itemsAmount - 1);
+			}
+			
+			player.getWorld().dropItemNaturally(BlockUtil.getTopAirBlock(LocationUtil.getLocationBehind(player.getLocation(), MathUtil.random(1.5d, 3.0d))), droppedItem);
 		}
 	}
 }

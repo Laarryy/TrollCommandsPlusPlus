@@ -2,11 +2,11 @@ package me.egg82.tcpp.services;
 
 import ninja.egg82.patterns.Registry;
 
-public class DelayKill extends Registry {
+public class DelayKillTicksRegistry extends Registry {
 	//vars
 	
 	//constructor
-	public DelayKill() {
+	public DelayKillTicksRegistry() {
 		super();
 	}
 	

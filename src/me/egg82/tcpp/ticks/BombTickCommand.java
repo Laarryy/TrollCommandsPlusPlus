@@ -18,7 +18,7 @@ public class BombTickCommand extends TickCommand {
 	//constructor
 	public BombTickCommand() {
 		super();
-		ticks = 10l;
+		ticks = 10L;
 	}
 	
 	//public
@@ -27,10 +27,10 @@ public class BombTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = bombRegistry.getRegistryNames();
 		for (String name : names) {
-			e((Player) bombRegistry.getRegister(name));
+			e(name, (Player) bombRegistry.getRegister(name));
 		}
 	}
-	private void e(Player player) {
+	private void e(String uuid, Player player) {
 		if (!player.isOnline()) {
 			return;
 		}

@@ -19,7 +19,7 @@ public class AmnesiaTickCommand extends TickCommand {
 	//constructor
 	public AmnesiaTickCommand() {
 		super();
-		ticks = 20l;
+		ticks = 20L;
 	}
 	
 	//public
@@ -28,16 +28,16 @@ public class AmnesiaTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = amnesiaMessageRegistry.getRegistryNames();
 		for (String name : names) {
-			e((Player) amnesiaRegistry.getRegister(name));
+			e(name, (Player) amnesiaRegistry.getRegister(name));
 		}
 	}
 	@SuppressWarnings("unchecked")
-	private void e(Player player) {
+	private void e(String uuid, Player player) {
 		if(!player.isOnline()) {
 			return;
 		}
 		
-		List<String> messages = (List<String>) amnesiaMessageRegistry.getRegister(player.getUniqueId().toString());
+		List<String> messages = (List<String>) amnesiaMessageRegistry.getRegister(uuid);
 		Iterator<String> i = messages.iterator();
 		
 		while (i.hasNext()) {

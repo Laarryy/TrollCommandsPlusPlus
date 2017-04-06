@@ -30,18 +30,18 @@ public class PermissionsType {
 	public static final String COMMAND_SPIN = "tcpp.command.spin";
 	public static final String COMMAND_BURN = "tcpp.command.burn";
 	public static final String COMMAND_SPAM = "tcpp.command.spam";
-	public static final String COMMAND_DELAYKILL = "tcpp.command.delaykill";
+	public static final String COMMAND_DELAY_KILL = "tcpp.command.delayKill";
 	public static final String COMMAND_POTATO = "tcpp.command.potato";
 	public static final String COMMAND_STARVE = "tcpp.command.starve";
 	public static final String COMMAND_HURT = "tcpp.command.hurt";
 	public static final String COMMAND_VOID = "tcpp.command.void";
-	public static final String COMMAND_SLOWMINE = "tcpp.command.slowmine";
+	public static final String COMMAND_SLOW_MINE = "tcpp.command.slowMine";
 	public static final String COMMAND_NAUSEA = "tcpp.command.nausea";
 	public static final String COMMAND_CONTROL = "tcpp.command.control";
 	public static final String COMMAND_VEGETABLE = "tcpp.command.vegetable";
 	public static final String COMMAND_HOUND = "tcpp.command.hound";
 	public static final String COMMAND_INFINITY = "tcpp.command.infinity";
-	public static final String COMMAND_LAVABREAK = "tcpp.command.lavabreak";
+	public static final String COMMAND_LAVA_BREAK = "tcpp.command.lavaBreak";
 	public static final String COMMAND_GOLEM = "tcpp.command.golem";
 	public static final String COMMAND_PORTAL = "tcpp.command.portal";
 	public static final String COMMAND_FLIP = "tcpp.command.flip";
@@ -51,20 +51,20 @@ public class PermissionsType {
 	public static final String COMMAND_NIGHT = "tcpp.command.night";
 	public static final String COMMAND_REWIND = "tcpp.command.rewind";
 	public static final String COMMAND_LAG = "tcpp.command.lag";
-	public static final String COMMAND_EXPLODEBREAK = "tcpp.command.explodebreak";
+	public static final String COMMAND_EXPLODE_BREAK = "tcpp.command.explodeBreak";
 	public static final String COMMAND_SLENDER = "tcpp.command.slender";
 	public static final String COMMAND_ANVIL = "tcpp.command.anvil";
 	public static final String COMMAND_POPUP = "tcpp.command.popup";
 	public static final String COMMAND_DISPLAY = "tcpp.command.display";
-	public static final String COMMAND_NOPICKUP = "tcpp.command.nopickup";
+	public static final String COMMAND_NO_PICKUP = "tcpp.command.noPickup";
 	public static final String COMMAND_BRITTLE = "tcpp.command.brittle";
 	public static final String COMMAND_SQUID = "tcpp.command.squid";
 	public static final String COMMAND_USELESS = "tcpp.command.useless";
-	public static final String COMMAND_WHO_AM_I = "tcpp.command.whoami";
+	public static final String COMMAND_WHO_AM_I = "tcpp.command.whoAmI";
 	public static final String COMMAND_CLUMSY = "tcpp.command.clumsy";
 	public static final String COMMAND_AMNESIA = "tcpp.command.amnesia";
-	public static final String COMMAND_EXPLODEBUILD = "tcpp.command.explodebuild";
-	public static final String COMMAND_SLOWUNDO = "tcpp.command.slowundo";
+	public static final String COMMAND_EXPLODE_BUILD = "tcpp.command.explodeBuild";
+	public static final String COMMAND_SLOW_UNDO = "tcpp.command.slowUndo";
 	public static final String COMMAND_SCARE = "tcpp.command.scare";
 	
 	//constructor
