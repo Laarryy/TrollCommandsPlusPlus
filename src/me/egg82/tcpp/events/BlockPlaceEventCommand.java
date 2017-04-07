@@ -1,45 +1,33 @@
 package me.egg82.tcpp.events;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.Event;
 
 import ninja.egg82.plugin.commands.EventCommand;
-import ninja.egg82.utils.Util;
+import ninja.egg82.utils.ReflectUtil;
 
 public class BlockPlaceEventCommand extends EventCommand {
 	//vars
-	private ArrayList<EventCommand> commands = new ArrayList<EventCommand>();
 	
 	//constructor
-	public BlockPlaceEventCommand() {
-		super();
-		
-		ArrayList<Class<? extends EventCommand>> enums = Util.getClasses(EventCommand.class, "me.egg82.tcpp.events.individual.blockPlace");
-		for (Class<? extends EventCommand> c : enums) {
-			try {
-				commands.add(c.newInstance());
-			} catch (Exception ex) {
-				
-			}
-		}
+	public BlockPlaceEventCommand(Event event) {
+		super(event);
 	}
 	
 	//public
 	
 	//private
-	protected void execute() {
-		BlockPlaceEvent e = (BlockPlaceEvent) event;
-		
-		EventCommand command = null;
+	protected void onExecute(long elapsedMilliseconds) {
+		List<Class<EventCommand>> commands = ReflectUtil.getClasses(EventCommand.class, "me.egg82.tcpp.events.block.blockPlace");
 		for (int i = 0; i < commands.size(); i++) {
-			if (e.isCancelled()) {
-				return;
+			EventCommand c = null;
+			try {
+				c = commands.get(i).getDeclaredConstructor(Event.class).newInstance(event);
+			} catch (Exception ex) {
+				throw new RuntimeException("Event cannot be initialized.", ex);
 			}
-			
-			command = commands.get(i);
-			command.setEvent(event);
-			command.start();
+			c.start();
 		}
 	}
 }

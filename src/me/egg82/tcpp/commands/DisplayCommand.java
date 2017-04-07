@@ -1,8 +1,7 @@
 package me.egg82.tcpp.commands;
 
-import java.util.HashMap;
+import java.util.Set;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -12,6 +11,8 @@ import org.bukkit.entity.Player;
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.services.DisplayBlockRegistry;
+import me.egg82.tcpp.services.DisplayLocationRegistry;
 import me.egg82.tcpp.services.DisplayRegistry;
 import me.egg82.tcpp.util.DisplayHelper;
 import ninja.egg82.events.CommandEvent;
@@ -20,12 +21,14 @@ import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotCommandErrorType;
 import ninja.egg82.plugin.enums.SpigotMessageType;
-import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.CommandUtil;
 
 public class DisplayCommand extends PluginCommand {
 	//vars
 	private IRegistry displayRegistry = (IRegistry) ServiceLocator.getService(DisplayRegistry.class);
+	private IRegistry displayBlockRegistry = (IRegistry) ServiceLocator.getService(DisplayBlockRegistry.class);
+	private IRegistry displayLocationRegistry = (IRegistry) ServiceLocator.getService(DisplayLocationRegistry.class);
+	
 	private DisplayHelper displayHelper = (DisplayHelper) ServiceLocator.getService(DisplayHelper.class);
 	
 	//constructor
@@ -34,20 +37,6 @@ public class DisplayCommand extends PluginCommand {
 	}
 	
 	//public
-	public void onQuit(String uuid, Player player) {
-		displayRegistry.computeIfPresent(uuid, (k,v) -> {
-			return null;
-		});
-		
-		displayInternRegistry.computeIfPresent(uuid, (k,v) -> {
-			HashMap<String, Object> map = (HashMap<String, Object>) v;
-			set((Location) map.get("loc"), (boolean) map.get("ground"), Material.AIR, Material.AIR);
-			return null;
-		});
-	}
-	public void onDeath(String uuid, Player player) {
-		onQuit(uuid, player);
-	}
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
@@ -84,6 +73,8 @@ public class DisplayCommand extends PluginCommand {
 		if (displayRegistry.hasRegister(uuid)) {
 			displayHelper.unsurround(player.getLocation());
 			displayRegistry.setRegister(uuid, Player.class, null);
+			displayBlockRegistry.setRegister(uuid, Set.class, null);
+			displayLocationRegistry.setRegister(uuid, Location.class, null);
 			
 			sender.sendMessage(player.getName() + " is no longer on display.");
 		} else {
@@ -94,6 +85,8 @@ public class DisplayCommand extends PluginCommand {
 			
 			displayHelper.surround(playerLocation, Material.GLASS, Material.THIN_GLASS);
 			displayRegistry.setRegister(uuid, Player.class, player);
+			displayBlockRegistry.setRegister(uuid, Set.class, displayHelper.getBlockLocationsAround(playerLocation));
+			displayLocationRegistry.setRegister(uuid, Location.class, playerLocation);
 			
 			player.teleport(playerLocation);
 			

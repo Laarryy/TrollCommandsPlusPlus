@@ -1,13 +1,13 @@
 package me.egg82.tcpp.util;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 
 public class DisplayHelper {
 	//vars
-	private ArrayList<Location> addedBlockLocations = new ArrayList<Location>();
+	private HashSet<Location> addedBlockLocations = new HashSet<Location>();
 	
 	//constructor
 	public DisplayHelper() {
@@ -15,6 +15,21 @@ public class DisplayHelper {
 	}
 	
 	//public
+	public HashSet<Location> getBlockLocationsAround(Location loc) {
+		HashSet<Location> retVal = new HashSet<Location>();
+		loc = new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+		
+		for (int x = -1; x < 2; x++) {
+			for (int z = -1; z < 2; z++) {
+				for (int y = -1; y < 3; y++) {
+					retVal.add(loc.clone().add(x, y, z));
+				}
+			}
+		}
+		
+		return retVal;
+	}
+	
 	public void surround(Location loc, Material blockMaterial, Material sideMaterial) {
 		loc = new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 		

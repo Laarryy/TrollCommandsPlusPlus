@@ -4,42 +4,42 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.enums.PluginServiceType;
+import me.egg82.tcpp.services.ElectrifyRegistry;
+import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.registry.interfaces.IRegistry;
 import ninja.egg82.utils.MathUtil;
 
 public class ElectrifyTickCommand extends TickCommand {
 	//vars
-	private IRegistry electrifyRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.ELECTRIFY_REGISTRY);
+	IRegistry electrifyRegistry = (IRegistry) ServiceLocator.getService(ElectrifyRegistry.class);
 	
 	//constructor
 	public ElectrifyTickCommand() {
 		super();
-		ticks = 10l;
+		ticks = 15L;
 	}
 	
 	//public
 	
 	//private
-	protected void execute() {
-		String[] names = electrifyRegistry.registryNames();
+	protected void onExecute(long elapsedMilliseconds) {
+		String[] names = electrifyRegistry.getRegistryNames();
 		for (String name : names) {
-			e((Player) electrifyRegistry.getRegister(name));
+			e(name, (Player) electrifyRegistry.getRegister(name));
 		}
 	}
-	
-	private void e(Player player) {
-		if (player == null) {
+	private void e(String uuid, Player player) {
+		if (!player.isOnline()) {
 			return;
 		}
 		
-		int rand = (int) (MathUtil.random(2.0d, 5.0d));
-		Location loc = player.getLocation();
+		int numLightning = MathUtil.fairRoundedRandom(1, 3);
+		Location playerLocation = player.getLocation().clone();
 		World world = player.getWorld();
-		for (int i = 0; i < rand; i++) {
-			world.strikeLightning(loc);
+		
+		for (int i = 0; i < numLightning; i++) {
+			world.strikeLightning(playerLocation);
 		}
 	}
 }

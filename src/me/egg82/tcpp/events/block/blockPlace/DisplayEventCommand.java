@@ -1,10 +1,10 @@
-package me.egg82.tcpp.events.block.blockBreak;
+package me.egg82.tcpp.events.block.blockPlace;
 
 import java.util.Set;
 
 import org.bukkit.Location;
 import org.bukkit.event.Event;
-import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 
 import me.egg82.tcpp.services.DisplayBlockRegistry;
 import ninja.egg82.patterns.IRegistry;
@@ -25,7 +25,7 @@ public class DisplayEventCommand extends EventCommand {
 	//private
 	@SuppressWarnings("unchecked")
 	protected void onExecute(long elapsedMilliseconds) {
-		BlockBreakEvent e = (BlockBreakEvent) event;
+		BlockPlaceEvent e = (BlockPlaceEvent) event;
 		
 		if (e.isCancelled()) {
 			return;
