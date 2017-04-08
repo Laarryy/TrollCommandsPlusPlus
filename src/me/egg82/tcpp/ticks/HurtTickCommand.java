@@ -2,32 +2,32 @@ package me.egg82.tcpp.ticks;
 
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.enums.PluginServiceType;
+import me.egg82.tcpp.services.HurtRegistry;
+import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.registry.interfaces.IRegistry;
 
 public class HurtTickCommand extends TickCommand {
 	//vars
-	private IRegistry hurtRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.HURT_REGISTRY);
+	private IRegistry hurtRegistry = (IRegistry) ServiceLocator.getService(HurtRegistry.class);
 	
 	//constructor
 	public HurtTickCommand() {
 		super();
-		ticks = 20l;
+		ticks = 15L;
 	}
 	
 	//public
 	
 	//private
-	protected void execute() {
-		String[] names = hurtRegistry.registryNames();
+	protected void onExecute(long elapsedMilliseconds) {
+		String[] names = hurtRegistry.getRegistryNames();
 		for (String name : names) {
-			e((Player) hurtRegistry.getRegister(name));
+			e(name, (Player) hurtRegistry.getRegister(name));
 		}
 	}
-	private void e(Player player) {
-		if (player == null) {
+	private void e(String uuid, Player player) {
+		if (!player.isOnline()) {
 			return;
 		}
 		
