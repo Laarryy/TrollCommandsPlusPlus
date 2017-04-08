@@ -3,40 +3,38 @@ package me.egg82.tcpp.ticks;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.enums.PluginServiceType;
+import me.egg82.tcpp.services.HauntRegistry;
+import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.plugin.enums.SpigotReflectType;
-import ninja.egg82.plugin.enums.SpigotServiceType;
-import ninja.egg82.plugin.reflection.sound.interfaces.ISoundUtil;
-import ninja.egg82.registry.interfaces.IRegistry;
+import ninja.egg82.plugin.reflection.sound.SoundUtil;
 import ninja.egg82.utils.MathUtil;
 
 public class HauntTickCommand extends TickCommand {
 	//vars
-	private IRegistry hauntRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.HAUNT_REGISTRY);
+	private IRegistry hauntRegistry = (IRegistry) ServiceLocator.getService(HauntRegistry.class);
 	
-	private ISoundUtil soundUtil = (ISoundUtil) ((IRegistry) ServiceLocator.getService(SpigotServiceType.REFLECT_REGISTRY)).getRegister(SpigotReflectType.SOUND);
+	private SoundUtil soundUtil = (SoundUtil) ServiceLocator.getService(SoundUtil.class);
 	private Sound[] sounds = null;
 	
 	//constructor
 	public HauntTickCommand() {
 		super();
-		ticks = 20l;
+		ticks = 20L;
 		sounds = soundUtil.getAllSounds();
 	}
 	
 	//public
 	
 	//private
-	protected void execute() {
-		String[] names = hauntRegistry.registryNames();
+	protected void onExecute(long elapsedMilliseconds) {
+		String[] names = hauntRegistry.getRegistryNames();
 		for (String name : names) {
-			e((Player) hauntRegistry.getRegister(name));
+			e(name, (Player) hauntRegistry.getRegister(name));
 		}
 	}
-	private void e(Player player) {
-		if(player == null) {
+	private void e(String uuid, Player player) {
+		if(!player.isOnline()) {
 			return;
 		}
 		
