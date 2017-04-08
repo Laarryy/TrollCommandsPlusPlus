@@ -7,11 +7,11 @@ import org.bukkit.event.Event;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.utils.ReflectUtil;
 
-public class PlayerPickupItemEventCommand extends EventCommand {
+public class PlayerItemHeldEventCommand extends EventCommand {
 	//vars
 	
 	//constructor
-	public PlayerPickupItemEventCommand(Event event) {
+	public PlayerItemHeldEventCommand(Event event) {
 		super(event);
 	}
 	
@@ -19,7 +19,7 @@ public class PlayerPickupItemEventCommand extends EventCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		List<Class<EventCommand>> commands = ReflectUtil.getClasses(EventCommand.class, "me.egg82.tcpp.events.player.playerPickupItem");
+		List<Class<EventCommand>> commands = ReflectUtil.getClasses(EventCommand.class, "me.egg82.tcpp.events.player.playerItemHeld");
 		for (int i = 0; i < commands.size(); i++) {
 			EventCommand c = null;
 			try {
