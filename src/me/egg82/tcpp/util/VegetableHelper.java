@@ -50,9 +50,9 @@ public class VegetableHelper {
 		Item groundItem = (Item) vegetableItemRegistry.getRegister(uuid);
 		GameMode oldMode = (GameMode) vegetableModeRegistry.getRegister(uuid);
 		
+		vegetableRegistry.setRegister(uuid, Player.class, null);
 		vegetableItemRegistry.setRegister(uuid, Item.class, null);
 		vegetableModeRegistry.setRegister(uuid, GameMode.class, null);
-		vegetableRegistry.setRegister(uuid, Player.class, null);
 		
 		groundItem.remove();
 		player.teleport(BlockUtil.getTopAirBlock(playerLocation));

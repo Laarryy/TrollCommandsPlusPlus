@@ -1,50 +1,81 @@
 package me.egg82.tcpp.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 import org.bukkit.util.Vector;
 
-import me.egg82.tcpp.commands.base.BasePluginCommand;
+import me.egg82.tcpp.enums.CommandErrorType;
+import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.events.patterns.command.CommandEvent;
+import ninja.egg82.events.CommandEvent;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.plugin.commands.PluginCommand;
+import ninja.egg82.plugin.enums.SpigotCommandErrorType;
+import ninja.egg82.plugin.enums.SpigotMessageType;
 import ninja.egg82.plugin.utils.BlockUtil;
+import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.utils.LocationUtil;
 import ninja.egg82.utils.MathUtil;
 
-public class ZombifyCommand extends BasePluginCommand {
+public class ZombifyCommand extends PluginCommand {
 	//vars
 	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
-	public ZombifyCommand() {
-		super();
+	public ZombifyCommand(CommandSender sender, Command command, String label, String[] args) {
+		super(sender, command, label, args);
 	}
 	
 	//public
 	
 	//private
-	protected void execute() {
-		if (isValid(false, PermissionsType.COMMAND_ZOMBIFY, new int[]{1}, new int[]{0})) {
-			Player player = Bukkit.getPlayer(args[0]);
-			e(player.getName(), player);
-			
-			dispatch(CommandEvent.COMPLETE, null);
+	protected void onExecute(long elapsedMilliseconds) {
+		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_ZOMBIFY)) {
+			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
+			return;
 		}
+		if (!CommandUtil.isArrayOfAllowedLength(args, 1)) {
+			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
+			sender.getServer().dispatchCommand(sender, "help " + command.getName());
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+			return;
+		}
+		
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		
+		if (player == null) {
+			sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
+			return;
+		}
+		if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+			sender.sendMessage(MessageType.PLAYER_IMMUNE);
+			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
+			return;
+		}
+		
+		e(player.getUniqueId().toString(), player);
+		
+		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String name, Player player) {
-		int rand = MathUtil.fairRoundedRandom(10, 15);
-		Location loc = player.getLocation().clone();
+		Location[] zombieLocations = LocationUtil.getCircleAround(player.getLocation(), 5.0d, MathUtil.fairRoundedRandom(10, 15));
 		
-		for (int i = 0; i < rand; i++) {
-			Location r = BlockUtil.getTopAirBlock(new Location(loc.getWorld(), MathUtil.random(loc.getX() - 10.0d, loc.getX() + 10.0d), loc.getY(), MathUtil.random(loc.getZ() - 10.0d, loc.getZ() + 10.0d)));
-			Vector velocity = r.clone().subtract(loc.clone()).toVector().normalize().multiply(1.0d);
-			Zombie z = (Zombie) player.getWorld().spawn(r, Zombie.class);
-			z.setVelocity(velocity);
+		for (int i = 0; i < zombieLocations.length; i++) {
+			Location zombieLocation = BlockUtil.getTopAirBlock(zombieLocations[i]);
+			Vector zombieVelocity = zombieLocation.clone().subtract(player.getLocation()).toVector().normalize().multiply(1.0d);
+			
+			Zombie z = player.getWorld().spawn(zombieLocation, Zombie.class);
+			z.setVelocity(zombieVelocity);
 			z.setTarget(player);
 		}
+		
+		metricsHelper.commandWasRun(command.getName());
 		
 		sender.sendMessage(name + " has been zombified.");
 	}

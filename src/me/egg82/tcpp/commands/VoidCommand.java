@@ -1,86 +1,104 @@
 package me.egg82.tcpp.commands;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.BlockState;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import me.egg82.tcpp.commands.base.BasePluginCommand;
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.enums.PluginServiceType;
-import me.egg82.tcpp.ticks.VoidTickCommand;
+import me.egg82.tcpp.services.VoidRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.events.patterns.command.CommandEvent;
+import ninja.egg82.events.CommandEvent;
+import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.enums.SpigotServiceType;
+import ninja.egg82.plugin.commands.PluginCommand;
+import ninja.egg82.plugin.core.BlockData;
+import ninja.egg82.plugin.enums.SpigotCommandErrorType;
+import ninja.egg82.plugin.enums.SpigotMessageType;
 import ninja.egg82.plugin.utils.BlockUtil;
-import ninja.egg82.plugin.utils.interfaces.ITickHandler;
-import ninja.egg82.registry.interfaces.IRegistry;
+import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.startup.InitRegistry;
 
-public class VoidCommand extends BasePluginCommand {
+public class VoidCommand extends PluginCommand {
 	//vars
-	private IRegistry voidRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.VOID_REGISTRY);
-	private ITickHandler tickHandler = (ITickHandler) ServiceLocator.getService(SpigotServiceType.TICK_HANDLER);
+	private IRegistry voidRegistry = (IRegistry) ServiceLocator.getService(VoidRegistry.class);
+	private IRegistry initRegistry = (IRegistry) ServiceLocator.getService(InitRegistry.class);
 	
 	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
-	public VoidCommand() {
-		super();
+	public VoidCommand(CommandSender sender, Command command, String label, String[] args) {
+		super(sender, command, label, args);
 	}
 	
 	//public
 	
 	//private
-	protected void execute() {
-		if (isValid(false, PermissionsType.COMMAND_VOID, new int[]{1}, new int[]{0})) {
-			Player player = Bukkit.getPlayer(args[0]);
-			String uuid = player.getUniqueId().toString();
-			
-			if (voidRegistry.contains(uuid)) {
-				sender.sendMessage(MessageType.ALREADY_USED);
-				dispatch(CommandEvent.ERROR, CommandErrorType.ALREADY_USED);
-				return;
-			}
-			
-			e(uuid, player);
-			
-			dispatch(CommandEvent.COMPLETE, null);
+	protected void onExecute(long elapsedMilliseconds) {
+		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_VOID)) {
+			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
+			return;
 		}
+		if (!CommandUtil.isArrayOfAllowedLength(args, 1)) {
+			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
+			sender.getServer().dispatchCommand(sender, "help " + command.getName());
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+			return;
+		}
+		
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		
+		if (player == null) {
+			sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
+			return;
+		}
+		if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+			sender.sendMessage(MessageType.PLAYER_IMMUNE);
+			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
+			return;
+		}
+		
+		String uuid = player.getUniqueId().toString();
+		
+		if (voidRegistry.hasRegister(uuid)) {
+			sender.sendMessage(MessageType.ALREADY_USED);
+			dispatch(CommandEvent.ERROR, CommandErrorType.ALREADY_USED);
+			return;
+		}
+		
+		e(uuid, player);
+		
+		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
-		ArrayList<Material[]> blocks = new ArrayList<Material[]>();
-		ArrayList<ArrayList<ItemStack[]>> inv = new ArrayList<ArrayList<ItemStack[]>>();
-		ArrayList<BlockState[]> data = new ArrayList<BlockState[]>();
-		Location loc = player.getLocation();
+		// Center should be halfway between player and zero
+		Location centerLocation = player.getLocation().clone();
+		int yRadius = (int) Math.floor(centerLocation.getY() / 2.0d);
+		centerLocation.subtract(0.0d, centerLocation.getY() / 2.0d, 0.0d);
 		
-		Location l = null;
+		// Get all blocks, 3x3xY (LxWxH)
+		List<BlockData> blockData = BlockUtil.getBlocks(centerLocation, 1, yRadius, 1);
+		// Fill the previous 3x3xY area with air
+		BlockUtil.clearBlocks(centerLocation, Material.AIR, 1, yRadius, 1);
 		
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) {
-				l = loc.clone().add(i - 1.0d, 0.0d, j - 1.0d);
-				
-				inv.add(BlockUtil.getYLineBlockInventory(l.clone(), 0));
-				data.add(BlockUtil.getYLineBlockState(l.clone(), 0));
-				blocks.add(BlockUtil.removeYLineBlocks(l.clone(), 0));
+		// Wait eight seconds
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {
+			public void run() {
+				// Put all the blocks we took earlier back
+				BlockUtil.setBlocks(blockData, centerLocation, 1, yRadius, 1);
 			}
-		}
+		}, 160);
 		
-		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put("time", System.currentTimeMillis());
-		map.put("loc", loc);
-		map.put("blocks", blocks);
-		map.put("inv", inv);
-		map.put("data", data);
-		voidRegistry.setRegister(uuid, map);
-		tickHandler.addDelayedTickCommand("void-" + uuid, VoidTickCommand.class, 202);
+		metricsHelper.commandWasRun(command.getName());
 		
 		sender.sendMessage(player.getName() + " is now very confused as to why they are suddenly falling through the world.");
 	}

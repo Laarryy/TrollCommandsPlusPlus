@@ -2,11 +2,11 @@ package me.egg82.tcpp.services;
 
 import ninja.egg82.patterns.Registry;
 
-public class WhoAmIInternRegistry extends Registry {
+public class WhoAmINameRegistry extends Registry {
 	//vars
 	
 	//constructor
-	public WhoAmIInternRegistry() {
+	public WhoAmINameRegistry() {
 		super();
 	}
 	

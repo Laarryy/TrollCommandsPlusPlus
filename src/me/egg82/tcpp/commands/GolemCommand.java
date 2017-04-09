@@ -70,7 +70,7 @@ public class GolemCommand extends PluginCommand {
 			Location golemLocation = BlockUtil.getTopAirBlock(golemLocations[i]);
 			Vector golemVelocity = golemLocation.clone().subtract(player.getLocation()).toVector().normalize().multiply(1.0d);
 			
-			IronGolem g = (IronGolem) player.getWorld().spawn(golemLocation, IronGolem.class);
+			IronGolem g = player.getWorld().spawn(golemLocation, IronGolem.class);
 			g.setVelocity(golemVelocity);
 			g.setTarget(player);
 		}
