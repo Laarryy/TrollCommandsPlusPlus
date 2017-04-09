@@ -130,6 +130,7 @@ commands:
   sparta:
     description: Our arrows will blot out the sun! .. Pincushion-y!
     usage: /sparta <player>
+    aliases: [pincushion]
   night:
     description: Sets the player's time to night permanently. Does not affect the server.
     usage: /night <player>

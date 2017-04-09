@@ -4,17 +4,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-import me.egg82.tcpp.services.DelayKillRegistry;
+import me.egg82.tcpp.services.SpartaRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 
-public class DelayKillEventCommand extends EventCommand {
+public class SpartaEventCommand extends EventCommand {
 	//vars
-	private IRegistry delayKillRegistry = (IRegistry) ServiceLocator.getService(DelayKillRegistry.class);
+	private IRegistry spartaRegistry = (IRegistry) ServiceLocator.getService(SpartaRegistry.class);
 	
 	//constructor
-	public DelayKillEventCommand(Event event) {
+	public SpartaEventCommand(Event event) {
 		super(event);
 	}
 	
@@ -23,8 +23,6 @@ public class DelayKillEventCommand extends EventCommand {
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
 		PlayerDeathEvent e = (PlayerDeathEvent) event;
-		String uuid = e.getEntity().getUniqueId().toString();
-		
-		delayKillRegistry.setRegister(uuid, Player.class, null);
+		spartaRegistry.setRegister(e.getEntity().getUniqueId().toString(), Player.class, null);
 	}
 }

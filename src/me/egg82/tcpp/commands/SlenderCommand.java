@@ -70,7 +70,7 @@ public class SlenderCommand extends PluginCommand {
 		player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 500, 3), true);
 		
 		Location r = BlockUtil.getTopAirBlock(BlockUtil.getTopAirBlock(new Location(playerLocation.getWorld(), MathUtil.random(playerLocation.getX() - 10.0d, playerLocation.getX() + 10.0d), playerLocation.getY(), MathUtil.random(playerLocation.getZ() - 10.0d, playerLocation.getZ() + 10.0d))));
-		Enderman e = (Enderman) player.getWorld().spawn(r, Enderman.class);
+		Enderman e = player.getWorld().spawn(r, Enderman.class);
 		e.setTarget(player);
 		
 		metricsHelper.commandWasRun(command.getName());

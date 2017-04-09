@@ -1,37 +1,33 @@
 package me.egg82.tcpp.events;
 
-import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.event.Event;
 
 import ninja.egg82.plugin.commands.EventCommand;
-import ninja.egg82.utils.Util;
+import ninja.egg82.utils.ReflectUtil;
 
 public class EntityDeathEventCommand extends EventCommand {
 	//vars
-	private ArrayList<EventCommand> commands = new ArrayList<EventCommand>();
 	
 	//constructor
-	public EntityDeathEventCommand() {
-		super();
-		
-		ArrayList<Class<? extends EventCommand>> enums = Util.getClasses(EventCommand.class, "me.egg82.tcpp.events.individual.entityDeath");
-		for (Class<? extends EventCommand> c : enums) {
-			try {
-				commands.add(c.newInstance());
-			} catch (Exception ex) {
-				
-			}
-		}
+	public EntityDeathEventCommand(Event event) {
+		super(event);
 	}
 	
 	//public
 	
 	//private
-	protected void execute() {
-		EventCommand command = null;
+	protected void onExecute(long elapsedMilliseconds) {
+		List<Class<EventCommand>> commands = ReflectUtil.getClasses(EventCommand.class, "me.egg82.tcpp.events.entity.entityDeath");
 		for (int i = 0; i < commands.size(); i++) {
-			command = commands.get(i);
-			command.setEvent(event);
-			command.start();
+			EventCommand c = null;
+			try {
+				c = commands.get(i).getDeclaredConstructor(Event.class).newInstance(event);
+			} catch (Exception ex) {
+				throw new RuntimeException("Event cannot be initialized.", ex);
+			}
+			c.start();
 		}
 	}
 }

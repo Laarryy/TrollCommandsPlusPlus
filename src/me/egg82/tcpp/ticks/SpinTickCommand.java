@@ -3,37 +3,46 @@ package me.egg82.tcpp.ticks;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.enums.PluginServiceType;
+import me.egg82.tcpp.services.SpinRegistry;
+import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.registry.interfaces.IRegistry;
 
 public class SpinTickCommand extends TickCommand {
 	//vars
-	private IRegistry spinRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SPIN_REGISTRY);
+	private IRegistry spinRegistry = (IRegistry) ServiceLocator.getService(SpinRegistry.class);
 	
 	//constructor
 	public SpinTickCommand() {
 		super();
-		ticks = 2l;
+		ticks = 5L;
 	}
 	
 	//public
 	
 	//private
-	protected void execute() {
-		String[] names = spinRegistry.registryNames();
+	protected void onExecute(long elapsedMilliseconds) {
+		String[] names = spinRegistry.getRegistryNames();
 		for (String name : names) {
-			e((Player) spinRegistry.getRegister(name));
+			e(name, (Player) spinRegistry.getRegister(name));
 		}
 	}
-	private void e(Player player) {
-		if (player == null) {
+	private void e(String uuid, Player player) {
+		if (!player.isOnline()) {
 			return;
 		}
 		
-		Location loc = player.getLocation();
-		loc.setYaw(loc.getYaw() - 11.25f);
-		player.teleport(loc);
+		Location newLocation = player.getLocation().clone();
+		float newYaw = newLocation.getYaw() - 11.25f;
+		
+		while (newYaw < 0.0f) {
+			newYaw += 360.0f;
+		}
+		while (newYaw >= 360.0f) {
+			newYaw -= 360.0f;
+		}
+		
+		newLocation.setYaw(newYaw);
+		player.setVelocity(player.getLocation().clone().subtract(newLocation).toVector().normalize().multiply(1.0d));
 	}
 }

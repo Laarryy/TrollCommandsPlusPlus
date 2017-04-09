@@ -2,11 +2,11 @@ package me.egg82.tcpp.services;
 
 import ninja.egg82.patterns.Registry;
 
-public class SquidInternRegistry extends Registry {
+public class SpinRegistry extends Registry {
 	//vars
 	
 	//constructor
-	public SquidInternRegistry() {
+	public SpinRegistry() {
 		super();
 	}
 	
