@@ -2,11 +2,11 @@ package me.egg82.tcpp.services;
 
 import ninja.egg82.patterns.Registry;
 
-public class VegetableInternRegistry extends Registry {
+public class VegetableModeRegistry extends Registry {
 	//vars
 	
 	//constructor
-	public VegetableInternRegistry() {
+	public VegetableModeRegistry() {
 		super();
 	}
 	

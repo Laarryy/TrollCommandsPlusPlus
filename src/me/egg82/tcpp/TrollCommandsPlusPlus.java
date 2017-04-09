@@ -20,6 +20,7 @@ import me.egg82.tcpp.util.DisplayHelper;
 import me.egg82.tcpp.util.LibsDisguisesHelper;
 import me.egg82.tcpp.util.MetricsHelper;
 import me.egg82.tcpp.util.NullDisguiseHelper;
+import me.egg82.tcpp.util.VegetableHelper;
 import net.gravitydevelopment.updater.Updater;
 import net.gravitydevelopment.updater.Updater.UpdateResult;
 import net.gravitydevelopment.updater.Updater.UpdateType;
@@ -77,6 +78,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		
 		ServiceLocator.provideService(ControlHelper.class);
 		ServiceLocator.provideService(DisplayHelper.class);
+		ServiceLocator.provideService(VegetableHelper.class);
 		ServiceLocator.provideService(MetricsHelper.class);
 		
 		updateTimer = new Timer(24 * 60 * 60 * 1000, onUpdateTimer);

@@ -7,6 +7,7 @@ public class PermissionsType {
 	public static final String CHAT_WHILE_VEGETABLE = "tcpp.vegetable.chat";
 	public static final String CHAT_WHILE_FROZEN = "tcpp.freeze.chat";
 	public static final String FREECAM_WHILE_CONTROLLED = "tcpp.control.freecam";
+	public static final String FREECAM_WHILE_VEGETABLE = "tcpp.vegetable.freecam";
 	
 	public static final String COMMAND_TROLL = "tcpp.command.troll";
 	public static final String COMMAND_VAPORIZE = "tcpp.command.vaporize";

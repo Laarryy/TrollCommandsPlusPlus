@@ -1,117 +1,79 @@
 package me.egg82.tcpp.commands;
 
-import java.util.HashMap;
-
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.plugin.Plugin;
 
-import me.egg82.tcpp.commands.base.BasePluginCommand;
-import me.egg82.tcpp.enums.MetadataType;
+import me.egg82.tcpp.enums.CommandErrorType;
+import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.enums.PluginServiceType;
+import me.egg82.tcpp.services.VegetableRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.enums.ServiceType;
-import ninja.egg82.events.patterns.command.CommandEvent;
+import me.egg82.tcpp.util.VegetableHelper;
+import ninja.egg82.events.CommandEvent;
+import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.enums.SpigotRegType;
-import ninja.egg82.plugin.utils.BlockUtil;
-import ninja.egg82.registry.interfaces.IRegistry;
+import ninja.egg82.plugin.commands.PluginCommand;
+import ninja.egg82.plugin.enums.SpigotCommandErrorType;
+import ninja.egg82.plugin.enums.SpigotMessageType;
+import ninja.egg82.plugin.utils.CommandUtil;
 
-public class VegetableCommand extends BasePluginCommand {
+public class VegetableCommand extends PluginCommand {
 	//vars
-	private IRegistry initReg = (IRegistry) ServiceLocator.getService(ServiceType.INIT_REGISTRY);
-	private IRegistry vegetableRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.VEGETABLE_REGISTRY);
-	private IRegistry vegetableInternRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.VEGETABLE_INTERN_REGISTRY);
+	private IRegistry vegetableRegistry = (IRegistry) ServiceLocator.getService(VegetableRegistry.class);
 	
+	private VegetableHelper vegetableHelper = (VegetableHelper) ServiceLocator.getService(VegetableHelper.class);
 	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
-	public VegetableCommand() {
-		super();
+	public VegetableCommand(CommandSender sender, Command command, String label, String[] args) {
+		super(sender, command, label, args);
 	}
 	
 	//public
-	@SuppressWarnings("unchecked")
-	public void onQuit(String uuid, Player player) {
-		vegetableRegistry.computeIfPresent(uuid, (k,v) -> {
-			return null;
-		});
-		
-		vegetableInternRegistry.computeIfPresent(uuid, (k,v) -> {
-			HashMap<String, Object> map = (HashMap<String, Object>) v;
-			Item potato = (Item) map.get("item");
-			
-			player.setGameMode((GameMode) map.get("mode"));
-			potato.remove();
-			
-			return null;
-		});
-	}
-	public void onDeath(String uuid, Player player) {
-		onQuit(uuid, player);
-	}
 	
 	//private
-	protected void execute() {
-		if (isValid(false, PermissionsType.COMMAND_VEGETABLE, new int[]{1}, new int[]{0})) {
-			Player player = Bukkit.getPlayer(args[0]);
-			e(player.getUniqueId().toString(), player);
-			
-			dispatch(CommandEvent.COMPLETE, null);
+	protected void onExecute(long elapsedMilliseconds) {
+		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_VEGETABLE)) {
+			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
+			return;
 		}
-	}
-	@SuppressWarnings("unchecked")
-	private void e(String uuid, Player player) {
-		Location loc = player.getLocation();
+		if (!CommandUtil.isArrayOfAllowedLength(args, 1)) {
+			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
+			sender.getServer().dispatchCommand(sender, "help " + command.getName());
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+			return;
+		}
 		
-		if (vegetableRegistry.contains(uuid)) {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		
+		if (player == null) {
+			sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
+			return;
+		}
+		if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+			sender.sendMessage(MessageType.PLAYER_IMMUNE);
+			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
+			return;
+		}
+		
+		e(player.getUniqueId().toString(), player);
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void e(String uuid, Player player) {
+		if (vegetableRegistry.hasRegister(uuid)) {
+			vegetableHelper.unvegetable(uuid, player);
+			
 			sender.sendMessage(player.getName() + " is no longer a potato.");
-			
-			vegetableRegistry.setRegister(uuid, null);
-			
-			player.teleport(BlockUtil.getTopAirBlock(loc));
-			
-			vegetableInternRegistry.computeIfPresent(uuid, (k,v) -> {
-				HashMap<String, Object> map = (HashMap<String, Object>) v;
-				Item potato = (Item) map.get("item");
-				
-				if (player != null) {
-					player.setGameMode((GameMode) map.get("mode"));
-				}
-				
-				if (potato != null) {
-					potato.remove();
-				}
-				
-				return null;
-			});
 		} else {
+			vegetableHelper.vegetable(uuid, player, Material.POTATO_ITEM);
+			metricsHelper.commandWasRun(command.getName());
+			
 			sender.sendMessage(player.getName() + " is now a potato.");
-			
-			ItemStack potatoStack = new ItemStack(Material.POTATO_ITEM, 1);
-			ItemMeta meta = potatoStack.getItemMeta();
-			meta.setDisplayName(player.getDisplayName());
-			potatoStack.setItemMeta(meta);
-			
-			Item potato = loc.getWorld().dropItem(loc, potatoStack);
-			potato.setMetadata(MetadataType.VEGETABLE, new FixedMetadataValue((Plugin) initReg.getRegister(SpigotRegType.PLUGIN), true));
-			
-			HashMap<String, Object> map = new HashMap<String, Object>();
-			map.put("mode", player.getGameMode());
-			map.put("item", potato);
-			vegetableInternRegistry.setRegister(uuid, map);
-			player.setGameMode(GameMode.SPECTATOR);
-			player.teleport(new Location(loc.getWorld(), loc.getX(), loc.getBlockY() - 1.0d, loc.getZ()));
-			
-			vegetableRegistry.setRegister(uuid, player);
 		}
 	}
 }

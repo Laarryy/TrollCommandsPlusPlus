@@ -1,52 +1,51 @@
 package me.egg82.tcpp.ticks;
 
-import java.util.HashMap;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.enums.PluginServiceType;
+import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.services.VegetableItemRegistry;
+import me.egg82.tcpp.services.VegetableRegistry;
+import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.registry.interfaces.IRegistry;
+import ninja.egg82.plugin.utils.CommandUtil;
 
 public class VegetableTickCommand extends TickCommand {
 	//vars
-	private IRegistry vegetableRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.VEGETABLE_REGISTRY);
-	private IRegistry vegetableInternRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.VEGETABLE_INTERN_REGISTRY);
+	private IRegistry vegetableRegistry = (IRegistry) ServiceLocator.getService(VegetableRegistry.class);
+	private IRegistry vegetableItemRegistry = (IRegistry) ServiceLocator.getService(VegetableItemRegistry.class);
 	
 	//constructor
 	public VegetableTickCommand() {
 		super();
-		ticks = 5l;
+		ticks = 5L;
 	}
 	
 	//public
 	
 	//private
-	protected void execute() {
-		String[] names = vegetableRegistry.registryNames();
+	protected void onExecute(long elapsedMilliseconds) {
+		String[] names = vegetableRegistry.getRegistryNames();
 		for (String name : names) {
 			e(name, (Player) vegetableRegistry.getRegister(name));
 		}
 	}
-	@SuppressWarnings("unchecked")
 	private void e(String uuid, Player player) {
-		if (player == null) {
+		if (!player.isOnline()) {
+			return;
+		}
+		if (CommandUtil.hasPermission(player, PermissionsType.FREECAM_WHILE_VEGETABLE)) {
 			return;
 		}
 		
-		HashMap<String, Object> map = (HashMap<String, Object>) vegetableInternRegistry.getRegister(uuid);
-		Item potato = (Item) map.get("item");
+		Item groundItem = (Item) vegetableItemRegistry.getRegister(uuid);
 		
-		if (potato == null) {
-			return;
-		}
+		Location playerLocation = player.getLocation().clone().add(0.0d, 1.0d, 0.0d);
+		Location itemLocation = groundItem.getLocation().clone();
 		
-		Location loc = player.getLocation();
-		Location loc2 = potato.getLocation().clone().subtract(0.0d, 1.0d, 0.0d);
-		loc2.setDirection(loc.getDirection());
-		player.teleport(loc2);
+		itemLocation.setDirection(playerLocation.getDirection());
+		player.setVelocity(playerLocation.subtract(itemLocation).toVector().normalize().multiply(1.0d));
 	}
 }
