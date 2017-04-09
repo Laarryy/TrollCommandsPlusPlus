@@ -13,7 +13,6 @@ import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.startup.InitRegistry;
 import ninja.egg82.utils.MathUtil;
-import ninja.egg82.utils.ReflectUtil;
 
 public class LagEventCommand extends EventCommand {
 	//vars
@@ -43,7 +42,7 @@ public class LagEventCommand extends EventCommand {
 		}
 		
 		// Make sure we're not "lagging" our own lag event. Infinite loops, ahoy!
-		if (ReflectUtil.doesExtend(event.getClass(), LagPlayerMoveEvent.class)) {
+		if (event instanceof LagPlayerMoveEvent) {
 			return;
 		}
 		

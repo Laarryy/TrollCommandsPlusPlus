@@ -1,87 +1,100 @@
 package me.egg82.tcpp.commands;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.BlockState;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import me.egg82.tcpp.commands.base.BasePluginCommand;
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.enums.PluginServiceType;
-import me.egg82.tcpp.ticks.PortalTickCommand;
-import ninja.egg82.events.patterns.command.CommandEvent;
+import me.egg82.tcpp.services.PortalRegistry;
+import ninja.egg82.events.CommandEvent;
+import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.enums.SpigotServiceType;
+import ninja.egg82.plugin.commands.PluginCommand;
+import ninja.egg82.plugin.core.BlockData;
+import ninja.egg82.plugin.enums.SpigotCommandErrorType;
+import ninja.egg82.plugin.enums.SpigotMessageType;
 import ninja.egg82.plugin.utils.BlockUtil;
-import ninja.egg82.plugin.utils.interfaces.ITickHandler;
-import ninja.egg82.registry.interfaces.IRegistry;
+import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.startup.InitRegistry;
 
-public class PortalCommand extends BasePluginCommand {
+public class PortalCommand extends PluginCommand {
 	//vars
-	private IRegistry portalRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.PORTAL_REGISTRY);
+	private IRegistry portalRegistry = (IRegistry) ServiceLocator.getService(PortalRegistry.class);
 	
-	private ITickHandler tickHandler = (ITickHandler) ServiceLocator.getService(SpigotServiceType.TICK_HANDLER);
+	private IRegistry initRegistry = (IRegistry) ServiceLocator.getService(InitRegistry.class);
 	
 	//constructor
-	public PortalCommand() {
-		super();
+	public PortalCommand(CommandSender sender, Command command, String label, String[] args) {
+		super(sender, command, label, args);
 	}
 	
 	//public
 	
 	//private
-	protected void execute() {
-		if (isValid(false, PermissionsType.COMMAND_PORTAL, new int[]{1}, new int[]{0})) {
-			Player player = Bukkit.getPlayer(args[0]);
-			String uuid = player.getUniqueId().toString();
-			
-			if (portalRegistry.contains(uuid)) {
-				sender.sendMessage(MessageType.ALREADY_USED);
-				dispatch(CommandEvent.ERROR, CommandErrorType.ALREADY_USED);
-				return;
-			}
-			
-			e(uuid, player);
-			
-			dispatch(CommandEvent.COMPLETE, null);
+	protected void onExecute(long elapsedMilliseconds) {
+		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_PORTAL)) {
+			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
+			return;
 		}
+		if (!CommandUtil.isArrayOfAllowedLength(args, 1)) {
+			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
+			sender.getServer().dispatchCommand(sender, "help " + command.getName());
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+			return;
+		}
+		
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		
+		if (player == null) {
+			sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
+			return;
+		}
+		if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+			sender.sendMessage(MessageType.PLAYER_IMMUNE);
+			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
+			return;
+		}
+		
+		String uuid = player.getUniqueId().toString();
+		
+		if (portalRegistry.hasRegister(uuid)) {
+			sender.sendMessage(MessageType.ALREADY_USED);
+			dispatch(CommandEvent.ERROR, CommandErrorType.ALREADY_USED);
+			return;
+		}
+		
+		e(uuid, player);
+		
+		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
-		ArrayList<Material[]> blocks = new ArrayList<Material[]>();
-		ArrayList<ArrayList<ItemStack[]>> inv = new ArrayList<ArrayList<ItemStack[]>>();
-		ArrayList<BlockState[]> data = new ArrayList<BlockState[]>();
-		Location loc = player.getLocation();
+		// Center should be three blocks below player, for a total of five blocks of depth minus a layer for portals
+		Location centerLocation = player.getLocation().clone().subtract(0.0d, 3.0d, 0.0d);
 		
-		Location l = null;
-		int endY = loc.getBlockY() - 5;
+		// Get all blocks, 3x3x5 (LxWxH)
+		List<BlockData> blockData = BlockUtil.getBlocks(centerLocation, 1, 2, 1);
+		// Fill the previous 3x3x5 area with air
+		BlockUtil.clearBlocks(centerLocation, Material.AIR, 1, 2, 1);
+		// Fill bottom layer of new air blocks with portals
+		BlockUtil.clearBlocks(centerLocation.clone().subtract(0.0d, 2.0d, 0.0d), Material.ENDER_PORTAL, 1, 0, 1);
 		
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) {
-				l = loc.clone().add(i - 1.0d, 0.0d, j - 1.0d);
-				
-				inv.add(BlockUtil.getYLineBlockInventory(l.clone(), endY));
-				data.add(BlockUtil.getYLineBlockState(l.clone(), endY));
-				blocks.add(BlockUtil.removeYLineBlocks(l.clone(), endY));
-				
-				l.clone().subtract(0.0d, (double) (loc.getBlockY() - endY), 0.0d).getBlock().setType(Material.ENDER_PORTAL);
+		// Wait five seconds
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {
+			public void run() {
+				// Put all the blocks back
+				BlockUtil.setBlocks(blockData, centerLocation, 1, 2, 1);
 			}
-		}
-		
-		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put("time", System.currentTimeMillis());
-		map.put("loc", loc);
-		map.put("blocks", blocks);
-		map.put("inv", inv);
-		map.put("data",  data);
-		portalRegistry.setRegister(uuid, map);
-		tickHandler.addDelayedTickCommand("portal-" + uuid, PortalTickCommand.class, 102);
+		}, 100);
 		
 		sender.sendMessage(player.getName() + " is now falling to The(ir) End.");
 	}
