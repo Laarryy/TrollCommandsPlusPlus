@@ -2,32 +2,32 @@ package me.egg82.tcpp.ticks;
 
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.enums.PluginServiceType;
+import me.egg82.tcpp.services.RewindRegistry;
+import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.registry.interfaces.IRegistry;
 
 public class RewindTickCommand extends TickCommand {
 	//vars
-	private IRegistry rewindRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.REWIND_REGISTRY);
+	private IRegistry rewindRegistry = (IRegistry) ServiceLocator.getService(RewindRegistry.class);
 	
 	//constructor
 	public RewindTickCommand() {
 		super();
-		ticks = 5l;
+		ticks = 5L;
 	}
 	
 	//public
 	
 	//private
-	protected void execute() {
-		String[] names = rewindRegistry.registryNames();
+	protected void onExecute(long elapsedMilliseconds) {
+		String[] names = rewindRegistry.getRegistryNames();
 		for (String name : names) {
-			e((Player) rewindRegistry.getRegister(name));
+			e(name, (Player) rewindRegistry.getRegister(name));
 		}
 	}
-	private void e(Player player) {
-		if (player == null) {
+	private void e(String uuid, Player player) {
+		if (!player.isOnline()) {
 			return;
 		}
 		

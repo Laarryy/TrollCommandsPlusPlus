@@ -91,7 +91,7 @@ public class PortalCommand extends PluginCommand {
 		// Wait five seconds
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {
 			public void run() {
-				// Put all the blocks back
+				// Put all the blocks we took earlier back
 				BlockUtil.setBlocks(blockData, centerLocation, 1, 2, 1);
 			}
 		}, 100);
