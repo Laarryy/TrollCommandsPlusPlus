@@ -2,32 +2,32 @@ package me.egg82.tcpp.ticks;
 
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.enums.PluginServiceType;
+import me.egg82.tcpp.services.StarveRegistry;
+import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.registry.interfaces.IRegistry;
 
 public class StarveTickCommand extends TickCommand {
 	//vars
-	private IRegistry starveRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.STARVE_REGISTRY);
+	private IRegistry starveRegistry = (IRegistry) ServiceLocator.getService(StarveRegistry.class);
 	
 	//constructor
 	public StarveTickCommand() {
 		super();
-		ticks = 20l;
+		ticks = 15L;
 	}
 	
 	//public
 	
 	//private
-	protected void execute() {
-		String[] names = starveRegistry.registryNames();
+	protected void onExecute(long elapsedMilliseconds) {
+		String[] names = starveRegistry.getRegistryNames();
 		for (String name : names) {
-			e((Player) starveRegistry.getRegister(name));
+			e(name, (Player) starveRegistry.getRegister(name));
 		}
 	}
-	private void e(Player player) {
-		if (player == null) {
+	private void e(String uuid, Player player) {
+		if (!player.isOnline()) {
 			return;
 		}
 		

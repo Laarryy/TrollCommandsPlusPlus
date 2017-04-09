@@ -1,7 +1,8 @@
 package me.egg82.tcpp.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Cow;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Silverfish;
@@ -9,58 +10,87 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import me.egg82.tcpp.commands.base.BasePluginCommand;
+import me.egg82.tcpp.enums.CommandErrorType;
+import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.events.patterns.command.CommandEvent;
+import ninja.egg82.events.CommandEvent;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.enums.SpigotReflectType;
-import ninja.egg82.plugin.enums.SpigotServiceType;
-import ninja.egg82.plugin.reflection.entity.interfaces.IEntityUtil;
+import ninja.egg82.plugin.commands.PluginCommand;
+import ninja.egg82.plugin.enums.SpigotCommandErrorType;
+import ninja.egg82.plugin.enums.SpigotMessageType;
+import ninja.egg82.plugin.reflection.entity.IEntityUtil;
 import ninja.egg82.plugin.utils.BlockUtil;
-import ninja.egg82.registry.interfaces.IRegistry;
+import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.utils.MathUtil;
 
-public class StampedeCommand extends BasePluginCommand {
+public class StampedeCommand extends PluginCommand {
 	//vars
-	private IEntityUtil entityUtil = (IEntityUtil) ((IRegistry) ServiceLocator.getService(SpigotServiceType.REFLECT_REGISTRY)).getRegister(SpigotReflectType.ENTITY);
+	private IEntityUtil entityUtil = (IEntityUtil) ServiceLocator.getService(IEntityUtil.class);
 	
 	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
-	public StampedeCommand() {
-		super();
+	public StampedeCommand(CommandSender sender, Command command, String label, String[] args) {
+		super(sender, command, label, args);
 	}
 	
 	//public
 	
 	//private
-	protected void execute() {
-		if (isValid(false, PermissionsType.COMMAND_STAMPEDE, new int[]{1}, new int[]{0})) {
-			Player player = Bukkit.getPlayer(args[0]);
-			e(player.getName(), player);
-			
-			dispatch(CommandEvent.COMPLETE, null);
+	protected void onExecute(long elapsedMilliseconds) {
+		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_STAMPEDE)) {
+			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
+			return;
 		}
+		if (!CommandUtil.isArrayOfAllowedLength(args, 1)) {
+			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
+			sender.getServer().dispatchCommand(sender, "help " + command.getName());
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+			return;
+		}
+		
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		
+		if (player == null) {
+			sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
+			return;
+		}
+		if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+			sender.sendMessage(MessageType.PLAYER_IMMUNE);
+			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
+			return;
+		}
+		
+		e(player.getUniqueId().toString(), player);
+		
+		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String name, Player player) {
-		int rand = MathUtil.fairRoundedRandom(10, 20);
-		Location tloc = player.getLocation();
-		Location loc = BlockUtil.getTopAirBlock(new Location(tloc.getWorld(), MathUtil.random(tloc.getX() - 5.0d, tloc.getX() + 5.0d), tloc.getY(), MathUtil.random(tloc.getZ() - 5.0d, tloc.getZ() + 5.0d)));
-		Vector vel = loc.clone().subtract(tloc).toVector().normalize().multiply(3.0d);
-		for (int i = 0; i < rand; i++) {
-			spawnCow(player, loc, vel);
+		int numCows = MathUtil.fairRoundedRandom(10, 20);
+		Location playerLocation = player.getLocation().clone();
+		Location herdLocation = BlockUtil.getTopAirBlock(new Location(playerLocation.getWorld(), MathUtil.random(playerLocation.getX() - 5.0d, playerLocation.getX() + 5.0d), playerLocation.getY(), MathUtil.random(playerLocation.getZ() - 5.0d, playerLocation.getZ() + 5.0d)));
+		Vector cowVelocity = herdLocation.clone().subtract(playerLocation).toVector().normalize().multiply(3.0d);
+		
+		for (int i = 0; i < numCows; i++) {
+			spawnCow(player, herdLocation, cowVelocity);
 		}
+		
+		metricsHelper.commandWasRun(command.getName());
 		
 		sender.sendMessage("The angry cows have been unleashed on " + name + ".");
 	}
-	private void spawnCow(Player p, Location l, Vector v) {
-		Cow cow = (Cow) p.getWorld().spawn(l, Cow.class);
-		Silverfish fish = (Silverfish) p.getWorld().spawn(l, Silverfish.class);
-		fish.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1200, 3), true);
-		entityUtil.addPassenger(fish, cow);
-		fish.setVelocity(v);
-		cow.setVelocity(v);
-		fish.setTarget(p);
+	private void spawnCow(Player player, Location location, Vector velocity) {
+		Cow c = player.getWorld().spawn(location, Cow.class);
+		Silverfish f = player.getWorld().spawn(location, Silverfish.class);
+		f.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1200, 3), true);
+		
+		entityUtil.addPassenger(f, c);
+		
+		f.setVelocity(velocity);
+		c.setVelocity(velocity);
+		f.setTarget(player);
 	}
 }
