@@ -2,10 +2,13 @@ package me.egg82.tcpp.commands;
 
 import me.egg82.tcpp.commands.base.BasePluginCommand;
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.patterns.command.CommandEvent;
+import ninja.egg82.patterns.ServiceLocator;
 
 public class TrollCommand extends BasePluginCommand {
 	//vars
+	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public TrollCommand() {

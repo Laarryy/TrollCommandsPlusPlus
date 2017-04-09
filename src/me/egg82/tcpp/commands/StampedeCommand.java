@@ -11,6 +11,7 @@ import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.commands.base.BasePluginCommand;
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.patterns.command.CommandEvent;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.enums.SpigotReflectType;
@@ -23,6 +24,8 @@ import ninja.egg82.utils.MathUtil;
 public class StampedeCommand extends BasePluginCommand {
 	//vars
 	private IEntityUtil entityUtil = (IEntityUtil) ((IRegistry) ServiceLocator.getService(SpigotServiceType.REFLECT_REGISTRY)).getRegister(SpigotReflectType.ENTITY);
+	
+	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public StampedeCommand() {

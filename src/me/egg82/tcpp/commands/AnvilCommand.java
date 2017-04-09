@@ -10,7 +10,9 @@ import org.bukkit.entity.Player;
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CommandEvent;
+import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotCommandErrorType;
 import ninja.egg82.plugin.enums.SpigotMessageType;
@@ -18,6 +20,7 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class AnvilCommand extends PluginCommand {
 	//vars
+	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public AnvilCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -65,6 +68,8 @@ public class AnvilCommand extends PluginCommand {
 		}
 		loc.add(0.0d, 1.0d, 0.0d);
 		loc.getBlock().setType(Material.ANVIL);
+		
+		metricsHelper.commandWasRun(command.getName());
 		
 		sender.sendMessage("The " + ChatColor.STRIKETHROUGH + ChatColor.ITALIC + "base" + ChatColor.RESET + " anvil has been dropped on " + player.getName() + ".");
 	}

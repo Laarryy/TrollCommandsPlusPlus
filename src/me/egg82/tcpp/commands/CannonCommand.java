@@ -7,7 +7,9 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CommandEvent;
+import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotCommandErrorType;
 import ninja.egg82.plugin.enums.SpigotMessageType;
@@ -15,6 +17,7 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class CannonCommand extends PluginCommand {
 	//vars
+	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public CannonCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -65,5 +68,7 @@ public class CannonCommand extends PluginCommand {
 		TNTPrimed tnt = player.getWorld().spawn(player.getLocation(), TNTPrimed.class);
 		Vector direction = player.getLocation().getDirection().multiply(speed);
 		tnt.setVelocity(direction);
+		
+		metricsHelper.commandWasRun(command.getName());
 	}
 }

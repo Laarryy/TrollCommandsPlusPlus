@@ -15,6 +15,7 @@ import me.egg82.tcpp.services.DisplayBlockRegistry;
 import me.egg82.tcpp.services.DisplayLocationRegistry;
 import me.egg82.tcpp.services.DisplayRegistry;
 import me.egg82.tcpp.util.DisplayHelper;
+import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CommandEvent;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
@@ -30,6 +31,8 @@ public class DisplayCommand extends PluginCommand {
 	private IRegistry displayLocationRegistry = (IRegistry) ServiceLocator.getService(DisplayLocationRegistry.class);
 	
 	private DisplayHelper displayHelper = (DisplayHelper) ServiceLocator.getService(DisplayHelper.class);
+	
+	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public DisplayCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -89,6 +92,8 @@ public class DisplayCommand extends PluginCommand {
 			displayLocationRegistry.setRegister(uuid, Location.class, playerLocation);
 			
 			player.teleport(playerLocation);
+			
+			metricsHelper.commandWasRun(command.getName());
 			
 			sender.sendMessage(player.getName() + " is now on display.");
 		}

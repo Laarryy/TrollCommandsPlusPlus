@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import me.egg82.tcpp.commands.base.BasePluginCommand;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.enums.PluginServiceType;
+import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.patterns.command.CommandEvent;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.registry.interfaces.IRegistry;
@@ -16,6 +17,8 @@ public class WhoAmICommand extends BasePluginCommand {
 	//vars
 	private IRegistry whoAmIRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.WHO_AM_I_REGISTRY);
 	private IRegistry whoAmIInternRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.WHO_AM_I_INTERN_REGISTRY);
+	
+	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public WhoAmICommand() {

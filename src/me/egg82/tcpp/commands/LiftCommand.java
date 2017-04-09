@@ -8,7 +8,9 @@ import org.bukkit.util.Vector;
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CommandEvent;
+import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotCommandErrorType;
 import ninja.egg82.plugin.enums.SpigotMessageType;
@@ -17,6 +19,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class LiftCommand extends PluginCommand {
 	//vars
+	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public LiftCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -58,6 +61,8 @@ public class LiftCommand extends PluginCommand {
 	}
 	private void e(String uuid, Player player) {
 		player.setVelocity(new Vector(0.0d, MathUtil.random(15.0d, 25.0d), 0.0d));
+		
+		metricsHelper.commandWasRun(command.getName());
 		
 		sender.sendMessage(player.getName() + " has been lifted.");
 	}

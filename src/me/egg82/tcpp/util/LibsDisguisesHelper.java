@@ -29,6 +29,9 @@ public class LibsDisguisesHelper implements IDisguiseHelper {
 	public EntityType disguiseType(Player player) {
 		return (DisguiseAPI.isDisguised(player)) ? EntityType.valueOf(DisguiseAPI.getDisguise(player).getType().toString()) : null;
 	}
+	public boolean isDisguised(Player player) {
+		return DisguiseAPI.isDisguised(player);
+	}
 	public boolean isValidLibrary() {
 		return true;
 	}

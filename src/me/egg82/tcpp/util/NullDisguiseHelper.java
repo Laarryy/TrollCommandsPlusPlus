@@ -24,6 +24,9 @@ public class NullDisguiseHelper implements IDisguiseHelper {
 	public EntityType disguiseType(Player player) {
 		return null;
 	}
+	public boolean isDisguised(Player player) {
+		return false;
+	}
 	public boolean isValidLibrary() {
 		return false;
 	}

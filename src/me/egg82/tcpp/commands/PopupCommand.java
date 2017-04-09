@@ -8,6 +8,7 @@ import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.services.PopupRegistry;
+import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CommandEvent;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
@@ -19,6 +20,8 @@ import ninja.egg82.plugin.utils.CommandUtil;
 public class PopupCommand extends PluginCommand {
 	//vars
 	private IRegistry popupRegistry = (IRegistry) ServiceLocator.getService(PopupRegistry.class);
+	
+	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public PopupCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -65,6 +68,7 @@ public class PopupCommand extends PluginCommand {
 			sender.sendMessage(player.getName() + "'s inventory is no longer opening and closing randomly.");
 		} else {
 			popupRegistry.setRegister(uuid, Player.class, player);
+			metricsHelper.commandWasRun(command.getName());
 			
 			sender.sendMessage(player.getName() + "'s inventory is now opening and closing randomly.");
 		}

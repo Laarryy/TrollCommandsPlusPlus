@@ -8,12 +8,15 @@ import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.commands.base.BasePluginCommand;
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.patterns.command.CommandEvent;
+import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.utils.MathUtil;
 
 public class ZombifyCommand extends BasePluginCommand {
 	//vars
+	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public ZombifyCommand() {

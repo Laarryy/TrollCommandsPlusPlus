@@ -33,6 +33,10 @@ public class DisguiseHelper implements IDisguiseHelper {
 		OfflinePlayer p = (OfflinePlayer) player;
 		return (api.isDisguised(p)) ? EntityType.valueOf(api.getDisguise(p).getType().toString().toUpperCase()) : null;
 	}
+	public boolean isDisguised(Player player) {
+		OfflinePlayer p = (OfflinePlayer) player;
+		return api.isDisguised(p);
+	}
 	public boolean isValidLibrary() {
 		return true;
 	}

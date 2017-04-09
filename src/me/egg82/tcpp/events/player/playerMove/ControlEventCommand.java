@@ -35,7 +35,7 @@ public class ControlEventCommand extends EventCommand {
 		
 		if (controlledPlayer != null) {
 			// Player is controlling someone
-			controlledPlayer.teleport(player);
+			controlledPlayer.setVelocity(controlledPlayer.getLocation().clone().subtract(player.getLocation()).toVector().normalize().multiply(1.0d));
 		}
 		
 		String controllerUuid = controlRegistry.getName(player);

@@ -8,6 +8,7 @@ import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.services.BombRegistry;
+import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CommandEvent;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
@@ -19,6 +20,8 @@ import ninja.egg82.plugin.utils.CommandUtil;
 public class BombCommand extends PluginCommand {
 	//vars
 	private IRegistry bombRegistry = (IRegistry) ServiceLocator.getService(BombRegistry.class);
+	
+	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public BombCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -61,9 +64,12 @@ public class BombCommand extends PluginCommand {
 	private void e(String uuid, Player player) {
 		if (bombRegistry.hasRegister(uuid)) {
 			bombRegistry.setRegister(uuid, Player.class, null);
+			
 			sender.sendMessage(player.getName() + " is no longer being bombed.");
 		} else {
 			bombRegistry.setRegister(uuid, Player.class, player);
+			metricsHelper.commandWasRun(command.getName());
+			
 			sender.sendMessage(player.getName() + " is now being bombed.");
 		}
 	}

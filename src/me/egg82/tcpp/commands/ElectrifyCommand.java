@@ -8,6 +8,7 @@ import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.services.ElectrifyRegistry;
+import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CommandEvent;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
@@ -19,6 +20,8 @@ import ninja.egg82.plugin.utils.CommandUtil;
 public class ElectrifyCommand extends PluginCommand {
 	//vars
 	IRegistry electrifyRegistry = (IRegistry) ServiceLocator.getService(ElectrifyRegistry.class);
+	
+	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public ElectrifyCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -65,6 +68,7 @@ public class ElectrifyCommand extends PluginCommand {
 			sender.sendMessage(player.getName() + " is no longer being electrified.");
 		} else {
 			electrifyRegistry.setRegister(uuid, Player.class, player);
+			metricsHelper.commandWasRun(command.getName());
 			
 			sender.sendMessage(player.getName() + " is now being electrified.");
 		}

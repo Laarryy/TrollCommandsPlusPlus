@@ -13,6 +13,7 @@ import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.services.AmnesiaMessageRegistry;
 import me.egg82.tcpp.services.AmnesiaRegistry;
+import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CommandEvent;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
@@ -25,6 +26,8 @@ public class AmnesiaCommand extends PluginCommand {
 	//vars
 	private IRegistry amnesiaRegistry = (IRegistry) ServiceLocator.getService(AmnesiaRegistry.class);
 	private IRegistry amnesiaMessageRegistry = (IRegistry) ServiceLocator.getService(AmnesiaMessageRegistry.class);
+	
+	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public AmnesiaCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -73,6 +76,7 @@ public class AmnesiaCommand extends PluginCommand {
 		} else {
 			amnesiaMessageRegistry.setRegister(uuid, List.class, Collections.synchronizedList(new ArrayList<String>()));
 			amnesiaRegistry.setRegister(uuid, Player.class, player);
+			metricsHelper.commandWasRun(command.getName());
 			
 			sender.sendMessage(player.getName() + " is now an amnesiac.");
 		}

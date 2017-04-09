@@ -6,13 +6,16 @@ import org.bukkit.entity.Player;
 import me.egg82.tcpp.commands.base.BasePluginCommand;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.enums.PluginServiceType;
+import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.patterns.command.CommandEvent;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.registry.interfaces.IRegistry;
 
 public class StarveCommand extends BasePluginCommand {
 	//vars
-	IRegistry starveRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.STARVE_REGISTRY);
+	private IRegistry starveRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.STARVE_REGISTRY);
+	
+	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public StarveCommand() {

@@ -17,7 +17,6 @@ import ninja.egg82.utils.MathUtil;
 public class LagEventCommand extends EventCommand {
 	//vars
 	private IRegistry lagRegistry = (IRegistry) ServiceLocator.getService(LagRegistry.class);
-	
 	private IRegistry initRegistry = (IRegistry) ServiceLocator.getService(InitRegistry.class);
 	
 	//constructor

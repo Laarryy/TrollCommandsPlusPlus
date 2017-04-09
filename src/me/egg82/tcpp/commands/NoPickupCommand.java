@@ -8,6 +8,7 @@ import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.services.NoPickupRegistry;
+import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CommandEvent;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
@@ -19,6 +20,8 @@ import ninja.egg82.plugin.utils.CommandUtil;
 public class NoPickupCommand extends PluginCommand {
 	//vars
 	private IRegistry noPickupRegistry = (IRegistry) ServiceLocator.getService(NoPickupRegistry.class);
+	
+	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public NoPickupCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -65,6 +68,7 @@ public class NoPickupCommand extends PluginCommand {
 			sender.sendMessage(player.getName() + " can now pick items up again.");
 		} else {
 			noPickupRegistry.setRegister(uuid, Player.class, player);
+			metricsHelper.commandWasRun(command.getName());
 			
 			sender.sendMessage(player.getName() + " can no longer pick items up.");
 		}

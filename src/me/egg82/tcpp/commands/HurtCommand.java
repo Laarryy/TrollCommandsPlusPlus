@@ -8,6 +8,7 @@ import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.services.HurtRegistry;
+import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CommandEvent;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
@@ -18,7 +19,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class HurtCommand extends PluginCommand {
 	//vars
-	IRegistry hurtRegistry = (IRegistry) ServiceLocator.getService(HurtRegistry.class);
+	private IRegistry hurtRegistry = (IRegistry) ServiceLocator.getService(HurtRegistry.class);
+	
+	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public HurtCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -65,6 +68,7 @@ public class HurtCommand extends PluginCommand {
 			sender.sendMessage(player.getName() + " is no longer being hurt.");
 		} else {
 			hurtRegistry.setRegister(uuid, Player.class, player);
+			metricsHelper.commandWasRun(command.getName());
 			
 			sender.sendMessage(player.getName() + " is now being hurt.");
 		}

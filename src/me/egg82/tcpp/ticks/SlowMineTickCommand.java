@@ -4,32 +4,32 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import me.egg82.tcpp.enums.PluginServiceType;
+import me.egg82.tcpp.services.SlowMineRegistry;
+import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.registry.interfaces.IRegistry;
 
 public class SlowMineTickCommand extends TickCommand {
 	//vars
-	private IRegistry slowMineRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SLOW_MINE_REGISTRY);
+	private IRegistry slowMineRegistry = (IRegistry) ServiceLocator.getService(SlowMineRegistry.class);
 	
 	//constructor
 	public SlowMineTickCommand() {
 		super();
-		ticks = 60l;
+		ticks = 60L;
 	}
 	
 	//public
 	
 	//private
-	protected void execute() {
-		String[] names = slowMineRegistry.registryNames();
+	protected void onExecute(long elapsedMilliseconds) {
+		String[] names = slowMineRegistry.getRegistryNames();
 		for (String name : names) {
-			e((Player) slowMineRegistry.getRegister(name));
+			e(name, (Player) slowMineRegistry.getRegister(name));
 		}
 	}
-	private void e(Player player){
-		if (player == null) {
+	private void e(String name, Player player){
+		if (!player.isOnline()) {
 			return;
 		}
 		

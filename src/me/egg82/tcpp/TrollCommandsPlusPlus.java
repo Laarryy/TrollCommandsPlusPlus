@@ -2,6 +2,7 @@ package me.egg82.tcpp;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 import javax.swing.Timer;
 
@@ -12,14 +13,17 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.PluginManager;
 
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.services.CommandRegistry;
 import me.egg82.tcpp.util.ControlHelper;
 import me.egg82.tcpp.util.DisguiseHelper;
 import me.egg82.tcpp.util.DisplayHelper;
 import me.egg82.tcpp.util.LibsDisguisesHelper;
+import me.egg82.tcpp.util.MetricsHelper;
 import me.egg82.tcpp.util.NullDisguiseHelper;
 import net.gravitydevelopment.updater.Updater;
 import net.gravitydevelopment.updater.Updater.UpdateResult;
 import net.gravitydevelopment.updater.Updater.UpdateType;
+import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.BasePlugin;
 import ninja.egg82.plugin.utils.SpigotReflectUtil;
@@ -28,6 +32,8 @@ import ninja.egg82.startup.InitRegistry;
 
 public class TrollCommandsPlusPlus extends BasePlugin {
 	//vars
+	Metrics metrics = null;
+	
 	private Timer updateTimer = null;
 	
 	private int numCommands = 0;
@@ -71,6 +77,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		
 		ServiceLocator.provideService(ControlHelper.class);
 		ServiceLocator.provideService(DisplayHelper.class);
+		ServiceLocator.provideService(MetricsHelper.class);
 		
 		updateTimer = new Timer(24 * 60 * 60 * 1000, onUpdateTimer);
 	}
@@ -79,10 +86,22 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		super.onEnable();
 		
 		try {
-			@SuppressWarnings("unused")
-			Metrics m = new Metrics(this);
+			metrics = new Metrics(this);
 		} catch (Exception ex) {
-			
+			Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[TrollCommands++] WARNING: Connection to metrics server could not be established. This affects nothing for server owners. Nothing to worry about!");
+		}
+		
+		if (metrics != null) {
+			metrics.addCustomChart(new Metrics.AdvancedPie("commands") {
+				public HashMap<String, Integer> getValues(HashMap<String, Integer> values) {
+					IRegistry commandRegistry = (IRegistry) ServiceLocator.getService(CommandRegistry.class);
+					String[] names = commandRegistry.getRegistryNames();
+					for (String name : names) {
+						values.put(name, (Integer) commandRegistry.getRegister(name));
+					}
+					return values;
+				}
+			});
 		}
 		
 		numCommands = SpigotReflectUtil.addCommandsFromPackage("me.egg82.tcpp.commands");

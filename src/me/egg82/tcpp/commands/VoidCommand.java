@@ -16,6 +16,7 @@ import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.enums.PluginServiceType;
 import me.egg82.tcpp.ticks.VoidTickCommand;
+import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.patterns.command.CommandEvent;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.enums.SpigotServiceType;
@@ -25,8 +26,10 @@ import ninja.egg82.registry.interfaces.IRegistry;
 
 public class VoidCommand extends BasePluginCommand {
 	//vars
-	IRegistry voidRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.VOID_REGISTRY);
-	ITickHandler tickHandler = (ITickHandler) ServiceLocator.getService(SpigotServiceType.TICK_HANDLER);
+	private IRegistry voidRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.VOID_REGISTRY);
+	private ITickHandler tickHandler = (ITickHandler) ServiceLocator.getService(SpigotServiceType.TICK_HANDLER);
+	
+	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public VoidCommand() {

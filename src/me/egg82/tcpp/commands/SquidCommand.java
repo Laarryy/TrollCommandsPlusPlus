@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import me.egg82.tcpp.commands.base.BasePluginCommand;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.enums.PluginServiceType;
+import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.patterns.command.CommandEvent;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.registry.interfaces.IRegistry;
@@ -13,6 +14,8 @@ import ninja.egg82.registry.interfaces.IRegistry;
 public class SquidCommand extends BasePluginCommand {
 	//vars
 	private IRegistry squidRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.SQUID_REGISTRY);
+	
+	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public SquidCommand() {

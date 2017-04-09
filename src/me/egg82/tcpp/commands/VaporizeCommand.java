@@ -6,12 +6,15 @@ import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.commands.base.BasePluginCommand;
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.patterns.command.CommandEvent;
+import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.enums.SpigotCommandErrorType;
 import ninja.egg82.plugin.enums.SpigotMessageType;
 
 public class VaporizeCommand extends BasePluginCommand {
 	//vars
+	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public VaporizeCommand() {

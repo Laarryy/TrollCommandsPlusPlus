@@ -10,6 +10,7 @@ import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.services.ControlRegistry;
 import me.egg82.tcpp.util.ControlHelper;
 import me.egg82.tcpp.util.IDisguiseHelper;
+import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CommandEvent;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
@@ -24,6 +25,8 @@ public class ControlCommand extends PluginCommand {
 	
 	private IDisguiseHelper disguiseHelper = (IDisguiseHelper) ServiceLocator.getService(IDisguiseHelper.class);
 	private ControlHelper controlHelper = (ControlHelper) ServiceLocator.getService(ControlHelper.class);
+	
+	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public ControlCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -99,6 +102,8 @@ public class ControlCommand extends PluginCommand {
 			}
 			
 			controlHelper.control(controller.getUniqueId().toString(), controller, playerUuid, player);
+			
+			metricsHelper.commandWasRun(command.getName());
 		}
 		
 		dispatch(CommandEvent.COMPLETE, null);

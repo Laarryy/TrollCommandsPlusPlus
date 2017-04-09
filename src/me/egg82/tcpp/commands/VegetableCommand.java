@@ -17,6 +17,7 @@ import me.egg82.tcpp.commands.base.BasePluginCommand;
 import me.egg82.tcpp.enums.MetadataType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.enums.PluginServiceType;
+import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.enums.ServiceType;
 import ninja.egg82.events.patterns.command.CommandEvent;
 import ninja.egg82.patterns.ServiceLocator;
@@ -29,6 +30,8 @@ public class VegetableCommand extends BasePluginCommand {
 	private IRegistry initReg = (IRegistry) ServiceLocator.getService(ServiceType.INIT_REGISTRY);
 	private IRegistry vegetableRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.VEGETABLE_REGISTRY);
 	private IRegistry vegetableInternRegistry = (IRegistry) ServiceLocator.getService(PluginServiceType.VEGETABLE_INTERN_REGISTRY);
+	
+	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public VegetableCommand() {

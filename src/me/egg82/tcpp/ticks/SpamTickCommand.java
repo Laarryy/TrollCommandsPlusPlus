@@ -3,6 +3,7 @@ package me.egg82.tcpp.ticks;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.enums.PluginServiceType;
+import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.registry.interfaces.IRegistry;
@@ -33,6 +34,8 @@ public class SpamTickCommand extends TickCommand {
 			return;
 		}
 		
-		player.sendMessage(StringUtil.randomString(MathUtil.fairRoundedRandom(15, 50)));
+		if (Math.random() < 0.25d) {
+			player.sendMessage(StringUtil.randomString(MathUtil.fairRoundedRandom(15, 50)));
+		}
 	}
 }
