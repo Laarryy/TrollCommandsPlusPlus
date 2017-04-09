@@ -1,6 +1,7 @@
 package me.egg82.tcpp.events.block.blockBreak;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -35,7 +36,9 @@ public class LagEventCommand extends EventCommand {
 			return;
 		}
 		
-		if (!lagRegistry.hasRegister(e.getPlayer().getUniqueId().toString())) {
+		Player player = e.getPlayer();
+		
+		if (!lagRegistry.hasRegister(player.getUniqueId().toString())) {
 			return;
 		}
 		
@@ -50,7 +53,7 @@ public class LagEventCommand extends EventCommand {
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {
 			public void run() {
 				// Events are "snapshots" - no need to save required elements
-				Bukkit.getServer().getPluginManager().callEvent(new LagBlockBreakEvent(e.getBlock(), e.getPlayer()));
+				Bukkit.getServer().getPluginManager().callEvent(new LagBlockBreakEvent(e.getBlock(), player));
 			}
 		}, MathUtil.fairRoundedRandom(40, 60));
 	}

@@ -2,7 +2,8 @@ package me.egg82.tcpp.commands;
 
 import java.util.List;
 
-import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -10,30 +11,57 @@ import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import me.egg82.tcpp.commands.base.BasePluginCommand;
+import me.egg82.tcpp.enums.CommandErrorType;
+import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import ninja.egg82.events.patterns.command.CommandEvent;
+import ninja.egg82.events.CommandEvent;
+import ninja.egg82.plugin.commands.PluginCommand;
+import ninja.egg82.plugin.enums.SpigotCommandErrorType;
+import ninja.egg82.plugin.enums.SpigotMessageType;
+import ninja.egg82.plugin.utils.CommandUtil;
 
-public class LureCommand extends BasePluginCommand {
+public class LureCommand extends PluginCommand {
 	//vars
 	
 	//constructor
-	public LureCommand() {
-		super();
+	public LureCommand(CommandSender sender, Command command, String label, String[] args) {
+		super(sender, command, label, args);
 	}
 	
 	//public
 	
 	//private
-	protected void execute() {
-		if (isValid(false, PermissionsType.COMMAND_LURE, new int[]{1}, new int[]{0})) {
-			Player player = Bukkit.getPlayer(args[0]);
-			e(player.getName(), player);
-			
-			dispatch(CommandEvent.COMPLETE, null);
+	protected void onExecute(long elapsedMilliseconds) {
+		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_LURE)) {
+			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
+			return;
 		}
+		if (!CommandUtil.isArrayOfAllowedLength(args, 1)) {
+			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
+			sender.getServer().dispatchCommand(sender, "help " + command.getName());
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+			return;
+		}
+		
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		
+		if (player == null) {
+			sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
+			return;
+		}
+		if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+			sender.sendMessage(MessageType.PLAYER_IMMUNE);
+			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
+			return;
+		}
+		
+		e(player.getUniqueId().toString(), player);
+		
+		dispatch(CommandEvent.COMPLETE, null);
 	}
-	private void e(String name, Player player) {
+	private void e(String uuid, Player player) {
 		List<Entity> entities = player.getNearbyEntities(1000.0d, 512.0d, 1000.0d);
 		for (Entity e : entities) {
 			EntityType type = e.getType();
@@ -55,8 +83,8 @@ public class LureCommand extends BasePluginCommand {
 					type == EntityType.SPIDER ||
 					type == EntityType.WITCH ||
 					type == EntityType.WITHER ||
-					type == EntityType.ZOMBIE) {
-				
+					type == EntityType.ZOMBIE
+			) {
 				if (type == EntityType.PIG_ZOMBIE) {
 					PigZombie pig = (PigZombie) e;
 					pig.setAngry(true);
@@ -73,6 +101,6 @@ public class LureCommand extends BasePluginCommand {
 			}
 		}
 		
-		sender.sendMessage("Nearby monsters have been lured to " + name + ".");
+		sender.sendMessage("Nearby monsters have been lured to " + player.getName() + ".");
 	}
 }
