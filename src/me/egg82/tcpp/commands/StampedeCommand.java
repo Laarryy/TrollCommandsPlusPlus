@@ -68,7 +68,7 @@ public class StampedeCommand extends PluginCommand {
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
-	private void e(String name, Player player) {
+	private void e(String uuid, Player player) {
 		int numCows = MathUtil.fairRoundedRandom(10, 20);
 		Location playerLocation = player.getLocation().clone();
 		Location herdLocation = BlockUtil.getTopAirBlock(new Location(playerLocation.getWorld(), MathUtil.random(playerLocation.getX() - 5.0d, playerLocation.getX() + 5.0d), playerLocation.getY(), MathUtil.random(playerLocation.getZ() - 5.0d, playerLocation.getZ() + 5.0d)));
@@ -80,7 +80,7 @@ public class StampedeCommand extends PluginCommand {
 		
 		metricsHelper.commandWasRun(command.getName());
 		
-		sender.sendMessage("The angry cows have been unleashed on " + name + ".");
+		sender.sendMessage("The angry cows have been unleashed on " + player.getName() + ".");
 	}
 	private void spawnCow(Player player, Location location, Vector velocity) {
 		Cow c = player.getWorld().spawn(location, Cow.class);

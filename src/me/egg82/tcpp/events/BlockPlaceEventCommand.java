@@ -24,10 +24,10 @@ public class BlockPlaceEventCommand extends EventCommand {
 			EventCommand c = null;
 			try {
 				c = commands.get(i).getDeclaredConstructor(Event.class).newInstance(event);
+				c.start();
 			} catch (Exception ex) {
-				throw new RuntimeException("Event cannot be initialized.", ex);
+				
 			}
-			c.start();
 		}
 	}
 }

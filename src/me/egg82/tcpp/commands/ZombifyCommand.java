@@ -63,7 +63,7 @@ public class ZombifyCommand extends PluginCommand {
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
-	private void e(String name, Player player) {
+	private void e(String uuid, Player player) {
 		Location[] zombieLocations = LocationUtil.getCircleAround(player.getLocation(), 5.0d, MathUtil.fairRoundedRandom(10, 15));
 		
 		for (int i = 0; i < zombieLocations.length; i++) {
@@ -77,6 +77,6 @@ public class ZombifyCommand extends PluginCommand {
 		
 		metricsHelper.commandWasRun(command.getName());
 		
-		sender.sendMessage(name + " has been zombified.");
+		sender.sendMessage(player.getName() + " has been zombified.");
 	}
 }
