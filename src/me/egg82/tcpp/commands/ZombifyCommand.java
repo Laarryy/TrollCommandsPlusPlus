@@ -5,7 +5,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
-import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
@@ -68,10 +67,9 @@ public class ZombifyCommand extends PluginCommand {
 		
 		for (int i = 0; i < zombieLocations.length; i++) {
 			Location zombieLocation = BlockUtil.getTopAirBlock(zombieLocations[i]);
-			Vector zombieVelocity = zombieLocation.clone().subtract(player.getLocation()).toVector().normalize().multiply(1.0d);
 			
 			Zombie z = player.getWorld().spawn(zombieLocation, Zombie.class);
-			z.setVelocity(zombieVelocity);
+			z.setVelocity(LocationUtil.moveSmoothly(zombieLocation, player.getLocation()));
 			z.setTarget(player);
 		}
 		

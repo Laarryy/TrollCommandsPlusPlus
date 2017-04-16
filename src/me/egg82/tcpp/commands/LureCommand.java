@@ -9,7 +9,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
@@ -21,6 +20,7 @@ import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotCommandErrorType;
 import ninja.egg82.plugin.enums.SpigotMessageType;
 import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.utils.LocationUtil;
 
 public class LureCommand extends PluginCommand {
 	//vars
@@ -99,8 +99,7 @@ public class LureCommand extends PluginCommand {
 					
 				}
 				
-				Vector velocity = e.getLocation().clone().subtract(player.getLocation()).toVector().normalize().multiply(1.0d);
-				e.setVelocity(velocity);
+				e.setVelocity(LocationUtil.moveSmoothly(e.getLocation(), player.getLocation()));
 			}
 		}
 		

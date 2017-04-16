@@ -5,7 +5,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
-import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
@@ -68,11 +67,10 @@ public class HoundCommand extends PluginCommand {
 		
 		for (int i = 0; i < wolfLocations.length; i++) {
 			Location wolfLocation = BlockUtil.getTopAirBlock(wolfLocations[i]);
-			Vector wolfVelocity = wolfLocation.clone().subtract(player.getLocation()).toVector().normalize().multiply(1.0d);
 			
 			Wolf w = (Wolf) player.getWorld().spawn(wolfLocation, Wolf.class);
 			w.setAngry(true);
-			w.setVelocity(wolfVelocity);
+			w.setVelocity(LocationUtil.moveSmoothly(wolfLocation, player.getLocation()));
 			w.setTarget(player);
 		}
 		

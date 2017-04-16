@@ -5,7 +5,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
@@ -68,10 +67,9 @@ public class GolemCommand extends PluginCommand {
 		
 		for (int i = 0; i < golemLocations.length; i++) {
 			Location golemLocation = BlockUtil.getTopAirBlock(golemLocations[i]);
-			Vector golemVelocity = golemLocation.clone().subtract(player.getLocation()).toVector().normalize().multiply(1.0d);
 			
 			IronGolem g = player.getWorld().spawn(golemLocation, IronGolem.class);
-			g.setVelocity(golemVelocity);
+			g.setVelocity(LocationUtil.moveSmoothly(golemLocation, player.getLocation()));
 			g.setTarget(player);
 		}
 		

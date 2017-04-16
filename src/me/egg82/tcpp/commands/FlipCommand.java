@@ -64,10 +64,10 @@ public class FlipCommand extends PluginCommand {
 		float newYaw = playerLocation.getYaw() + 180.0f;
 		
 		while (newYaw < 0) {
-			newYaw += 180.0f;
+			newYaw += 360.0f;
 		}
-		while (newYaw > 180.0f) {
-			newYaw -= 180.0f;
+		while (newYaw > 360.0f) {
+			newYaw -= 360.0f;
 		}
 		
 		playerLocation.setYaw(newYaw);

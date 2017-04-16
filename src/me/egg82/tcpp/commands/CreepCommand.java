@@ -5,7 +5,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
@@ -68,11 +67,10 @@ public class CreepCommand extends PluginCommand {
 		
 		for (int i = 0; i < creeperLocations.length; i++) {
 			Location creeperLocation = BlockUtil.getTopAirBlock(creeperLocations[i]);
-			Vector creeperVelocity = creeperLocation.clone().subtract(player.getLocation()).toVector().normalize().multiply(1.0d);
 			
 			Creeper c = (Creeper) player.getWorld().spawn(creeperLocation, Creeper.class);
 			c.setPowered(true);
-			c.setVelocity(creeperVelocity);
+			c.setVelocity(LocationUtil.moveSmoothly(creeperLocation, player.getLocation()));
 			c.setTarget(player);
 		}
 		

@@ -74,7 +74,7 @@ public class DisplayCommand extends PluginCommand {
 	}
 	private void e(String uuid, Player player) {
 		if (displayRegistry.hasRegister(uuid)) {
-			displayHelper.unsurround(player.getLocation());
+			displayHelper.unsurround((Location) displayLocationRegistry.getRegister(uuid));
 			displayRegistry.setRegister(uuid, Player.class, null);
 			displayBlockRegistry.setRegister(uuid, Set.class, null);
 			displayLocationRegistry.setRegister(uuid, Location.class, null);

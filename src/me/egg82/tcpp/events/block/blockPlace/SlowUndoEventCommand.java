@@ -2,6 +2,7 @@ package me.egg82.tcpp.events.block.blockPlace;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -44,7 +45,7 @@ public class SlowUndoEventCommand extends EventCommand {
 		
 		// Save block state
 		Location blockLocation = e.getBlock().getLocation();
-		BlockData blockData = BlockUtil.getBlock(e.getBlock());
+		BlockData blockData = new BlockData(null, e.getBlockReplacedState(), Material.AIR);
 		
 		// Wait 4-6 seconds
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {

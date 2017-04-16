@@ -101,7 +101,7 @@ public class BanishCommand extends PluginCommand {
 			retryCount++;
 		} while (headBlock != Material.AIR && retryCount < 100);
 		
-		if (headBlock == Material.AIR) {
+		if (headBlock != Material.AIR) {
 			sender.sendMessage(player.getName() + " could not be banished because there was not enough space around them!");
 			return false;
 		}

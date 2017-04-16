@@ -10,6 +10,7 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.utils.LocationUtil;
 
 public class ControlEventCommand extends EventCommand {
 	//vars
@@ -35,7 +36,7 @@ public class ControlEventCommand extends EventCommand {
 		
 		if (controlledPlayer != null) {
 			// Player is controlling someone
-			controlledPlayer.setVelocity(controlledPlayer.getLocation().clone().subtract(player.getLocation()).toVector().normalize().multiply(1.0d));
+			controlledPlayer.setVelocity(LocationUtil.moveSmoothly(controlledPlayer.getLocation(), player.getLocation()));
 		}
 		
 		String controllerUuid = controlRegistry.getName(player);

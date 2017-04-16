@@ -33,6 +33,7 @@ public class LavaBreakEventCommand extends EventCommand {
 		String uuid = player.getUniqueId().toString();
 		
 		if (lavaBreakRegistry.hasRegister(uuid)) {
+			e.setCancelled(true);
 			e.getBlock().setType(Material.LAVA);
 			lavaBreakRegistry.setRegister(uuid, Player.class, null);
 		}

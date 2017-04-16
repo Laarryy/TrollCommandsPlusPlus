@@ -22,6 +22,7 @@ import ninja.egg82.plugin.enums.SpigotMessageType;
 import ninja.egg82.plugin.reflection.entity.IEntityUtil;
 import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.utils.LocationUtil;
 import ninja.egg82.utils.MathUtil;
 
 public class StampedeCommand extends PluginCommand {
@@ -72,7 +73,7 @@ public class StampedeCommand extends PluginCommand {
 		int numCows = MathUtil.fairRoundedRandom(10, 20);
 		Location playerLocation = player.getLocation().clone();
 		Location herdLocation = BlockUtil.getTopAirBlock(new Location(playerLocation.getWorld(), MathUtil.random(playerLocation.getX() - 5.0d, playerLocation.getX() + 5.0d), playerLocation.getY(), MathUtil.random(playerLocation.getZ() - 5.0d, playerLocation.getZ() + 5.0d)));
-		Vector cowVelocity = herdLocation.clone().subtract(playerLocation).toVector().normalize().multiply(3.0d);
+		Vector cowVelocity = LocationUtil.moveSmoothly(herdLocation, playerLocation, 3.0d);
 		
 		for (int i = 0; i < numCows; i++) {
 			spawnCow(player, herdLocation, cowVelocity);
