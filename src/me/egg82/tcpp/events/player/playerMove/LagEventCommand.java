@@ -1,13 +1,14 @@
 package me.egg82.tcpp.events.player.playerMove;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.egg82.tcpp.events.custom.LagPlayerMoveEvent;
 import me.egg82.tcpp.services.LagRegistry;
+import me.egg82.tcpp.services.LagTimeRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
@@ -17,6 +18,7 @@ import ninja.egg82.utils.MathUtil;
 public class LagEventCommand extends EventCommand {
 	//vars
 	private IRegistry lagRegistry = (IRegistry) ServiceLocator.getService(LagRegistry.class);
+	private IRegistry lagTimeRegistry = (IRegistry) ServiceLocator.getService(LagTimeRegistry.class);
 	private IRegistry initRegistry = (IRegistry) ServiceLocator.getService(InitRegistry.class);
 	
 	//constructor
@@ -35,25 +37,35 @@ public class LagEventCommand extends EventCommand {
 		}
 		
 		Player player = e.getPlayer();
+		String uuid = player.getUniqueId().toString();
 		
-		if (!lagRegistry.hasRegister(player.getUniqueId().toString())) {
+		if (!lagRegistry.hasRegister(uuid)) {
 			return;
 		}
 		
-		// Make sure we're not "lagging" our own lag event. Infinite loops, ahoy!
-		if (event instanceof LagPlayerMoveEvent) {
+		// We're already lagging the player's movement. No need to do it twice.
+		if (lagTimeRegistry.hasRegister(uuid)) {
 			return;
 		}
 		
-		// 15% of movement gets re-sent
+		// 15% chance that we lag the player
 		if (Math.random() <= 0.15d) {
-			// Just "re-sending" the NEW event after a random interval
+			Location from = e.getFrom();
+			lagTimeRegistry.setRegister(uuid, Location.class, from);
+			
+			// Just teleporting the player to their old location after 0.5-1 seconds
 			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {
 				public void run() {
-					// Events are "snapshots" - no need to save required elements
-					Bukkit.getServer().getPluginManager().callEvent(new LagPlayerMoveEvent(player, e.getFrom(), e.getTo()));
+					player.teleport(e.getFrom());
+					
+					// Wait 1.75-2.5 seconds until we start lagging movement again. More realistic this way
+					Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {
+						public void run() {
+							lagTimeRegistry.setRegister(uuid, Location.class, null);
+						}
+					}, MathUtil.fairRoundedRandom(35, 50));
 				}
-			}, MathUtil.fairRoundedRandom(40, 60));
+			}, MathUtil.fairRoundedRandom(10, 20));
 		}
 	}
 }

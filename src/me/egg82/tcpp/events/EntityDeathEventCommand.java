@@ -19,15 +19,15 @@ public class EntityDeathEventCommand extends EventCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		List<Class<EventCommand>> commands = ReflectUtil.getClasses(EventCommand.class, "me.egg82.tcpp.events.entity.entityDeath");
+		List<Class<? extends EventCommand>> commands = ReflectUtil.getClasses(EventCommand.class, "me.egg82.tcpp.events.entity.entityDeath");
 		for (int i = 0; i < commands.size(); i++) {
 			EventCommand c = null;
 			try {
 				c = commands.get(i).getDeclaredConstructor(Event.class).newInstance(event);
-				c.start();
 			} catch (Exception ex) {
-				
+				continue;
 			}
+			c.start();
 		}
 	}
 }

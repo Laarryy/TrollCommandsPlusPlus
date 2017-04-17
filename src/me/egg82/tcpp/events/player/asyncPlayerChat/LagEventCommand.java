@@ -1,12 +1,13 @@
 package me.egg82.tcpp.events.player.asyncPlayerChat;
 
+import java.util.Set;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.egg82.tcpp.events.custom.LagAsyncPlayerChatEvent;
 import me.egg82.tcpp.services.LagRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
@@ -41,24 +42,24 @@ public class LagEventCommand extends EventCommand {
 			return;
 		}
 		
-		// Make sure we're not "lagging" our own lag event. Infinite loops, ahoy!
-		if (event instanceof LagAsyncPlayerChatEvent) {
-			return;
-		}
-		
-		e.setCancelled(true);
-		
-		boolean asynchronous = e.isAsynchronous();
+		// Snapshot of the event, since this event could be modified or destroyed later
+		Set<Player> recipients = e.getRecipients();
+		String format = e.getFormat();
+		String playerName = player.getDisplayName();
+		String message = e.getMessage();
 		
 		Runnable chatRunner = new Runnable() {
 			public void run() {
-				// Events are "snapshots" - no need to save required elements
-				Bukkit.getServer().getPluginManager().callEvent(new LagAsyncPlayerChatEvent(asynchronous, player, e.getMessage(), e.getRecipients()));
+				recipients.forEach((v) -> {
+					v.sendMessage(String.format(format, playerName, message));
+				});
 			}
 		};
 		
-		// Just "re-sending" the NEW event after a random interval
-		if (asynchronous) {
+		e.setCancelled(true);
+		
+		// Manually chat for the player after a 2-3 second delay
+		if (e.isAsynchronous()) {
 			Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), chatRunner, MathUtil.fairRoundedRandom(40, 60));
 		} else {
 			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), chatRunner, MathUtil.fairRoundedRandom(40, 60));

@@ -44,7 +44,7 @@ public class BrittleEventCommand extends EventCommand {
 		
 		if (brittleRegistry.hasRegister(player.getUniqueId().toString())) {
 			player.setHealth(0.0d);
-			EntityDamageEvent damageEvent = new EntityDamageEvent(player, EntityDamageEvent.DamageCause.ENTITY_ATTACK, new EnumMap<DamageModifier, Double>(ImmutableMap.of(DamageModifier.BASE, Double.MAX_VALUE)), new EnumMap<DamageModifier, Function<? super Double, Double>>(ImmutableMap.of(DamageModifier.BASE, Functions.constant(Double.MAX_VALUE))));
+			EntityDamageEvent damageEvent = new EntityDamageEvent(player, e.getCause(), new EnumMap<DamageModifier, Double>(ImmutableMap.of(DamageModifier.BASE, Double.MAX_VALUE)), new EnumMap<DamageModifier, Function<? super Double, Double>>(ImmutableMap.of(DamageModifier.BASE, Functions.constant(Double.MAX_VALUE))));
 			Bukkit.getPluginManager().callEvent(damageEvent);
 			damageEvent.getEntity().setLastDamageCause(damageEvent);
 		}
