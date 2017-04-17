@@ -36,14 +36,17 @@ public class ControlEventCommand extends EventCommand {
 		
 		if (controlledPlayer != null) {
 			// Player is controlling someone
-			controlledPlayer.setVelocity(LocationUtil.moveSmoothly(controlledPlayer.getLocation(), player.getLocation()));
+			if (!CommandUtil.hasPermission(controlledPlayer, PermissionsType.FREECAM_WHILE_CONTROLLED)) {
+				controlledPlayer.teleport(LocationUtil.makeEqualXYZ(player.getLocation(), controlledPlayer.getLocation()));
+				//controlledPlayer.setVelocity(LocationUtil.moveSmoothly(controlledPlayer.getLocation(), player.getLocation()));
+			}
 		}
 		
 		String controllerUuid = controlRegistry.getName(player);
 		if (controllerUuid != null) {
 			// Player is being controlled by someone
 			if (!CommandUtil.hasPermission(player, PermissionsType.FREECAM_WHILE_CONTROLLED)) {
-				e.setCancelled(true);
+				e.setTo(LocationUtil.makeEqualXYZ(e.getFrom(), e.getTo()));
 			}
 		}
 	}

@@ -10,6 +10,7 @@ import me.egg82.tcpp.services.InfinityRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.plugin.utils.LocationUtil;
 
 public class InfinityEventCommand extends EventCommand {
 	//vars
@@ -52,7 +53,7 @@ public class InfinityEventCommand extends EventCommand {
 		
 		if (toLocation.getY() <= highestY + 2.0d) {
 			toLocation.add(0.0d, 30.0d, 0.0d);
-			player.teleport(toLocation);
+			player.teleport(LocationUtil.makeEqualXYZ(toLocation, e.getTo()));
 		}
 	}
 }

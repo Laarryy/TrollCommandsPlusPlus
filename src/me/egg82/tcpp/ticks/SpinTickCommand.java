@@ -7,7 +7,6 @@ import me.egg82.tcpp.services.SpinRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.plugin.utils.LocationUtil;
 
 public class SpinTickCommand extends TickCommand {
 	//vars
@@ -44,6 +43,6 @@ public class SpinTickCommand extends TickCommand {
 		}
 		
 		newLocation.setYaw(newYaw);
-		player.setVelocity(LocationUtil.moveSmoothly(player.getLocation(), newLocation));
+		player.teleport(newLocation);
 	}
 }

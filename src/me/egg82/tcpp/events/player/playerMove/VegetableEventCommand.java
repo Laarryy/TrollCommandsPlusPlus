@@ -10,6 +10,7 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.utils.LocationUtil;
 
 public class VegetableEventCommand extends EventCommand {
 	//vars
@@ -34,7 +35,7 @@ public class VegetableEventCommand extends EventCommand {
 		
 		if (vegetableRegistry.hasRegister(e.getPlayer().getUniqueId().toString())) {
 			if (!CommandUtil.hasPermission(player, PermissionsType.FREECAM_WHILE_VEGETABLE)) {
-				e.setCancelled(true);
+				e.setTo(LocationUtil.makeEqualXYZ(e.getFrom(), e.getTo()));
 			}
 		}
 	}

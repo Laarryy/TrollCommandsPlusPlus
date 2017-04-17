@@ -1,7 +1,6 @@
 package me.egg82.tcpp.events.entity.entityDamage;
 
 import java.util.EnumMap;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;

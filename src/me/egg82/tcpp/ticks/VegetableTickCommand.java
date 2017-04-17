@@ -11,6 +11,7 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.utils.LocationUtil;
 
 public class VegetableTickCommand extends TickCommand {
 	//vars
@@ -42,10 +43,10 @@ public class VegetableTickCommand extends TickCommand {
 		
 		Item groundItem = (Item) vegetableItemRegistry.getRegister(uuid);
 		
-		Location playerLocation = player.getLocation().clone().add(0.0d, 1.0d, 0.0d);
+		Location playerLocation = player.getLocation();
 		Location itemLocation = groundItem.getLocation().clone();
 		
 		itemLocation.setDirection(playerLocation.getDirection());
-		player.setVelocity(playerLocation.subtract(itemLocation).toVector().normalize().multiply(1.0d));
+		player.teleport(LocationUtil.makeEqualXYZ(itemLocation.add(0.0d, -1.0d, 0.0d), playerLocation));
 	}
 }

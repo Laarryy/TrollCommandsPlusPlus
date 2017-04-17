@@ -95,12 +95,11 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		
 		if (metrics != null) {
 			metrics.addCustomChart(new Metrics.AdvancedPie("commands") {
+				@Override
 				public HashMap<String, Integer> getValues(HashMap<String, Integer> values) {
 					IRegistry commandRegistry = (IRegistry) ServiceLocator.getService(CommandRegistry.class);
 					String[] names = commandRegistry.getRegistryNames();
-					Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "-= Getting values for stats =-");
 					for (String name : names) {
-						Bukkit.getConsoleSender().sendMessage(name + "=" + commandRegistry.getRegister(name));
 						values.put(name, (Integer) commandRegistry.getRegister(name));
 					}
 					return values;

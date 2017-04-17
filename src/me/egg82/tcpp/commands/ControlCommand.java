@@ -95,7 +95,8 @@ public class ControlCommand extends PluginCommand {
 			Player controlledPlayer = (Player) controlRegistry.getRegister(controllerUuid);
 			if (controlledPlayer != null) {
 				controlHelper.uncontrol(controllerUuid, controller);
-				if (controlledPlayer.getUniqueId().toString() == playerUuid) {
+				if (controlledPlayer.getUniqueId() == player.getUniqueId()) {
+					metricsHelper.commandWasRun(command.getName());
 					dispatch(CommandEvent.COMPLETE, null);
 					return;
 				}
