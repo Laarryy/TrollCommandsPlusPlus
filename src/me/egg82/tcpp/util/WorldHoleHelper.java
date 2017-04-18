@@ -50,6 +50,8 @@ public class WorldHoleHelper {
 		// Wait five seconds
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {
 			public void run() {
+				portalRegistry.setRegister(uuid, Location.class, null);
+				holeBlockRegistry.setRegister(uuid, List.class, null);
 				// Put all the blocks we took earlier back
 				BlockUtil.setBlocks(blockData, centerLocation, 1, 2, 1);
 			}
@@ -74,6 +76,9 @@ public class WorldHoleHelper {
 		// Wait eight seconds
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {
 			public void run() {
+				voidRegistry.setRegister(uuid, Location.class, null);
+				voidRadiusRegistry.setRegister(uuid, Integer.class, null);
+				holeBlockRegistry.setRegister(uuid, List.class, null);
 				// Put all the blocks we took earlier back
 				BlockUtil.setBlocks(blockData, centerLocation, 1, yRadius, 1);
 			}
