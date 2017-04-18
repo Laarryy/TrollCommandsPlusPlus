@@ -1,23 +1,26 @@
 package me.egg82.tcpp.util;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import me.egg82.tcpp.services.ControlInventoryRegistry;
 import me.egg82.tcpp.services.ControlModeRegistry;
 import me.egg82.tcpp.services.ControlRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.startup.InitRegistry;
 
 public class ControlHelper {
 	//vars
 	private IRegistry controlRegistry = (IRegistry) ServiceLocator.getService(ControlRegistry.class);
 	private IRegistry controlModeRegistry = (IRegistry) ServiceLocator.getService(ControlModeRegistry.class);
 	private IRegistry controlInventoryRegistry = (IRegistry) ServiceLocator.getService(ControlInventoryRegistry.class);
+	private IRegistry initRegistry = (IRegistry) ServiceLocator.getService(InitRegistry.class);
 	
 	private IDisguiseHelper disguiseHelper = (IDisguiseHelper) ServiceLocator.getService(IDisguiseHelper.class);
 	
@@ -49,12 +52,30 @@ public class ControlHelper {
 		player.sendMessage("You are now being controlled!");
 	}
 	public void uncontrol(String controllerUuid, Player controller) {
+		uncontrol(controllerUuid, controller, true);
+	}
+	public void uncontrol(String controllerUuid, Player controller, boolean vanish) {
 		Player player = (Player) controlRegistry.getRegister(controllerUuid);
 		
 		PlayerInventory controllerInventory = controller.getInventory();
 		PlayerInventory playerInventory = player.getInventory();
 		
-		controller.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 200, 3), true);
+		if (vanish) {
+			// Make controller invisible
+			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+				p.hidePlayer(controller);
+			}
+			// Wait 10 seconds
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {
+				public void run() {
+					// Make controller visible
+					for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+						p.showPlayer(controller);
+					}
+				}
+			}, 200);
+		}
+		
 		disguiseHelper.undisguise(controller);
 		
 		player.teleport(controller);
@@ -71,6 +92,13 @@ public class ControlHelper {
 		
 		controller.sendMessage("You are no longer controlling " + player.getName() + ".");
 		player.sendMessage("You are no longer being controlled.");
+	}
+	
+	public void uncontrolAll() {
+		String[] names = controlRegistry.getRegistryNames();
+		for (int i = 0; i < names.length; i++) {
+			uncontrol(names[i], CommandUtil.getPlayerByUuid(names[i]), false);
+		}
 	}
 	
 	//private

@@ -1,5 +1,6 @@
 package me.egg82.tcpp.events;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.event.Event;
@@ -9,26 +10,31 @@ import ninja.egg82.utils.ReflectUtil;
 
 public class BlockBreakEventCommand extends EventCommand {
 	//vars
+	private ArrayList<EventCommand> events = new ArrayList<EventCommand>();
 	
 	//constructor
 	public BlockBreakEventCommand(Event event) {
 		super(event);
+		
+		List<Class<? extends EventCommand>> commands = ReflectUtil.getClasses(EventCommand.class, "me.egg82.tcpp.events.block.blockBreak");
+		for (int i = 0; i < commands.size(); i++) {
+			EventCommand run = null;
+			try {
+				run = commands.get(i).getDeclaredConstructor(Event.class).newInstance(event);
+			} catch (Exception ex) {
+				continue;
+			}
+			events.add(run);
+		}
 	}
 	
 	//public
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		List<Class<? extends EventCommand>> commands = ReflectUtil.getClasses(EventCommand.class, "me.egg82.tcpp.events.block.blockBreak");
-		
-		for (int i = 0; i < commands.size(); i++) {
-			EventCommand c = null;
-			try {
-				c = commands.get(i).getDeclaredConstructor(Event.class).newInstance(event);
-			} catch (Exception ex) {
-				continue;
-			}
-			c.start();
-		}
+		events.forEach((v) -> {
+			v.setEvent(event);
+			v.start();
+		});
 	}
 }

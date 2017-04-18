@@ -21,6 +21,8 @@ import me.egg82.tcpp.util.LibsDisguisesHelper;
 import me.egg82.tcpp.util.MetricsHelper;
 import me.egg82.tcpp.util.NullDisguiseHelper;
 import me.egg82.tcpp.util.VegetableHelper;
+import me.egg82.tcpp.util.WhoAmIHelper;
+import me.egg82.tcpp.util.WorldHoleHelper;
 import net.gravitydevelopment.updater.Updater;
 import net.gravitydevelopment.updater.Updater.UpdateResult;
 import net.gravitydevelopment.updater.Updater.UpdateType;
@@ -79,6 +81,8 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		ServiceLocator.provideService(ControlHelper.class);
 		ServiceLocator.provideService(DisplayHelper.class);
 		ServiceLocator.provideService(VegetableHelper.class);
+		ServiceLocator.provideService(WhoAmIHelper.class);
+		ServiceLocator.provideService(WorldHoleHelper.class);
 		ServiceLocator.provideService(MetricsHelper.class);
 		
 		updateTimer = new Timer(24 * 60 * 60 * 1000, onUpdateTimer);
@@ -119,6 +123,21 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	}
 	public void onDisable() {
 		super.onDisable();
+		
+		ControlHelper controlHelper = (ControlHelper) ServiceLocator.getService(ControlHelper.class);
+		controlHelper.uncontrolAll();
+		
+		DisplayHelper displayHelper = (DisplayHelper) ServiceLocator.getService(DisplayHelper.class);
+		displayHelper.unsurroundAll();
+		
+		VegetableHelper vegetableHelper = (VegetableHelper) ServiceLocator.getService(VegetableHelper.class);
+		vegetableHelper.unvegetableAll();
+		
+		WhoAmIHelper whoAmIHelper = (WhoAmIHelper) ServiceLocator.getService(WhoAmIHelper.class);
+		whoAmIHelper.stopAll();
+		
+		WorldHoleHelper worldHoleHelper = (WorldHoleHelper) ServiceLocator.getService(WorldHoleHelper.class);
+		worldHoleHelper.undoAll();
 		
 		SpigotReflectUtil.clearAll();
 		disableMessage(Bukkit.getConsoleSender());

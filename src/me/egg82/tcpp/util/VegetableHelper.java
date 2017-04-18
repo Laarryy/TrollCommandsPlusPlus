@@ -59,6 +59,13 @@ public class VegetableHelper {
 		player.setGameMode(oldMode);
 	}
 	
+	public void unvegetableAll() {
+		String[] names = vegetableRegistry.getRegistryNames();
+		for (int i = 0; i < names.length; i++) {
+			unvegetable(names[i], (Player) vegetableRegistry.getRegister(names[i]));
+		}
+	}
+	
 	//private
 	
 }

@@ -5,8 +5,18 @@ import java.util.HashSet;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
+import me.egg82.tcpp.services.DisplayBlockRegistry;
+import me.egg82.tcpp.services.DisplayLocationRegistry;
+import me.egg82.tcpp.services.DisplayRegistry;
+import ninja.egg82.patterns.IRegistry;
+import ninja.egg82.patterns.ServiceLocator;
+
 public class DisplayHelper {
 	//vars
+	private IRegistry displayRegistry = (IRegistry) ServiceLocator.getService(DisplayRegistry.class);
+	private IRegistry displayBlockRegistry = (IRegistry) ServiceLocator.getService(DisplayBlockRegistry.class);
+	private IRegistry displayLocationRegistry = (IRegistry) ServiceLocator.getService(DisplayLocationRegistry.class);
+	
 	private HashSet<Location> addedBlockLocations = new HashSet<Location>();
 	
 	//constructor
@@ -76,6 +86,17 @@ public class DisplayHelper {
 				}
 			}
 		}
+	}
+	
+	public void unsurroundAll() {
+		displayRegistry.clear();
+		displayBlockRegistry.clear();
+		displayLocationRegistry.clear();
+		
+		addedBlockLocations.forEach((v) -> {
+			v.getBlock().setType(Material.AIR);
+		});
+		addedBlockLocations.clear();
 	}
 	
 	//private
