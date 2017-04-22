@@ -35,7 +35,7 @@ import ninja.egg82.startup.InitRegistry;
 
 public class TrollCommandsPlusPlus extends BasePlugin {
 	//vars
-	Metrics metrics = null;
+	private Metrics metrics = null;
 	
 	private Timer updateTimer = null;
 	
