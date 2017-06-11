@@ -1,189 +1,188 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 3.7.24
+version: 3.8.26
 softdepend: [LibsDisguises,iDisguise]
 commands:
-  troll:
-    description: Same as /help TrollCommandsPlusPlus [page]
-    usage: /troll [page]
-  vaporize:
-    description: Explodes the player with a specified power. To disable block damage, use a negative value.
-    usage: /vaporize <player> [power]
-    aliases: [vap]
-  lift:
-    description: It's like flying, but only in one direction. And probably without a soft landing.
-    usage: /lift <player>
-  creep:
-    description: Spawns a charged creeper at the player's location.
-    usage: /creep <player>
-    aliases: 
-  swap:
-    description: Swaps two players' locations, Freaky Friday style.
-    usage: /swap <player> <player>
-  entomb:
-    description: A premature burial.
-    usage: /entomb <player>
-  slowpoke:
-    description: Applies a slowness effect to the player. Like a pokemon!
-    usage: /slowpoke <player>
-  electrify:
-    description: Thine enemy shalt feel the wrath of many angry gods.
-    usage: /electrify <player>
-    aliases: [elec]
-  zombify:
-    description: I hope they came prepared for the zombie apocalypse.
-    usage: /zombify <player>
-    aliases: [zomb]
-  slap:
-    description: Slaps the player. Yep. Slaps them.
-    usage: /slap <player> [force]
-  cannon:
-    description: Shoots a primed TNT wherever you're looking.
-    usage: /cannon [speed]
+  alone:
+    description: Hides all other players from the specified player.
+    usage: /alone <player>
+  amnesia:
+    description: Screws with the player's chat in weird ways.
+    usage: /amnesia <player>
+  annoy:
+    description: Hrmm. Hmm.. Hrrm.. Hrm. Hm. Hmm..
+    usage: /annoy <player>
+  anvil:
+    description: Now who could have put that up there?
+    usage: /anvil <player>
   banish:
     description: Teleports the player to a random location.
     usage: /banish <player> [range]
   bomb:
     description: May balls of fire rain down upon thine enemy.
     usage: /bomb <player>
-  freeze:
-    description: Don't like someone? Turn them into a statue!
-    usage: /freeze <player>
-  comet:
-    description: Shoots a fireball of adjustable power.
-    usage: /comet [power]
-  stampede:
-    description: Unleashes a herd of mad cows on the player.
-    usage: /stampede <player>
-  haunt:
-    description: Toggles random sounds near the player.
-    usage: /haunt <player>
-  lure:
-    description: Attracts nearby monsters to the player.
-    usage: /lure <player>
-  garble:
-    description: ..And now the player makes even less sense!
-    usage: /garble <player>
-  weakling:
-    description: Applies a weakness effect to the player.
-    usage: /weakling <player>
-  spin:
-    description: This might make them a bit dizzy.
-    usage: /spin <player>
+  brittle:
+    description: They're made of glass!
+    usage: /brittle <player>
   burn:
     description: AHH! FIRE! FIRE! FIIREE!!
     usage: /burn <player>
-  spam:
-    description: Spams the player's chat with useless junk.
-    usage: /spam <player>
-  delaykill:
-    description: Kills a player with a delay.
-    usage: /delaykill <player> <seconds>
-  potato:
-    description: I hope they REALLY like potatoes.
-    usage: /potato <player>
-  starve:
-    description: They must have a REALLY fast metabolism!
-    usage: /starve <player>
-  hurt:
-    description: Where is all this damage coming from?!
-    usage: /hurt <player>
-  void:
-    description: Think Journey to the Center of the Earth, except with death at the end.
-    usage: /void <player>
-  slowmine:
-    description: Applies a mining fatigue effect to the player.
-    usage: /slowmine <player>
-  nausea:
-    description: Applies a nausea effect to the player.
-    usage: /nausea <player>
+  cannon:
+    description: Shoots a primed TNT wherever you're looking.
+    usage: /cannon [speed]
+  clumsy:
+    description: Careful, or you'll end up dropping all of your stuff!
+    usage: /clumsy <player>
+  comet:
+    description: Shoots a fireball of adjustable power.
+    usage: /comet [power]
   control:
     description: Allows you to take control of a player. Oooh, spoooky!
     usage: /control <player>
-  vegetable:
-    description: Turns the player into a potato. Potato simulator 20XX!
-    usage: /vegetable <player>
-  hound:
-    description: Releases angry hounds on the player. Who let the dogs out?
-    usage: /hound <player>
-  infinity:
-    description: Makes the player fall indefinitely.
-    usage: /infinity <player>
-  lavabreak:
-    description: The next block a player breaks turns to lava.
-    usage: /lavabreak <player>
-  golem:
-    description: Think War of the Worlds, golem style.
-    usage: /golem <player>
-  portal:
-    description: The quickest way to The End!
-    usage: /portal <player>
-  flip:
-    description: Flips the player around very quickly.
-    usage: /flip <player>
-  alone:
-    description: Hides all other players from the specified player.
-    usage: /alone <player>
-  annoy:
-    description: Hrmm. Hmm.. Hrrm.. Hrm. Hm. Hmm..
-    usage: /annoy <player>
-  sparta:
-    description: Our arrows will blot out the sun! .. Pincushion-y!
-    usage: /sparta <player>
-    aliases: [pincushion]
-  night:
-    description: Sets the player's time to night permanently. Does not affect the server.
-    usage: /night <player>
-  rewind:
-    description: Makes the player's time run backwards at speed. Does not affect the server.
-    usage: /rewind <player>
-  lag:
-    description: Makes the player experience fake lag. Does not affect the server.
-    usage: /lag <player>
+  creep:
+    description: Spawns a charged creeper at the player's location.
+    usage: /creep <player>
+  delaykill:
+    description: Kills a player with a delay.
+    usage: /delaykill <player> <seconds>
+  display:
+    description: Put your friends and enemies on display!
+    usage: /display <player>
+  electrify:
+    description: Thine enemy shalt feel the wrath of many angry gods.
+    usage: /electrify <player>
+    aliases: [elec]
+  entomb:
+    description: A premature burial.
+    usage: /entomb <player>
   explodebreak:
     description: The next block the player mines explodes!
     usage: /explodebreak <player>
     aliases: [exbreak]
-  slender:
-    description: Blinds and slows the player, then sends an enderman after them.
-    usage: /slender <player>
-  anvil:
-    description: Now who could have put that up there?
-    usage: /anvil <player>
-  popup:
-    description: Randomly opens and closes the player's inventory.
-    usage: /popup <player>
-  display:
-    description: Put your friends and enemies on display!
-    usage: /display <player>
-  nopickup:
-    description: Stops the player from picking up items.
-    usage: /nopickup <player>
-  brittle:
-    description: They're made of glass!
-    usage: /brittle <player>
-  squid:
-    description: .. Why is it raining squids?
-    usage: /squid <player>
-  useless:
-    description: Renames all of the player's items to Useless.
-    usage: /useless <player>
-  whoami:
-    description: Seriously, though. Who even am I? (Changes the player's name constantly)
-    usage: /whoami <player>
-  clumsy:
-    description: Careful, or you'll end up dropping all of your stuff!
-    usage: /clumsy <player>
-  amnesia:
-    description: Screws with the player's chat in weird ways.
-    usage: /amnesia <player>
   explodebuild:
     description: The next block the player places explodes!
     usage: /explodebuild <player>
     aliases: [exbuild]
-  slowundo:
-    description: Slowly undoes any block changes the player makes.
-    usage: /slowundo <player>
+  flip:
+    description: Flips the player around very quickly.
+    usage: /flip <player>
+  freeze:
+    description: Don't like someone? Turn them into a statue!
+    usage: /freeze <player>
+  garble:
+    description: ..And now the player makes even less sense!
+    usage: /garble <player>
+  golem:
+    description: Think War of the Worlds, golem style.
+    usage: /golem <player>
+  haunt:
+    description: Toggles random sounds near the player.
+    usage: /haunt <player>
+  hound:
+    description: Releases angry hounds on the player. Who let the dogs out?
+    usage: /hound <player>
+  hurt:
+    description: Where is all this damage coming from?!
+    usage: /hurt <player>
+  infinity:
+    description: Makes the player fall indefinitely.
+    usage: /infinity <player>
+  lag:
+    description: Makes the player experience fake lag. Does not affect the server.
+    usage: /lag <player>
+  lavabreak:
+    description: The next block a player breaks turns to lava.
+    usage: /lavabreak <player>
+  lift:
+    description: It's like flying, but only in one direction. And probably without a soft landing.
+    usage: /lift <player>
+  lure:
+    description: Attracts nearby monsters to the player.
+    usage: /lure <player>
+  nausea:
+    description: Applies a nausea effect to the player.
+    usage: /nausea <player>
+  night:
+    description: Sets the player's time to night permanently. Does not affect the server.
+    usage: /night <player>
+  nopickup:
+    description: Stops the player from picking up items.
+    usage: /nopickup <player>
+  popup:
+    description: Randomly opens and closes the player's inventory.
+    usage: /popup <player>
+  portal:
+    description: The quickest way to The End!
+    usage: /portal <player>
+  potato:
+    description: I hope they REALLY like potatoes.
+    usage: /potato <player>
+  rewind:
+    description: Makes the player's time run backwards at speed. Does not affect the server.
+    usage: /rewind <player>
   scare:
     description: SSSSssssssssss..
     usage: /scare
+  slap:
+    description: Slaps the player. Yep. Slaps them.
+    usage: /slap <player> [force]
+  slender:
+    description: Blinds and slows the player, then sends an enderman after them.
+    usage: /slender <player>
+  slowmine:
+    description: Applies a mining fatigue effect to the player.
+    usage: /slowmine <player>
+  slowpoke:
+    description: Applies a slowness effect to the player. Like a pokemon!
+    usage: /slowpoke <player>
+  slowundo:
+    description: Slowly undoes any block changes the player makes.
+    usage: /slowundo <player>
+  spam:
+    description: Spams the player's chat with useless junk.
+    usage: /spam <player>
+  sparta:
+    description: Our arrows will blot out the sun! .. Pincushion-y!
+    usage: /sparta <player>
+    aliases: [pincushion]
+  spin:
+    description: This might make them a bit dizzy.
+    usage: /spin <player>
+  squid:
+    description: .. Why is it raining squids?
+    usage: /squid <player>
+  stampede:
+    description: Unleashes a herd of mad cows on the player.
+    usage: /stampede <player>
+  starve:
+    description: They must have a REALLY fast metabolism!
+    usage: /starve <player>
+  swap:
+    description: Swaps two players' locations, Freaky Friday style.
+    usage: /swap <player> <player>
+  troll:
+    description: Opens a GUI with available commands for trolling the specified player. Optionally takes a search argument.
+    usage: /troll <player> [search]
+  useless:
+    description: Renames all of the player's items to Useless.
+    usage: /useless <player>
+  vaporize:
+    description: Explodes the player with a specified power. To disable block damage, use a negative value.
+    usage: /vaporize <player> [power]
+    aliases: [vap]
+  vegetable:
+    description: Turns the player into a potato. Potato simulator 20XX!
+    usage: /vegetable <player>
+  void:
+    description: Think Journey to the Center of the Earth, except with death at the end.
+    usage: /void <player>
+  weakling:
+    description: Applies a weakness effect to the player.
+    usage: /weakling <player>
+  whoami:
+    description: Seriously, though. Who even am I? (Changes the player's name constantly)
+    usage: /whoami <player>
+  zombify:
+    description: I hope they came prepared for the zombie apocalypse.
+    usage: /zombify <player>
+    aliases: [zomb]

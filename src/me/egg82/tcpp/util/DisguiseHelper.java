@@ -21,7 +21,7 @@ public class DisguiseHelper implements IDisguiseHelper {
 	
 	//public
 	public void disguiseAsPlayer(Player player, Player disguise) {
-		api.disguise(player, new PlayerDisguise(disguise.getName(), disguise.getDisplayName(), false));
+		api.disguise(player, new PlayerDisguise(disguise.getName(), disguise.getDisplayName()));
 	}
 	public void disguiseAsEntity(Player player, EntityType disguise) {
 		api.disguise(player, new MobDisguise(DisguiseType.valueOf(disguise.toString())));
