@@ -161,12 +161,20 @@ public class TrollCommand extends PluginCommand {
 		
 		ItemMeta meta = item.getItemMeta();
 		
-		meta.setDisplayName(ChatColor.WHITE + "/" + command);
+		meta.setDisplayName(((CommandUtil.hasPermission(sender, "tcpp.command." + command)) ? ChatColor.WHITE : ChatColor.RED) + "/" + command);
 		meta.setLocalizedName(command);
-		meta.setLore(Arrays.asList(new String[] {
-			ChatColor.GRAY + ChatColor.ITALIC.toString() + (String) commands.get(command).get("description"),
-			ChatColor.YELLOW + (String) commands.get(command).get("usage")
-		}));
+		if (CommandUtil.hasPermission(sender, "tcpp.command." + command)) {
+			meta.setLore(Arrays.asList(new String[] {
+				ChatColor.GRAY + ChatColor.ITALIC.toString() + (String) commands.get(command).get("description"),
+				ChatColor.YELLOW + (String) commands.get(command).get("usage")
+			}));
+		} else {
+			meta.setLore(Arrays.asList(new String[] {
+				ChatColor.ITALIC + SpigotMessageType.NO_PERMISSIONS,
+				ChatColor.GRAY + ChatColor.ITALIC.toString() + (String) commands.get(command).get("description"),
+				ChatColor.YELLOW + (String) commands.get(command).get("usage")
+			}));
+		}
 		
 		item.setItemMeta(meta);
 		return item;
