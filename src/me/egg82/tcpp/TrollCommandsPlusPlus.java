@@ -2,7 +2,12 @@ package me.egg82.tcpp;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.Timer;
 
@@ -10,10 +15,12 @@ import org.bstats.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.services.CommandRegistry;
+import me.egg82.tcpp.services.KeywordRegistry;
 import me.egg82.tcpp.util.ControlHelper;
 import me.egg82.tcpp.util.DisguiseHelper;
 import me.egg82.tcpp.util.DisplayHelper;
@@ -31,7 +38,9 @@ import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.BasePlugin;
 import ninja.egg82.plugin.utils.SpigotReflectUtil;
 import ninja.egg82.plugin.utils.VersionUtil;
+import ninja.egg82.sql.LanguageDatabase;
 import ninja.egg82.startup.InitRegistry;
+import ninja.egg82.utils.StringUtil;
 
 public class TrollCommandsPlusPlus extends BasePlugin {
 	//vars
@@ -84,6 +93,9 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		ServiceLocator.provideService(WhoAmIHelper.class);
 		ServiceLocator.provideService(WorldHoleHelper.class);
 		ServiceLocator.provideService(MetricsHelper.class);
+		ServiceLocator.provideService(LanguageDatabase.class, false);
+		
+		populateLanguageDatabase();
 		
 		updateTimer = new Timer(24 * 60 * 60 * 1000, onUpdateTimer);
 	}
@@ -181,5 +193,40 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	}
 	private void disableMessage(ConsoleCommandSender sender) {
 		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "--== " + ChatColor.LIGHT_PURPLE + "TrollCommands++ Disabled" + ChatColor.GREEN + " ==--");
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void populateLanguageDatabase() {
+		LanguageDatabase ldb = (LanguageDatabase) ServiceLocator.getService(LanguageDatabase.class);
+		IRegistry keywordRegistry = (IRegistry) ServiceLocator.getService(KeywordRegistry.class);
+		PluginDescriptionFile description = getDescription();
+		
+		Map<String, Map<String, Object>> commands = description.getCommands();
+		for (Entry<String, Map<String, Object>> kvp : commands.entrySet()) {
+			ArrayList<String> row = new ArrayList<String>();
+			row.add(kvp.getKey());
+			if (keywordRegistry.hasRegister(kvp.getKey())) {
+				row.addAll(Arrays.asList((String[]) keywordRegistry.getRegister(kvp.getKey())));
+			}
+			
+			for (Entry<String, Object> kvp2 : kvp.getValue().entrySet()) {
+				Object v = kvp2.getValue();
+				if (v instanceof String) {
+					List<String> v2 = Arrays.asList(((String) v).split("\\s+"));
+					StringUtil.stripSpecialChars(v2);
+					StringUtil.stripCommonWords(v2);
+					row.addAll(v2);
+				} else if (v instanceof List<?>) {
+					List<String> v2 = (List<String>) v;
+					for (int i = 0; i < v2.size(); i++) {
+						List<String> v3 = Arrays.asList(v2.get(i).split("\\s+"));
+						StringUtil.stripSpecialChars(v3);
+						StringUtil.stripCommonWords(v3);
+						row.addAll(v3);
+					}
+				}
+			}
+			ldb.addRow(row.toArray(new String[0]));
+		}
 	}
 }
