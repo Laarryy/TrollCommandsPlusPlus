@@ -22,7 +22,8 @@ public class KeywordRegistry extends Registry {
 		});
 		this.setRegister("annoy", String[].class, new String[] {
 			"villager",
-			"person"
+			"person",
+			"sound"
 		});
 	}
 	
