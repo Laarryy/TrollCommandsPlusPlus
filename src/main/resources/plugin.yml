@@ -44,7 +44,7 @@ commands:
     usage: /creep <player>
   delaykill:
     description: Kills a player with a delay.
-    usage: /delaykill <player> <seconds>
+    usage: /delaykill <player> [seconds]
   display:
     description: Put your friends and enemies on display!
     usage: /display <player>

@@ -36,6 +36,7 @@ public class TrollCommand extends PluginCommand {
 	//vars
 	private LanguageDatabase ldb = (LanguageDatabase) ServiceLocator.getService(LanguageDatabase.class);
 	private Map<String, Map<String, Object>> commands = null;
+	private String[] allCommands = null;
 	
 	private IRegistry trollInventoryRegistry = (IRegistry) ServiceLocator.getService(TrollInventoryRegistry.class);
 	private IRegistry trollPlayerRegistry = (IRegistry) ServiceLocator.getService(TrollPlayerRegistry.class);
@@ -46,8 +47,8 @@ public class TrollCommand extends PluginCommand {
 	//constructor
 	public TrollCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
-		
 		commands = ((PluginDescriptionFile) ((JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin")).getDescription()).getCommands();
+		allCommands = commands.keySet().toArray(new String[0]);
 	}
 	
 	//public
@@ -112,12 +113,17 @@ public class TrollCommand extends PluginCommand {
 		}
 		
 		Inventory retVal = Bukkit.createInventory(null, 27, "TrollCommands++");
-		String[] commands = ldb.getValues(ldb.naturalLanguage(search, false, ' '), 0);
+		String[] commands = null;
+		
+		if (search == null || search.isEmpty()) {
+			commands = allCommands;
+		} else {
+			commands = ldb.getValues(ldb.naturalLanguage(search, false, ' '), 0);
+		}
+		
 		int numCommands = Math.min(Math.max(0, commands.length - (19 * page)), 19);
 		
-		System.out.println("Number of found commands: " + commands.length);
 		for (int i = 19 * page; i < numCommands; i++) {
-			System.out.println(commands[i]);
 			if (i < 9) {
 				retVal.setItem(retVal.firstEmpty(), getItemStack(commands[i]));
 			} else if (i >= 9 && i < 14) {

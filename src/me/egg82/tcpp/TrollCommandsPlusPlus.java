@@ -206,20 +206,20 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 			ArrayList<String> row = new ArrayList<String>();
 			row.add(kvp.getKey());
 			if (keywordRegistry.hasRegister(kvp.getKey())) {
-				row.addAll(Arrays.asList((String[]) keywordRegistry.getRegister(kvp.getKey())));
+				row.addAll(new ArrayList<String>(Arrays.asList((String[]) keywordRegistry.getRegister(kvp.getKey()))));
 			}
 			
 			for (Entry<String, Object> kvp2 : kvp.getValue().entrySet()) {
 				Object v = kvp2.getValue();
 				if (v instanceof String) {
-					List<String> v2 = Arrays.asList(((String) v).split("\\s+"));
+					List<String> v2 = new ArrayList<String>(Arrays.asList(((String) v).split("\\s+")));
 					StringUtil.stripSpecialChars(v2);
 					StringUtil.stripCommonWords(v2);
 					row.addAll(v2);
 				} else if (v instanceof List<?>) {
 					List<String> v2 = (List<String>) v;
 					for (int i = 0; i < v2.size(); i++) {
-						List<String> v3 = Arrays.asList(v2.get(i).split("\\s+"));
+						List<String> v3 = new ArrayList<String>(Arrays.asList(v2.get(i).split("\\s+")));
 						StringUtil.stripSpecialChars(v3);
 						StringUtil.stripCommonWords(v3);
 						row.addAll(v3);

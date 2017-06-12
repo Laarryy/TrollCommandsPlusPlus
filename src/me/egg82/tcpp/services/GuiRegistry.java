@@ -13,7 +13,7 @@ public class GuiRegistry extends Registry {
 		
 		setRegister("alone", Material.class, Material.IRON_DOOR);
 		setRegister("annoy", Material.class, Material.MONSTER_EGG);
-		setRegister("annoy_data", Short.class, 120);
+		setRegister("annoy_data", Short.class, (short) 120);
 	}
 	
 	//public
