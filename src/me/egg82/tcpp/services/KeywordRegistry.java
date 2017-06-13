@@ -102,7 +102,6 @@ public class KeywordRegistry extends Registry {
 			"blaze",
 			"powder",
 			"fire",
-			"blaze",
 			"char",
 			"heat",
 			"ignite",
@@ -153,6 +152,13 @@ public class KeywordRegistry extends Registry {
 			"fence",
 			"posess",
 			"disguise",
+			"camno",
+			"veil",
+			"cloak",
+			"guise",
+			"costume",
+			"illusion",
+			"mask",
 			"force",
 			"dominate",
 			"restrict",
@@ -266,6 +272,7 @@ public class KeywordRegistry extends Registry {
 			"skull",
 			"zombie",
 			"annoy",
+			"sound",
 			"hound",
 			"frighten",
 			"terrify",
@@ -295,39 +302,349 @@ public class KeywordRegistry extends Registry {
 			"wound",
 			"harm"
 		});
-		this.setRegister("infinity", String[].class, new String[] { });
-		this.setRegister("lag", String[].class, new String[] { });
-		this.setRegister("lavabreak", String[].class, new String[] { });
-		this.setRegister("lift", String[].class, new String[] { });
-		this.setRegister("lure", String[].class, new String[] { });
-		this.setRegister("nausea", String[].class, new String[] { });
-		this.setRegister("night", String[].class, new String[] { });
-		this.setRegister("nopickup", String[].class, new String[] { });
-		this.setRegister("popup", String[].class, new String[] { });
-		this.setRegister("portal", String[].class, new String[] { });
-		this.setRegister("potato", String[].class, new String[] { });
-		this.setRegister("rewind", String[].class, new String[] { });
-		this.setRegister("scare", String[].class, new String[] { });
-		this.setRegister("slap", String[].class, new String[] { });
-		this.setRegister("slender", String[].class, new String[] { });
-		this.setRegister("slowmine", String[].class, new String[] { });
-		this.setRegister("slowpoke", String[].class, new String[] { });
-		this.setRegister("slowundo", String[].class, new String[] { });
-		this.setRegister("spam", String[].class, new String[] { });
-		this.setRegister("sparta", String[].class, new String[] { });
-		this.setRegister("spin", String[].class, new String[] { });
-		this.setRegister("squid", String[].class, new String[] { });
-		this.setRegister("stampede", String[].class, new String[] { });
-		this.setRegister("starve", String[].class, new String[] { });
-		this.setRegister("swap", String[].class, new String[] { });
-		this.setRegister("troll", String[].class, new String[] { });
-		this.setRegister("useless", String[].class, new String[] { });
-		this.setRegister("vaporize", String[].class, new String[] { });
-		this.setRegister("vegetable", String[].class, new String[] { });
-		this.setRegister("void", String[].class, new String[] { });
-		this.setRegister("weakling", String[].class, new String[] { });
-		this.setRegister("whoami", String[].class, new String[] { });
-		this.setRegister("zombify", String[].class, new String[] { });
+		this.setRegister("infinity", String[].class, new String[] {
+			"water",
+			"bucket",
+			"fall",
+			"forever",
+			"endless",
+			"eternal",
+			"permanent",
+			"drop"
+		});
+		this.setRegister("lag", String[].class, new String[] {
+			"gold",
+			"block",
+			"fail",
+			"slow",
+			"drag",
+			"stay"
+		});
+		this.setRegister("lavabreak", String[].class, new String[] {
+			"lava",
+			"bucket",
+			"slag",
+			"magma",
+			"ashes",
+			"obsidian",
+			"fire",
+			"char",
+			"heat",
+			"ignite",
+			"incinerate",
+			"light",
+			"melt",
+			"scorch",
+			"smolder",
+			"torch",
+			"bake",
+			"cook",
+			"flame",
+			"smoke"
+		});
+		this.setRegister("lift", String[].class, new String[] {
+			"slime",
+			"block",
+			"ascend",
+			"boost",
+			"climb",
+			"disappear",
+			"hoist",
+			"raise",
+			"rise",
+			"soar",
+			"arise",
+			"up",
+			"vanish"
+		});
+		this.setRegister("lure", String[].class, new String[] {
+			"beacon",
+			"bait",
+			"charm",
+			"draw",
+			"hook",
+			"pull"
+		});
+		this.setRegister("nausea", String[].class, new String[] {
+			"spider",
+			"eye",
+			"vomit",
+			"revulsion",
+			"spinning"
+		});
+		this.setRegister("night", String[].class, new String[] {
+			"nether",
+			"star",
+			"moon",
+			"bed",
+			"black",
+			"dark",
+			"twilight"
+		});
+		this.setRegister("nopickup", String[].class, new String[] {
+			"dead",
+			"bush",
+			"gather",
+			"elevate",
+			"grasp"
+		});
+		this.setRegister("popup", String[].class, new String[] {
+			"chest",
+			"appear",
+			"inventory",
+			"open",
+			"close",
+			"random"
+		});
+		this.setRegister("portal", String[].class, new String[] {
+			"end",
+			"frame",
+			"doorway",
+			"entry",
+			"gate",
+			"opening",
+			"drop",
+			"fall"
+		});
+		this.setRegister("potato", String[].class, new String[] {
+			"plant",
+			"spud",
+			"vegetable",
+			"tuber"
+		});
+		this.setRegister("rewind", String[].class, new String[] {
+			"enchantment",
+			"table",
+			"back",
+			"reverse",
+			"undo",
+			"invert"
+		});
+		this.setRegister("scare", String[].class, new String[] {
+			"skull",
+			"creeper",
+			"posess",
+			"disguise",
+			"camno",
+			"veil",
+			"cloak",
+			"guise",
+			"costume",
+			"illusion",
+			"mask",
+			"alarm",
+			"panick",
+			"shock",
+			"alert",
+			"fright",
+			"terror"
+		});
+		this.setRegister("slap", String[].class, new String[] {
+			"piston",
+			"punch",
+			"whack",
+			"bang",
+			"poke",
+			"slam",
+			"strike",
+			"sock"
+		});
+		this.setRegister("slender", String[].class, new String[] {
+			"egg",
+			"enderman",
+			"dark",
+			"blind",
+			"slow",
+			"spawn",
+			"create",
+			"generate",
+			"hatch",
+			"make"
+		});
+		this.setRegister("slowmine", String[].class, new String[] {
+			"minecart",
+			"delay",
+			"restrict",
+			"abate",
+			"curb",
+			"lag",
+			"reduce",
+			"brake"
+		});
+		this.setRegister("slowpoke", String[].class, new String[] {
+			"web",
+			"spider",
+			"delay",
+			"restrict",
+			"abate",
+			"curb",
+			"lag",
+			"reduce",
+			"brake"
+		});
+		this.setRegister("slowundo", String[].class, new String[] {
+			"grass",
+			"block",
+			"invalidate",
+			"nullify",
+			"abolish",
+			"annul",
+			"destroy",
+			"negate",
+			"reverse",
+			"ruin"
+		});
+		this.setRegister("spam", String[].class, new String[] {
+			"bookshelf",
+			"unsolicited",
+			"fill",
+			"stuff"
+		});
+		this.setRegister("sparta", String[].class, new String[] {
+			"arrow",
+			"poke",
+			"jab",
+			"blow",
+			"sharp",
+			"stab"
+		});
+		this.setRegister("spin", String[].class, new String[] {
+			"boat",
+			"twist",
+			"spiral",
+			"revolution",
+			"turn",
+			"whirl",
+			"rotate"
+		});
+		this.setRegister("squid", String[].class, new String[] {
+			"ink",
+			"sac",
+			"octopus",
+			"spawn",
+			"create",
+			"generate",
+			"hatch",
+			"make"
+		});
+		this.setRegister("stampede", String[].class, new String[] {
+			"leather",
+			"cow",
+			"panic",
+			"charge",
+			"chase",
+			"crash",
+			"smash"
+		});
+		this.setRegister("starve", String[].class, new String[] {
+			"poison",
+			"potato",
+			"famish",
+			"fast",
+			"diet"
+		});
+		this.setRegister("swap", String[].class, new String[] {
+			"diode",
+			"redstone",
+			"repeater",
+			"substitute",
+			"switch",
+			"trade",
+			"change"
+		});
+		this.setRegister("troll", String[].class, new String[] {
+			"ender",
+			"chest",
+			"user",
+			"interface",
+			"ui",
+			"gui",
+			"graphical"
+		});
+		this.setRegister("useless", String[].class, new String[] {
+			"bedrock",
+			"fruitless",
+			"futile",
+			"hopeless",
+			"idle",
+			"impractical",
+			"ineffective",
+			"meaningless",
+			"pointless",
+			"stupid",
+			"unproductive",
+			"worthless",
+			"waste",
+			"weak"
+		});
+		this.setRegister("vaporize", String[].class, new String[] {
+			"sulphur",
+			"gunpowder",
+			"creeper",
+			"zap",
+			"destroy",
+			"kill",
+			"terminate",
+			"tnt",
+			"explosion",
+			"dynamite",
+			"blast",
+			"erupt",
+			"detonate"
+		});
+		this.setRegister("vegetable", String[].class, new String[] {
+			"carrot",
+			"potato",
+			"herb",
+			"produce",
+			"salad",
+			"edible",
+			"green"
+		});
+		this.setRegister("void", String[].class, new String[] {
+			"black",
+			"wool",
+			"bare",
+			"clear",
+			"empty",
+			"drained",
+			"lacking"
+		});
+		this.setRegister("weakling", String[].class, new String[] {
+			"wood",
+			"sword",
+			"anemic",
+			"feeble",
+			"fragile",
+			"frail",
+			"sickly",
+			"sluggish",
+			"exhaust",
+			"faint",
+			"spent",
+			"tender",
+			"waste"
+		});
+		this.setRegister("whoami", String[].class, new String[] {
+			"mushroom",
+			"careless",
+			"distracted",
+			"inattentive",
+			"sloppy",
+			"absent",
+			"forgetful",
+			"amnesia"
+		});
+		this.setRegister("zombify", String[].class, new String[] {
+			"rotten",
+			"flesh",
+			"zombie",
+			"spawn",
+			"create",
+			"generate",
+			"hatch",
+			"make"
+		});
 	}
 	
 	//public
