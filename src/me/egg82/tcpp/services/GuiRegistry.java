@@ -12,7 +12,7 @@ public class GuiRegistry extends Registry {
 		super();
 		
 		setRegister("alone", Material.class, Material.IRON_DOOR);
-		//setRegister("amnesia", Material.class, );
+		setRegister("amnesia", Material.class, Material.DIAMOND_PICKAXE);
 		setRegister("annoy", Material.class, Material.MONSTER_EGG);
 		setRegister("annoy_data", Short.class, (short) 120);
 		setRegister("anvil", Material.class, Material.ANVIL);
@@ -31,11 +31,11 @@ public class GuiRegistry extends Registry {
 		setRegister("display", Material.class, Material.THIN_GLASS);
 		setRegister("electrify", Material.class, Material.DAYLIGHT_DETECTOR);
 		setRegister("entomb", Material.class, Material.DIRT);
-		//setRegister("explodebreak", Material.class, );
-		//setRegister("explodebuild", Material.class, );
-		//setRegister("flip", Material.class, );
+		setRegister("explodebreak", Material.class, Material.COBBLESTONE);
+		setRegister("explodebuild", Material.class, Material.REDSTONE_TORCH_ON);
+		setRegister("flip", Material.class, Material.WOOD_STAIRS);
 		setRegister("freeze", Material.class, Material.ICE);
-		//setRegister("garble", Material.class, );
+		setRegister("garble", Material.class, Material.BOOK);
 		setRegister("golem", Material.class, Material.RED_ROSE);
 		setRegister("haunt", Material.class, Material.SKULL_ITEM);
 		setRegister("haunt_data", Short.class, (short) 2);
@@ -61,7 +61,7 @@ public class GuiRegistry extends Registry {
 		setRegister("slowmine", Material.class, Material.MINECART);
 		setRegister("slowpoke", Material.class, Material.WEB);
 		//setRegister("slowundo", Material.class, );
-		//setRegister("spam", Material.class, );
+		setRegister("spam", Material.class, Material.BOOKSHELF);
 		setRegister("sparta", Material.class, Material.ARROW);
 		//setRegister("spin", Material.class, );
 		setRegister("squid", Material.class, Material.INK_SACK);
@@ -69,7 +69,7 @@ public class GuiRegistry extends Registry {
 		setRegister("starve", Material.class, Material.POISONOUS_POTATO);
 		//setRegister("swap", Material.class, );
 		setRegister("troll", Material.class, Material.CHEST);
-		//setRegister("useless", Material.class, );
+		setRegister("useless", Material.class, Material.BEDROCK);
 		setRegister("vaporize", Material.class, Material.SULPHUR);
 		setRegister("vegetable", Material.class, Material.CARROT_ITEM);
 		setRegister("void", Material.class, Material.WOOL);
