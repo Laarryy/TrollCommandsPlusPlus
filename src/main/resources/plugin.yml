@@ -1,6 +1,6 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 3.8.28
+version: 3.9.29
 softdepend: [LibsDisguises,iDisguise]
 commands:
   alone:
@@ -42,6 +42,9 @@ commands:
   creep:
     description: Spawns a charged creeper at the player's location.
     usage: /creep <player>
+  day:
+    description: Sets the player's time to day permanently. Does not affect the server.
+    usage: /day <player>
   delaykill:
     description: Kills a player with a delay.
     usage: /delaykill <player> [seconds]
@@ -52,6 +55,9 @@ commands:
     description: Thine enemy shalt feel the wrath of many angry gods.
     usage: /electrify <player>
     aliases: [elec]
+  empty:
+    description: Completely empties the player's inventory. Ouch!
+    usage: /empty <player>
   entomb:
     description: A premature burial.
     usage: /entomb <player>
@@ -63,6 +69,9 @@ commands:
     description: The next block the player places explodes!
     usage: /explodebuild <player>
     aliases: [exbuild]
+  fakeop:
+    description: Sends a message to the player saying they are opped. They will not be.
+    usage: /fakeop <player>
   flip:
     description: Flips the player around very quickly.
     usage: /flip <player>
@@ -87,6 +96,9 @@ commands:
   infinity:
     description: Makes the player fall indefinitely.
     usage: /infinity <player>
+  inspect:
+    description: Allows you to "inspect" the player's inventory.
+    usage: /inspect <player>
   lag:
     description: Makes the player experience fake lag. Does not affect the server.
     usage: /lag <player>
@@ -96,6 +108,9 @@ commands:
   lift:
     description: It's like flying, but only in one direction. And probably without a soft landing.
     usage: /lift <player>
+  lock:
+    description: Prevents the player from interacting with their inventory or hatbar. They didn't REALLY need their sword, did they?
+    usage: /lock <player>
   lure:
     description: Attracts nearby monsters to the player.
     usage: /lure <player>
@@ -117,6 +132,9 @@ commands:
   potato:
     description: I hope they REALLY like potatoes.
     usage: /potato <player>
+  public:
+    description: Gives everyone the chance to "inspect" the player's inventory. Freedom of information!
+    usage: /public <player>
   rewind:
     description: Makes the player's time run backwards at speed. Does not affect the server.
     usage: /rewind <player>
@@ -160,6 +178,10 @@ commands:
   swap:
     description: Swaps two players' locations, Freaky Friday style.
     usage: /swap <player> <player>
+  trickle:
+    description: They're leaking XP all over the place!
+    usage: /trickle <player>
+    aliases: [leak]
   troll:
     description: Opens a GUI with available commands for trolling the specified player. Optionally takes a search argument.
     usage: /troll <player> [search]
@@ -171,11 +193,14 @@ commands:
     usage: /vaporize <player> [power]
     aliases: [vap]
   vegetable:
-    description: Turns the player into a potato. Potato simulator 20XX!
-    usage: /vegetable <player>
+    description: Turns the player into a vegetable. Potato by default, but you may optionally provide the vegetable type. Potato simulator 20XX!
+    usage: /vegetable <player> [type]
   void:
     description: Think Journey to the Center of the Earth, except with death at the end.
     usage: /void <player>
+  vomit:
+    description: They just can't keep anything down, can they?
+    usage: /vomit <player>
   weakling:
     description: Applies a weakness effect to the player.
     usage: /weakling <player>

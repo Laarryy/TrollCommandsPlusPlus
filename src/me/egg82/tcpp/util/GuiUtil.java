@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -108,7 +109,7 @@ public class GuiUtil {
 		ItemMeta meta = item.getItemMeta();
 		
 		meta.setDisplayName(((CommandUtil.hasPermission(sender, "tcpp.command." + command)) ? ChatColor.WHITE : ChatColor.RED) + "/" + command);
-		meta.setLocalizedName(command);
+		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_PLACED_ON, ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_UNBREAKABLE);
 		
 		ArrayList<String> lore = new ArrayList<String>();
 		if (!CommandUtil.hasPermission(sender, "tcpp.command." + command)) {
@@ -126,7 +127,6 @@ public class GuiUtil {
 		ItemStack item = new ItemStack(Material.STONE_BUTTON);
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(ChatColor.GREEN + "Next");
-		meta.setLocalizedName("next");
 		item.setItemMeta(meta);
 		return item;
 	}
@@ -134,7 +134,6 @@ public class GuiUtil {
 		ItemStack item = new ItemStack(Material.STONE_BUTTON);
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(ChatColor.GREEN + "Previous");
-		meta.setLocalizedName("previous");
 		item.setItemMeta(meta);
 		return item;
 	}
@@ -142,7 +141,6 @@ public class GuiUtil {
 		ItemStack item = new ItemStack(Material.BARRIER);
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(ChatColor.RED + "Close");
-		meta.setLocalizedName("close");
 		item.setItemMeta(meta);
 		return item;
 	}

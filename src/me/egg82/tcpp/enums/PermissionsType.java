@@ -68,6 +68,14 @@ public class PermissionsType {
 	public static final String COMMAND_EXPLODE_BUILD = "tcpp.command.explodeBuild";
 	public static final String COMMAND_SLOW_UNDO = "tcpp.command.slowUndo";
 	public static final String COMMAND_SCARE = "tcpp.command.scare";
+	public static final String COMMAND_DAY = "tcpp.command.day";
+	public static final String COMMAND_FAKE_OP = "tcpp.command.fakeOp";
+	public static final String COMMAND_EMPTY = "tcpp.command.empty";
+	public static final String COMMAND_INSPECT = "tcpp.command.inspect";
+	public static final String COMMAND_PUBLIC = "tcpp.command.public";
+	public static final String COMMAND_LOCK = "tcpp.command.lock";
+	public static final String COMMAND_TRICKLE = "tcpp.command.trickle";
+	public static final String COMMAND_VOMIT = "tcpp.command.vomit";
 	
 	//constructor
 	public PermissionsType() {

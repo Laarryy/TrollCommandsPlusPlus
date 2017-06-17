@@ -55,22 +55,22 @@ public class TrollEventCommand extends EventCommand {
 			return;
 		}
 		
-		String name = item.getItemMeta().getLocalizedName();
+		String name = item.getItemMeta().getDisplayName().toLowerCase();
 		
-		if (name == "previous") {
+		if (name.contains("previous")) {
 			int newPage = ((Integer) trollPageRegistry.getRegister(uuid)) - 1;
 			Inventory inv = GuiUtil.createInventory(player, (String) trollSearchRegistry.getRegister(uuid), newPage);
 			trollPageRegistry.setRegister(uuid, Integer.class, newPage);
 			e.getInventory().setContents(inv.getContents());
-		} else if (name == "next") {
+		} else if (name.contains("next")) {
 			int newPage = ((Integer) trollPageRegistry.getRegister(uuid)) + 1;
 			Inventory inv = GuiUtil.createInventory(player, (String) trollSearchRegistry.getRegister(uuid), newPage);
 			trollPageRegistry.setRegister(uuid, Integer.class, newPage);
 			e.getInventory().setContents(inv.getContents());
-		} else if (name == "close") {
+		} else if (name.contains("close")) {
 			player.closeInventory();
 		} else {
-			player.getServer().dispatchCommand(player, name + " " + ((Player) trollPlayerRegistry.getRegister(uuid)).getName());
+			player.getServer().dispatchCommand(player, name.substring(name.indexOf('/') + 1) + " " + ((Player) trollPlayerRegistry.getRegister(uuid)).getName());
 			player.closeInventory();
 		}
 		
