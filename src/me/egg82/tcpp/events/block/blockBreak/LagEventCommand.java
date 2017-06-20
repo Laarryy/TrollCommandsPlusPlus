@@ -71,7 +71,7 @@ public class LagEventCommand extends EventCommand {
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {
 			public void run() {
 				// Break the block using the captured state
-				BlockUtil.breakNaturally(blockState, blockLocation, gameMode, tool);
+				BlockUtil.breakNaturally(blockState, blockLocation, gameMode, tool, true);
 				lagBlockRegistry.setRegister(locationString, Location.class, null);
 			}
 		}, MathUtil.fairRoundedRandom(15, 30));

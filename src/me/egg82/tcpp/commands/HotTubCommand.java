@@ -7,8 +7,11 @@ import org.bukkit.entity.Player;
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.services.ElectrifyRegistry;
+import me.egg82.tcpp.services.HotTubRegistry;
+import me.egg82.tcpp.services.PortalRegistry;
+import me.egg82.tcpp.services.VoidRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
+import me.egg82.tcpp.util.WorldHoleHelper;
 import ninja.egg82.events.CommandEvent;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
@@ -17,14 +20,17 @@ import ninja.egg82.plugin.enums.SpigotCommandErrorType;
 import ninja.egg82.plugin.enums.SpigotMessageType;
 import ninja.egg82.plugin.utils.CommandUtil;
 
-public class ElectrifyCommand extends PluginCommand {
+public class HotTubCommand extends PluginCommand {
 	//vars
-	private IRegistry electrifyRegistry = (IRegistry) ServiceLocator.getService(ElectrifyRegistry.class);
+	private IRegistry portalRegistry = (IRegistry) ServiceLocator.getService(PortalRegistry.class);
+	private IRegistry voidRegistry = (IRegistry) ServiceLocator.getService(VoidRegistry.class);
+	private IRegistry hotTubRegistry = (IRegistry) ServiceLocator.getService(HotTubRegistry.class);
 	
+	private WorldHoleHelper worldHoleHelper = (WorldHoleHelper) ServiceLocator.getService(WorldHoleHelper.class);
 	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
-	public ElectrifyCommand(CommandSender sender, Command command, String label, String[] args) {
+	public HotTubCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
 	}
 	
@@ -32,7 +38,7 @@ public class ElectrifyCommand extends PluginCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_ELECTRIFY)) {
+		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_HOT_TUB)) {
 			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
 			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
 			return;
@@ -57,20 +63,32 @@ public class ElectrifyCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (portalRegistry.hasRegister(uuid)) {
+			sender.sendMessage(MessageType.ALREADY_USED);
+			dispatch(CommandEvent.ERROR, CommandErrorType.ALREADY_USED);
+			return;
+		}
+		if (voidRegistry.hasRegister(uuid)) {
+			sender.sendMessage(MessageType.ALREADY_USED);
+			dispatch(CommandEvent.ERROR, CommandErrorType.ALREADY_USED);
+			return;
+		}
+		if (hotTubRegistry.hasRegister(uuid)) {
+			sender.sendMessage(MessageType.ALREADY_USED);
+			dispatch(CommandEvent.ERROR, CommandErrorType.ALREADY_USED);
+			return;
+		}
+		
+		e(uuid, player);
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
-		if (electrifyRegistry.hasRegister(uuid)) {
-			electrifyRegistry.setRegister(uuid, Player.class, null);
-			
-			sender.sendMessage(player.getName() + " is no longer being electrified.");
-		} else {
-			electrifyRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage(player.getName() + " is now being electrified.");
-		}
+		worldHoleHelper.hotTubHole(uuid, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage(player.getName() + " is now taking a hot bath.");
 	}
 }

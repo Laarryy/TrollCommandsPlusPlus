@@ -1,6 +1,6 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 3.9.29
+version: 3.10.30
 softdepend: [LibsDisguises,iDisguise]
 commands:
   alone:
@@ -55,6 +55,9 @@ commands:
     description: Thine enemy shalt feel the wrath of many angry gods.
     usage: /electrify <player>
     aliases: [elec]
+  empower:
+    description: Empowers (or disempowers) the player or mob of your choice. Give them the strength to defeat thine enemy!
+    usage: /empower
   empty:
     description: Completely empties the player's inventory. Ouch!
     usage: /empty <player>
@@ -87,6 +90,9 @@ commands:
   haunt:
     description: Toggles random sounds near the player.
     usage: /haunt <player>
+  hottub:
+    description: Drops the player is a nice, hot bath.
+    usage: /hottub <player>
   hound:
     description: Releases angry hounds on the player. Who let the dogs out?
     usage: /hound <player>
@@ -105,11 +111,15 @@ commands:
   lavabreak:
     description: The next block a player breaks turns to lava.
     usage: /lavabreak <player>
+  levitate:
+    description: Ascends the player to the heavens forever. Drops them like a rock when removed.
+    usage: /levitate <player>
+    aliases: [ascend]
   lift:
     description: It's like flying, but only in one direction. And probably without a soft landing.
     usage: /lift <player>
   lock:
-    description: Prevents the player from interacting with their inventory or hatbar. They didn't REALLY need their sword, did they?
+    description: Prevents the player from interacting with their inventory or hotbar. They didn't REALLY need their sword, did they?
     usage: /lock <player>
   lure:
     description: Attracts nearby monsters to the player.
@@ -156,6 +166,9 @@ commands:
   slowundo:
     description: Slowly undoes any block changes the player makes.
     usage: /slowundo <player>
+  snowballfight:
+    description: The player will fire snowballs instead of arrows. Good hunting, Will!
+    usage: /snowballfight <player>
   spam:
     description: Spams the player's chat with useless junk.
     usage: /spam <player>

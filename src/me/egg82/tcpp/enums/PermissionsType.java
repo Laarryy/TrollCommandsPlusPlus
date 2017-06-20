@@ -76,6 +76,10 @@ public class PermissionsType {
 	public static final String COMMAND_LOCK = "tcpp.command.lock";
 	public static final String COMMAND_TRICKLE = "tcpp.command.trickle";
 	public static final String COMMAND_VOMIT = "tcpp.command.vomit";
+	public static final String COMMAND_EMPOWER = "tcpp.command.empower";
+	public static final String COMMAND_HOT_TUB = "tcpp.command.hotTub";
+	public static final String COMMAND_SNOWBALL_FIGHT = "tcpp.command.snowballFight";
+	public static final String COMMAND_LEVITATE = "tcpp.command.levitate";
 	
 	//constructor
 	public PermissionsType() {

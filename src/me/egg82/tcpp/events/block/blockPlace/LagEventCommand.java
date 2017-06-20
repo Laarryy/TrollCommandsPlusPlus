@@ -83,7 +83,7 @@ public class LagEventCommand extends EventCommand {
 				}
 				
 				// Break the block using the captured state
-				BlockUtil.setBlock(block, new BlockData(null, blockState, blockType));
+				BlockUtil.setBlock(block, new BlockData(null, blockState, blockType), true);
 				lagBlockRegistry.setRegister(locationString, Location.class, null);
 			}
 		}, MathUtil.fairRoundedRandom(30, 50));

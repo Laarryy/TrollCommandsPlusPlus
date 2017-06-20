@@ -50,7 +50,7 @@ public class SlowUndoEventCommand extends EventCommand {
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {
 			public void run() {
 				// "Undo" this event
-				BlockUtil.setBlock(blockLocation, blockData);
+				BlockUtil.setBlock(blockLocation, blockData, true);
 			}
 		}, MathUtil.fairRoundedRandom(80, 120));
 	}

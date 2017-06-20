@@ -4,10 +4,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.enums.CommandErrorType;
-import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.services.ElectrifyRegistry;
+import me.egg82.tcpp.services.EmpowerRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CommandEvent;
 import ninja.egg82.patterns.IRegistry;
@@ -17,14 +15,14 @@ import ninja.egg82.plugin.enums.SpigotCommandErrorType;
 import ninja.egg82.plugin.enums.SpigotMessageType;
 import ninja.egg82.plugin.utils.CommandUtil;
 
-public class ElectrifyCommand extends PluginCommand {
+public class EmpowerCommand extends PluginCommand {
 	//vars
-	private IRegistry electrifyRegistry = (IRegistry) ServiceLocator.getService(ElectrifyRegistry.class);
+	private IRegistry empowerRegistry = (IRegistry) ServiceLocator.getService(EmpowerRegistry.class);
 	
 	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
-	public ElectrifyCommand(CommandSender sender, Command command, String label, String[] args) {
+	public EmpowerCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
 	}
 	
@@ -32,45 +30,39 @@ public class ElectrifyCommand extends PluginCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_ELECTRIFY)) {
+		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_EMPOWER)) {
 			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
 			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
 			return;
 		}
-		if (!CommandUtil.isArrayOfAllowedLength(args, 1)) {
+		if (!CommandUtil.isArrayOfAllowedLength(args, 0)) {
 			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
 			sender.getServer().dispatchCommand(sender, "help " + command.getName());
 			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
 			return;
 		}
-		
-		Player player = CommandUtil.getPlayerByName(args[0]);
-		
-		if (player == null) {
-			sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
+		if (!CommandUtil.isPlayer(sender)) {
+			sender.sendMessage(SpigotMessageType.CONSOLE_NOT_ALLOWED);
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.CONSOLE_NOT_ALLOWED);
 			return;
 		}
-		if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-			sender.sendMessage(MessageType.PLAYER_IMMUNE);
-			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
-			return;
-		}
+		
+		Player player = (Player) sender;
 		
 		e(player.getUniqueId().toString(), player);
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
-		if (electrifyRegistry.hasRegister(uuid)) {
-			electrifyRegistry.setRegister(uuid, Player.class, null);
+		if (empowerRegistry.hasRegister(uuid)) {
+			empowerRegistry.setRegister(uuid, Player.class, null);
 			
-			sender.sendMessage(player.getName() + " is no longer being electrified.");
+			sender.sendMessage("You will no longer empower (or disempower) the next player or mob you right-click.");
 		} else {
-			electrifyRegistry.setRegister(uuid, Player.class, player);
+			empowerRegistry.setRegister(uuid, Player.class, player);
 			metricsHelper.commandWasRun(command.getName());
 			
-			sender.sendMessage(player.getName() + " is now being electrified.");
+			sender.sendMessage("You will now empower (or disempower) the next player or mob you right-click!");
 		}
 	}
 }

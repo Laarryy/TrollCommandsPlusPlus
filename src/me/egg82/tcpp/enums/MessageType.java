@@ -12,6 +12,9 @@ public class MessageType {
 	public static final String NO_LIBRARY = ChatColor.RED + "This command has been disabled because there is no recognized backing library available. Please install one and restart the server to enable this command.";
 	public static final String ALREADY_USED = ChatColor.RED + "This command is currently in use against this player. Please wait for it to complete before using it again.";
 	public static final String NO_CHAT = ChatColor.RED + "You do not have permissions to chat while being controlled!";
+	public static final String NOT_LIVING = ChatColor.RED + "The entity you have selected is neither a player nor a mob!";
+	public static final String EMPOWERED = "The entity you have selected is now empowered!";
+	public static final String DISEMPOWERED = "The entity you have selected is now disempowered!";
 	
 	//constructor
 	public MessageType() {

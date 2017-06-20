@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.services.HotTubRegistry;
 import me.egg82.tcpp.services.PortalRegistry;
 import me.egg82.tcpp.services.VoidRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
@@ -23,6 +24,7 @@ public class PortalCommand extends PluginCommand {
 	//vars
 	private IRegistry portalRegistry = (IRegistry) ServiceLocator.getService(PortalRegistry.class);
 	private IRegistry voidRegistry = (IRegistry) ServiceLocator.getService(VoidRegistry.class);
+	private IRegistry hotTubRegistry = (IRegistry) ServiceLocator.getService(HotTubRegistry.class);
 	
 	private WorldHoleHelper worldHoleHelper = (WorldHoleHelper) ServiceLocator.getService(WorldHoleHelper.class);
 	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
@@ -69,6 +71,11 @@ public class PortalCommand extends PluginCommand {
 			return;
 		}
 		if (voidRegistry.hasRegister(uuid)) {
+			sender.sendMessage(MessageType.ALREADY_USED);
+			dispatch(CommandEvent.ERROR, CommandErrorType.ALREADY_USED);
+			return;
+		}
+		if (hotTubRegistry.hasRegister(uuid)) {
 			sender.sendMessage(MessageType.ALREADY_USED);
 			dispatch(CommandEvent.ERROR, CommandErrorType.ALREADY_USED);
 			return;

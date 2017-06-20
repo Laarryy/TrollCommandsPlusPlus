@@ -31,6 +31,7 @@ public class GuiRegistry extends Registry {
 		setRegister("delaykill_data", Short.class, (short) 3);
 		setRegister("display", Material.class, Material.THIN_GLASS);
 		setRegister("electrify", Material.class, Material.DAYLIGHT_DETECTOR);
+		setRegister("empower", Material.class, Material.DRAGON_EGG);
 		setRegister("empty", Material.class, Material.ENDER_PEARL);
 		setRegister("entomb", Material.class, Material.DIRT);
 		setRegister("explodebreak", Material.class, Material.COBBLESTONE);
@@ -42,12 +43,14 @@ public class GuiRegistry extends Registry {
 		setRegister("golem", Material.class, Material.RED_ROSE);
 		setRegister("haunt", Material.class, Material.SKULL_ITEM);
 		setRegister("haunt_data", Short.class, (short) 2);
+		setRegister("hottub", Material.class, Material.TORCH);
 		setRegister("hound", Material.class, Material.BONE);
 		setRegister("hurt", Material.class, Material.DIAMOND_SWORD);
 		setRegister("infinity", Material.class, Material.WATER_BUCKET);
 		setRegister("inspect", Material.class, Material.HOPPER);
 		setRegister("lag", Material.class, Material.GOLD_BLOCK);
 		setRegister("lavabreak", Material.class, Material.LAVA_BUCKET);
+		setRegister("levitate", Material.class, Material.FEATHER);
 		setRegister("lift", Material.class, Material.SLIME_BLOCK);
 		setRegister("lock", Material.class, Material.LEVER);
 		setRegister("lure", Material.class, Material.BEACON);
@@ -67,6 +70,7 @@ public class GuiRegistry extends Registry {
 		setRegister("slowmine", Material.class, Material.MINECART);
 		setRegister("slowpoke", Material.class, Material.WEB);
 		setRegister("slowundo", Material.class, Material.GRASS);
+		setRegister("snowballfight", Material.class, Material.SNOW_BALL);
 		setRegister("spam", Material.class, Material.BOOKSHELF);
 		setRegister("sparta", Material.class, Material.ARROW);
 		setRegister("spin", Material.class, Material.BOAT);

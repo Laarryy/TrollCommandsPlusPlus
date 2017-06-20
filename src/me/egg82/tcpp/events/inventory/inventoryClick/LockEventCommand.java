@@ -30,9 +30,9 @@ public class LockEventCommand extends EventCommand {
 		}
 		
 		Player player = (Player) e.getWhoClicked();
-		InventoryType invType = e.getClickedInventory().getType();
+		InventoryType invType = (e.getClickedInventory() != null) ? e.getClickedInventory().getType() : null;
 		
-		if (lockRegistry.hasRegister(player.getUniqueId().toString()) && (invType == InventoryType.PLAYER || invType == InventoryType.CREATIVE)) {
+		if (lockRegistry.hasRegister(player.getUniqueId().toString()) && (invType == null || invType == InventoryType.PLAYER || invType == InventoryType.CREATIVE)) {
 			e.setCancelled(true);
 		}
 	}

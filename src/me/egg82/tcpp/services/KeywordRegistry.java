@@ -218,6 +218,27 @@ public class KeywordRegistry extends Registry {
 			"detector",
 			"bolt"
 		});
+		setRegister("empower", String[].class, new String[] {
+			"dragon",
+			"egg",
+			"ender",
+			"allow",
+			"entitle",
+			"grant",
+			"power",
+			"health",
+			"regen",
+			"regeneration",
+			"attack",
+			"defense",
+			"speed",
+			"vest",
+			"permit",
+			"invest",
+			"privilege",
+			"qualify",
+			"sanction"
+		});
 		setRegister("empty", String[].class, new String[] {
 			"ender",
 			"pearl",
@@ -307,6 +328,16 @@ public class KeywordRegistry extends Registry {
 			"worry",
 			"agitate"
 		});
+		setRegister("hottub", String[].class, new String[] {
+			"torch",
+			"lava",
+			"burn",
+			"fire",
+			"hot",
+			"drop",
+			"fall",
+			"hole"
+		});
 		setRegister("hound", String[].class, new String[] {
 			"bone",
 			"dog",
@@ -383,6 +414,23 @@ public class KeywordRegistry extends Registry {
 			"cook",
 			"flame",
 			"smoke"
+		});
+		setRegister("levitate", String[].class, new String[] {
+			"feather",
+			"chicken",
+			"drift",
+			"float",
+			"fly",
+			"hang",
+			"climb",
+			"disappear",
+			"hover",
+			"raise",
+			"rise",
+			"soar",
+			"gravity",
+			"up",
+			"vanish"
 		});
 		setRegister("lift", String[].class, new String[] {
 			"slime",
@@ -555,6 +603,14 @@ public class KeywordRegistry extends Registry {
 			"negate",
 			"reverse",
 			"ruin"
+		});
+		setRegister("snowballfight", String[].class, new String[] {
+			"snow",
+			"ball",
+			"snowball",
+			"bow",
+			"arrow",
+			"shoot"
 		});
 		setRegister("spam", String[].class, new String[] {
 			"bookshelf",

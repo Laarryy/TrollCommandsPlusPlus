@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.services.ElectrifyRegistry;
+import me.egg82.tcpp.services.SnowballFightRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CommandEvent;
 import ninja.egg82.patterns.IRegistry;
@@ -17,14 +17,14 @@ import ninja.egg82.plugin.enums.SpigotCommandErrorType;
 import ninja.egg82.plugin.enums.SpigotMessageType;
 import ninja.egg82.plugin.utils.CommandUtil;
 
-public class ElectrifyCommand extends PluginCommand {
+public class SnowballFightCommand extends PluginCommand {
 	//vars
-	private IRegistry electrifyRegistry = (IRegistry) ServiceLocator.getService(ElectrifyRegistry.class);
+	private IRegistry snowballFightRegistry = (IRegistry) ServiceLocator.getService(SnowballFightRegistry.class);
 	
 	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
-	public ElectrifyCommand(CommandSender sender, Command command, String label, String[] args) {
+	public SnowballFightCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
 	}
 	
@@ -32,7 +32,7 @@ public class ElectrifyCommand extends PluginCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_ELECTRIFY)) {
+		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_SNOWBALL_FIGHT)) {
 			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
 			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
 			return;
@@ -62,15 +62,15 @@ public class ElectrifyCommand extends PluginCommand {
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
-		if (electrifyRegistry.hasRegister(uuid)) {
-			electrifyRegistry.setRegister(uuid, Player.class, null);
+		if (snowballFightRegistry.hasRegister(uuid)) {
+			snowballFightRegistry.setRegister(uuid, Player.class, null);
 			
-			sender.sendMessage(player.getName() + " is no longer being electrified.");
+			sender.sendMessage(player.getName() + " is no longer participating in a snowball fight.");
 		} else {
-			electrifyRegistry.setRegister(uuid, Player.class, player);
+			snowballFightRegistry.setRegister(uuid, Player.class, player);
 			metricsHelper.commandWasRun(command.getName());
 			
-			sender.sendMessage(player.getName() + " is now being electrified.");
+			sender.sendMessage(player.getName() + " is now participating in a snoball fight!");
 		}
 	}
 }
