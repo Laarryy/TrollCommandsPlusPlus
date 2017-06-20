@@ -1,6 +1,7 @@
 package me.egg82.tcpp.ticks;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -53,6 +54,8 @@ public class ClumsyTickCommand extends TickCommand {
 			if (filledSlots.size() == 0) {
 				return;
 			}
+			
+			Collections.shuffle(filledSlots);
 			
 			int droppedItemSlot = filledSlots.get(MathUtil.fairRoundedRandom(0, filledSlots.size() - 1));
 			ItemStack items = inventory.getItem(droppedItemSlot);

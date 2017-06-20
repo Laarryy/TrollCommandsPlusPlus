@@ -1,6 +1,6 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 3.10.30
+version: 3.11.30
 softdepend: [LibsDisguises,iDisguise]
 commands:
   alone:
@@ -145,6 +145,10 @@ commands:
   public:
     description: Gives everyone the chance to "inspect" the player's inventory. Freedom of information!
     usage: /public <player>
+  radiate:
+    description: Makes the player radiate toxicity, slowly killing all plant and animal-life around them.
+    usage: /radiate <player>
+    aliases: [toxic]
   rewind:
     description: Makes the player's time run backwards at speed. Does not affect the server.
     usage: /rewind <player>
@@ -179,6 +183,9 @@ commands:
   spin:
     description: This might make them a bit dizzy.
     usage: /spin <player>
+  spoil:
+    description: Ensures they quickly run out of food.
+    usage: /spoil <player>
   squid:
     description: .. Why is it raining squids?
     usage: /squid <player>

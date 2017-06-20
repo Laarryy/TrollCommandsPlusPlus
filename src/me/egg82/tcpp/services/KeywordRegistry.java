@@ -522,6 +522,26 @@ public class KeywordRegistry extends Registry {
 			"social",
 			"universal"
 		});
+		setRegister("radiate", String[].class, new String[] {
+			"soil",
+			"farmland",
+			"farm",
+			"till",
+			"tilled",
+			"dirt",
+			"podzol",
+			"toxin",
+			"venom",
+			"virus",
+			"cancer",
+			"blight",
+			"infection",
+			"emission",
+			"circulation",
+			"spread",
+			"radioactive",
+			"nuclear"
+		});
 		setRegister("rewind", String[].class, new String[] {
 			"enchantment",
 			"table",
@@ -634,6 +654,23 @@ public class KeywordRegistry extends Registry {
 			"turn",
 			"whirl",
 			"rotate"
+		});
+		setRegister("spoil", String[].class, new String[] {
+			"inventory",
+			"fish",
+			"puffer",
+			"decay",
+			"taint",
+			"addle",
+			"crumble",
+			"curdle",
+			"decompose",
+			"deteriorate",
+			"mold",
+			"molder",
+			"rot",
+			"turn",
+			"bad"
 		});
 		setRegister("squid", String[].class, new String[] {
 			"ink",

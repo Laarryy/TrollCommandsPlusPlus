@@ -80,6 +80,8 @@ public class PermissionsType {
 	public static final String COMMAND_HOT_TUB = "tcpp.command.hotTub";
 	public static final String COMMAND_SNOWBALL_FIGHT = "tcpp.command.snowballFight";
 	public static final String COMMAND_LEVITATE = "tcpp.command.levitate";
+	public static final String COMMAND_RADIATE = "tcpp.command.radiate";
+	public static final String COMMAND_SPOIL = "tcpp.command.spoil";
 	
 	//constructor
 	public PermissionsType() {

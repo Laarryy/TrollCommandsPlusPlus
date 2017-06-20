@@ -61,6 +61,8 @@ public class GuiRegistry extends Registry {
 		setRegister("portal", Material.class, Material.ENDER_PORTAL_FRAME);
 		setRegister("potato", Material.class, Material.POTATO_ITEM);
 		setRegister("public", Material.class, Material.DISPENSER);
+		setRegister("radiate", Material.class, Material.DIRT);
+		setRegister("radiate_data", Short.class, (short) 2);
 		setRegister("rewind", Material.class, Material.ENCHANTMENT_TABLE);
 		setRegister("scare", Material.class, Material.SKULL_ITEM);
 		setRegister("scare_data", Short.class, (short) 4);
@@ -74,6 +76,8 @@ public class GuiRegistry extends Registry {
 		setRegister("spam", Material.class, Material.BOOKSHELF);
 		setRegister("sparta", Material.class, Material.ARROW);
 		setRegister("spin", Material.class, Material.BOAT);
+		setRegister("spoil", Material.class, Material.RAW_FISH);
+		setRegister("spoil_data", Short.class, (short) 3);
 		setRegister("squid", Material.class, Material.INK_SACK);
 		setRegister("stampede", Material.class, Material.LEATHER);
 		setRegister("starve", Material.class, Material.POISONOUS_POTATO);
