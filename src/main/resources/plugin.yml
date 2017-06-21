@@ -1,6 +1,6 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 3.11.30
+version: 3.12.30
 softdepend: [LibsDisguises,iDisguise]
 commands:
   alone:
@@ -72,6 +72,9 @@ commands:
     description: The next block the player places explodes!
     usage: /explodebuild <player>
     aliases: [exbuild]
+  fakecrash:
+    description: Kicks the player with a nice little (or not-so-little) java exception message.
+    usage: /fakecrash <player>
   fakeop:
     description: Sends a message to the player saying they are opped. They will not be.
     usage: /fakeop <player>
@@ -149,6 +152,19 @@ commands:
     description: Makes the player radiate toxicity, slowly killing all plant and animal-life around them.
     usage: /radiate <player>
     aliases: [toxic]
+  randombreak:
+    description: Oh, diamonds-! Wait, why did I get dirt?
+    usage: /randombreak <player>
+  randombuild:
+    description: Build your house out of.. Everything!
+    usage: /randombuild <player>
+    aliases: [randomplace]
+  randomdrop:
+    description: Drop ALL of the things!
+    usage: /randomdrop <player>
+  randompotion:
+    description: Wait, what did I drink again?
+    usage: /randompotion <player>
   rewind:
     description: Makes the player's time run backwards at speed. Does not affect the server.
     usage: /rewind <player>

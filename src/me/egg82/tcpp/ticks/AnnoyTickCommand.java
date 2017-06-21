@@ -7,21 +7,21 @@ import me.egg82.tcpp.services.AnnoyRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.plugin.reflection.sound.SoundUtil;
+import ninja.egg82.plugin.utils.SoundHelper;
 import ninja.egg82.utils.MathUtil;
 
 public class AnnoyTickCommand extends TickCommand {
 	//vars
 	private IRegistry annoyRegistry = (IRegistry) ServiceLocator.getService(AnnoyRegistry.class);
 	
-	private SoundUtil soundUtil = (SoundUtil) ServiceLocator.getService(SoundUtil.class);
+	private SoundHelper soundHelper = (SoundHelper) ServiceLocator.getService(SoundHelper.class);
 	private Sound[] sounds = null;
 	
 	//constructor
 	public AnnoyTickCommand() {
 		super();
 		ticks = 20L;
-		sounds = soundUtil.filter(soundUtil.filter(soundUtil.getAllSounds(), "villager", true), "zombie", false);
+		sounds = soundHelper.filter(soundHelper.filter(soundHelper.getAllSounds(), "villager", true), "zombie", false);
 	}
 	
 	//public

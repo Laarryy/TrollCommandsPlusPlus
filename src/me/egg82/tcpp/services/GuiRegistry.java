@@ -36,6 +36,7 @@ public class GuiRegistry extends Registry {
 		setRegister("entomb", Material.class, Material.DIRT);
 		setRegister("explodebreak", Material.class, Material.COBBLESTONE);
 		setRegister("explodebuild", Material.class, Material.REDSTONE_TORCH_ON);
+		setRegister("fakecrash", Material.class, Material.COMMAND);
 		setRegister("fakeop", Material.class, Material.CAKE);
 		setRegister("flip", Material.class, Material.WOOD_STAIRS);
 		setRegister("freeze", Material.class, Material.ICE);
@@ -63,6 +64,10 @@ public class GuiRegistry extends Registry {
 		setRegister("public", Material.class, Material.DISPENSER);
 		setRegister("radiate", Material.class, Material.DIRT);
 		setRegister("radiate_data", Short.class, (short) 2);
+		setRegister("randombreak", Material.class, Material.IRON_PICKAXE);
+		setRegister("randombuild", Material.class, Material.MAP);
+		setRegister("randomdrop", Material.class, Material.COOKIE);
+		setRegister("randompotion", Material.class, Material.POTION);
 		setRegister("rewind", Material.class, Material.ENCHANTMENT_TABLE);
 		setRegister("scare", Material.class, Material.SKULL_ITEM);
 		setRegister("scare_data", Short.class, (short) 4);

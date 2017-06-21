@@ -16,9 +16,9 @@ import ninja.egg82.utils.MathUtil;
 
 public class VomitEventCommand extends EventCommand {
 	//vars
-	IRegistry vomitRegistry = (IRegistry) ServiceLocator.getService(VomitRegistry.class);
+	private IRegistry vomitRegistry = (IRegistry) ServiceLocator.getService(VomitRegistry.class);
 	
-	IPlayerUtil playerUtil = (IPlayerUtil) ServiceLocator.getService(IPlayerUtil.class);
+	private IPlayerUtil playerUtil = (IPlayerUtil) ServiceLocator.getService(IPlayerUtil.class);
 	
 	//constructor
 	public VomitEventCommand(Event event) {

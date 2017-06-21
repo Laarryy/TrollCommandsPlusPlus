@@ -28,6 +28,10 @@ public class MetricsHelper {
 		commandRegistry.setRegister(commandName, Integer.class, currentRuns);
 	}
 	
+	public void clear() {
+		commandRegistry.clear();
+	}
+	
 	//private
 	
 }

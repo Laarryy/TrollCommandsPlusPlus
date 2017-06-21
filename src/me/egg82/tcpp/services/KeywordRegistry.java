@@ -271,6 +271,16 @@ public class KeywordRegistry extends Registry {
 			"erupt",
 			"detonate"
 		});
+		setRegister("fakecrash", String[].class, new String[] {
+			"command",
+			"block",
+			"program",
+			"exception",
+			"error",
+			"java",
+			"system",
+			"failure"
+		});
 		setRegister("fakeop", String[].class, new String[] {
 			"cake",
 			"privilege",
@@ -541,6 +551,48 @@ public class KeywordRegistry extends Registry {
 			"spread",
 			"radioactive",
 			"nuclear"
+		});
+		setRegister("randombreak", String[].class, new String[] {
+			"iron",
+			"pick",
+			"pickaxe",
+			"accident",
+			"accidental",
+			"arbitrary",
+			"irregular",
+			"odd",
+			"unplanned"
+		});
+		setRegister("randombuild", String[].class, new String[] {
+			"map",
+			"paper",
+			"accident",
+			"accidental",
+			"arbitrary",
+			"irregular",
+			"odd",
+			"unplanned"
+		});
+		setRegister("randomdrop", String[].class, new String[] {
+			"cookie",
+			"accident",
+			"accidental",
+			"arbitrary",
+			"irregular",
+			"odd",
+			"unplanned"
+		});
+		setRegister("randompotion", String[].class, new String[] {
+			"potion",
+			"drink",
+			"splash",
+			"effect",
+			"accident",
+			"accidental",
+			"arbitrary",
+			"irregular",
+			"odd",
+			"unplanned"
 		});
 		setRegister("rewind", String[].class, new String[] {
 			"enchantment",

@@ -82,6 +82,11 @@ public class PermissionsType {
 	public static final String COMMAND_LEVITATE = "tcpp.command.levitate";
 	public static final String COMMAND_RADIATE = "tcpp.command.radiate";
 	public static final String COMMAND_SPOIL = "tcpp.command.spoil";
+	public static final String COMMAND_RANDOM_BREAK = "tcpp.command.randomBreak";
+	public static final String COMMAND_RANDOM_BUILD = "tcpp.command.randomBuild";
+	public static final String COMMAND_RANDOM_DROP = "tcpp.command.randomDrop";
+	public static final String COMMAND_FAKE_CRASH = "tcpp.command.fakeCrash";
+	public static final String COMMAND_RANDOM_POTION = "tcpp.command.randomPotion";
 	
 	//constructor
 	public PermissionsType() {
