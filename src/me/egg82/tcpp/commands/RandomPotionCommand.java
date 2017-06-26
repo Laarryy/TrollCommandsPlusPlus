@@ -57,20 +57,36 @@ public class RandomPotionCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!randomPotionRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
+		randomPotionRegistry.setRegister(uuid, Player.class, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage("Any potion " + player.getName() + " drinks or throws will now turn into another potion!");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (randomPotionRegistry.hasRegister(uuid)) {
-			randomPotionRegistry.setRegister(uuid, Player.class, null);
-			
-			sender.sendMessage(player.getName() + " will no longer get random potion effects from their potion experience.");
-		} else {
-			randomPotionRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage("Any potion " + player.getName() + " drinks or throws will now turn into another potion!");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		randomPotionRegistry.setRegister(uuid, Player.class, null);
+		
+		sender.sendMessage(player.getName() + " will no longer get random potion effects from their potion experience.");
 	}
 }

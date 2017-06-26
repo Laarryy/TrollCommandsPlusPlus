@@ -57,20 +57,36 @@ public class LavaBreakCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!lavaBreakRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
+		lavaBreakRegistry.setRegister(uuid, Player.class, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage("The next block " + player.getName() + " breaks will now be lava!");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (lavaBreakRegistry.hasRegister(uuid)) {
-			lavaBreakRegistry.setRegister(uuid, Player.class, null);
-			
-			sender.sendMessage("The next block " + player.getName() + " breaks will no longer be lava.");
-		} else {
-			lavaBreakRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage("The next block " + player.getName() + " breaks will now be lava!");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		lavaBreakRegistry.setRegister(uuid, Player.class, null);
+		
+		sender.sendMessage("The next block " + player.getName() + " breaks will no longer be lava.");
 	}
 }

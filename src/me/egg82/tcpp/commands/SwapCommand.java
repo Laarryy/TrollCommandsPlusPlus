@@ -80,4 +80,8 @@ public class SwapCommand extends PluginCommand {
 		
 		sender.sendMessage(player1.getName() + " and " + player2.getName() + "have been swapped.");
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

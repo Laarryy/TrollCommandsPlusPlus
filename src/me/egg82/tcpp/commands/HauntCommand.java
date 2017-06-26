@@ -57,20 +57,36 @@ public class HauntCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!hauntRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
+		hauntRegistry.setRegister(uuid, Player.class, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage(player.getName() + " is now being haunted by mysterious sounds.");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (hauntRegistry.hasRegister(uuid)) {
-			hauntRegistry.setRegister(uuid, Player.class, null);
-			
-			sender.sendMessage(player.getName() + " is no longer being haunted by mysterious sounds.");
-		} else {
-			hauntRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage(player.getName() + " is now being haunted by mysterious sounds.");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		hauntRegistry.setRegister(uuid, Player.class, null);
+		
+		sender.sendMessage(player.getName() + " is no longer being haunted by mysterious sounds.");
 	}
 }

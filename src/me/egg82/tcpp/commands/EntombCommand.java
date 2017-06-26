@@ -79,4 +79,8 @@ public class EntombCommand extends PluginCommand {
 		
 		sender.sendMessage(player.getName() + " has been entombed.");
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

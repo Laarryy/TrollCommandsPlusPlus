@@ -57,20 +57,36 @@ public class TrickleCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!trickleRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
+		trickleRegistry.setRegister(uuid, Player.class, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage(player.getName() + " is now leaking XP everywhere!");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (trickleRegistry.hasRegister(uuid)) {
-			trickleRegistry.setRegister(uuid, Player.class, null);
-			
-			sender.sendMessage(player.getName() + " is no longer leaking XP.");
-		} else {
-			trickleRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage(player.getName() + " is now leaking XP everywhere!");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		trickleRegistry.setRegister(uuid, Player.class, null);
+		
+		sender.sendMessage(player.getName() + " is no longer leaking XP.");
 	}
 }

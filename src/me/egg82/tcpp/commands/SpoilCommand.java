@@ -57,20 +57,36 @@ public class SpoilCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!spoilRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
+		spoilRegistry.setRegister(uuid, Player.class, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage(player.getName() + "'s food will now slowly spoil!");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (spoilRegistry.hasRegister(uuid)) {
-			spoilRegistry.setRegister(uuid, Player.class, null);
-			
-			sender.sendMessage(player.getName() + "'s food will no longer spoil.");
-		} else {
-			spoilRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage(player.getName() + "'s food will now slowly spoil!");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		spoilRegistry.setRegister(uuid, Player.class, null);
+		
+		sender.sendMessage(player.getName() + "'s food will no longer spoil.");
 	}
 }

@@ -57,20 +57,36 @@ public class NauseaCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!nauseaRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
+		nauseaRegistry.setRegister(uuid, Player.class, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage(player.getName() + " is now feeling nauseous.");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (nauseaRegistry.hasRegister(uuid)) {
-			nauseaRegistry.setRegister(uuid, Player.class, null);
-			
-			sender.sendMessage(player.getName() + " is no longer nauseous.");
-		} else {
-			nauseaRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage(player.getName() + " is now nauseous.");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		nauseaRegistry.setRegister(uuid, Player.class, null);
+		
+		sender.sendMessage(player.getName() + " is no longer feeling nauseous.");
 	}
 }

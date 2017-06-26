@@ -58,24 +58,40 @@ public class InfinityCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!infinityRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
+		Location playerLocation = player.getWorld().getHighestBlockAt(player.getLocation()).getLocation().clone();
+		playerLocation.add(0.0d, 30.0d, 0.0d);
+		player.teleport(playerLocation);
+		
+		infinityRegistry.setRegister(uuid, Player.class, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage(player.getName() + " is now faaaaalling foreeeeveeeeeer.");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (infinityRegistry.hasRegister(uuid)) {
-			infinityRegistry.setRegister(uuid, Player.class, null);
-			
-			sender.sendMessage(player.getName() + " is no longer falling forever.");
-		} else {
-			Location playerLocation = player.getWorld().getHighestBlockAt(player.getLocation()).getLocation().clone();
-			playerLocation.add(0.0d, 30.0d, 0.0d);
-			player.teleport(playerLocation);
-			
-			infinityRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage(player.getName() + " is now faaaaalling foreeeeveeeeeer.");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		infinityRegistry.setRegister(uuid, Player.class, null);
+		
+		sender.sendMessage(player.getName() + " is no longer falling indefinitely.");
 	}
 }

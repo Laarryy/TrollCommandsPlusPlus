@@ -57,20 +57,36 @@ public class SpinCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!spinRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
+		spinRegistry.setRegister(uuid, Player.class, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage(player.getName() + " is now spinning in circles.");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (spinRegistry.hasRegister(uuid)) {
-			spinRegistry.setRegister(uuid, Player.class, null);
-			
-			sender.sendMessage(player.getName() + " is no longer spinning in circles.");
-		} else {
-			spinRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage(player.getName() + " is now spinning in circles.");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		spinRegistry.setRegister(uuid, Player.class, null);
+		
+		sender.sendMessage(player.getName() + " is no longer spinning in circles.");
 	}
 }

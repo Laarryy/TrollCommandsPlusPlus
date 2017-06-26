@@ -57,20 +57,36 @@ public class ExplodeBreakCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!explodeBreakRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
+		explodeBreakRegistry.setRegister(uuid, Player.class, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage("The next block " + player.getName() + " breaks will now explode!");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (explodeBreakRegistry.hasRegister(uuid)) {
-			explodeBreakRegistry.setRegister(uuid, Player.class, null);
-			
-			sender.sendMessage("The next block " + player.getName() + " breaks will no longer explode.");
-		} else {
-			explodeBreakRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage("The next block " + player.getName() + " breaks will now explode!");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		explodeBreakRegistry.setRegister(uuid, Player.class, null);
+		
+		sender.sendMessage("The next block " + player.getName() + " breaks will no longer explode.");
 	}
 }

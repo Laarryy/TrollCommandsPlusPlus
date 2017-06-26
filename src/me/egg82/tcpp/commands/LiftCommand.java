@@ -66,4 +66,8 @@ public class LiftCommand extends PluginCommand {
 		
 		sender.sendMessage(player.getName() + " has been lifted.");
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

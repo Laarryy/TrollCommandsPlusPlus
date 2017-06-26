@@ -77,4 +77,8 @@ public class SlenderCommand extends PluginCommand {
 		
 		sender.sendMessage(player.getName() + " is now playing Slender.");
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

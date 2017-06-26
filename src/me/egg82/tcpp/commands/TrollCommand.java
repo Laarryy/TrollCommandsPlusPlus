@@ -93,4 +93,8 @@ public class TrollCommand extends PluginCommand {
 		
 		metricsHelper.commandWasRun(command.getName());
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

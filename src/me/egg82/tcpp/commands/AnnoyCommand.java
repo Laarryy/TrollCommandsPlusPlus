@@ -19,7 +19,7 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class AnnoyCommand extends PluginCommand {
 	//vars
-	IRegistry annoyRegistry = (IRegistry) ServiceLocator.getService(AnnoyRegistry.class);
+	private IRegistry annoyRegistry = (IRegistry) ServiceLocator.getService(AnnoyRegistry.class);
 	
 	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
@@ -57,20 +57,36 @@ public class AnnoyCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!annoyRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
+		annoyRegistry.setRegister(uuid, Player.class, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage(player.getName() + " is now being annoyed by villager sounds.");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (annoyRegistry.hasRegister(uuid)) {
-			annoyRegistry.setRegister(uuid, Player.class, null);
-			
-			sender.sendMessage(player.getName() + " is no longer being annoyed by villager sounds.");
-		} else {
-			annoyRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage(player.getName() + " is now being annoyed by villager sounds.");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		annoyRegistry.setRegister(uuid, Player.class, null);
+		
+		sender.sendMessage(player.getName() + " is no longer being annoyed by villager sounds.");
 	}
 }

@@ -63,12 +63,15 @@ public class CannonCommand extends PluginCommand {
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
-	
 	private void e(Player player, double speed) {
 		TNTPrimed tnt = player.getWorld().spawn(player.getLocation(), TNTPrimed.class);
 		Vector direction = player.getLocation().getDirection().multiply(speed);
 		tnt.setVelocity(direction);
 		
 		metricsHelper.commandWasRun(command.getName());
+	}
+	
+	protected void onUndo() {
+		
 	}
 }

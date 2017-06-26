@@ -74,4 +74,8 @@ public class ScareCommand extends PluginCommand {
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

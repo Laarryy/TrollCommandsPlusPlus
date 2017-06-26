@@ -57,20 +57,36 @@ public class RandomBuildCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!randomBuildRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
+		randomBuildRegistry.setRegister(uuid, Player.class, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage("Any block " + player.getName() + " places will now turn into another block!");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (randomBuildRegistry.hasRegister(uuid)) {
-			randomBuildRegistry.setRegister(uuid, Player.class, null);
-			
-			sender.sendMessage(player.getName() + " will no longer get random blocks from their building experience.");
-		} else {
-			randomBuildRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage("Any block " + player.getName() + " places will now turn into another block!");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		randomBuildRegistry.setRegister(uuid, Player.class, null);
+		
+		sender.sendMessage(player.getName() + " will no longer get random blocks from their building experience.");
 	}
 }

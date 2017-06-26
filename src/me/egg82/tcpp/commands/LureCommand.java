@@ -107,4 +107,8 @@ public class LureCommand extends PluginCommand {
 		
 		sender.sendMessage("Nearby monsters have been lured to " + player.getName() + ".");
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

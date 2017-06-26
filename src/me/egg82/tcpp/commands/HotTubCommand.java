@@ -91,4 +91,8 @@ public class HotTubCommand extends PluginCommand {
 		
 		sender.sendMessage(player.getName() + " is now taking a hot bath.");
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

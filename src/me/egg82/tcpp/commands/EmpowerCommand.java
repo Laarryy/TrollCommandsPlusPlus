@@ -65,4 +65,8 @@ public class EmpowerCommand extends PluginCommand {
 			sender.sendMessage("You will now empower (or disempower) the next player or mob you right-click!");
 		}
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

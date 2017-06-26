@@ -109,4 +109,30 @@ public class ControlCommand extends PluginCommand {
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		
+		if (player == null) {
+			sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
+			return;
+		}
+		if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+			sender.sendMessage(MessageType.PLAYER_IMMUNE);
+			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
+			return;
+		}
+		
+		String playerUuid = player.getUniqueId().toString();
+		
+		for (String controllerUuid : controlRegistry.getRegistryNames()) {
+			Player controlledPlayer = (Player) controlRegistry.getRegister(controllerUuid);
+			
+			if (controlledPlayer.getUniqueId().toString().equals(playerUuid)) {
+				controlHelper.uncontrol(controllerUuid, CommandUtil.getPlayerByUuid(controllerUuid));
+				break;
+			}
+		}
+	}
 }

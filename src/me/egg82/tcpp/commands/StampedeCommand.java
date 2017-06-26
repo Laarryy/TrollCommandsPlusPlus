@@ -94,4 +94,8 @@ public class StampedeCommand extends PluginCommand {
 		c.setVelocity(velocity);
 		f.setTarget(player);
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

@@ -80,4 +80,8 @@ public class InspectCommand extends PluginCommand {
 		
 		sender.sendMessage("You are now \"inspecting\" " + player.getName() + "'s inventory.");
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

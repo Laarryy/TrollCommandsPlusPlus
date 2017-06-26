@@ -78,4 +78,8 @@ public class HoundCommand extends PluginCommand {
 		
 		sender.sendMessage("The dogs have been unleashed on " + player.getName() + ".");
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

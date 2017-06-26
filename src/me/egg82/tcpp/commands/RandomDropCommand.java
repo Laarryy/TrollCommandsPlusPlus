@@ -57,20 +57,36 @@ public class RandomDropCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!randomDropRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
+		randomDropRegistry.setRegister(uuid, Player.class, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage("Any item " + player.getName() + " drops will now turn into another item!");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (randomDropRegistry.hasRegister(uuid)) {
-			randomDropRegistry.setRegister(uuid, Player.class, null);
-			
-			sender.sendMessage(player.getName() + " will no longer get random items from their.. Dropping experience?");
-		} else {
-			randomDropRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage("Any item " + player.getName() + " drops will now turn into another item!");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		randomDropRegistry.setRegister(uuid, Player.class, null);
+		
+		sender.sendMessage(player.getName() + " will no longer get random items from their.. Dropping experience?");
 	}
 }

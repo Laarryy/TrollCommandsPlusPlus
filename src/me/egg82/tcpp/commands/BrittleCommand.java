@@ -32,15 +32,15 @@ public class BrittleCommand extends PluginCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_BRITTLE)) {
-			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
-			return;
-		}
 		if (!CommandUtil.isArrayOfAllowedLength(args, 1)) {
 			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
 			sender.getServer().dispatchCommand(sender, "help " + command.getName());
 			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+			return;
+		}
+		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_BRITTLE)) {
+			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
 			return;
 		}
 		
@@ -57,20 +57,36 @@ public class BrittleCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!brittleRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
+		brittleRegistry.setRegister(uuid, Player.class, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage(player.getName() + " is now very brittle!");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (brittleRegistry.hasRegister(uuid)) {
-			brittleRegistry.setRegister(uuid, Player.class, null);
-			
-			sender.sendMessage(player.getName() + " is no longer bittle.");
-		} else {
-			brittleRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage(player.getName() + " is now very brittle!");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		brittleRegistry.setRegister(uuid, Player.class, null);
+		
+		sender.sendMessage(player.getName() + " is no longer bittle.");
 	}
 }

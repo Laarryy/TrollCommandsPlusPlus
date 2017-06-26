@@ -28,11 +28,6 @@ public class NightCommand extends PluginCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_NIGHT)) {
-			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
-			return;
-		}
 		if (!CommandUtil.isArrayOfAllowedLength(args, 1)) {
 			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
 			sender.getServer().dispatchCommand(sender, "help " + command.getName());
@@ -40,34 +35,69 @@ public class NightCommand extends PluginCommand {
 			return;
 		}
 		
+		if (!check()) {
+			return;
+		}
+		
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!player.isPlayerTimeRelative()) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void e(String uuid, Player player) {
+		player.setPlayerTime(18000, false);
+		
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage(player.getName() + "'s time is now perma-night.");
+	}
+	
+	protected void onUndo() {
+		if (!check()) {
+			return;
+		}
+		
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
+		if (player.isPlayerTimeRelative()) {
+			eUndo(uuid, player);
+		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		player.resetPlayerTime();
+		
+		sender.sendMessage(player.getName() + "'s time is no longer perma-night.");
+	}
+	
+	private boolean check() {
+		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_NIGHT)) {
+			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
+			return false;
+		}
+		
 		Player player = CommandUtil.getPlayerByName(args[0]);
 		
 		if (player == null) {
 			sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
 			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
-			return;
+			return false;
 		}
 		if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
 			sender.sendMessage(MessageType.PLAYER_IMMUNE);
 			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
-			return;
+			return false;
 		}
 		
-		e(player.getUniqueId().toString(), player);
-		
-		dispatch(CommandEvent.COMPLETE, null);
-	}
-	private void e(String uuid, Player player) {
-		if (!player.isPlayerTimeRelative()) {
-			player.resetPlayerTime();
-			
-			sender.sendMessage(player.getName() + "'s time is no longer perma-night.");
-		} else {
-			player.setPlayerTime(18000, false);
-			
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage(player.getName() + "'s time is now perma-night.");
-		}
+		return true;
 	}
 }

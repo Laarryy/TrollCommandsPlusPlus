@@ -91,4 +91,8 @@ public class VoidCommand extends PluginCommand {
 		
 		sender.sendMessage(player.getName() + " is now very confused as to why they are suddenly falling through the world.");
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

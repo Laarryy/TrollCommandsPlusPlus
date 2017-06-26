@@ -77,4 +77,8 @@ public class GolemCommand extends PluginCommand {
 		
 		sender.sendMessage(player.getName() + " is now having fun with golems.");
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

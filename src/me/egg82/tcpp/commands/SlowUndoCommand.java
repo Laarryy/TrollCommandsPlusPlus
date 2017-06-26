@@ -57,20 +57,36 @@ public class SlowUndoCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!slowUndoRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
+		slowUndoRegistry.setRegister(uuid, Player.class, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage("Any block changes " + player.getName() + " makes will now be slowly undone.");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (slowUndoRegistry.hasRegister(uuid)) {
-			slowUndoRegistry.setRegister(uuid, Player.class, null);
-			
-			sender.sendMessage("Any block changes " + player.getName() + " makes will no longer be slowly undone.");
-		} else {
-			slowUndoRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage("Any block changes " + player.getName() + " makes will now be slowly undone.");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		slowUndoRegistry.setRegister(uuid, Player.class, null);
+		
+		sender.sendMessage("Any block changes " + player.getName() + " makes will no longer be slowly undone.");
 	}
 }

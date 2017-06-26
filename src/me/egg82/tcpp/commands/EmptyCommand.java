@@ -66,4 +66,8 @@ public class EmptyCommand extends PluginCommand {
 		
 		sender.sendMessage(player.getName() + "'s inventory is now all gone!");
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

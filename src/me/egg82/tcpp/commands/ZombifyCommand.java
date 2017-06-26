@@ -77,4 +77,8 @@ public class ZombifyCommand extends PluginCommand {
 		
 		sender.sendMessage(player.getName() + " has been zombified.");
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

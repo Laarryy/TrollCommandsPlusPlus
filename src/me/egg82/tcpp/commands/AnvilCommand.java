@@ -73,4 +73,8 @@ public class AnvilCommand extends PluginCommand {
 		
 		sender.sendMessage("The " + ChatColor.STRIKETHROUGH + ChatColor.ITALIC + "base" + ChatColor.RESET + " anvil has been dropped on " + player.getName() + ".");
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

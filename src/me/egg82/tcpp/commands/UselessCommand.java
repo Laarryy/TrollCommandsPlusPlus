@@ -82,4 +82,8 @@ public class UselessCommand extends PluginCommand {
 		
 		sender.sendMessage(player.getName() + "'s items are now all \"Useless\"!");
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

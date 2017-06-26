@@ -77,4 +77,8 @@ public class FlipCommand extends PluginCommand {
 		
 		sender.sendMessage(player.getName() + " has been flipped.");
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

@@ -78,4 +78,8 @@ public class PublicCommand extends PluginCommand {
 		
 		sender.sendMessage("Everyone is now \"inspecting\" " + player.getName() + "'s inventory!");
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

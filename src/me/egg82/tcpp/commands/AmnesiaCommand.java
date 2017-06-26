@@ -63,22 +63,40 @@ public class AmnesiaCommand extends PluginCommand {
 			return;
 		}
 		
+		String uuid = player.getUniqueId().toString();
+		
+		if (!amnesiaRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
+		
 		e(player.getUniqueId().toString(), player);
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
+		amnesiaMessageRegistry.setRegister(uuid, List.class, Collections.synchronizedList(new ArrayList<String>()));
+		amnesiaRegistry.setRegister(uuid, Player.class, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage(player.getName() + " is now an amnesiac.");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (amnesiaRegistry.hasRegister(uuid)) {
-			amnesiaRegistry.setRegister(uuid, Player.class, null);
-			amnesiaMessageRegistry.setRegister(uuid, List.class, null);
-			
-			sender.sendMessage(player.getName() + " is no longer an amnesiac.");
-		} else {
-			amnesiaMessageRegistry.setRegister(uuid, List.class, Collections.synchronizedList(new ArrayList<String>()));
-			amnesiaRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage(player.getName() + " is now an amnesiac.");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		amnesiaRegistry.setRegister(uuid, Player.class, null);
+		amnesiaMessageRegistry.setRegister(uuid, List.class, null);
+		
+		sender.sendMessage(player.getName() + " is no longer an amnesiac.");
 	}
 }

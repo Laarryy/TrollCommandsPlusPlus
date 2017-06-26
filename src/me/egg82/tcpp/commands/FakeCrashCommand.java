@@ -94,4 +94,8 @@ public class FakeCrashCommand extends PluginCommand {
 		
 		sender.sendMessage(player.getName() + " has been \"crashed\".");
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

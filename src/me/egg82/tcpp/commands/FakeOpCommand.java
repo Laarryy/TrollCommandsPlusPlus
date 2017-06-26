@@ -65,4 +65,8 @@ public class FakeOpCommand extends PluginCommand {
 		
 		sender.sendMessage(player.getName() + " has been fake-opped.");
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

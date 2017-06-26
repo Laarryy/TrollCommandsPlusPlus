@@ -58,28 +58,44 @@ public class AloneCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!aloneRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
-		if (aloneRegistry.hasRegister(uuid)) {
-			aloneRegistry.setRegister(uuid, Player.class, null);
-			
-			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-				player.showPlayer(p);
-			}
-			
-			sender.sendMessage(player.getName() + " is no longer alone in this wold!");
-		} else {
-			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-				player.hidePlayer(p);
-			}
-			
-			aloneRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage(player.getName() + " is now all alone :(");
+		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+			player.hidePlayer(p);
 		}
+		
+		aloneRegistry.setRegister(uuid, Player.class, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage(player.getName() + " is now all alone :(");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
+		if (aloneRegistry.hasRegister(uuid)) {
+			eUndo(uuid, player);
+		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		aloneRegistry.setRegister(uuid, Player.class, null);
+		
+		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+			player.showPlayer(p);
+		}
+		
+		sender.sendMessage(player.getName() + " is no longer alone in this wold!");
 	}
 }

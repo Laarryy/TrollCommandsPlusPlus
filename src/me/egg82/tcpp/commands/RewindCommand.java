@@ -57,21 +57,37 @@ public class RewindCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!rewindRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
+		rewindRegistry.setRegister(uuid, Player.class, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage(player.getName() + "'s time is now rewinding.");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (rewindRegistry.hasRegister(uuid)) {
-			rewindRegistry.setRegister(uuid, Player.class, null);
-			player.resetPlayerTime();
-			
-			sender.sendMessage(player.getName() + "'s time is no longer rewinding.");
-		} else {
-			rewindRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage(player.getName() + "'s time is now rewinding.");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		rewindRegistry.setRegister(uuid, Player.class, null);
+		player.resetPlayerTime();
+		
+		sender.sendMessage(player.getName() + "'s time is no longer rewinding.");
 	}
 }

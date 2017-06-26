@@ -78,4 +78,8 @@ public class CreepCommand extends PluginCommand {
 		
 		sender.sendMessage(player.getName() + " is now playing with explosives.");
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

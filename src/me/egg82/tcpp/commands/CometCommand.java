@@ -69,4 +69,8 @@ public class CometCommand extends PluginCommand {
 		
 		metricsHelper.commandWasRun(command.getName());
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

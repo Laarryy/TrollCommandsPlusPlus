@@ -53,21 +53,37 @@ public class DayCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!player.isPlayerTimeRelative()) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
-		if (!player.isPlayerTimeRelative()) {
-			player.resetPlayerTime();
-			
-			sender.sendMessage(player.getName() + "'s time is no longer perma-day.");
-		} else {
-			player.setPlayerTime(6000, false);
-			
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage(player.getName() + "'s time is now perma-day.");
+		player.setPlayerTime(6000, false);
+		
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage(player.getName() + "'s time is now perma-day.");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
+		if (player.isPlayerTimeRelative()) {
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		player.resetPlayerTime();
+		
+		sender.sendMessage(player.getName() + "'s time is no longer perma-day.");
 	}
 }

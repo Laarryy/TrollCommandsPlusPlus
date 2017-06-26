@@ -60,21 +60,37 @@ public class VegetableCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player, (args.length == 2) ? getVegetableByName(args[1]) : Material.POTATO_ITEM);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!vegetableRegistry.hasRegister(uuid)) {
+			e(uuid, player, (args.length == 2) ? getVegetableByName(args[1]) : Material.POTATO_ITEM);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player, Material vegetable) {
+		vegetableHelper.vegetable(uuid, player, vegetable);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage(player.getName() + " is now a vegetable.");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (vegetableRegistry.hasRegister(uuid)) {
-			vegetableHelper.unvegetable(uuid, player);
-			
-			sender.sendMessage(player.getName() + " is no longer a vegetable.");
-		} else {
-			vegetableHelper.vegetable(uuid, player, vegetable);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage(player.getName() + " is now a vegetable.");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		vegetableHelper.unvegetable(uuid, player);
+		
+		sender.sendMessage(player.getName() + " is no longer a vegetable.");
 	}
 	
 	private Material getVegetableByName(String name) {

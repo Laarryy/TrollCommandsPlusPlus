@@ -106,7 +106,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		try {
 			metrics = new Metrics(this);
 		} catch (Exception ex) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[TrollCommands++] WARNING: Connection to metrics server could not be established. This affects nothing for server owners. Nothing to worry about!");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[TrollCommands++] WARNING: Connection to metrics server could not be established. This affects nothing for server owners, but it does make me sad :(");
 		}
 		
 		if (metrics != null) {
@@ -121,6 +121,18 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 					return values;
 				}
 			});
+			/*metrics.addCustomChart(new Metrics.MultiLineChart("commands-ml") {
+				@Override
+				public HashMap<String, Integer> getValues(HashMap<String, Integer> values) {
+					IRegistry commandRegistry = (IRegistry) ServiceLocator.getService(CommandRegistry.class);
+					String[] names = commandRegistry.getRegistryNames();
+					for (String name : names) {
+						values.put(name, (Integer) commandRegistry.getRegister(name));
+					}
+					commandRegistry.clear();
+					return values;
+				}
+			});*/
 		}
 		
 		numCommands = SpigotReflectUtil.addCommandsFromPackage("me.egg82.tcpp.commands");

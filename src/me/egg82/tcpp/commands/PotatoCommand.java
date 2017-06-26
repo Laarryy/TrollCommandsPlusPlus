@@ -76,4 +76,8 @@ public class PotatoCommand extends PluginCommand {
 		
 		sender.sendMessage(player.getName() + "'s inventory is now potato.");
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

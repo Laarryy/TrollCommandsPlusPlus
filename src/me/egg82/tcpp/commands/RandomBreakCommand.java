@@ -57,20 +57,36 @@ public class RandomBreakCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!randomBreakRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
+		randomBreakRegistry.setRegister(uuid, Player.class, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage("Any block " + player.getName() + " breaks will now drop random items!");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (randomBreakRegistry.hasRegister(uuid)) {
-			randomBreakRegistry.setRegister(uuid, Player.class, null);
-			
-			sender.sendMessage(player.getName() + " will no longer get random drops from their mining experience.");
-		} else {
-			randomBreakRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage("Any block " + player.getName() + " breaks will now drop random items!");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		randomBreakRegistry.setRegister(uuid, Player.class, null);
+		
+		sender.sendMessage(player.getName() + " will no longer get random drops from their mining experience.");
 	}
 }

@@ -57,20 +57,36 @@ public class PopupCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!popupRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
+		popupRegistry.setRegister(uuid, Player.class, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage(player.getName() + "'s inventory is now opening and closing randomly.");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (popupRegistry.hasRegister(uuid)) {
-			popupRegistry.setRegister(uuid, Player.class, null);
-			
-			sender.sendMessage(player.getName() + "'s inventory is no longer opening and closing randomly.");
-		} else {
-			popupRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage(player.getName() + "'s inventory is now opening and closing randomly.");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		popupRegistry.setRegister(uuid, Player.class, null);
+		
+		sender.sendMessage(player.getName() + "'s inventory is no longer opening and closing randomly.");
 	}
 }

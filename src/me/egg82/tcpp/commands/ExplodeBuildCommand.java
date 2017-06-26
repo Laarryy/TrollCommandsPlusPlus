@@ -57,20 +57,36 @@ public class ExplodeBuildCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!explodeBuildRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
+		explodeBuildRegistry.setRegister(uuid, Player.class, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage("The next block " + player.getName() + " places will now explode!");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (explodeBuildRegistry.hasRegister(uuid)) {
-			explodeBuildRegistry.setRegister(uuid, Player.class, null);
-			
-			sender.sendMessage("The next block " + player.getName() + " places will no longer explode.");
-		} else {
-			explodeBuildRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage("The next block " + player.getName() + " places will now explode!");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		explodeBuildRegistry.setRegister(uuid, Player.class, null);
+		
+		sender.sendMessage("The next block " + player.getName() + " places will no longer explode.");
 	}
 }

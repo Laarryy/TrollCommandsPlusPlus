@@ -75,7 +75,6 @@ public class BanishCommand extends PluginCommand {
 			dispatch(CommandEvent.ERROR, CommandErrorType.NO_SPACE);
 		}
 	}
-	
 	private boolean e(String uuid, Player player, double maxRadius) {
 		double minRadius = maxRadius - (maxRadius / 3.0d);
 		Location currentLocation = player.getLocation();
@@ -112,5 +111,9 @@ public class BanishCommand extends PluginCommand {
 		
 		sender.sendMessage(player.getName() + " has been banished.");
 		return true;
+	}
+	
+	protected void onUndo() {
+		
 	}
 }

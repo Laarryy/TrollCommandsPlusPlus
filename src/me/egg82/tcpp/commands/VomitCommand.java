@@ -57,20 +57,36 @@ public class VomitCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!vomitRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
+		vomitRegistry.setRegister(uuid, Player.class, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage(player.getName() + " will now up-chuck everything they consume!");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (vomitRegistry.hasRegister(uuid)) {
-			vomitRegistry.setRegister(uuid, Player.class, null);
-			
-			sender.sendMessage(player.getName() + " will no longer up-chuck everything they consume.");
-		} else {
-			vomitRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage(player.getName() + " will now up-chuck everything they consume!");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		vomitRegistry.setRegister(uuid, Player.class, null);
+		
+		sender.sendMessage(player.getName() + " will no longer up-chuck everything they consume.");
 	}
 }

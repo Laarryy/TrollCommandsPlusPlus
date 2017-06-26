@@ -65,6 +65,8 @@ public class DelayKillCommand extends PluginCommand {
 			return;
 		}
 		
+		String uuid = player.getUniqueId().toString();
+		
 		long delay = 10L;
 		
 		if (args.length == 2) {
@@ -85,33 +87,47 @@ public class DelayKillCommand extends PluginCommand {
 			}
 		}
 		
-		e(player.getUniqueId().toString(), player, delay);
+		if (!delayKillRegistry.hasRegister(uuid)) {
+			e(uuid, player, delay);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player, long delay) {
-		if (delayKillRegistry.hasRegister(uuid)) {
-			delayKillRegistry.setRegister(uuid, Player.class, null);
-			
-			sender.sendMessage(player.getName() + "'s death is no longer inevitable.");
-		} else {
-			delayKillRegistry.setRegister(uuid, Player.class, player);
-			
-			// Wait Xx20 ticks
-			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {
-				public void run() {
-					// Is the player still in the registry, or have they been removed for one reason or another?
-					if (delayKillRegistry.hasRegister(uuid)) {
-						// Kill them!
-						player.setHealth(0.0d);
-						entityUtil.damage(player, EntityDamageEvent.DamageCause.SUICIDE, Double.MAX_VALUE);
-					}
+		delayKillRegistry.setRegister(uuid, Player.class, player);
+		
+		// Wait Xx20 ticks
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {
+			public void run() {
+				// Is the player still in the registry, or have they been removed for one reason or another?
+				if (delayKillRegistry.hasRegister(uuid)) {
+					// Kill them!
+					player.setHealth(0.0d);
+					entityUtil.damage(player, EntityDamageEvent.DamageCause.SUICIDE, Double.MAX_VALUE);
 				}
-			}, delay * 20);
-			
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage(player.getName() + "'s death is inevitable.");
+			}
+		}, delay * 20);
+		
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage(player.getName() + "'s death is inevitable.");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
+		if (delayKillRegistry.hasRegister(uuid)) {
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		delayKillRegistry.setRegister(uuid, Player.class, null);
+		
+		sender.sendMessage(player.getName() + "'s death is no longer inevitable.");
 	}
 }

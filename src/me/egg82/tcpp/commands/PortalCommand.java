@@ -91,4 +91,8 @@ public class PortalCommand extends PluginCommand {
 		
 		sender.sendMessage(player.getName() + " is now falling to The(ir) End.");
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

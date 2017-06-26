@@ -68,34 +68,50 @@ public class DisplayCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!displayRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
+		Location playerLocation = player.getLocation().clone();
+		playerLocation.setX(playerLocation.getBlockX() + 0.5d);
+		playerLocation.setY(playerLocation.getBlockY());
+		playerLocation.setZ(playerLocation.getBlockZ() + 0.5d);
+		
+		displayHelper.surround(playerLocation, Material.GLASS, Material.THIN_GLASS);
+		displayRegistry.setRegister(uuid, Player.class, player);
+		displayBlockRegistry.setRegister(uuid, Set.class, displayHelper.getBlockLocationsAround(playerLocation));
+		displayLocationRegistry.setRegister(uuid, Location.class, playerLocation);
+		
+		player.teleport(playerLocation);
+		
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage(player.getName() + " is now on display.");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (displayRegistry.hasRegister(uuid)) {
-			displayHelper.unsurround((Location) displayLocationRegistry.getRegister(uuid));
-			displayRegistry.setRegister(uuid, Player.class, null);
-			displayBlockRegistry.setRegister(uuid, Set.class, null);
-			displayLocationRegistry.setRegister(uuid, Location.class, null);
-			
-			sender.sendMessage(player.getName() + " is no longer on display.");
-		} else {
-			Location playerLocation = player.getLocation().clone();
-			playerLocation.setX(playerLocation.getBlockX() + 0.5d);
-			playerLocation.setY(playerLocation.getBlockY());
-			playerLocation.setZ(playerLocation.getBlockZ() + 0.5d);
-			
-			displayHelper.surround(playerLocation, Material.GLASS, Material.THIN_GLASS);
-			displayRegistry.setRegister(uuid, Player.class, player);
-			displayBlockRegistry.setRegister(uuid, Set.class, displayHelper.getBlockLocationsAround(playerLocation));
-			displayLocationRegistry.setRegister(uuid, Location.class, playerLocation);
-			
-			player.teleport(playerLocation);
-			
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage(player.getName() + " is now on display.");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		displayHelper.unsurround((Location) displayLocationRegistry.getRegister(uuid));
+		displayRegistry.setRegister(uuid, Player.class, null);
+		displayBlockRegistry.setRegister(uuid, Set.class, null);
+		displayLocationRegistry.setRegister(uuid, Location.class, null);
+		
+		sender.sendMessage(player.getName() + " is no longer on display.");
 	}
 }

@@ -57,20 +57,36 @@ public class GarbleCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!garbleRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
+		garbleRegistry.setRegister(uuid, Player.class, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage(player.getName() + "'s speech is now a garbled mess.");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (garbleRegistry.hasRegister(uuid)) {
-			garbleRegistry.setRegister(uuid, Player.class, null);
-			
-			sender.sendMessage(player.getName() + "'s speech is no longer a garbled mess.");
-		} else {
-			garbleRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage(player.getName() + "'s speech is now a garbled mess.");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		garbleRegistry.setRegister(uuid, Player.class, null);
+		
+		sender.sendMessage(player.getName() + "'s speech is no longer a garbled mess.");
 	}
 }

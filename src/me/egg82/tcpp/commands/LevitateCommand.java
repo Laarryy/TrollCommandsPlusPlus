@@ -57,20 +57,36 @@ public class LevitateCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player.getUniqueId().toString(), player);
+		String uuid = player.getUniqueId().toString();
+		
+		if (!levitateRegistry.hasRegister(uuid)) {
+			e(uuid, player);
+		} else {
+			eUndo(uuid, player);
+		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(String uuid, Player player) {
+		levitateRegistry.setRegister(uuid, Player.class, player);
+		metricsHelper.commandWasRun(command.getName());
+		
+		sender.sendMessage("It's a bird! It's a plane! No, it's " + player.getName() + "!");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		String uuid = player.getUniqueId().toString();
+		
 		if (levitateRegistry.hasRegister(uuid)) {
-			levitateRegistry.setRegister(uuid, Player.class, null);
-			
-			sender.sendMessage(player.getName() + "'s powers of levitation have suddenly disappeared.");
-		} else {
-			levitateRegistry.setRegister(uuid, Player.class, player);
-			metricsHelper.commandWasRun(command.getName());
-			
-			sender.sendMessage("It's a bird! It's a plane! No, it's " + player.getName() + "!");
+			eUndo(uuid, player);
 		}
+		
+		dispatch(CommandEvent.COMPLETE, null);
+	}
+	private void eUndo(String uuid, Player player) {
+		levitateRegistry.setRegister(uuid, Player.class, null);
+		
+		sender.sendMessage(player.getName() + "'s powers of levitation have suddenly disappeared.");
 	}
 }

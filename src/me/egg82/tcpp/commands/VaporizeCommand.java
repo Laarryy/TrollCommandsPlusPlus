@@ -78,4 +78,8 @@ public class VaporizeCommand extends PluginCommand {
 		
 		sender.sendMessage(player.getName() + " has been vaporized.");
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

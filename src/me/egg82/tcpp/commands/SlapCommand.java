@@ -80,4 +80,8 @@ public class SlapCommand extends PluginCommand {
 		
 		sender.sendMessage(player.getName() + " has been slapped.");
 	}
+	
+	protected void onUndo() {
+		
+	}
 }

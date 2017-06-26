@@ -1,13 +1,15 @@
 package me.egg82.tcpp.ticks;
 
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.services.WhoAmIRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
+import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.utils.MathUtil;
-import ninja.egg82.utils.StringUtil;
 
 public class WhoAmITickCommand extends TickCommand {
 	//vars
@@ -34,10 +36,20 @@ public class WhoAmITickCommand extends TickCommand {
 		}
 		
 		if (Math.random() <= 0.2) {
-			//Yeah, they're going to be different. I thought about it, and I like this more
-			player.setDisplayName(StringUtil.randomString(MathUtil.fairRoundedRandom(5, 8)));
-			player.setPlayerListName(StringUtil.randomString(MathUtil.fairRoundedRandom(5, 8)));
-			player.setCustomName(StringUtil.randomString(MathUtil.fairRoundedRandom(5, 8)));
+			OfflinePlayer[] players = Bukkit.getOfflinePlayers();
+			OfflinePlayer p = players[MathUtil.fairRoundedRandom(0, players.length - 1)];
+			
+			if (p.isOnline()) {
+				Player p2 = CommandUtil.getPlayerByUuid(p.getUniqueId());
+				
+				player.setDisplayName(p2.getDisplayName());
+				player.setPlayerListName(p2.getPlayerListName());
+				player.setCustomName(p2.getCustomName());
+			} else {
+				player.setDisplayName(p.getName());
+				player.setPlayerListName(p.getName());
+				player.setCustomName(p.getName());
+			}
 		}
 	}
 }
