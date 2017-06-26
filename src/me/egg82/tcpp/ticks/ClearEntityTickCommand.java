@@ -34,7 +34,7 @@ public class ClearEntityTickCommand extends TickCommand {
 		}
 	}
 	private void e(IRegistry registry, String uuid, Entity entity) {
-		if (entity.getTicksLived() >= 200L) {
+		if (entity.getTicksLived() >= 100L) {
 			entity.remove();
 			registry.setRegister(uuid, Entity.class, null);
 		}

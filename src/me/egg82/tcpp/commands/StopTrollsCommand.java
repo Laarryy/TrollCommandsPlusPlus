@@ -1,8 +1,5 @@
 package me.egg82.tcpp.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -15,29 +12,18 @@ import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotCommandErrorType;
 import ninja.egg82.plugin.enums.SpigotMessageType;
+import ninja.egg82.plugin.handlers.CommandHandler;
 import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.utils.ReflectUtil;
 
 public class StopTrollsCommand extends PluginCommand {
 	//vars
-	private ArrayList<PluginCommand> commands = new ArrayList<PluginCommand>();
+	private CommandHandler commandHandler = (CommandHandler) ServiceLocator.getService(CommandHandler.class);
 	
 	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public StopTrollsCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
-		
-		List<Class<? extends PluginCommand>> commands = ReflectUtil.getClasses(PluginCommand.class, "me.egg82.tcpp.commands");
-		for (int i = 0; i < commands.size(); i++) {
-			PluginCommand run = null;
-			try {
-				run = commands.get(i).getDeclaredConstructor(CommandSender.class, Command.class, String.class, String[].class).newInstance(sender, command, label, args);
-			} catch (Exception ex) {
-				continue;
-			}
-			this.commands.add(run);
-		}
 	}
 	
 	//public
@@ -64,12 +50,7 @@ public class StopTrollsCommand extends PluginCommand {
 			return;
 		}
 		
-		for (int i = 0; i < commands.size(); i++) {
-			PluginCommand run = commands.get(i);
-			run.setSender(sender);
-			run.setArgs(args);
-			run.undo();
-		}
+		commandHandler.undoInitializedCommands(sender, args);
 		
 		metricsHelper.commandWasRun(command.getName());
 		

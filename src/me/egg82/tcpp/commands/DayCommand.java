@@ -55,7 +55,7 @@ public class DayCommand extends PluginCommand {
 		
 		String uuid = player.getUniqueId().toString();
 		
-		if (!player.isPlayerTimeRelative()) {
+		if (player.isPlayerTimeRelative()) {
 			e(uuid, player);
 		} else {
 			eUndo(uuid, player);
@@ -75,7 +75,7 @@ public class DayCommand extends PluginCommand {
 		Player player = CommandUtil.getPlayerByName(args[0]);
 		String uuid = player.getUniqueId().toString();
 		
-		if (player.isPlayerTimeRelative()) {
+		if (!player.isPlayerTimeRelative()) {
 			eUndo(uuid, player);
 		}
 		
