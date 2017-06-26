@@ -87,6 +87,7 @@ public class PermissionsType {
 	public static final String COMMAND_RANDOM_DROP = "tcpp.command.randomDrop";
 	public static final String COMMAND_FAKE_CRASH = "tcpp.command.fakeCrash";
 	public static final String COMMAND_RANDOM_POTION = "tcpp.command.randomPotion";
+	public static final String COMMAND_STOP_TROLLS = "tcpp.command.stopTrolls";
 	
 	//constructor
 	public PermissionsType() {

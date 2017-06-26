@@ -211,6 +211,9 @@ commands:
   starve:
     description: They must have a REALLY fast metabolism!
     usage: /starve <player>
+  stoptrolls:
+    description: Stops any currently-active trolls against the player.
+    usage: /stoptrolls <player>
   swap:
     description: Swaps two players' locations, Freaky Friday style.
     usage: /swap <player> <player>
