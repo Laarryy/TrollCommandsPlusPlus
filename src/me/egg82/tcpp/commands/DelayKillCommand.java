@@ -18,16 +18,16 @@ import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotCommandErrorType;
 import ninja.egg82.plugin.enums.SpigotMessageType;
-import ninja.egg82.plugin.reflection.entity.IEntityUtil;
+import ninja.egg82.plugin.reflection.entity.IEntityHelper;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.startup.InitRegistry;
 
 public class DelayKillCommand extends PluginCommand {
 	//vars
-	private IEntityUtil entityUtil = (IEntityUtil) ServiceLocator.getService(IEntityUtil.class);
+	private IEntityHelper entityUtil = (IEntityHelper) ServiceLocator.getService(IEntityHelper.class);
 	
 	private IRegistry delayKillRegistry = (IRegistry) ServiceLocator.getService(DelayKillRegistry.class);
-	private IRegistry initRegistry = (IRegistry) ServiceLocator.getService(InitRegistry.class);
+	private JavaPlugin plugin = (JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin");
 	
 	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
@@ -99,7 +99,7 @@ public class DelayKillCommand extends PluginCommand {
 		delayKillRegistry.setRegister(uuid, Player.class, player);
 		
 		// Wait Xx20 ticks
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			public void run() {
 				// Is the player still in the registry, or have they been removed for one reason or another?
 				if (delayKillRegistry.hasRegister(uuid)) {

@@ -10,6 +10,7 @@ public class CommandErrorType {
 	public static final String ALREADY_DISGUISED = "alreadyDisguised";
 	public static final String NO_LIBRARY = "noLibrary";
 	public static final String ALREADY_USED = "alreadyUsed";
+	public static final String WRONG_GAME_VERSION = "wrongGameVersion";
 	
 	//constructor
 	public CommandErrorType() {

@@ -1,4 +1,4 @@
-package me.egg82.tcpp.util;
+package me.egg82.tcpp.reflection.disguise;
 
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -26,12 +26,14 @@ public class LibsDisguisesHelper implements IDisguiseHelper {
 	public void undisguise(Player player) {
 		DisguiseAPI.undisguiseToAll(player);
 	}
+	
 	public EntityType disguiseType(Player player) {
 		return (DisguiseAPI.isDisguised(player)) ? EntityType.valueOf(DisguiseAPI.getDisguise(player).getType().toString()) : null;
 	}
 	public boolean isDisguised(Player player) {
 		return DisguiseAPI.isDisguised(player);
 	}
+	
 	public boolean isValidLibrary() {
 		return true;
 	}

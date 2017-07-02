@@ -66,7 +66,7 @@ public class HoundCommand extends PluginCommand {
 		Location[] wolfLocations = LocationUtil.getCircleAround(player.getLocation(), 5.0d, MathUtil.fairRoundedRandom(8, 12));
 		
 		for (int i = 0; i < wolfLocations.length; i++) {
-			Location wolfLocation = BlockUtil.getTopAirBlock(wolfLocations[i]);
+			Location wolfLocation = BlockUtil.getTopWalkableBlock(wolfLocations[i]);
 			
 			Wolf w = (Wolf) player.getWorld().spawn(wolfLocation, Wolf.class);
 			w.setAngry(true);

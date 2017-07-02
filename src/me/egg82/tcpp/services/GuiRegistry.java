@@ -39,9 +39,11 @@ public class GuiRegistry extends Registry {
 		setRegister("fakecrash", Material.class, Material.COMMAND);
 		setRegister("fakeop", Material.class, Material.CAKE);
 		setRegister("flip", Material.class, Material.WOOD_STAIRS);
+		setRegister("foolsgold", Material.class, Material.GOLD_ORE);
 		setRegister("freeze", Material.class, Material.ICE);
 		setRegister("garble", Material.class, Material.BOOK);
 		setRegister("golem", Material.class, Material.RED_ROSE);
+		setRegister("grantwishes", Material.class, Material.DROPPER);
 		setRegister("haunt", Material.class, Material.SKULL_ITEM);
 		setRegister("haunt_data", Short.class, (short) 2);
 		setRegister("hottub", Material.class, Material.TORCH);
@@ -49,6 +51,7 @@ public class GuiRegistry extends Registry {
 		setRegister("hurt", Material.class, Material.DIAMOND_SWORD);
 		setRegister("infinity", Material.class, Material.WATER_BUCKET);
 		setRegister("inspect", Material.class, Material.HOPPER);
+		setRegister("invert", Material.class, Material.REDSTONE_COMPARATOR);
 		setRegister("lag", Material.class, Material.GOLD_BLOCK);
 		setRegister("lavabreak", Material.class, Material.LAVA_BUCKET);
 		setRegister("levitate", Material.class, Material.FEATHER);
@@ -57,6 +60,7 @@ public class GuiRegistry extends Registry {
 		setRegister("lure", Material.class, Material.BEACON);
 		setRegister("nausea", Material.class, Material.SPIDER_EYE);
 		setRegister("night", Material.class, Material.NETHER_STAR);
+		setRegister("nightmare", Material.class, Material.OBSIDIAN);
 		setRegister("nopickup", Material.class, Material.DEAD_BUSH);
 		setRegister("popup", Material.class, Material.CHEST);
 		setRegister("portal", Material.class, Material.ENDER_PORTAL_FRAME);
@@ -86,6 +90,7 @@ public class GuiRegistry extends Registry {
 		setRegister("squid", Material.class, Material.INK_SACK);
 		setRegister("stampede", Material.class, Material.LEATHER);
 		setRegister("starve", Material.class, Material.POISONOUS_POTATO);
+		setRegister("stoptrolls", Material.class, Material.BARRIER);
 		setRegister("swap", Material.class, Material.DIODE);
 		setRegister("trickle", Material.class, Material.GOLDEN_APPLE);
 		setRegister("troll", Material.class, Material.ENDER_CHEST);

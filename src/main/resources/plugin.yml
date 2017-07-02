@@ -1,7 +1,7 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 3.13.31
-softdepend: [LibsDisguises,iDisguise]
+version: 3.14.32
+softdepend: [LibsDisguises,iDisguise,ProtocolLib]
 commands:
   alone:
     description: Hides all other players from the specified player.
@@ -81,6 +81,9 @@ commands:
   flip:
     description: Flips the player around very quickly.
     usage: /flip <player>
+  foolsgold:
+    description: Ore! Ore everywhere, and not a drop to drink.
+    usage: /foolsgold <player>
   freeze:
     description: Don't like someone? Turn them into a statue!
     usage: /freeze <player>
@@ -90,6 +93,9 @@ commands:
   golem:
     description: Think War of the Worlds, golem style.
     usage: /golem <player>
+  grantwishes:
+    description: Be careful what you say!
+    usage: /grantwishes <player>
   haunt:
     description: Toggles random sounds near the player.
     usage: /haunt <player>
@@ -108,6 +114,9 @@ commands:
   inspect:
     description: Allows you to "inspect" the player's inventory.
     usage: /inspect <player>
+  invert:
+    description: Left is right, up is down! Only works for flight.
+    usage: /invert <player>
   lag:
     description: Makes the player experience fake lag. Does not affect the server.
     usage: /lag <player>
@@ -133,6 +142,9 @@ commands:
   night:
     description: Sets the player's time to night permanently. Does not affect the server.
     usage: /night <player>
+  nightmare:
+    description: Summons a waking nightmare for the player.
+    usage: /nightmare <player>
   nopickup:
     description: Stops the player from picking up items.
     usage: /nopickup <player>
@@ -197,8 +209,8 @@ commands:
     usage: /sparta <player>
     aliases: [pincushion]
   spin:
-    description: This might make them a bit dizzy.
-    usage: /spin <player>
+    description: This might make them a bit dizzy. Optionally allows you to adjust how fast they spin!
+    usage: /spin <player> [speed]
   spoil:
     description: Ensures they quickly run out of food.
     usage: /spoil <player>

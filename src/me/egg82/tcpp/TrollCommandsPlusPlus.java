@@ -19,14 +19,14 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.reflection.disguise.DisguiseHelper;
+import me.egg82.tcpp.reflection.disguise.LibsDisguisesHelper;
+import me.egg82.tcpp.reflection.disguise.NullDisguiseHelper;
 import me.egg82.tcpp.services.CommandRegistry;
 import me.egg82.tcpp.services.KeywordRegistry;
 import me.egg82.tcpp.util.ControlHelper;
-import me.egg82.tcpp.util.DisguiseHelper;
 import me.egg82.tcpp.util.DisplayHelper;
-import me.egg82.tcpp.util.LibsDisguisesHelper;
 import me.egg82.tcpp.util.MetricsHelper;
-import me.egg82.tcpp.util.NullDisguiseHelper;
 import me.egg82.tcpp.util.VegetableHelper;
 import me.egg82.tcpp.util.WhoAmIHelper;
 import me.egg82.tcpp.util.WorldHoleHelper;
@@ -85,6 +85,12 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		} else {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[TrollCommands++] Neither LibsDisguises nor iDisguise was found. The /control and /scare commands have been disabled.");
 			ServiceLocator.provideService(NullDisguiseHelper.class);
+		}
+		
+		if (manager.getPlugin("ProtocolLib") != null) {
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[TrollCommands++] Enabling support for ProtocolLib.");
+		} else {
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[TrollCommands++] ProtocolLib was not found. The /foolsgold, /nightmare, and /rewind commands have been disabled.");
 		}
 		
 		ServiceLocator.provideService(ControlHelper.class);

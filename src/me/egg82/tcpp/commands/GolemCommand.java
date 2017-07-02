@@ -66,7 +66,7 @@ public class GolemCommand extends PluginCommand {
 		Location[] golemLocations = LocationUtil.getCircleAround(player.getLocation(), 5.0d, MathUtil.fairRoundedRandom(8, 12));
 		
 		for (int i = 0; i < golemLocations.length; i++) {
-			Location golemLocation = BlockUtil.getTopAirBlock(golemLocations[i]);
+			Location golemLocation = BlockUtil.getTopWalkableBlock(golemLocations[i]);
 			
 			IronGolem g = player.getWorld().spawn(golemLocation, IronGolem.class);
 			g.setVelocity(LocationUtil.moveSmoothly(golemLocation, player.getLocation()));

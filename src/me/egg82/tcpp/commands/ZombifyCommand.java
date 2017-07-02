@@ -66,7 +66,7 @@ public class ZombifyCommand extends PluginCommand {
 		Location[] zombieLocations = LocationUtil.getCircleAround(player.getLocation(), 5.0d, MathUtil.fairRoundedRandom(10, 15));
 		
 		for (int i = 0; i < zombieLocations.length; i++) {
-			Location zombieLocation = BlockUtil.getTopAirBlock(zombieLocations[i]);
+			Location zombieLocation = BlockUtil.getTopWalkableBlock(zombieLocations[i]);
 			
 			Zombie z = player.getWorld().spawn(zombieLocation, Zombie.class);
 			z.setVelocity(LocationUtil.moveSmoothly(zombieLocation, player.getLocation()));

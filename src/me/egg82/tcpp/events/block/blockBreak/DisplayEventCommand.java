@@ -39,6 +39,7 @@ public class DisplayEventCommand extends EventCommand {
 			
 			if (blockedLocs.contains(loc)) {
 				e.setCancelled(true);
+				break;
 			}
 		}
 	}

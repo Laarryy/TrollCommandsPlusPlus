@@ -15,6 +15,7 @@ public class MessageType {
 	public static final String NOT_LIVING = ChatColor.RED + "The entity you have selected is neither a player nor a mob!";
 	public static final String EMPOWERED = "The entity you have selected is now empowered!";
 	public static final String DISEMPOWERED = "The entity you have selected is now disempowered!";
+	public static final String WRONG_GAME_VERSION = ChatColor.RED + "This command has been disabled because this version of Minecraft doesn't support it.";
 	
 	//constructor
 	public MessageType() {

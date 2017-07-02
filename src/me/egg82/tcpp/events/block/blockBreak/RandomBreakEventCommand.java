@@ -14,7 +14,7 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.core.BlockData;
-import ninja.egg82.plugin.reflection.player.IPlayerUtil;
+import ninja.egg82.plugin.reflection.player.IPlayerHelper;
 import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.MaterialHelper;
 import ninja.egg82.utils.MathUtil;
@@ -23,7 +23,7 @@ public class RandomBreakEventCommand extends EventCommand {
 	//vars
 	private IRegistry randomBreakRegistry = (IRegistry) ServiceLocator.getService(RandomBreakRegistry.class);
 	
-	private IPlayerUtil playerUtil = (IPlayerUtil) ServiceLocator.getService(IPlayerUtil.class);
+	private IPlayerHelper playerUtil = (IPlayerHelper) ServiceLocator.getService(IPlayerHelper.class);
 	private MaterialHelper materialHelper = (MaterialHelper) ServiceLocator.getService(MaterialHelper.class);
 	private Material[] materials = null;
 	

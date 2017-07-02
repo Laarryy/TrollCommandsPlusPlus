@@ -68,6 +68,7 @@ public class LureCommand extends PluginCommand {
 		List<Entity> entities = player.getNearbyEntities(1000.0d, 512.0d, 1000.0d);
 		for (Entity e : entities) {
 			EntityType type = e.getType();
+			String typeString = type.name().toLowerCase();
 			if (
 					type == EntityType.BLAZE ||
 					type == EntityType.CAVE_SPIDER ||
@@ -79,14 +80,21 @@ public class LureCommand extends PluginCommand {
 					type == EntityType.GIANT ||
 					type == EntityType.MAGMA_CUBE ||
 					type == EntityType.PIG_ZOMBIE ||
-					type == EntityType.SHULKER ||
 					type == EntityType.SILVERFISH ||
 					type == EntityType.SKELETON ||
 					type == EntityType.SLIME ||
 					type == EntityType.SPIDER ||
 					type == EntityType.WITCH ||
 					type == EntityType.WITHER ||
-					type == EntityType.ZOMBIE
+					type == EntityType.ZOMBIE ||
+					typeString == "shulker" ||
+					typeString == "polar_bear" ||
+					typeString == "stray" ||
+					typeString == "husk" ||
+					typeString == "vindicator" ||
+					typeString == "evoker" ||
+					typeString == "vex" ||
+					typeString == "illusioner"
 			) {
 				if (type == EntityType.PIG_ZOMBIE) {
 					PigZombie pig = (PigZombie) e;

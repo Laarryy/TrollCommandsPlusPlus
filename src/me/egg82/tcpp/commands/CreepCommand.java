@@ -66,7 +66,7 @@ public class CreepCommand extends PluginCommand {
 		Location[] creeperLocations = LocationUtil.getCircleAround(player.getLocation(), 1.0d, MathUtil.fairRoundedRandom(3, 5));
 		
 		for (int i = 0; i < creeperLocations.length; i++) {
-			Location creeperLocation = BlockUtil.getTopAirBlock(creeperLocations[i]);
+			Location creeperLocation = BlockUtil.getTopWalkableBlock(creeperLocations[i]);
 			
 			Creeper c = (Creeper) player.getWorld().spawn(creeperLocation, Creeper.class);
 			c.setPowered(true);

@@ -18,14 +18,14 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.core.BlockData;
-import ninja.egg82.plugin.reflection.entity.IEntityUtil;
+import ninja.egg82.plugin.reflection.entity.IEntityHelper;
 import ninja.egg82.plugin.utils.BlockUtil;
 
 public class RadiateTickCommand extends TickCommand {
 	//vars
 	private IRegistry radiationRegistry = (IRegistry) ServiceLocator.getService(RadiateRegistry.class);
 	
-	private IEntityUtil entityUtil = (IEntityUtil) ServiceLocator.getService(IEntityUtil.class);
+	private IEntityHelper entityUtil = (IEntityHelper) ServiceLocator.getService(IEntityHelper.class);
 	
 	//constructor
 	public RadiateTickCommand() {

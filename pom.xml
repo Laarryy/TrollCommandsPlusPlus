@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>TrollCommandsPlusPlus</artifactId>
-  <version>3.13.31</version>
+  <version>3.14.32</version>
   <name>TrollCommandsPlusPlus</name>
   <description>TCPP for Spigot/Bukkit</description>
   <build>
@@ -65,10 +65,10 @@
       <id>gravity-repo</id>
       <url>http://repo.gravitydevelopment.net</url>
     </repository>
-    <repository>
+    <!--<repository>
       <id>egg82-ninja</id>
       <url>https://www.egg82.ninja/repo/minecraft/libs/</url>
-    </repository>
+    </repository>-->
     <repository>
       <id>md_5-public</id>
       <url>http://repo.md-5.net/content/groups/public/</url>
@@ -99,12 +99,12 @@
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>egg82-lib</artifactId>
-      <version>1.3.7</version>
+      <version>1.3.8</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>spigot-lib</artifactId>
-      <version>1.3.17</version>
+      <version>1.4.18</version>
     </dependency>
     <dependency>
       <groupId>net.gravitydevelopment.updater</groupId>

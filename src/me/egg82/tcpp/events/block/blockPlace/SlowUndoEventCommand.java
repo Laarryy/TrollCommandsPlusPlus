@@ -20,7 +20,7 @@ import ninja.egg82.utils.MathUtil;
 public class SlowUndoEventCommand extends EventCommand {
 	//vars
 	private IRegistry slowUndoRegistry = (IRegistry) ServiceLocator.getService(SlowUndoRegistry.class);
-	private IRegistry initRegistry = (IRegistry) ServiceLocator.getService(InitRegistry.class);
+	private JavaPlugin plugin = (JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin");
 	
 	//constructor
 	public SlowUndoEventCommand(Event event) {
@@ -48,7 +48,7 @@ public class SlowUndoEventCommand extends EventCommand {
 		BlockData blockData = new BlockData(null, e.getBlockReplacedState(), Material.AIR);
 		
 		// Wait 4-6 seconds
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			public void run() {
 				// "Undo" this event
 				BlockUtil.setBlock(blockLocation, blockData, true);

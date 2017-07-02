@@ -88,6 +88,10 @@ public class PermissionsType {
 	public static final String COMMAND_FAKE_CRASH = "tcpp.command.fakeCrash";
 	public static final String COMMAND_RANDOM_POTION = "tcpp.command.randomPotion";
 	public static final String COMMAND_STOP_TROLLS = "tcpp.command.stopTrolls";
+	public static final String COMMAND_NIGHTMARE = "tcpp.command.nightmare";
+	public static final String COMMAND_INVERT = "tcpp.command.invert";
+	public static final String COMMAND_GRANT_WISHES = "tcpp.command.grantWishes";
+	public static final String COMMAND_FOOLS_GOLD = "tcpp.command.foolsGold";
 	
 	//constructor
 	public PermissionsType() {

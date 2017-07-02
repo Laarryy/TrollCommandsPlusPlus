@@ -13,7 +13,7 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class FreezeEventCommand extends EventCommand {
 	//vars
-	IRegistry freezeRegistry = (IRegistry) ServiceLocator.getService(FreezeRegistry.class);
+	private IRegistry freezeRegistry = (IRegistry) ServiceLocator.getService(FreezeRegistry.class);
 	
 	//constructor
 	public FreezeEventCommand(Event event) {

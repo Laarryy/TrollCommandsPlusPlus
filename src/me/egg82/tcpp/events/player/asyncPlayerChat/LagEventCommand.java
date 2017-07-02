@@ -18,7 +18,7 @@ import ninja.egg82.utils.MathUtil;
 public class LagEventCommand extends EventCommand {
 	//vars
 	private IRegistry lagRegistry = (IRegistry) ServiceLocator.getService(LagRegistry.class);
-	private IRegistry initRegistry = (IRegistry) ServiceLocator.getService(InitRegistry.class);
+	private JavaPlugin plugin = (JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin");
 	
 	//constructor
 	public LagEventCommand(Event event) {
@@ -60,9 +60,9 @@ public class LagEventCommand extends EventCommand {
 		
 		// Manually chat for the player after a 2-3 second delay
 		if (e.isAsynchronous()) {
-			Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), chatRunner, MathUtil.fairRoundedRandom(40, 60));
+			Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, chatRunner, MathUtil.fairRoundedRandom(40, 60));
 		} else {
-			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), chatRunner, MathUtil.fairRoundedRandom(40, 60));
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, chatRunner, MathUtil.fairRoundedRandom(40, 60));
 		}
 	}
 }

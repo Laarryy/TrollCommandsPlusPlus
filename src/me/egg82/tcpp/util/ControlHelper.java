@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.egg82.tcpp.reflection.disguise.IDisguiseHelper;
 import me.egg82.tcpp.services.ControlInventoryRegistry;
 import me.egg82.tcpp.services.ControlModeRegistry;
 import me.egg82.tcpp.services.ControlRegistry;
@@ -20,7 +21,7 @@ public class ControlHelper {
 	private IRegistry controlRegistry = (IRegistry) ServiceLocator.getService(ControlRegistry.class);
 	private IRegistry controlModeRegistry = (IRegistry) ServiceLocator.getService(ControlModeRegistry.class);
 	private IRegistry controlInventoryRegistry = (IRegistry) ServiceLocator.getService(ControlInventoryRegistry.class);
-	private IRegistry initRegistry = (IRegistry) ServiceLocator.getService(InitRegistry.class);
+	private JavaPlugin plugin = (JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin");
 	
 	private IDisguiseHelper disguiseHelper = (IDisguiseHelper) ServiceLocator.getService(IDisguiseHelper.class);
 	
@@ -66,7 +67,7 @@ public class ControlHelper {
 				p.hidePlayer(controller);
 			}
 			// Wait 10 seconds
-			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				public void run() {
 					// Make controller visible
 					for (Player p : Bukkit.getServer().getOnlinePlayers()) {

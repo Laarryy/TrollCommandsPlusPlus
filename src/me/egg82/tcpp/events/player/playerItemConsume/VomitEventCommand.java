@@ -9,7 +9,7 @@ import me.egg82.tcpp.services.VomitRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
-import ninja.egg82.plugin.reflection.player.IPlayerUtil;
+import ninja.egg82.plugin.reflection.player.IPlayerHelper;
 import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.LocationUtil;
 import ninja.egg82.utils.MathUtil;
@@ -18,7 +18,7 @@ public class VomitEventCommand extends EventCommand {
 	//vars
 	private IRegistry vomitRegistry = (IRegistry) ServiceLocator.getService(VomitRegistry.class);
 	
-	private IPlayerUtil playerUtil = (IPlayerUtil) ServiceLocator.getService(IPlayerUtil.class);
+	private IPlayerHelper playerUtil = (IPlayerHelper) ServiceLocator.getService(IPlayerHelper.class);
 	
 	//constructor
 	public VomitEventCommand(Event event) {
@@ -52,7 +52,7 @@ public class VomitEventCommand extends EventCommand {
 				playerUtil.setItemInMainHand(player, items);
 			}
 			
-			player.getWorld().dropItemNaturally(BlockUtil.getTopAirBlock(LocationUtil.getLocationInFront(player.getLocation(), MathUtil.random(3.0d, 5.0d))), droppedItem);
+			player.getWorld().dropItemNaturally(BlockUtil.getTopWalkableBlock(LocationUtil.getLocationInFront(player.getLocation(), MathUtil.random(3.0d, 5.0d))), droppedItem);
 			
 			e.setCancelled(true);
 		}

@@ -1,4 +1,4 @@
-package me.egg82.tcpp.util;
+package me.egg82.tcpp.reflection.disguise;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -29,6 +29,7 @@ public class DisguiseHelper implements IDisguiseHelper {
 	public void undisguise(Player player) {
 		api.undisguise(player);
 	}
+	
 	public EntityType disguiseType(Player player) {
 		OfflinePlayer p = (OfflinePlayer) player;
 		return (api.isDisguised(p)) ? EntityType.valueOf(api.getDisguise(p).getType().toString().toUpperCase()) : null;
@@ -37,6 +38,7 @@ public class DisguiseHelper implements IDisguiseHelper {
 		OfflinePlayer p = (OfflinePlayer) player;
 		return api.isDisguised(p);
 	}
+	
 	public boolean isValidLibrary() {
 		return true;
 	}

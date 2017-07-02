@@ -12,7 +12,7 @@ import me.egg82.tcpp.services.RandomPotionRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
-import ninja.egg82.plugin.reflection.player.IPlayerUtil;
+import ninja.egg82.plugin.reflection.player.IPlayerHelper;
 import ninja.egg82.plugin.utils.PotionEffectTypeHelper;
 import ninja.egg82.utils.MathUtil;
 
@@ -20,7 +20,7 @@ public class RandomPotionEventCommand extends EventCommand {
 	//vars
 	private IRegistry randomPotionRegistry = (IRegistry) ServiceLocator.getService(RandomPotionRegistry.class);
 	
-	private IPlayerUtil playerUtil = (IPlayerUtil) ServiceLocator.getService(IPlayerUtil.class);
+	private IPlayerHelper playerUtil = (IPlayerHelper) ServiceLocator.getService(IPlayerHelper.class);
 	private PotionEffectTypeHelper potionEffectTypeHelper = (PotionEffectTypeHelper) ServiceLocator.getService(PotionEffectTypeHelper.class);
 	private PotionEffectType[] effects = null;
 	

@@ -10,11 +10,11 @@ import me.egg82.tcpp.services.BrittleRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
-import ninja.egg82.plugin.reflection.entity.IEntityUtil;
+import ninja.egg82.plugin.reflection.entity.IEntityHelper;
 
 public class BrittleEventCommand extends EventCommand {
 	//vars
-	private IEntityUtil entityUtil = (IEntityUtil) ServiceLocator.getService(IEntityUtil.class);
+	private IEntityHelper entityUtil = (IEntityHelper) ServiceLocator.getService(IEntityHelper.class);
 	
 	private IRegistry brittleRegistry = (IRegistry) ServiceLocator.getService(BrittleRegistry.class);
 	

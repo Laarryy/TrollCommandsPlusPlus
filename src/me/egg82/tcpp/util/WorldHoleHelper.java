@@ -26,7 +26,7 @@ public class WorldHoleHelper {
 	private IRegistry voidRadiusRegistry = (IRegistry) ServiceLocator.getService(VoidRadiusRegistry.class);
 	private IRegistry hotTubRegistry = (IRegistry) ServiceLocator.getService(HotTubRegistry.class);
 	private IRegistry holeBlockRegistry = (IRegistry) ServiceLocator.getService(HoleBlockRegistry.class);
-	private IRegistry initRegistry = (IRegistry) ServiceLocator.getService(InitRegistry.class);
+	private JavaPlugin plugin = (JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin");
 	
 	//constructor
 	public WorldHoleHelper() {
@@ -50,7 +50,7 @@ public class WorldHoleHelper {
 		holeBlockRegistry.setRegister(uuid, List.class, blockData);
 		
 		// Wait five seconds
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			public void run() {
 				portalRegistry.setRegister(uuid, Location.class, null);
 				holeBlockRegistry.setRegister(uuid, List.class, null);
@@ -76,7 +76,7 @@ public class WorldHoleHelper {
 		holeBlockRegistry.setRegister(uuid, List.class, blockData);
 		
 		// Wait eight seconds
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			public void run() {
 				voidRegistry.setRegister(uuid, Location.class, null);
 				voidRadiusRegistry.setRegister(uuid, Integer.class, null);
@@ -102,7 +102,7 @@ public class WorldHoleHelper {
 		holeBlockRegistry.setRegister(uuid, List.class, blockData);
 		
 		// Wait five seconds
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			public void run() {
 				hotTubRegistry.setRegister(uuid, Location.class, null);
 				holeBlockRegistry.setRegister(uuid, List.class, null);

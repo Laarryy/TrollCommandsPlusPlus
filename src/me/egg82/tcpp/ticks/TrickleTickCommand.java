@@ -55,7 +55,7 @@ public class TrickleTickCommand extends TickCommand {
 				player.setExp(1.0f - ((((float) currentExp) - ((float) droppedExp)) / ((float) player.getExpToLevel())));
 			}
 			
-			player.getWorld().spawn(BlockUtil.getTopAirBlock(LocationUtil.getLocationBehind(player.getLocation(), MathUtil.random(3.0d, 5.0d))), ExperienceOrb.class).setExperience(droppedExp);
+			player.getWorld().spawn(BlockUtil.getTopWalkableBlock(LocationUtil.getLocationBehind(player.getLocation(), MathUtil.random(3.0d, 5.0d))), ExperienceOrb.class).setExperience(droppedExp);
 		}
 	}
 }

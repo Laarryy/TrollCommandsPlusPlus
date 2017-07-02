@@ -8,6 +8,7 @@ import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.services.SpinRegistry;
+import me.egg82.tcpp.services.SpinSpeedRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CommandEvent;
 import ninja.egg82.patterns.IRegistry;
@@ -20,6 +21,7 @@ import ninja.egg82.plugin.utils.CommandUtil;
 public class SpinCommand extends PluginCommand {
 	//vars
 	private IRegistry spinRegistry = (IRegistry) ServiceLocator.getService(SpinRegistry.class);
+	private IRegistry spinSpeedRegistry = (IRegistry) ServiceLocator.getService(SpinSpeedRegistry.class);
 	
 	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
@@ -37,7 +39,7 @@ public class SpinCommand extends PluginCommand {
 			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
 			return;
 		}
-		if (!CommandUtil.isArrayOfAllowedLength(args, 1)) {
+		if (!CommandUtil.isArrayOfAllowedLength(args, 1, 2)) {
 			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
 			sender.getServer().dispatchCommand(sender, "help " + command.getName());
 			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
@@ -59,16 +61,29 @@ public class SpinCommand extends PluginCommand {
 		
 		String uuid = player.getUniqueId().toString();
 		
+		float speed = -11.25f;
+		if (args.length == 2) {
+			try {
+				speed = Float.parseFloat(args[1]);
+			} catch (Exception ex) {
+				sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
+				sender.getServer().dispatchCommand(sender, "help " + command.getName());
+				dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+				return;
+			}
+		}
+		
 		if (!spinRegistry.hasRegister(uuid)) {
-			e(uuid, player);
+			e(uuid, player, speed);
 		} else {
 			eUndo(uuid, player);
 		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
-	private void e(String uuid, Player player) {
+	private void e(String uuid, Player player, float speed) {
 		spinRegistry.setRegister(uuid, Player.class, player);
+		spinSpeedRegistry.setRegister(uuid, Float.class, speed);
 		metricsHelper.commandWasRun(command.getName());
 		
 		sender.sendMessage(player.getName() + " is now spinning in circles.");
@@ -86,6 +101,7 @@ public class SpinCommand extends PluginCommand {
 	}
 	private void eUndo(String uuid, Player player) {
 		spinRegistry.setRegister(uuid, Player.class, null);
+		spinSpeedRegistry.setRegister(uuid, Float.class, null);
 		
 		sender.sendMessage(player.getName() + " is no longer spinning in circles.");
 	}

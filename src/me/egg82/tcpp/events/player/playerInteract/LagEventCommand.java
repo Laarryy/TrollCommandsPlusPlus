@@ -23,7 +23,7 @@ public class LagEventCommand extends EventCommand {
 	//vars
 	private IRegistry lagRegistry = (IRegistry) ServiceLocator.getService(LagRegistry.class);
 	private IRegistry lagBlockRegistry = (IRegistry) ServiceLocator.getService(LagBlockRegistry.class);
-	private IRegistry initRegistry = (IRegistry) ServiceLocator.getService(InitRegistry.class);
+	private JavaPlugin plugin = (JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin");
 	
 	//constauctor
 	public LagEventCommand(Event event) {
@@ -68,7 +68,7 @@ public class LagEventCommand extends EventCommand {
 		lagBlockRegistry.setRegister(locationString, Location.class, blockLocation);
 		
 		// Manually doing the event after 1.5-2.5 seconds
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			public void run() {
 				// Opened inventory event
 				if (action == Action.RIGHT_CLICK_BLOCK && blockState instanceof InventoryHolder) {

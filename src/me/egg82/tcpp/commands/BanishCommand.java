@@ -95,7 +95,7 @@ public class BanishCommand extends PluginCommand {
 		int retryCount = 0;
 		
 		do {
-			newLocation = BlockUtil.getTopAirBlock(new Location(currentLocation.getWorld(), newX, MathUtil.random(5.0d, currentLocation.getWorld().getMaxHeight()), newZ));
+			newLocation = BlockUtil.getTopWalkableBlock(new Location(currentLocation.getWorld(), newX, MathUtil.random(5.0d, currentLocation.getWorld().getMaxHeight()), newZ));
 			headBlock = newLocation.clone().add(0.0d, 1.0d, 0.0d).getBlock().getType();
 			retryCount++;
 		} while (headBlock != Material.AIR && retryCount < 100);

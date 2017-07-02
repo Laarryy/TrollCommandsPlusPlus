@@ -19,7 +19,7 @@ public class LagEventCommand extends EventCommand {
 	//vars
 	private IRegistry lagRegistry = (IRegistry) ServiceLocator.getService(LagRegistry.class);
 	private IRegistry lagTimeRegistry = (IRegistry) ServiceLocator.getService(LagTimeRegistry.class);
-	private IRegistry initRegistry = (IRegistry) ServiceLocator.getService(InitRegistry.class);
+	private JavaPlugin plugin = (JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin");
 	
 	//constructor
 	public LagEventCommand(Event event) {
@@ -54,12 +54,12 @@ public class LagEventCommand extends EventCommand {
 			lagTimeRegistry.setRegister(uuid, Location.class, from);
 			
 			// Just teleporting the player to their old location after 0.5-1 seconds
-			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				public void run() {
 					player.teleport(e.getFrom());
 					
 					// Wait 1.75-2.5 seconds until we start lagging movement again. More realistic this way
-					Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {
+					Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 						public void run() {
 							lagTimeRegistry.setRegister(uuid, Location.class, null);
 						}

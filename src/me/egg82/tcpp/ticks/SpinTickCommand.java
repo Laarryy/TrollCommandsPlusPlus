@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.services.SpinRegistry;
+import me.egg82.tcpp.services.SpinSpeedRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
@@ -11,6 +12,7 @@ import ninja.egg82.plugin.commands.TickCommand;
 public class SpinTickCommand extends TickCommand {
 	//vars
 	private IRegistry spinRegistry = (IRegistry) ServiceLocator.getService(SpinRegistry.class);
+	private IRegistry spinSpeedRegistry = (IRegistry) ServiceLocator.getService(SpinSpeedRegistry.class);
 	
 	//constructor
 	public SpinTickCommand() {
@@ -33,7 +35,7 @@ public class SpinTickCommand extends TickCommand {
 		}
 		
 		Location newLocation = player.getLocation().clone();
-		float newYaw = newLocation.getYaw() - 11.25f;
+		float newYaw = newLocation.getYaw() + (float) spinSpeedRegistry.getRegister(uuid);
 		
 		while (newYaw < 0.0f) {
 			newYaw += 360.0f;

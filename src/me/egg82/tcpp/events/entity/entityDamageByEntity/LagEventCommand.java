@@ -15,17 +15,17 @@ import net.md_5.bungee.api.ChatColor;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
-import ninja.egg82.plugin.reflection.entity.IEntityUtil;
+import ninja.egg82.plugin.reflection.entity.IEntityHelper;
 import ninja.egg82.startup.InitRegistry;
 import ninja.egg82.utils.MathUtil;
 
 public class LagEventCommand extends EventCommand {
 	//vars
-	private IEntityUtil entityUtil = (IEntityUtil) ServiceLocator.getService(IEntityUtil.class);
+	private IEntityHelper entityUtil = (IEntityHelper) ServiceLocator.getService(IEntityHelper.class);
 	
 	private IRegistry lagRegistry = (IRegistry) ServiceLocator.getService(LagRegistry.class);
 	private IRegistry lagEntityRegistry = (IRegistry) ServiceLocator.getService(LagEntityRegistry.class);
-	private IRegistry initRegistry = (IRegistry) ServiceLocator.getService(InitRegistry.class);
+	private JavaPlugin plugin = (JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin");
 	
 	//constructor
 	public LagEventCommand(Event event) {
@@ -68,7 +68,7 @@ public class LagEventCommand extends EventCommand {
 		e.setCancelled(true);
 		
 		// Manually doing the event after a random interval
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask((JavaPlugin) initRegistry.getRegister("plugin"), new Runnable() {
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			public void run() {
 				Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "Causing damage to entity.");
 				// Cause the entity damage
