@@ -62,7 +62,7 @@ public class NightmareCommand extends PluginCommand {
 			dispatch(CommandEvent.ERROR, CommandErrorType.NO_LIBRARY);
 			return;
 		}
-		if (gameVersion == "1.8" || gameVersion == "1.8.3" || gameVersion == "1.8.8") {
+		if (gameVersion == "1.8" || gameVersion == "1.8.1" || gameVersion == "1.8.3" || gameVersion == "1.8.8") {
 			sender.sendMessage(MessageType.WRONG_GAME_VERSION);
 			dispatch(CommandEvent.ERROR, CommandErrorType.WRONG_GAME_VERSION);
 			return;

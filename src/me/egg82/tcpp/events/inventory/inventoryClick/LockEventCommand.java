@@ -3,7 +3,6 @@ package me.egg82.tcpp.events.inventory.inventoryClick;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
 
 import me.egg82.tcpp.services.LockRegistry;
 import ninja.egg82.patterns.IRegistry;
@@ -30,10 +29,13 @@ public class LockEventCommand extends EventCommand {
 		}
 		
 		Player player = (Player) e.getWhoClicked();
-		InventoryType invType = (e.getClickedInventory() != null) ? e.getClickedInventory().getType() : null;
 		
-		if (lockRegistry.hasRegister(player.getUniqueId().toString()) && (invType == null || invType == InventoryType.PLAYER || invType == InventoryType.CREATIVE)) {
-			e.setCancelled(true);
+		if (lockRegistry.hasRegister(player.getUniqueId().toString())) {
+			if (e.getClickedInventory().getHolder() instanceof Player) {
+				if (((Player) e.getClickedInventory().getHolder()).getUniqueId().compareTo(player.getUniqueId()) == 0) {
+					e.setCancelled(true);
+				}
+			}
 		}
 	}
 }

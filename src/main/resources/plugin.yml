@@ -1,6 +1,6 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 3.14.32
+version: 3.15.33
 softdepend: [LibsDisguises,iDisguise,ProtocolLib]
 commands:
   alone:
@@ -15,6 +15,9 @@ commands:
   anvil:
     description: Now who could have put that up there?
     usage: /anvil <player>
+  attachcommand:
+    description: The specified command will be attached to an item. The next time this item is picked up, it will run the command as the payer that picked the item up..
+    usage: /attachcommand <command>
   banish:
     description: Teleports the player to a random location.
     usage: /banish <player> [range]

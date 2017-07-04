@@ -116,7 +116,21 @@ public class FoolsGoldEventCommand extends EventCommand {
 		int numBlocks = MathUtil.fairRoundedRandom(20, 35);
 		
 		for (int i = 0; i < numBlocks; i++) {
-			retVal.add(new Location(world, chunkX * 16 + MathUtil.fairRoundedRandom(0, 15), MathUtil.fairRoundedRandom(minLevel, maxLevel), chunkZ * 16 + MathUtil.fairRoundedRandom(0, 15)));
+			Location loc = null;
+			Material mat = null;
+			int tries = 0;
+			
+			do {
+				loc = new Location(world, chunkX * 16 + MathUtil.fairRoundedRandom(0, 15), MathUtil.fairRoundedRandom(minLevel, maxLevel), chunkZ * 16 + MathUtil.fairRoundedRandom(0, 15));
+				mat = loc.getBlock().getType();
+				tries++;
+			} while (mat != Material.STONE && mat != Material.SANDSTONE && tries <= 100);
+			
+			if (mat != Material.STONE && mat != Material.SANDSTONE) {
+				continue;
+			}
+			
+			retVal.add(loc);
 		}
 		
 		fakeBlockHelper.updateBlocks(player, retVal.toArray(new Location[0]), type);

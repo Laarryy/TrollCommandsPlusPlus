@@ -92,6 +92,7 @@ public class PermissionsType {
 	public static final String COMMAND_INVERT = "tcpp.command.invert";
 	public static final String COMMAND_GRANT_WISHES = "tcpp.command.grantWishes";
 	public static final String COMMAND_FOOLS_GOLD = "tcpp.command.foolsGold";
+	public static final String COMMAND_ATTACH_COMMAND = "tcpp.command.attachCommand";
 	
 	//constructor
 	public PermissionsType() {

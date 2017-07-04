@@ -12,9 +12,7 @@ import java.util.Map.Entry;
 import javax.swing.Timer;
 
 import org.bstats.Metrics;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 
@@ -68,29 +66,37 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		
 		if (manager.getPlugin("LibsDisguises") != null) {
 			if (manager.getPlugin("ProtocolLib") != null) {
-				Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[TrollCommands++] Enabling support for LibsDisguises.");
+				info(ChatColor.GREEN + "[TrollCommands++] Enabling support for LibsDisguises.");
 				ServiceLocator.provideService(LibsDisguisesHelper.class);
 			} else {
-				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[TrollCommands++] LibsDisguises requires ProtocolLib to function, which was not found. The /control and /scare commands have been disabled.");
+				warning(ChatColor.RED + "[TrollCommands++] LibsDisguises requires ProtocolLib to function, which was not found. The /control and /scare commands have been disabled.");
 				ServiceLocator.provideService(NullDisguiseHelper.class);
 			}
 		} else if (manager.getPlugin("iDisguise") != null) {
 			if (manager.getPlugin("ProtocolLib") != null) {
-				Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[TrollCommands++] Enabling support for iDisguise.");
+				info(ChatColor.GREEN + "[TrollCommands++] Enabling support for iDisguise.");
 				ServiceLocator.provideService(DisguiseHelper.class);
 			} else {
-				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[TrollCommands++] iDisguise requires ProtocolLib to function, which was not found. The /control and /scare commands have been disabled.");
+				warning(ChatColor.RED + "[TrollCommands++] iDisguise requires ProtocolLib to function, which was not found. The /control and /scare commands have been disabled.");
 				ServiceLocator.provideService(NullDisguiseHelper.class);
 			}
 		} else {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[TrollCommands++] Neither LibsDisguises nor iDisguise was found. The /control and /scare commands have been disabled.");
+			warning(ChatColor.RED + "[TrollCommands++] Neither LibsDisguises nor iDisguise was found. The /control and /scare commands have been disabled.");
 			ServiceLocator.provideService(NullDisguiseHelper.class);
 		}
 		
 		if (manager.getPlugin("ProtocolLib") != null) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[TrollCommands++] Enabling support for ProtocolLib.");
+			info(ChatColor.GREEN + "[TrollCommands++] Enabling support for ProtocolLib.");
 		} else {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[TrollCommands++] ProtocolLib was not found. The /foolsgold, /nightmare, and /rewind commands have been disabled.");
+			warning(ChatColor.RED + "[TrollCommands++] ProtocolLib was not found. The /foolsgold, /nightmare, and /rewind commands have been disabled.");
+		}
+		
+		if (manager.getPlugin("PowerNBT") != null) {
+			info(ChatColor.GREEN + "[TrollCommands++] Enabling support for PowerNBT.");
+		} else if (manager.getPlugin("ItemNBTAPI") != null) {
+			info(ChatColor.GREEN + "[TrollCommands++] Enabling support for ItemNBTAPI.");
+		} else {
+			warning(ChatColor.RED + "[TrollCommands++] Neither PowerNBT nor NBTAPI were found. The /attachcommand command has been disabled.");
 		}
 		
 		ServiceLocator.provideService(ControlHelper.class);
@@ -112,7 +118,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		try {
 			metrics = new Metrics(this);
 		} catch (Exception ex) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[TrollCommands++] WARNING: Connection to metrics server could not be established. This affects nothing for server owners, but it does make me sad :(");
+			info(ChatColor.YELLOW + "[TrollCommands++] WARNING: Connection to metrics server could not be established. This affects nothing for server owners, but it does make me sad :(");
 		}
 		
 		if (metrics != null) {
@@ -146,7 +152,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		numPermissions = SpigotReflectUtil.addPermissionsFromClass(PermissionsType.class);
 		numTicks = SpigotReflectUtil.addTicksFromPackage("me.egg82.tcpp.ticks");
 		
-		enableMessage(Bukkit.getConsoleSender());
+		enableMessage();
 		checkUpdate();
 		updateTimer.setRepeats(true);
 		updateTimer.start();
@@ -170,7 +176,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		worldHoleHelper.undoAll();
 		
 		SpigotReflectUtil.clearAll();
-		disableMessage(Bukkit.getConsoleSender());
+		disableMessage();
 	}
 	
 	//private
@@ -195,22 +201,22 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 				}
 			}
 			
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "--== " + ChatColor.YELLOW + "TrollCommands++ UPDATE AVAILABLE (Latest: " + latestVersion + " Current: " + currentVersion + ") " + ChatColor.GREEN + " ==--");
+			warning(ChatColor.GREEN + "--== " + ChatColor.YELLOW + "TrollCommands++ UPDATE AVAILABLE (Latest: " + latestVersion + " Current: " + currentVersion + ") " + ChatColor.GREEN + " ==--");
 		}
 	}
 	
-	private void enableMessage(ConsoleCommandSender sender) {
-		sender.sendMessage(ChatColor.AQUA + "  _______        _ _  _____                                          _                 ");
-		sender.sendMessage(ChatColor.AQUA + " |__   __|      | | |/ ____|                                        | |      _     _   ");
-		sender.sendMessage(ChatColor.AQUA + "    | |_ __ ___ | | | |     ___  _ __ ___  _ __ ___   __ _ _ __   __| |___ _| |_ _| |_ ");
-		sender.sendMessage(ChatColor.AQUA + "    | | '__/ _ \\| | | |    / _ \\| '_ ` _ \\| '_ ` _ \\ / _` | '_ \\ / _` / __|_   _|_   _|");
-		sender.sendMessage(ChatColor.AQUA + "    | | | | (_) | | | |___| (_) | | | | | | | | | | | (_| | | | | (_| \\__ \\ |_|   |_|  ");
-		sender.sendMessage(ChatColor.AQUA + "    |_|_|  \\___/|_|_|\\_____\\___/|_| |_| |_|_| |_| |_|\\__,_|_| |_|\\__,_|___/            ");
-		sender.sendMessage(ChatColor.GREEN + "[Version " + getDescription().getVersion() + "] " + ChatColor.RED + numCommands + " commands " + ChatColor.LIGHT_PURPLE + numEvents + " events " + ChatColor.WHITE + numPermissions + " permissions " + ChatColor.YELLOW + numTicks + " tick handlers");
-		sender.sendMessage(ChatColor.WHITE + "[TrollCommands++] " + ChatColor.GRAY + "Attempting to load compatibility with Bukkit version " + ((InitRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("game.version"));
+	private void enableMessage() {
+		info(ChatColor.AQUA + "  _______        _ _  _____                                          _                 ");
+		info(ChatColor.AQUA + " |__   __|      | | |/ ____|                                        | |      _     _   ");
+		info(ChatColor.AQUA + "    | |_ __ ___ | | | |     ___  _ __ ___  _ __ ___   __ _ _ __   __| |___ _| |_ _| |_ ");
+		info(ChatColor.AQUA + "    | | '__/ _ \\| | | |    / _ \\| '_ ` _ \\| '_ ` _ \\ / _` | '_ \\ / _` / __|_   _|_   _|");
+		info(ChatColor.AQUA + "    | | | | (_) | | | |___| (_) | | | | | | | | | | | (_| | | | | (_| \\__ \\ |_|   |_|  ");
+		info(ChatColor.AQUA + "    |_|_|  \\___/|_|_|\\_____\\___/|_| |_| |_|_| |_| |_|\\__,_|_| |_|\\__,_|___/            ");
+		info(ChatColor.GREEN + "[Version " + getDescription().getVersion() + "] " + ChatColor.RED + numCommands + " commands " + ChatColor.LIGHT_PURPLE + numEvents + " events " + ChatColor.WHITE + numPermissions + " permissions " + ChatColor.YELLOW + numTicks + " tick handlers");
+		info(ChatColor.WHITE + "[TrollCommands++] " + ChatColor.GRAY + "Attempting to load compatibility with Bukkit version " + ((InitRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("game.version"));
 	}
-	private void disableMessage(ConsoleCommandSender sender) {
-		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "--== " + ChatColor.LIGHT_PURPLE + "TrollCommands++ Disabled" + ChatColor.GREEN + " ==--");
+	private void disableMessage() {
+		info(ChatColor.GREEN + "--== " + ChatColor.LIGHT_PURPLE + "TrollCommands++ Disabled" + ChatColor.GREEN + " ==--");
 	}
 	
 	@SuppressWarnings("unchecked")
