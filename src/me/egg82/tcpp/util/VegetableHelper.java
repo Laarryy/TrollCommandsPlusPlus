@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.egg82.tcpp.services.VegetableItemRegistry;
+import me.egg82.tcpp.services.VegetableLocationRegistry;
 import me.egg82.tcpp.services.VegetableModeRegistry;
 import me.egg82.tcpp.services.VegetableRegistry;
 import ninja.egg82.patterns.IRegistry;
@@ -20,6 +21,7 @@ public class VegetableHelper {
 	private IRegistry vegetableRegistry = (IRegistry) ServiceLocator.getService(VegetableRegistry.class);
 	private IRegistry vegetableItemRegistry = (IRegistry) ServiceLocator.getService(VegetableItemRegistry.class);
 	private IRegistry vegetableModeRegistry = (IRegistry) ServiceLocator.getService(VegetableModeRegistry.class);
+	private IRegistry vegetableLocationRegistry = (IRegistry) ServiceLocator.getService(VegetableLocationRegistry.class);
 	
 	//constructor
 	public VegetableHelper() {
@@ -39,6 +41,7 @@ public class VegetableHelper {
 		
 		vegetableItemRegistry.setRegister(uuid, Item.class, groundItem);
 		vegetableModeRegistry.setRegister(uuid, GameMode.class, player.getGameMode());
+		vegetableLocationRegistry.setRegister(uuid, Location.class, groundItemLocation);
 		
 		player.setGameMode(GameMode.SPECTATOR);
 		player.teleport(new Location(groundItemLocation.getWorld(), groundItemLocation.getX(), groundItemLocation.getY() - 1.0d, groundItemLocation.getZ()));
@@ -53,6 +56,7 @@ public class VegetableHelper {
 		vegetableRegistry.setRegister(uuid, Player.class, null);
 		vegetableItemRegistry.setRegister(uuid, Item.class, null);
 		vegetableModeRegistry.setRegister(uuid, GameMode.class, null);
+		vegetableLocationRegistry.setRegister(uuid, Location.class, null);
 		
 		groundItem.remove();
 		player.teleport(BlockUtil.getTopWalkableBlock(playerLocation));

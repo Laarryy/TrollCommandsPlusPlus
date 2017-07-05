@@ -1,6 +1,6 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 3.15.33
+version: 3.16.34
 softdepend: [LibsDisguises,iDisguise,ProtocolLib]
 commands:
   alone:
@@ -21,6 +21,9 @@ commands:
   banish:
     description: Teleports the player to a random location.
     usage: /banish <player> [range]
+  bludger:
+    description: Nasty little buggers.
+    usage: /bludger <player>
   bomb:
     description: May balls of fire rain down upon thine enemy.
     usage: /bomb <player>
@@ -126,6 +129,9 @@ commands:
   lavabreak:
     description: The next block a player breaks turns to lava.
     usage: /lavabreak <player>
+  lavabuild:
+    description: The next block a player places turns to lava.
+    usage: /lavabuild <player>
   levitate:
     description: Ascends the player to the heavens forever. Drops them like a rock when removed.
     usage: /levitate <player>
@@ -180,6 +186,9 @@ commands:
   randompotion:
     description: Wait, what did I drink again?
     usage: /randompotion <player>
+  randomspeed:
+    description: My legs just take me wherever they want!
+    usage: /randomspeed <player>
   rewind:
     description: Makes the player's time run backwards at speed. Does not affect the server.
     usage: /rewind <player>

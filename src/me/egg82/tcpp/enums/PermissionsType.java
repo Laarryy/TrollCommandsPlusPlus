@@ -93,6 +93,9 @@ public class PermissionsType {
 	public static final String COMMAND_GRANT_WISHES = "tcpp.command.grantWishes";
 	public static final String COMMAND_FOOLS_GOLD = "tcpp.command.foolsGold";
 	public static final String COMMAND_ATTACH_COMMAND = "tcpp.command.attachCommand";
+	public static final String COMMAND_BLUDGER = "tcpp.command.bludger";
+	public static final String COMMAND_RANDOM_SPEED = "tcpp.command.randomSpeed";
+	public static final String COMMAND_LAVA_BUILD = "tcpp.command.lavaBuild";
 	
 	//constructor
 	public PermissionsType() {

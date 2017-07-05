@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.services.VegetableItemRegistry;
+import me.egg82.tcpp.services.VegetableLocationRegistry;
 import me.egg82.tcpp.services.VegetableRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
@@ -17,11 +18,12 @@ public class VegetableTickCommand extends TickCommand {
 	//vars
 	private IRegistry vegetableRegistry = (IRegistry) ServiceLocator.getService(VegetableRegistry.class);
 	private IRegistry vegetableItemRegistry = (IRegistry) ServiceLocator.getService(VegetableItemRegistry.class);
+	private IRegistry vegetableLocationRegistry = (IRegistry) ServiceLocator.getService(VegetableLocationRegistry.class);
 	
 	//constructor
 	public VegetableTickCommand() {
 		super();
-		ticks = 5L;
+		ticks = 2L;
 	}
 	
 	//public
@@ -42,11 +44,16 @@ public class VegetableTickCommand extends TickCommand {
 		}
 		
 		Item groundItem = (Item) vegetableItemRegistry.getRegister(uuid);
+		Location oldItemLocation = (Location) vegetableLocationRegistry.getRegister(uuid);
 		
-		Location playerLocation = player.getLocation();
-		Location itemLocation = groundItem.getLocation().clone();
+		Location playerLocation = player.getEyeLocation();
+		Location newItemLocation = groundItem.getLocation();
 		
-		itemLocation.setDirection(playerLocation.getDirection());
-		player.teleport(LocationUtil.makeEqualXYZ(itemLocation.add(0.0d, -1.0d, 0.0d), playerLocation));
+		newItemLocation.setDirection(playerLocation.getDirection());
+		
+		if (!LocationUtil.areEqualXYZ(oldItemLocation, newItemLocation, 0.25d)) {
+			vegetableLocationRegistry.setRegister(uuid, Location.class, newItemLocation.clone());
+			player.teleport(LocationUtil.makeEqualXYZ(newItemLocation.clone().add(0.0d, -1.0d, 0.0d), playerLocation));
+		}
 	}
 }

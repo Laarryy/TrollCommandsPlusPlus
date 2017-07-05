@@ -53,6 +53,25 @@ public class KeywordRegistry extends Registry {
 			"armor",
 			"sword"
 		});
+		setRegister("attachcommand", String[].class, new String[] {
+			"exp",
+			"xp",
+			"experience",
+			"bottle",
+			"enchanting",
+			"join",
+			"fasten",
+			"add",
+			"adhere",
+			"affix",
+			"connect",
+			"fix",
+			"link",
+			"stick",
+			"tie",
+			"bind",
+			"couple"
+		});
 		setRegister("banish", String[].class, new String[] {
 			"wood",
 			"door",
@@ -68,6 +87,20 @@ public class KeywordRegistry extends Registry {
 			"ban",
 			"deport",
 			"transport"
+		});
+		setRegister("bludger", String[].class, new String[] {
+			"magma",
+			"cream",
+			"harry",
+			"potter",
+			"quidditch",
+			"seek",
+			"follow",
+			"trail",
+			"explode",
+			"fire",
+			"track",
+			"chase"
 		});
 		setRegister("bomb", String[].class, new String[] {
 			"tnt",
@@ -461,6 +494,29 @@ public class KeywordRegistry extends Registry {
 			"flame",
 			"smoke"
 		});
+		setRegister("lavabuild", String[].class, new String[] {
+			"blaze",
+			"rod",
+			"nether",
+			"slag",
+			"magma",
+			"ashes",
+			"obsidian",
+			"fire",
+			"char",
+			"heat",
+			"ignite",
+			"incinerate",
+			"light",
+			"melt",
+			"scorch",
+			"smolder",
+			"torch",
+			"bake",
+			"cook",
+			"flame",
+			"smoke"
+		});
 		setRegister("levitate", String[].class, new String[] {
 			"feather",
 			"chicken",
@@ -632,6 +688,22 @@ public class KeywordRegistry extends Registry {
 			"potion",
 			"drink",
 			"splash",
+			"effect",
+			"accident",
+			"accidental",
+			"arbitrary",
+			"irregular",
+			"odd",
+			"unplanned"
+		});
+		setRegister("randomspeed", String[].class, new String[] {
+			"soul",
+			"sand",
+			"nether",
+			"fast",
+			"slow",
+			"walk",
+			"fly",
 			"effect",
 			"accident",
 			"accidental",

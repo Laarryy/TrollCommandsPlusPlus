@@ -1,8 +1,8 @@
-package me.egg82.tcpp.events.inventory.inventoryClick;
+package me.egg82.tcpp.events.inventory.inventoryDrag;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 
 import me.egg82.tcpp.services.LockRegistry;
 import ninja.egg82.patterns.IRegistry;
@@ -22,7 +22,7 @@ public class LockEventCommand extends EventCommand {
 
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		InventoryClickEvent e = (InventoryClickEvent) event;
+		InventoryDragEvent e = (InventoryDragEvent) event;
 		
 		if (e.isCancelled()) {
 			return;
@@ -31,8 +31,8 @@ public class LockEventCommand extends EventCommand {
 		Player player = (Player) e.getWhoClicked();
 		
 		if (lockRegistry.hasRegister(player.getUniqueId().toString())) {
-			if (e.getClickedInventory().getHolder() instanceof Player) {
-				if (((Player) e.getClickedInventory().getHolder()).getUniqueId().compareTo(player.getUniqueId()) == 0) {
+			if (e.getInventory().getHolder() instanceof Player) {
+				if (((Player) e.getInventory().getHolder()).getUniqueId().compareTo(player.getUniqueId()) == 0) {
 					e.setCancelled(true);
 				}
 			}
