@@ -18,6 +18,7 @@ public class GuiRegistry extends Registry {
 		setRegister("anvil", Material.class, Material.ANVIL);
 		setRegister("attachcommand", Material.class, Material.EXP_BOTTLE);
 		setRegister("banish", Material.class, Material.WOOD_DOOR);
+		setRegister("bludger", Material.class, Material.MAGMA_CREAM);
 		setRegister("bomb", Material.class, Material.FIREWORK);
 		setRegister("brittle", Material.class, Material.GLASS);
 		setRegister("burn", Material.class, Material.BLAZE_POWDER);
@@ -55,6 +56,7 @@ public class GuiRegistry extends Registry {
 		setRegister("invert", Material.class, Material.REDSTONE_COMPARATOR);
 		setRegister("lag", Material.class, Material.GOLD_BLOCK);
 		setRegister("lavabreak", Material.class, Material.LAVA_BUCKET);
+		setRegister("lavabuild", Material.class, Material.BLAZE_ROD);
 		setRegister("levitate", Material.class, Material.FEATHER);
 		setRegister("lift", Material.class, Material.SLIME_BLOCK);
 		setRegister("lock", Material.class, Material.LEVER);
@@ -73,6 +75,7 @@ public class GuiRegistry extends Registry {
 		setRegister("randombuild", Material.class, Material.MAP);
 		setRegister("randomdrop", Material.class, Material.COOKIE);
 		setRegister("randompotion", Material.class, Material.POTION);
+		setRegister("randomspeed", Material.class, Material.SOUL_SAND);
 		setRegister("rewind", Material.class, Material.ENCHANTMENT_TABLE);
 		setRegister("scare", Material.class, Material.SKULL_ITEM);
 		setRegister("scare_data", Short.class, (short) 4);

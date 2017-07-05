@@ -12,7 +12,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class ElectrifyTickCommand extends TickCommand {
 	//vars
-	IRegistry electrifyRegistry = (IRegistry) ServiceLocator.getService(ElectrifyRegistry.class);
+	private IRegistry electrifyRegistry = (IRegistry) ServiceLocator.getService(ElectrifyRegistry.class);
 	
 	//constructor
 	public ElectrifyTickCommand() {
