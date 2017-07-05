@@ -34,7 +34,7 @@ public class DisplayEventCommand extends EventCommand {
 		
 		if (displayLocationRegistry.hasRegister(uuid)) {
 			Location loc = (Location) displayLocationRegistry.getRegister(uuid);
-			if (e.getTo().distance(loc) >= 2) {
+			if (e.getTo().distanceSquared(loc) >= 4) {
 				e.setCancelled(true);
 				player.teleport(loc);
 			}

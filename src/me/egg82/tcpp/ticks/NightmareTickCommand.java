@@ -42,7 +42,7 @@ public class NightmareTickCommand extends TickCommand {
 		new Thread(new Runnable() {
 			public void run() {
 				for (IFakeLivingEntity e : entities) {
-					if (e.getLocation().distance(player.getLocation()) <= 1.0d) {
+					if (e.getLocation().distanceSquared(player.getLocation()) <= 1.0d) {
 						e.attack(player, 1.0d);
 					}
 					

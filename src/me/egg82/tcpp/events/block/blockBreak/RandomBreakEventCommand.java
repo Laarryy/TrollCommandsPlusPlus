@@ -23,7 +23,7 @@ public class RandomBreakEventCommand extends EventCommand {
 	//vars
 	private IRegistry randomBreakRegistry = (IRegistry) ServiceLocator.getService(RandomBreakRegistry.class);
 	
-	private IPlayerHelper playerUtil = (IPlayerHelper) ServiceLocator.getService(IPlayerHelper.class);
+	private IPlayerHelper playerHelper = (IPlayerHelper) ServiceLocator.getService(IPlayerHelper.class);
 	private MaterialHelper materialHelper = (MaterialHelper) ServiceLocator.getService(MaterialHelper.class);
 	private Material[] materials = null;
 	
@@ -70,7 +70,7 @@ public class RandomBreakEventCommand extends EventCommand {
 			e.setCancelled(true);
 			
 			if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-				Collection<ItemStack> drops = e.getBlock().getDrops(playerUtil.getItemInMainHand(player));
+				Collection<ItemStack> drops = e.getBlock().getDrops(playerHelper.getItemInMainHand(player));
 				for (ItemStack item : drops) {
 					player.getWorld().dropItemNaturally(e.getBlock().getLocation(), new ItemStack(materials[MathUtil.fairRoundedRandom(0, materials.length - 1)], item.getAmount()));
 				}

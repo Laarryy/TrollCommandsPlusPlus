@@ -53,6 +53,25 @@ public class KeywordRegistry extends Registry {
 			"armor",
 			"sword"
 		});
+		setRegister("attachcommand", String[].class, new String[] {
+			"exp",
+			"xp",
+			"experience",
+			"bottle",
+			"enchanting",
+			"join",
+			"fasten",
+			"add",
+			"adhere",
+			"affix",
+			"connect",
+			"fix",
+			"link",
+			"stick",
+			"tie",
+			"bind",
+			"couple"
+		});
 		setRegister("banish", String[].class, new String[] {
 			"wood",
 			"door",

@@ -16,6 +16,7 @@ public class GuiRegistry extends Registry {
 		setRegister("annoy", Material.class, Material.MONSTER_EGG);
 		setRegister("annoy_data", Short.class, (short) 120);
 		setRegister("anvil", Material.class, Material.ANVIL);
+		setRegister("attachcommand", Material.class, Material.EXP_BOTTLE);
 		setRegister("banish", Material.class, Material.WOOD_DOOR);
 		setRegister("bomb", Material.class, Material.FIREWORK);
 		setRegister("brittle", Material.class, Material.GLASS);

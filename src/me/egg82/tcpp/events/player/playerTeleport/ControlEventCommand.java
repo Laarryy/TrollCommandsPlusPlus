@@ -42,10 +42,12 @@ public class ControlEventCommand extends EventCommand {
 		}
 		
 		String controllerUuid = controlRegistry.getName(player);
-		if (controllerUuid != null) {
+		Player controller = CommandUtil.getPlayerByUuid(controllerUuid);
+		
+		if (controller != null) {
 			// Player is being controlled by someone
 			if (!CommandUtil.hasPermission(player, PermissionsType.FREECAM_WHILE_CONTROLLED)) {
-				e.setTo(LocationUtil.makeEqualXYZ(e.getFrom(), e.getTo()));
+				e.setTo(LocationUtil.makeEqualXYZ(controller.getLocation(), e.getTo()));
 			}
 		}
 	}

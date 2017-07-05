@@ -5,17 +5,23 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 
+import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.reflection.nbt.INBTHelper;
+import ninja.egg82.startup.InitRegistry;
 
 public class AttachCommandEventCommand extends EventCommand {
 	//vars
 	private INBTHelper nbtHelper = (INBTHelper) ServiceLocator.getService(INBTHelper.class);
+	
+	private JavaPlugin plugin = (JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin");
 	
 	//constructor
 	public AttachCommandEventCommand(Event event) {
@@ -29,47 +35,87 @@ public class AttachCommandEventCommand extends EventCommand {
 		InventoryClickEvent e = (InventoryClickEvent) event;
 		
 		if (e.isCancelled()) {
-			System.out.println("Cancelled");
 			return;
 		}
-		if (e.getClickedInventory() == null) {
-			System.out.println("Clicked inventory == null");
-			return;
-		}
-		InventoryHolder holder = e.getClickedInventory().getHolder();
-		if (holder == e.getWhoClicked()) {
-			System.out.println("Issuer == Destination");
-			return;
-		}
-		if (e.getAction() == InventoryAction.CLONE_STACK
-			|| e.getAction() == InventoryAction.COLLECT_TO_CURSOR
-			|| e.getAction() == InventoryAction.NOTHING
-			|| e.getAction() == InventoryAction.PICKUP_ALL
-			|| e.getAction() == InventoryAction.PICKUP_HALF
-			|| e.getAction() == InventoryAction.PICKUP_ONE
-			|| e.getAction() == InventoryAction.PICKUP_SOME
-			|| e.getAction() == InventoryAction.UNKNOWN
+		
+		ItemStack item = null;
+		InventoryAction action = e.getAction();
+		
+		Inventory bottom = e.getView().getBottomInventory();
+		Inventory top = e.getView().getTopInventory();
+		Inventory clicked = e.getClickedInventory();
+		
+		if (action == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+			item = e.getCurrentItem();
+			
+			if (!nbtHelper.hasTag(item, "tcppCommand")) {
+				return;
+			}
+			
+			if (clicked == top) {
+				InventoryHolder holder = bottom.getHolder();
+				if (holder instanceof Player) {
+					Bukkit.dispatchCommand((Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+					nbtHelper.removeTag(item, "tcppCommand");
+				}
+			} else {
+				ItemMeta meta = item.getItemMeta();
+				meta.setLore(null);
+				item.setItemMeta(meta);
+				
+				update((Player) e.getWhoClicked());
+				
+				InventoryHolder holder = top.getHolder();
+				if (holder instanceof Player) {
+					Bukkit.dispatchCommand((Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+					nbtHelper.removeTag(item, "tcppCommand");
+				}
+			}
+		} else if (
+			action == InventoryAction.HOTBAR_MOVE_AND_READD
+			|| action == InventoryAction.HOTBAR_SWAP
+			|| action == InventoryAction.PLACE_ALL
+			|| action == InventoryAction.PLACE_ONE
+			|| action == InventoryAction.PLACE_SOME
+			|| action == InventoryAction.SWAP_WITH_CURSOR
 		) {
-			System.out.println("Action != Place");
-			return;
-		}
-		
-		ItemStack item = e.getCursor();
-		if (!nbtHelper.hasTag(item, "tcppCommand")) {
-			System.out.println("No NBT Tag");
-			return;
-		}
-		
-		ItemMeta meta = item.getItemMeta();
-		meta.setLore(null);
-		item.setItemMeta(meta);
-		
-		if (holder instanceof Player) {
-			System.out.println("Running command");
-			Bukkit.dispatchCommand((Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
-			nbtHelper.removeTag(item, "tcppCommand");
+			item = e.getCursor();
+			
+			if (!nbtHelper.hasTag(item, "tcppCommand")) {
+				return;
+			}
+			
+			if (clicked == top) {
+				ItemMeta meta = item.getItemMeta();
+				meta.setLore(null);
+				item.setItemMeta(meta);
+				
+				update((Player) e.getWhoClicked());
+				
+				InventoryHolder holder = top.getHolder();
+				if (holder instanceof Player) {
+					Bukkit.dispatchCommand((Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+					nbtHelper.removeTag(item, "tcppCommand");
+				}
+			} else {
+				if (item.getItemMeta().getLore() == null) {
+					InventoryHolder holder = bottom.getHolder();
+					if (holder instanceof Player) {
+						Bukkit.dispatchCommand((Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+						nbtHelper.removeTag(item, "tcppCommand");
+					}
+				}
+			}
 		} else {
-			System.out.println("Holder != Player");
+			return;
 		}
+	}
+	
+	private void update(Player player) {
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+			public void run() {
+				player.updateInventory();
+			}
+		}, 1L);
 	}
 }
