@@ -1,6 +1,6 @@
 package me.egg82.tcpp.events.entity.playerDeath;
 
-import java.util.List;
+import java.util.ArrayDeque;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -34,9 +34,9 @@ public class NightmareEventCommand extends EventCommand {
 			return;
 		}
 		
-		for (IFakeLivingEntity entity : (List<IFakeLivingEntity>) nightmareRegistry.getRegister(uuid)) {
+		for (IFakeLivingEntity entity : (ArrayDeque<IFakeLivingEntity>) nightmareRegistry.getRegister(uuid)) {
 			entity.destroy();
 		}
-		nightmareRegistry.setRegister(uuid, List.class, null);
+		nightmareRegistry.setRegister(uuid, ArrayDeque.class, null);
 	}
 }

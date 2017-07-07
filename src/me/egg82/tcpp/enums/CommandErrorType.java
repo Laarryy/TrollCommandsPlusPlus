@@ -11,6 +11,9 @@ public class CommandErrorType {
 	public static final String NO_LIBRARY = "noLibrary";
 	public static final String ALREADY_USED = "alreadyUsed";
 	public static final String WRONG_GAME_VERSION = "wrongGameVersion";
+	public static final String MOB_NOT_FOUND = "mobNotFound";
+	public static final String POTION_NOT_FOUND = "potionNotFound";
+	public static final String COMMAND_NOT_FOUND = "commandNotFound";
 	
 	//constructor
 	public CommandErrorType() {

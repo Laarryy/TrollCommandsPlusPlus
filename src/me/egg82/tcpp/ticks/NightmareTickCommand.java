@@ -1,6 +1,6 @@
 package me.egg82.tcpp.ticks;
 
-import java.util.List;
+import java.util.ArrayDeque;
 
 import org.bukkit.entity.Player;
 
@@ -29,10 +29,10 @@ public class NightmareTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = nightmareRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (List<IFakeLivingEntity>) nightmareRegistry.getRegister(name));
+			e(name, (ArrayDeque<IFakeLivingEntity>) nightmareRegistry.getRegister(name));
 		}
 	}
-	private void e(String uuid, List<IFakeLivingEntity> entities) {
+	private void e(String uuid, ArrayDeque<IFakeLivingEntity> entities) {
 		Player player = CommandUtil.getPlayerByUuid(uuid);
 		
 		if (!player.isOnline()) {

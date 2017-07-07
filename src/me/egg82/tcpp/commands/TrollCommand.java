@@ -1,39 +1,50 @@
 package me.egg82.tcpp.commands;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.services.TrollInventoryRegistry;
-import me.egg82.tcpp.services.TrollPageRegistry;
-import me.egg82.tcpp.services.TrollPlayerRegistry;
-import me.egg82.tcpp.services.TrollSearchRegistry;
-import me.egg82.tcpp.util.GuiUtil;
-import me.egg82.tcpp.util.MetricsHelper;
+import me.egg82.tcpp.services.CommandSearchDatabase;
 import ninja.egg82.events.CommandEvent;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotCommandErrorType;
 import ninja.egg82.plugin.enums.SpigotMessageType;
 import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.sql.LanguageDatabase;
+import ninja.egg82.utils.ReflectUtil;
 
 public class TrollCommand extends PluginCommand {
 	//vars
-	private IRegistry trollInventoryRegistry = (IRegistry) ServiceLocator.getService(TrollInventoryRegistry.class);
-	private IRegistry trollPlayerRegistry = (IRegistry) ServiceLocator.getService(TrollPlayerRegistry.class);
-	private IRegistry trollPageRegistry = (IRegistry) ServiceLocator.getService(TrollPageRegistry.class);
-	private IRegistry trollSearchRegistry = (IRegistry) ServiceLocator.getService(TrollSearchRegistry.class);
-	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private LanguageDatabase commandDatabase = (LanguageDatabase) ServiceLocator.getService(CommandSearchDatabase.class);
+	private HashMap<String, PluginCommand> commands = new HashMap<String, PluginCommand>();
 	
 	//constructor
 	public TrollCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
+		
+		// List all classes in the command package
+		List<Class<? extends PluginCommand>> temp = ReflectUtil.getClasses(PluginCommand.class, "me.egg82.tcpp.commands.internal");
+		for (int i = 0; i < temp.size(); i++) {
+			// Attempt to instantiate the command
+			PluginCommand run = null;
+			try {
+				run = temp.get(i).getDeclaredConstructor(CommandSender.class, Command.class, String.class, String[].class).newInstance(sender, command, label, args);
+			} catch (Exception ex) {
+				continue;
+			}
+			
+			// Put the command in a map for fast lookup/retrieval
+			String name = temp.get(i).getSimpleName();
+			commands.put(name.substring(0, name.length() - 7).toLowerCase(), run);
+		}
 	}
 	
 	//public
@@ -51,47 +62,60 @@ public class TrollCommand extends PluginCommand {
 			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
 			return;
 		}
-		if (!CommandUtil.isPlayer(sender)) {
-			sender.sendMessage(SpigotMessageType.CONSOLE_NOT_ALLOWED);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.CONSOLE_NOT_ALLOWED);
-			return;
-		}
 		
-		Player player = CommandUtil.getPlayerByName(args[0]);
-		
-		if (player == null) {
-			sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
-			return;
-		}
-		if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-			sender.sendMessage(MessageType.PLAYER_IMMUNE);
-			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
-			return;
-		}
-		
-		String search = "";
-		if (args.length >= 2) {
-			for (int i = 1; i < args.length; i++) {
-				search += args[i] + " ";
+		String troll = args[0];
+		if (args.length > 1) {
+			String player = args[1];
+			if (CommandUtil.getPlayerByName(troll) != null && CommandUtil.getPlayerByName(player) == null) {
+				// Issuer accidentally swapped args. No problem, we'll just swap them back.
+				troll = args[1];
+				player = args[0];
+				
+				args[0] = troll;
+				args[1] = player;
 			}
-			search = search.trim();
+		} else {
+			// Only 1 argument given. This could be a command or a player
+			if (CommandUtil.getPlayerByName(args[0]) != null) {
+				// It's a player, so it's likely the issuer actually wanted to search. We'll do that for them.
+				sender.getServer().dispatchCommand(sender, "troll search " + args[0]);
+				return;
+			}
 		}
 		
-		e(player.getUniqueId().toString(), player, ((Player) sender).getUniqueId().toString(), (Player) sender, search);
+		// Chop off the command name from the argument list
+		ArrayList<String> newArgs = new ArrayList<String>(Arrays.asList(args));
+		newArgs.remove(0);
 		
-		dispatch(CommandEvent.COMPLETE, null);
+		e(troll.toLowerCase(), newArgs.toArray(new String[0]));
 	}
-	private void e(String uuid, Player player, String senderUuid, Player senderPlayer, String search) {
-		Inventory inv = GuiUtil.createInventory(senderPlayer, search, 0);
-		trollInventoryRegistry.setRegister(senderUuid, Inventory.class, inv);
-		trollPlayerRegistry.setRegister(senderUuid, Player.class, player);
-		trollPageRegistry.setRegister(senderUuid, Integer.class, 0);
-		trollSearchRegistry.setRegister(senderUuid, String.class, search);
+	private void e(String commandName, String[] args) {
+		PluginCommand run = commands.get(commandName);
 		
-		senderPlayer.openInventory(inv);
+		if (run == null) {
+			// Possible misspelling. Try searching instead.
+			String[] search = commandDatabase.getValues(commandDatabase.naturalLanguage(commandName, false), 0);
+			
+			if (search == null || search.length == 0) {
+				sender.sendMessage(MessageType.COMMAND_NOT_FOUND);
+				dispatch(CommandEvent.ERROR, CommandErrorType.COMMAND_NOT_FOUND);
+				return;
+			}
+			
+			run = commands.get(search[0].toLowerCase());
+			if (run == null) {
+				sender.sendMessage(MessageType.COMMAND_NOT_FOUND);
+				dispatch(CommandEvent.ERROR, CommandErrorType.COMMAND_NOT_FOUND);
+				return;
+			}
+		}
 		
-		metricsHelper.commandWasRun(command.getName());
+		// Set and run new command
+		run.setSender(sender);
+		run.setCommand(command);
+		run.setLabel(label);
+		run.setArgs(args);
+		run.start();
 	}
 	
 	protected void onUndo() {

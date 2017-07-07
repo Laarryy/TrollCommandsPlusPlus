@@ -3,6 +3,7 @@ package me.egg82.tcpp.util;
 import me.egg82.tcpp.services.CommandRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.plugin.commands.PluginCommand;
 
 public class MetricsHelper {
 	//vars
@@ -14,18 +15,21 @@ public class MetricsHelper {
 	}
 	
 	//public
-	public void commandWasRun(String commandName) {
-		commandWasRun(commandName, 1);
+	public void commandWasRun(PluginCommand command) {
+		commandWasRun(command, 1);
 	}
-	public void commandWasRun(String commandName, int numTimes) {
-		Integer currentRuns = (Integer) commandRegistry.getRegister(commandName);
+	public void commandWasRun(PluginCommand command, int numTimes) {
+		String name = command.getClass().getSimpleName();
+		name = name.substring(0, name.length() - 7).toLowerCase();
+		
+		Integer currentRuns = (Integer) commandRegistry.getRegister(name);
 		
 		if (currentRuns == null) {
 			currentRuns = 0;
 		}
 		currentRuns += numTimes;
 		
-		commandRegistry.setRegister(commandName, Integer.class, currentRuns);
+		commandRegistry.setRegister(name, Integer.class, currentRuns);
 	}
 	
 	public void clear() {

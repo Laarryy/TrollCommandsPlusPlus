@@ -1,7 +1,8 @@
 package me.egg82.tcpp.util;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,8 +16,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.egg82.tcpp.services.CommandSearchDatabase;
 import me.egg82.tcpp.services.GuiRegistry;
 import ninja.egg82.patterns.IRegistry;
+import ninja.egg82.patterns.Pair;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.sql.LanguageDatabase;
@@ -25,7 +28,7 @@ import ninja.egg82.startup.InitRegistry;
 public class GuiUtil {
 	//vars
 	private static LanguageDatabase ldb = null;
-	private static Map<String, Map<String, Object>> commands = null;
+	private static HashMap<String, Pair<String, String>> commands = null;
 	private static String[] allCommands = null;
 	
 	private static IRegistry guiRegistry = null;
@@ -38,13 +41,31 @@ public class GuiUtil {
 	//public
 	public static Inventory createInventory(Player permissionsPlayer, String search, int page) {
 		if (ldb == null) {
-			ldb = (LanguageDatabase) ServiceLocator.getService(LanguageDatabase.class);
+			ldb = (LanguageDatabase) ServiceLocator.getService(CommandSearchDatabase.class);
 		}
 		if (commands == null) {
-			commands = ((PluginDescriptionFile) ((JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin")).getDescription()).getCommands();
+			commands = new HashMap<String, Pair<String, String>>();
+			String[] list = ((String) ((PluginDescriptionFile) ((JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin")).getDescription()).getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
+			
+			for (String entry : list) {
+				if (entry.contains("-= Available Commands =-")) {
+					continue;
+				}
+				
+				String usage = entry.substring(0, entry.indexOf(':')).trim();
+				String command = usage.split(" ")[1];
+				String description = entry.substring(entry.indexOf(':') + 1).trim();
+				
+				if (command.equals("search") || command.equals("help")) {
+					continue;
+				}
+				
+				commands.put(command, new Pair<String, String>(usage, description));
+			}
 		}
 		if (allCommands == null) {
 			allCommands = commands.keySet().toArray(new String[0]);
+			Arrays.sort(allCommands);
 		}
 		if (guiRegistry == null) {
 			guiRegistry = (IRegistry) ServiceLocator.getService(GuiRegistry.class);
@@ -116,8 +137,8 @@ public class GuiUtil {
 			lore.add(ChatColor.RED + ChatColor.ITALIC.toString() + "You do not have permissions");
 			lore.add(ChatColor.RED + ChatColor.ITALIC.toString() + "to run this command!");
 		}
-		lore.addAll(splitDescription((String) commands.get(command).get("description")));
-		lore.add(ChatColor.YELLOW + (String) commands.get(command).get("usage"));
+		lore.addAll(splitDescription((String) commands.get(command).getRight()));
+		lore.add(ChatColor.YELLOW + (String) commands.get(command).getLeft());
 		meta.setLore(lore);
 		
 		item.setItemMeta(meta);

@@ -70,7 +70,7 @@ public class TrollEventCommand extends EventCommand {
 		} else if (name.contains("close")) {
 			player.closeInventory();
 		} else {
-			player.getServer().dispatchCommand(player, name.substring(name.indexOf('/') + 1) + " " + ((Player) trollPlayerRegistry.getRegister(uuid)).getName());
+			player.getServer().dispatchCommand(player, "troll " + name.substring(name.indexOf('/') + 1) + " " + ((Player) trollPlayerRegistry.getRegister(uuid)).getName());
 			player.closeInventory();
 		}
 		

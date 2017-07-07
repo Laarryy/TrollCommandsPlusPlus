@@ -221,18 +221,6 @@ public class KeywordRegistry extends Registry {
 			"time",
 			"white"
 		});
-		setRegister("delaykill", String[].class, new String[] {
-			"skull",
-			"head",
-			"player",
-			"death",
-			"assassinate",
-			"execute",
-			"murder",
-			"slaughter",
-			"slay",
-			"finish"
-		});
 		setRegister("display", String[].class, new String[] {
 			"thin",
 			"glass",
@@ -242,6 +230,13 @@ public class KeywordRegistry extends Registry {
 			"exhibit",
 			"present",
 			"expose"
+		});
+		setRegister("effect", String[].class, new String[] {
+			"potion",
+			"regeneration",
+			"impact",
+			"impression",
+			"force"
 		});
 		setRegister("electrify", String[].class, new String[] {
 			"energy",
@@ -271,14 +266,6 @@ public class KeywordRegistry extends Registry {
 			"privilege",
 			"qualify",
 			"sanction"
-		});
-		setRegister("empty", String[].class, new String[] {
-			"ender",
-			"pearl",
-			"inventory",
-			"chest",
-			"void",
-			"nether"
 		});
 		setRegister("entomb", String[].class, new String[] {
 			"dirt",
@@ -363,15 +350,6 @@ public class KeywordRegistry extends Registry {
 			"warp",
 			"falsify"
 		});
-		setRegister("golem", String[].class, new String[] {
-			"red",
-			"rose",
-			"spawn",
-			"create",
-			"generate",
-			"hatch",
-			"make"
-		});
 		setRegister("grantwishes", String[].class, new String[] {
 			"dropper",
 			"allow",
@@ -405,17 +383,6 @@ public class KeywordRegistry extends Registry {
 			"drop",
 			"fall",
 			"hole"
-		});
-		setRegister("hound", String[].class, new String[] {
-			"bone",
-			"dog",
-			"puppy",
-			"pooch",
-			"spawn",
-			"create",
-			"generate",
-			"hatch",
-			"make"
 		});
 		setRegister("hurt", String[].class, new String[] {
 			"diamond",
@@ -463,6 +430,18 @@ public class KeywordRegistry extends Registry {
 			"convert",
 			"revert",
 			"upend"
+		});
+		setRegister("kill", String[].class, new String[] {
+			"skull",
+			"head",
+			"player",
+			"death",
+			"assassinate",
+			"execute",
+			"murder",
+			"slaughter",
+			"slay",
+			"finish"
 		});
 		setRegister("lag", String[].class, new String[] {
 			"gold",
@@ -518,6 +497,7 @@ public class KeywordRegistry extends Registry {
 			"smoke"
 		});
 		setRegister("levitate", String[].class, new String[] {
+			"ascend",
 			"feather",
 			"chicken",
 			"drift",
@@ -720,25 +700,6 @@ public class KeywordRegistry extends Registry {
 			"undo",
 			"invert"
 		});
-		setRegister("scare", String[].class, new String[] {
-			"skull",
-			"creeper",
-			"posess",
-			"disguise",
-			"camno",
-			"veil",
-			"cloak",
-			"guise",
-			"costume",
-			"illusion",
-			"mask",
-			"alarm",
-			"panick",
-			"shock",
-			"alert",
-			"fright",
-			"terror"
-		});
 		setRegister("slap", String[].class, new String[] {
 			"piston",
 			"punch",
@@ -760,27 +721,6 @@ public class KeywordRegistry extends Registry {
 			"generate",
 			"hatch",
 			"make"
-		});
-		setRegister("slowmine", String[].class, new String[] {
-			"minecart",
-			"delay",
-			"restrict",
-			"abate",
-			"curb",
-			"lag",
-			"reduce",
-			"brake"
-		});
-		setRegister("slowpoke", String[].class, new String[] {
-			"web",
-			"spider",
-			"delay",
-			"restrict",
-			"abate",
-			"curb",
-			"lag",
-			"reduce",
-			"brake"
 		});
 		setRegister("slowundo", String[].class, new String[] {
 			"grass",
@@ -868,9 +808,8 @@ public class KeywordRegistry extends Registry {
 			"fast",
 			"diet"
 		});
-		setRegister("stoptrolls", String[].class, new String[] {
+		setRegister("stop", String[].class, new String[] {
 			"barrier",
-			"stop",
 			"cancel",
 			"cease",
 			"end",
@@ -880,6 +819,19 @@ public class KeywordRegistry extends Registry {
 			"pause",
 			"quit",
 			"finish"
+		});
+		setRegister("surround", String[].class, new String[] {
+			"skull",
+			"creeper",
+			"regeneration",
+			"enclose",
+			"circle",
+			"encricle",
+			"envelop",
+			"rig",
+			"border",
+			"outline",
+			"round"
 		});
 		setRegister("swap", String[].class, new String[] {
 			"diode",
@@ -891,6 +843,7 @@ public class KeywordRegistry extends Registry {
 			"change"
 		});
 		setRegister("trickle", String[].class, new String[] {
+			"leak",
 			"golden",
 			"apple",
 			"exp",
@@ -971,21 +924,6 @@ public class KeywordRegistry extends Registry {
 			"hurt",
 			"puke"
 		});
-		setRegister("weakling", String[].class, new String[] {
-			"wood",
-			"sword",
-			"anemic",
-			"feeble",
-			"fragile",
-			"frail",
-			"sickly",
-			"sluggish",
-			"exhaust",
-			"faint",
-			"spent",
-			"tender",
-			"waste"
-		});
 		setRegister("whoami", String[].class, new String[] {
 			"mushroom",
 			"careless",
@@ -995,16 +933,6 @@ public class KeywordRegistry extends Registry {
 			"absent",
 			"forgetful",
 			"amnesia"
-		});
-		setRegister("zombify", String[].class, new String[] {
-			"rotten",
-			"flesh",
-			"zombie",
-			"spawn",
-			"create",
-			"generate",
-			"hatch",
-			"make"
 		});
 	}
 	

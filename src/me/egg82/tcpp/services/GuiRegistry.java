@@ -29,12 +29,10 @@ public class GuiRegistry extends Registry {
 		setRegister("creep", Material.class, Material.MONSTER_EGG);
 		setRegister("creep_data", Short.class, (short) 50);
 		setRegister("day", Material.class, Material.GLOWSTONE);
-		setRegister("delaykill", Material.class, Material.SKULL_ITEM);
-		setRegister("delaykill_data", Short.class, (short) 3);
 		setRegister("display", Material.class, Material.THIN_GLASS);
+		setRegister("effect", Material.class, Material.ENCHANTED_BOOK);
 		setRegister("electrify", Material.class, Material.DAYLIGHT_DETECTOR);
 		setRegister("empower", Material.class, Material.DRAGON_EGG);
-		setRegister("empty", Material.class, Material.ENDER_PEARL);
 		setRegister("entomb", Material.class, Material.DIRT);
 		setRegister("explodebreak", Material.class, Material.COBBLESTONE);
 		setRegister("explodebuild", Material.class, Material.REDSTONE_TORCH_ON);
@@ -44,16 +42,16 @@ public class GuiRegistry extends Registry {
 		setRegister("foolsgold", Material.class, Material.GOLD_ORE);
 		setRegister("freeze", Material.class, Material.ICE);
 		setRegister("garble", Material.class, Material.BOOK);
-		setRegister("golem", Material.class, Material.RED_ROSE);
 		setRegister("grantwishes", Material.class, Material.DROPPER);
 		setRegister("haunt", Material.class, Material.SKULL_ITEM);
 		setRegister("haunt_data", Short.class, (short) 2);
 		setRegister("hottub", Material.class, Material.TORCH);
-		setRegister("hound", Material.class, Material.BONE);
 		setRegister("hurt", Material.class, Material.DIAMOND_SWORD);
 		setRegister("infinity", Material.class, Material.WATER_BUCKET);
 		setRegister("inspect", Material.class, Material.HOPPER);
 		setRegister("invert", Material.class, Material.REDSTONE_COMPARATOR);
+		setRegister("kill", Material.class, Material.SKULL_ITEM);
+		setRegister("kill_data", Short.class, (short) 3);
 		setRegister("lag", Material.class, Material.GOLD_BLOCK);
 		setRegister("lavabreak", Material.class, Material.LAVA_BUCKET);
 		setRegister("lavabuild", Material.class, Material.BLAZE_ROD);
@@ -61,7 +59,6 @@ public class GuiRegistry extends Registry {
 		setRegister("lift", Material.class, Material.SLIME_BLOCK);
 		setRegister("lock", Material.class, Material.LEVER);
 		setRegister("lure", Material.class, Material.BEACON);
-		setRegister("nausea", Material.class, Material.SPIDER_EYE);
 		setRegister("night", Material.class, Material.NETHER_STAR);
 		setRegister("nightmare", Material.class, Material.OBSIDIAN);
 		setRegister("nopickup", Material.class, Material.DEAD_BUSH);
@@ -77,13 +74,9 @@ public class GuiRegistry extends Registry {
 		setRegister("randompotion", Material.class, Material.POTION);
 		setRegister("randomspeed", Material.class, Material.SOUL_SAND);
 		setRegister("rewind", Material.class, Material.ENCHANTMENT_TABLE);
-		setRegister("scare", Material.class, Material.SKULL_ITEM);
-		setRegister("scare_data", Short.class, (short) 4);
 		setRegister("slap", Material.class, Material.PISTON_BASE);
 		setRegister("slender", Material.class, Material.MONSTER_EGG);
 		setRegister("slender_data", Short.class, (short) 58);
-		setRegister("slowmine", Material.class, Material.MINECART);
-		setRegister("slowpoke", Material.class, Material.WEB);
 		setRegister("slowundo", Material.class, Material.GRASS);
 		setRegister("snowballfight", Material.class, Material.SNOW_BALL);
 		setRegister("spam", Material.class, Material.BOOKSHELF);
@@ -94,7 +87,9 @@ public class GuiRegistry extends Registry {
 		setRegister("squid", Material.class, Material.INK_SACK);
 		setRegister("stampede", Material.class, Material.LEATHER);
 		setRegister("starve", Material.class, Material.POISONOUS_POTATO);
-		setRegister("stoptrolls", Material.class, Material.BARRIER);
+		setRegister("stop", Material.class, Material.BARRIER);
+		setRegister("surround", Material.class, Material.SKULL_ITEM);
+		setRegister("surround_data", Short.class, (short) 4);
 		setRegister("swap", Material.class, Material.DIODE);
 		setRegister("trickle", Material.class, Material.GOLDEN_APPLE);
 		setRegister("troll", Material.class, Material.ENDER_CHEST);
@@ -104,9 +99,7 @@ public class GuiRegistry extends Registry {
 		setRegister("void", Material.class, Material.WOOL);
 		setRegister("void_data", Short.class, (short) 15);
 		setRegister("vomit", Material.class, Material.RAW_FISH);
-		setRegister("weakling", Material.class, Material.WOOD_SWORD);
 		setRegister("whoami", Material.class, Material.RED_MUSHROOM);
-		setRegister("zombify", Material.class, Material.ROTTEN_FLESH);
 	}
 	
 	//public

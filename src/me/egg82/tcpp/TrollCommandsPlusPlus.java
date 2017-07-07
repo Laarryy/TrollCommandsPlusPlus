@@ -5,9 +5,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.swing.Timer;
 
@@ -21,6 +18,7 @@ import me.egg82.tcpp.reflection.disguise.DisguiseHelper;
 import me.egg82.tcpp.reflection.disguise.LibsDisguisesHelper;
 import me.egg82.tcpp.reflection.disguise.NullDisguiseHelper;
 import me.egg82.tcpp.services.CommandRegistry;
+import me.egg82.tcpp.services.CommandSearchDatabase;
 import me.egg82.tcpp.services.KeywordRegistry;
 import me.egg82.tcpp.util.ControlHelper;
 import me.egg82.tcpp.util.DisplayHelper;
@@ -105,7 +103,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		ServiceLocator.provideService(WhoAmIHelper.class);
 		ServiceLocator.provideService(WorldHoleHelper.class);
 		ServiceLocator.provideService(MetricsHelper.class);
-		ServiceLocator.provideService(LanguageDatabase.class, false);
+		ServiceLocator.provideService(CommandSearchDatabase.class, false);
 		
 		populateLanguageDatabase();
 		
@@ -219,37 +217,36 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		info(ChatColor.GREEN + "--== " + ChatColor.LIGHT_PURPLE + "TrollCommands++ Disabled" + ChatColor.GREEN + " ==--");
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void populateLanguageDatabase() {
-		LanguageDatabase ldb = (LanguageDatabase) ServiceLocator.getService(LanguageDatabase.class);
+		LanguageDatabase ldb = (LanguageDatabase) ServiceLocator.getService(CommandSearchDatabase.class);
 		IRegistry keywordRegistry = (IRegistry) ServiceLocator.getService(KeywordRegistry.class);
-		PluginDescriptionFile description = getDescription();
+		PluginDescriptionFile descriptionFile = getDescription();
 		
-		Map<String, Map<String, Object>> commands = description.getCommands();
-		for (Entry<String, Map<String, Object>> kvp : commands.entrySet()) {
-			ArrayList<String> row = new ArrayList<String>();
-			row.add(kvp.getKey());
-			if (keywordRegistry.hasRegister(kvp.getKey())) {
-				row.addAll(new ArrayList<String>(Arrays.asList((String[]) keywordRegistry.getRegister(kvp.getKey()))));
+		String[] commands = ((String) descriptionFile.getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
+		
+		for (String entry : commands) {
+			if (entry.contains("-= Available Commands =-")) {
+				continue;
 			}
 			
-			for (Entry<String, Object> kvp2 : kvp.getValue().entrySet()) {
-				Object v = kvp2.getValue();
-				if (v instanceof String) {
-					List<String> v2 = new ArrayList<String>(Arrays.asList(((String) v).split("\\s+")));
-					StringUtil.stripSpecialChars(v2);
-					StringUtil.stripCommonWords(v2);
-					row.addAll(v2);
-				} else if (v instanceof List<?>) {
-					List<String> v2 = (List<String>) v;
-					for (int i = 0; i < v2.size(); i++) {
-						List<String> v3 = new ArrayList<String>(Arrays.asList(v2.get(i).split("\\s+")));
-						StringUtil.stripSpecialChars(v3);
-						StringUtil.stripCommonWords(v3);
-						row.addAll(v3);
-					}
-				}
+			String command = entry.substring(0, entry.indexOf(':')).trim().split(" ")[1];
+			String description = entry.substring(entry.indexOf(':') + 1).trim();
+			
+			if (command.equals("search") || command.equals("help")) {
+				continue;
 			}
+			
+			ArrayList<String> row = new ArrayList<String>();
+			row.add(command);
+			if (keywordRegistry.hasRegister(command)) {
+				row.addAll(Arrays.asList((String[]) keywordRegistry.getRegister(command)));
+			}
+			
+			ArrayList<String> v2 = new ArrayList<String>(Arrays.asList(description.split("\\s+")));
+			StringUtil.stripSpecialChars(v2);
+			StringUtil.stripCommonWords(v2);
+			row.addAll(v2);
+			
 			ldb.addRow(row.toArray(new String[0]));
 		}
 	}

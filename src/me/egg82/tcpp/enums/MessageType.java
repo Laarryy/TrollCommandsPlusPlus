@@ -16,6 +16,9 @@ public class MessageType {
 	public static final String EMPOWERED = "The entity you have selected is now empowered!";
 	public static final String DISEMPOWERED = "The entity you have selected is now disempowered!";
 	public static final String WRONG_GAME_VERSION = ChatColor.RED + "This command has been disabled because this version of Minecraft doesn't support it.";
+	public static final String MOB_NOT_FOUND = ChatColor.RED + "Mob not found.";
+	public static final String POTION_NOT_FOUND = ChatColor.RED + "Potion effect not found.";
+	public static final String COMMAND_NOT_FOUND = ChatColor.RED + "Command not found.";
 	
 	//constructor
 	public MessageType() {

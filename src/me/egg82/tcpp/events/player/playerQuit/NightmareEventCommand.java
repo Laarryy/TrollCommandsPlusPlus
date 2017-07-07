@@ -1,6 +1,6 @@
 package me.egg82.tcpp.events.player.playerQuit;
 
-import java.util.List;
+import java.util.ArrayDeque;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -32,6 +32,6 @@ public class NightmareEventCommand extends EventCommand {
 			return;
 		}
 		
-		nightmareRegistry.setRegister(uuid, List.class, null);
+		nightmareRegistry.setRegister(uuid, ArrayDeque.class, null);
 	}
 }
