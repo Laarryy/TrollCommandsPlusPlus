@@ -38,7 +38,7 @@ public class DisplayEventCommand extends EventCommand {
 		String[] names = displayBlockRegistry.getRegistryNames();
 		for (String name : names) {
 			for (Location loc : (Set<Location>) displayBlockRegistry.getRegister(name)) {
-				blocks.remove(loc);
+				blocks.remove(loc.getBlock());
 			}
 		}
 	}

@@ -49,6 +49,8 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	private int numPermissions = 0;
 	private int numTicks = 0;
 	
+	private ArrayList<String> commandNames = new ArrayList<String>();
+	
 	//constructor
 	public TrollCommandsPlusPlus() {
 		
@@ -218,7 +220,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	}
 	
 	private void populateLanguageDatabase() {
-		LanguageDatabase ldb = (LanguageDatabase) ServiceLocator.getService(CommandSearchDatabase.class);
+		LanguageDatabase commandNameDatabase = (LanguageDatabase) ServiceLocator.getService(CommandSearchDatabase.class);
 		IRegistry keywordRegistry = (IRegistry) ServiceLocator.getService(KeywordRegistry.class);
 		PluginDescriptionFile descriptionFile = getDescription();
 		
@@ -231,6 +233,8 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 			
 			String command = entry.substring(0, entry.indexOf(':')).trim().split(" ")[1];
 			String description = entry.substring(entry.indexOf(':') + 1).trim();
+			
+			commandNames.add(command);
 			
 			if (command.equals("search") || command.equals("help")) {
 				continue;
@@ -247,7 +251,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 			StringUtil.stripCommonWords(v2);
 			row.addAll(v2);
 			
-			ldb.addRow(row.toArray(new String[0]));
+			commandNameDatabase.addRow(row.toArray(new String[0]));
 		}
 	}
 }

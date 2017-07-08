@@ -3,6 +3,7 @@ package me.egg82.tcpp.commands.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -12,6 +13,7 @@ import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.services.EffectRegistry;
+import me.egg82.tcpp.services.PotionNameRegistry;
 import me.egg82.tcpp.services.PotionTypeSearchDatabase;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CommandEvent;
@@ -26,6 +28,7 @@ import ninja.egg82.sql.LanguageDatabase;
 public class EffectCommand extends PluginCommand {
 	//vars
 	private IRegistry effectRegistry = (IRegistry) ServiceLocator.getService(EffectRegistry.class);
+	private IRegistry potionNameRegistry = (IRegistry) ServiceLocator.getService(PotionNameRegistry.class);
 	
 	private LanguageDatabase potionTypeDatabase = (LanguageDatabase) ServiceLocator.getService(PotionTypeSearchDatabase.class);
 	
@@ -37,6 +40,44 @@ public class EffectCommand extends PluginCommand {
 	}
 	
 	//public
+	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+		if (args.length == 1) {
+			ArrayList<String> retVal = new ArrayList<String>();
+			
+			if (args[0].isEmpty()) {
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					retVal.add(player.getName());
+				}
+			} else {
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					if (player.getName().toLowerCase().startsWith(args[0].toLowerCase())) {
+						retVal.add(player.getName());
+					}
+				}
+			}
+			
+			return retVal;
+		} else if(args.length == 2) {
+			ArrayList<String> retVal = new ArrayList<String>();
+			
+			if (args[1].isEmpty()) {
+				for (String name : potionNameRegistry.getRegistryNames()) {
+					retVal.add((String) potionNameRegistry.getRegister(name));
+				}
+			} else {
+				for (String name : potionNameRegistry.getRegistryNames()) {
+					String value = (String) potionNameRegistry.getRegister(name);
+					if (value.toLowerCase().startsWith(args[1].toLowerCase())) {
+						retVal.add(value);
+					}
+				}
+			}
+			
+			return retVal;
+		}
+		
+		return null;
+	}
 	
 	//private
 	@SuppressWarnings("unchecked")
@@ -55,30 +96,15 @@ public class EffectCommand extends PluginCommand {
 			return;
 		}
 		
-		Player player = CommandUtil.getPlayerByName(args[0]);
-		
-		if (player == null) {
-			sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
-			return;
-		}
-		if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-			sender.sendMessage(MessageType.PLAYER_IMMUNE);
-			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
-			return;
-		}
-		
-		String uuid = player.getUniqueId().toString();
-		
 		String search = "";
 		for (int i = 1; i < args.length; i++) {
 			search += args[i] + " ";
 		}
 		search = search.trim();
 		
-		PotionEffectType effect = PotionEffectType.getByName(search.replaceAll(" ", "_"));
+		PotionEffectType type = PotionEffectType.getByName(search.replaceAll(" ", "_").toUpperCase());
 		
-		if (effect == null) {
+		if (type == null) {
 			// Effect not found. It's possible it was just misspelled. Search the database.
 			String[] types = potionTypeDatabase.getValues(potionTypeDatabase.naturalLanguage(search, false), 0);
 			
@@ -88,15 +114,54 @@ public class EffectCommand extends PluginCommand {
 				return;
 			}
 			
-			effect = PotionEffectType.getByName(types[0]);
+			type = PotionEffectType.getByName(types[0].toUpperCase());
+			if (type == null) {
+				sender.sendMessage(MessageType.POTION_NOT_FOUND);
+				dispatch(CommandEvent.ERROR, CommandErrorType.POTION_NOT_FOUND);
+				return;
+			}
 		}
 		
-		List<PotionEffectType> currentEffects = (List<PotionEffectType>) effectRegistry.getRegister(uuid);
-		
-		if (currentEffects == null || !currentEffects.contains(effect)) {
-			e(uuid, player, effect, currentEffects);
+		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
+		if (players.size() > 0) {
+			for (Player player : players) {
+				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+					continue;
+				}
+				
+				String uuid = player.getUniqueId().toString();
+				
+				List<PotionEffectType> currentEffects = (List<PotionEffectType>) effectRegistry.getRegister(uuid);
+				
+				if (currentEffects == null || !currentEffects.contains(type)) {
+					e(uuid, player, type, currentEffects);
+				} else {
+					eUndo(uuid, player, type, currentEffects);
+				}
+			}
 		} else {
-			eUndo(uuid, player, effect, currentEffects);
+			Player player = CommandUtil.getPlayerByName(args[0]);
+			
+			if (player == null) {
+				sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
+				dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
+				return;
+			}
+			if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+				sender.sendMessage(MessageType.PLAYER_IMMUNE);
+				dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
+				return;
+			}
+			
+			String uuid = player.getUniqueId().toString();
+			
+			List<PotionEffectType> currentEffects = (List<PotionEffectType>) effectRegistry.getRegister(uuid);
+			
+			if (currentEffects == null || !currentEffects.contains(type)) {
+				e(uuid, player, type, currentEffects);
+			} else {
+				eUndo(uuid, player, type, currentEffects);
+			}
 		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
@@ -111,7 +176,7 @@ public class EffectCommand extends PluginCommand {
 		
 		metricsHelper.commandWasRun(this);
 		
-		sender.sendMessage(player.getName() + " is now affected by " + potionType.getName().replace('_', ' ').toLowerCase() + "!");
+		sender.sendMessage(player.getName() + " is now affected by " + potionNameRegistry.getRegister(potionType.getName()) + "!");
 	}
 	
 	protected void onUndo() {
@@ -126,12 +191,19 @@ public class EffectCommand extends PluginCommand {
 	}
 	private void eUndo(String uuid, Player player, PotionEffectType potionType, List<PotionEffectType> currentEffects) {
 		currentEffects.remove(potionType);
+		player.removePotionEffect(potionType);
 		
-		sender.sendMessage(player.getName() + " is no longer being affected by " + potionType.getName().replace('_', ' ').toLowerCase() + ".");
+		sender.sendMessage(player.getName() + " is no longer being affected by " + potionNameRegistry.getRegister(potionType.getName()) + ".");
 	}
+	@SuppressWarnings("unchecked")
 	private void eUndo(String uuid, Player player) {
+		List<PotionEffectType> effects = (List<PotionEffectType>) effectRegistry.getRegister(uuid);
+		for (PotionEffectType potionType : effects) {
+			player.removePotionEffect(potionType);
+		}
+		
 		effectRegistry.setRegister(uuid, List.class, null);
 		
-		sender.sendMessage(player.getName() + " no longer has any permanent affects.");
+		sender.sendMessage(player.getName() + " no longer has any permanent potion effects.");
 	}
 }

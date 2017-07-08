@@ -1,6 +1,8 @@
 package me.egg82.tcpp.commands.internal;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -27,6 +29,7 @@ import ninja.egg82.utils.StringUtil;
 
 public class HelpCommand extends PluginCommand {
 	//vars
+	private ArrayList<String> commandNames = new ArrayList<String>();
 	private HashMap<String, Pair<String, String>> commands = new HashMap<String, Pair<String, String>>();
 	private LanguageDatabase ldb = (LanguageDatabase) ServiceLocator.getService(CommandSearchDatabase.class);
 	
@@ -46,11 +49,27 @@ public class HelpCommand extends PluginCommand {
 			String c = usage.split(" ")[1];
 			String description = entry.substring(entry.indexOf(':') + 1).trim();
 			
+			commandNames.add(c);
 			commands.put(c, new Pair<String, String>(usage, description));
 		}
 	}
 	
 	//public
+	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+		if (args.length == 0 || args[0].isEmpty()) {
+			return commandNames;
+		} else if (args.length == 1) {
+			ArrayList<String> retVal = new ArrayList<String>();
+			for (int i = 0; i < commandNames.size(); i++) {
+				if (commandNames.get(i).startsWith(args[0].toLowerCase())) {
+					retVal.add(commandNames.get(i));
+				}
+			}
+			return retVal;
+		}
+		
+		return null;
+	}
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
@@ -75,7 +94,7 @@ public class HelpCommand extends PluginCommand {
 		String command = search.toLowerCase();
 		Pair<String, String> commandValues = commands.get(command);
 		
-		if (command == null) {
+		if (commandValues == null) {
 			// Might have simply misspelled the command. Search the database.
 			String[] list = ldb.getValues(ldb.naturalLanguage(search, false), 0);
 			
@@ -87,6 +106,12 @@ public class HelpCommand extends PluginCommand {
 			
 			command = list[0].toLowerCase();
 			commandValues = commands.get(command);
+			
+			if (commandValues == null) {
+				sender.sendMessage(MessageType.COMMAND_NOT_FOUND);
+				dispatch(CommandEvent.ERROR, CommandErrorType.COMMAND_NOT_FOUND);
+				return;
+			}
 		}
 		
 		e(command, commandValues);

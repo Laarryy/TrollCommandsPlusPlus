@@ -1,11 +1,16 @@
 package me.egg82.tcpp.commands.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.help.HelpTopic;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -26,15 +31,52 @@ public class AttachCommandCommand extends PluginCommand {
 	//vars
 	private IPlayerHelper playerHelper = (IPlayerHelper) ServiceLocator.getService(IPlayerHelper.class);
 	private INBTHelper nbtHelper = (INBTHelper) ServiceLocator.getService(INBTHelper.class);
+	private ArrayList<String> commandNames = new ArrayList<String>();
 	
 	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public AttachCommandCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
+		
+		for (HelpTopic topic : Bukkit.getServer().getHelpMap().getHelpTopics()) {
+			String name = topic.getName();
+			if (name.charAt(0) != '/') {
+				continue;
+			}
+			
+			commandNames.add(name.substring(1, name.length()));
+		}
 	}
 	
 	//public
+	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+		if (args.length == 1) {
+			if (args[0].isEmpty()) {
+				return commandNames;
+			} else {
+				ArrayList<String> retVal = new ArrayList<String>();
+				
+				for (int i = 0; i < commandNames.size(); i++) {
+					if (commandNames.get(i).toLowerCase().startsWith(args[0].toLowerCase())) {
+						retVal.add(commandNames.get(i));
+					}
+				}
+				
+				return retVal;
+			}
+		} else if (args.length > 1) {
+			org.bukkit.command.PluginCommand pluginCommand = Bukkit.getPluginCommand(args[0]);
+			
+			if (pluginCommand != null) {
+				ArrayList<String> newArgs = new ArrayList<String>(Arrays.asList(args));
+				newArgs.remove(0);
+				return pluginCommand.tabComplete(sender, label, newArgs.toArray(new String[0]));
+			}
+		}
+		
+		return null;
+	}
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
@@ -70,13 +112,14 @@ public class AttachCommandCommand extends PluginCommand {
 		}
 		command = command.trim();
 		
-		if (item != null) {
+		if (item != null && item.getType() != Material.AIR) {
 			e(item, command);
 		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void e(ItemStack item, String runnableCommand) {
+		nbtHelper.addTag(item, "tcppSender", ((Player) sender).getUniqueId().toString());
 		nbtHelper.addTag(item, "tcppCommand", runnableCommand);
 		
 		ItemMeta meta = item.getItemMeta();

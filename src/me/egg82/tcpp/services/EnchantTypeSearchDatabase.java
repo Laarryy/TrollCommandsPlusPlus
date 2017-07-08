@@ -3,19 +3,19 @@ package me.egg82.tcpp.services;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.apache.commons.lang3.text.WordUtils;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Monster;
+import org.bukkit.enchantments.Enchantment;
 
+import ninja.egg82.patterns.IRegistry;
+import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.sql.LanguageDatabase;
-import ninja.egg82.utils.ReflectUtil;
 
-public class MobTypeSearchDatabase extends LanguageDatabase {
+public class EnchantTypeSearchDatabase extends LanguageDatabase {
 	//vars
+	private IRegistry enchantNameRegistry = (IRegistry) ServiceLocator.getService(EnchantNameRegistry.class);
 	
 	//constructor
-	public MobTypeSearchDatabase() {
-		EntityType[] types = EntityType.values();
+	public EnchantTypeSearchDatabase() {
+		Enchantment[] types = Enchantment.values();
 		
 		Arrays.sort(types, (a, b) -> {
 			if (a == null) {
@@ -28,21 +28,18 @@ public class MobTypeSearchDatabase extends LanguageDatabase {
 				return 1;
 			}
 			
-			return a.name().compareTo(b.name());
+			return a.getName().compareTo(b.getName());
 		});
 		
 		for (int i = 0; i < types.length; i++) {
 			if (types[i] == null) {
 				continue;
 			}
-			if (!ReflectUtil.doesExtend(Monster.class, types[i].getEntityClass())) {
-				continue;
-			}
 			
 			ArrayList<String> fields = new ArrayList<String>();
-			String name = types[i].name();
+			String name = types[i].getName();
 			fields.add(name);
-			fields.add(WordUtils.capitalize(String.join(" ", name.toLowerCase().split("_"))));
+			fields.add((String) enchantNameRegistry.getRegister(name));
 			fields.addAll(Arrays.asList(name.split("_")));
 			
 			addRow(fields.toArray(new String[0]));

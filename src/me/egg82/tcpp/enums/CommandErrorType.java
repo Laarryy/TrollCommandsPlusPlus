@@ -14,6 +14,8 @@ public class CommandErrorType {
 	public static final String MOB_NOT_FOUND = "mobNotFound";
 	public static final String POTION_NOT_FOUND = "potionNotFound";
 	public static final String COMMAND_NOT_FOUND = "commandNotFound";
+	public static final String ENCHANT_NOT_FOUND = "enchantNotFound";
+	public static final String VEGETABLE_NOT_FOUND = "vegetableNotFound";
 	
 	//constructor
 	public CommandErrorType() {

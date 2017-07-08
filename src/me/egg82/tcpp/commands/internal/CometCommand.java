@@ -1,5 +1,7 @@
 package me.egg82.tcpp.commands.internal;
 
+import java.util.List;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Fireball;
@@ -24,6 +26,9 @@ public class CometCommand extends PluginCommand {
 	}
 	
 	//public
+	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+		return null;
+	}
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {

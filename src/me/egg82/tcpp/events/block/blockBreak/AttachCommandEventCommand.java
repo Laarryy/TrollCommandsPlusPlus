@@ -17,6 +17,7 @@ import ninja.egg82.plugin.core.BlockData;
 import ninja.egg82.plugin.reflection.nbt.INBTHelper;
 import ninja.egg82.plugin.reflection.player.IPlayerHelper;
 import ninja.egg82.plugin.utils.BlockUtil;
+import ninja.egg82.plugin.utils.CommandUtil;
 
 public class AttachCommandEventCommand extends EventCommand {
 	//vars
@@ -53,13 +54,25 @@ public class AttachCommandEventCommand extends EventCommand {
 		if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
 			Collection<ItemStack> drops = e.getBlock().getDrops(playerHelper.getItemInMainHand(player));
 			for (ItemStack item : drops) {
+				nbtHelper.addTag(item, "tcppSender", nbtHelper.getTag(block, "tcppSender"));
 				nbtHelper.addTag(item, "tcppCommand", nbtHelper.getTag(block, "tcppCommand"));
 				player.getWorld().dropItemNaturally(e.getBlock().getLocation(), item);
 			}
 		} else {
-			Bukkit.dispatchCommand(player, (String) nbtHelper.getTag(block, "tcppCommand"));
+			Player sender = CommandUtil.getPlayerByUuid((String) nbtHelper.getTag(block, "tcppSender"));
+			if (sender != null) {
+				CommandUtil.dispatchCommandAtPlayerLocation(sender, player, (String) nbtHelper.getTag(block, "tcppCommand"));
+			} else {
+				if (CommandUtil.getOfflinePlayerByUuid((String) nbtHelper.getTag(block, "tcppSender")).isOp()) {
+					CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), player, (String) nbtHelper.getTag(block, "tcppCommand"));
+				} else {
+					Bukkit.dispatchCommand(player, (String) nbtHelper.getTag(block, "tcppCommand"));
+				}
+			}
 		}
 		
+		nbtHelper.removeTag(block, "tcppSender");
+		nbtHelper.removeTag(block, "tcppCommand");
 		BlockUtil.setBlock(block, new BlockData(null, null, Material.AIR), true);
 	}
 }

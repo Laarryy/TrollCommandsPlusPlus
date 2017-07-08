@@ -1,5 +1,8 @@
 package me.egg82.tcpp.commands.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -27,6 +30,27 @@ public class StopCommand extends PluginCommand {
 	}
 	
 	//public
+	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+		if (args.length == 1) {
+			ArrayList<String> retVal = new ArrayList<String>();
+			
+			if (args[0].isEmpty()) {
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					retVal.add(player.getName());
+				}
+			} else {
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					if (player.getName().toLowerCase().startsWith(args[0].toLowerCase())) {
+						retVal.add(player.getName());
+					}
+				}
+			}
+			
+			return retVal;
+		}
+		
+		return null;
+	}
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
@@ -44,19 +68,30 @@ public class StopCommand extends PluginCommand {
 			return;
 		}
 		
-		Player player = Bukkit.getPlayer(args[0]);
-		
-		if (player == null) {
-			sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
-			return;
+		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
+		if (players.size() > 0) {
+			for (Player player : players) {
+				commandHandler.undoInitializedCommands(sender, new String[] {player.getName()});
+				
+				metricsHelper.commandWasRun(this);
+				
+				sender.sendMessage("All active trolls against " + player.getName() + " have been stopped.");
+			}
+		} else {
+			Player player = Bukkit.getPlayer(args[0]);
+			
+			if (player == null) {
+				sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
+				dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
+				return;
+			}
+			
+			commandHandler.undoInitializedCommands(sender, args);
+			
+			metricsHelper.commandWasRun(this);
+			
+			sender.sendMessage("All active trolls against " + player.getName() + " have been stopped.");
 		}
-		
-		commandHandler.undoInitializedCommands(sender, args);
-		
-		metricsHelper.commandWasRun(this);
-		
-		sender.sendMessage("All active trolls against " + player.getName() + " have been stopped.");
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}

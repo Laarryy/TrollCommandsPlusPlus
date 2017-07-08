@@ -30,9 +30,10 @@ public class GuiRegistry extends Registry {
 		setRegister("creep_data", Short.class, (short) 50);
 		setRegister("day", Material.class, Material.GLOWSTONE);
 		setRegister("display", Material.class, Material.THIN_GLASS);
-		setRegister("effect", Material.class, Material.ENCHANTED_BOOK);
+		setRegister("effect", Material.class, Material.BOOK_AND_QUILL);
 		setRegister("electrify", Material.class, Material.DAYLIGHT_DETECTOR);
 		setRegister("empower", Material.class, Material.DRAGON_EGG);
+		setRegister("enchant", Material.class, Material.ENCHANTED_BOOK);
 		setRegister("entomb", Material.class, Material.DIRT);
 		setRegister("explodebreak", Material.class, Material.COBBLESTONE);
 		setRegister("explodebuild", Material.class, Material.REDSTONE_TORCH_ON);

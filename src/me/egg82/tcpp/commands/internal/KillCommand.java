@@ -1,5 +1,8 @@
 package me.egg82.tcpp.commands.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -37,6 +40,27 @@ public class KillCommand extends PluginCommand {
 	}
 	
 	//public
+	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+		if (args.length == 1) {
+			ArrayList<String> retVal = new ArrayList<String>();
+			
+			if (args[0].isEmpty()) {
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					retVal.add(player.getName());
+				}
+			} else {
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					if (player.getName().toLowerCase().startsWith(args[0].toLowerCase())) {
+						retVal.add(player.getName());
+					}
+				}
+			}
+			
+			return retVal;
+		}
+		
+		return null;
+	}
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
@@ -54,23 +78,7 @@ public class KillCommand extends PluginCommand {
 			return;
 		}
 		
-		Player player = CommandUtil.getPlayerByName(args[0]);
-		
-		if (player == null) {
-			sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
-			return;
-		}
-		if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-			sender.sendMessage(MessageType.PLAYER_IMMUNE);
-			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
-			return;
-		}
-		
-		String uuid = player.getUniqueId().toString();
-		
 		long delay = 10L;
-		
 		if (args.length == 2) {
 			try {
 				delay = Long.parseLong(args[1]);
@@ -83,7 +91,7 @@ public class KillCommand extends PluginCommand {
 				return;
 			}
 			
-			if (delay <= 0L) {
+			if (delay < 0L) {
 				sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
 				String name = getClass().getSimpleName();
 				name = name.substring(0, name.length() - 7).toLowerCase();
@@ -93,10 +101,42 @@ public class KillCommand extends PluginCommand {
 			}
 		}
 		
-		if (!killRegistry.hasRegister(uuid)) {
-			e(uuid, player, delay);
+		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
+		if (players.size() > 0) {
+			for (Player player : players) {
+				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+					continue;
+				}
+				
+				String uuid = player.getUniqueId().toString();
+				
+				if (!killRegistry.hasRegister(uuid)) {
+					e(uuid, player, delay);
+				} else {
+					eUndo(uuid, player);
+				}
+			}
 		} else {
-			eUndo(uuid, player);
+			Player player = CommandUtil.getPlayerByName(args[0]);
+			
+			if (player == null) {
+				sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
+				dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
+				return;
+			}
+			if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+				sender.sendMessage(MessageType.PLAYER_IMMUNE);
+				dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
+				return;
+			}
+			
+			String uuid = player.getUniqueId().toString();
+			
+			if (!killRegistry.hasRegister(uuid)) {
+				e(uuid, player, delay);
+			} else {
+				eUndo(uuid, player);
+			}
 		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
@@ -114,7 +154,7 @@ public class KillCommand extends PluginCommand {
 					entityUtil.damage(player, EntityDamageEvent.DamageCause.SUICIDE, Double.MAX_VALUE);
 				}
 			}
-		}, delay * 20);
+		}, (delay == 0) ? 1 : delay * 20);
 		
 		metricsHelper.commandWasRun(this);
 		

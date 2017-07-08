@@ -1,5 +1,8 @@
 package me.egg82.tcpp.commands.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -27,6 +30,27 @@ public class PublicCommand extends PluginCommand {
 	}
 	
 	//public
+	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+		if (args.length == 1) {
+			ArrayList<String> retVal = new ArrayList<String>();
+			
+			if (args[0].isEmpty()) {
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					retVal.add(player.getName());
+				}
+			} else {
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					if (player.getName().toLowerCase().startsWith(args[0].toLowerCase())) {
+						retVal.add(player.getName());
+					}
+				}
+			}
+			
+			return retVal;
+		}
+		
+		return null;
+	}
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {

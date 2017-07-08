@@ -5,10 +5,13 @@ import java.util.Arrays;
 
 import org.bukkit.potion.PotionEffectType;
 
+import ninja.egg82.patterns.IRegistry;
+import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.sql.LanguageDatabase;
 
 public class PotionTypeSearchDatabase extends LanguageDatabase {
 	//vars
+	private IRegistry potionNameRegistry = (IRegistry) ServiceLocator.getService(PotionNameRegistry.class);
 	
 	//constructor
 	public PotionTypeSearchDatabase() {
@@ -34,31 +37,10 @@ public class PotionTypeSearchDatabase extends LanguageDatabase {
 			}
 			
 			ArrayList<String> fields = new ArrayList<String>();
-			String name = types[i].getName().toLowerCase();
+			String name = types[i].getName();
 			fields.add(name);
+			fields.add((String) potionNameRegistry.getRegister(name));
 			fields.addAll(Arrays.asList(name.split("_")));
-			
-			if (name == "confusion") {
-				fields.add("nausea");
-			} else if (name == "fast_digging") {
-				fields.add("haste");
-			} else if (name == "damage_resistance") {
-				fields.add("resistance");
-			} else if (name == "harm") {
-				fields.add("instant damage");
-			} else if (name == "heal") {
-				fields.add("instant health");
-			} else if (name == "increase_damage") {
-				fields.add("strength");
-			} else if (name == "jump") {
-				fields.add("jump boost");
-			} else if (name == "slow") {
-				fields.add("slowness");
-			} else if (name == "slow_digging") {
-				fields.add("mining fatigue");
-			} else if (name == "unluck") {
-				fields.add("bad luck");
-			}
 			
 			addRow(fields.toArray(new String[0]));
 		}

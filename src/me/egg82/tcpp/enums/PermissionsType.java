@@ -91,6 +91,7 @@ public class PermissionsType {
 	public static final String COMMAND_SEARCH = "tcpp.command.search";
 	public static final String COMMAND_HELP = "tcpp.command.help";
 	public static final String COMMAND_EFFECT = "tcpp.command.effect";
+	public static final String COMMAND_ENCHANT = "tcpp.command.enchant";
 	
 	//constructor
 	public PermissionsType() {

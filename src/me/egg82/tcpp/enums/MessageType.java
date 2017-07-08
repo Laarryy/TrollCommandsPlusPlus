@@ -19,6 +19,8 @@ public class MessageType {
 	public static final String MOB_NOT_FOUND = ChatColor.RED + "Mob not found.";
 	public static final String POTION_NOT_FOUND = ChatColor.RED + "Potion effect not found.";
 	public static final String COMMAND_NOT_FOUND = ChatColor.RED + "Command not found.";
+	public static final String ENCHANT_NOT_FOUND = ChatColor.RED + "Enchantment not found.";
+	public static final String VEGETABLE_NOT_FOUND = ChatColor.RED + "Vegetable not found.";
 	
 	//constructor
 	public MessageType() {

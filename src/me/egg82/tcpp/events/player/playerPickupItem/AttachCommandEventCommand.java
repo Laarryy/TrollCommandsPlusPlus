@@ -1,6 +1,7 @@
 package me.egg82.tcpp.events.player.playerPickupItem;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
@@ -8,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.reflection.nbt.INBTHelper;
+import ninja.egg82.plugin.utils.CommandUtil;
 
 public class AttachCommandEventCommand extends EventCommand {
 	//vars
@@ -33,7 +35,18 @@ public class AttachCommandEventCommand extends EventCommand {
 			return;
 		}
 		
-		Bukkit.dispatchCommand(e.getPlayer(), (String) nbtHelper.getTag(item, "tcppCommand"));
+		Player sender = CommandUtil.getPlayerByUuid((String) nbtHelper.getTag(item, "tcppSender"));
+		if (sender != null) {
+			CommandUtil.dispatchCommandAtPlayerLocation(sender, e.getPlayer(), (String) nbtHelper.getTag(item, "tcppCommand"));
+		} else {
+			if (CommandUtil.getOfflinePlayerByUuid((String) nbtHelper.getTag(item, "tcppSender")).isOp()) {
+				CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), e.getPlayer(), (String) nbtHelper.getTag(item, "tcppCommand"));
+			} else {
+				Bukkit.dispatchCommand(e.getPlayer(), (String) nbtHelper.getTag(item, "tcppCommand"));
+			}
+		}
+		
+		nbtHelper.removeTag(item, "tcppSender");
 		nbtHelper.removeTag(item, "tcppCommand");
 	}
 }

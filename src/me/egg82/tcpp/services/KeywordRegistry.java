@@ -232,8 +232,8 @@ public class KeywordRegistry extends Registry {
 			"expose"
 		});
 		setRegister("effect", String[].class, new String[] {
-			"potion",
-			"regeneration",
+			"book",
+			"quill",
 			"impact",
 			"impression",
 			"force"
@@ -266,6 +266,15 @@ public class KeywordRegistry extends Registry {
 			"privilege",
 			"qualify",
 			"sanction"
+		});
+		setRegister("enchant", String[].class, new String[] {
+			"enchanted",
+			"book",
+			"charm",
+			"item",
+			"sorcery",
+			"magic",
+			"spell"
 		});
 		setRegister("entomb", String[].class, new String[] {
 			"dirt",

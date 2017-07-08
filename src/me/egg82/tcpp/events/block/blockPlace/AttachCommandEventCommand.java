@@ -39,6 +39,7 @@ public class AttachCommandEventCommand extends EventCommand {
 			return;
 		}
 		
+		nbtHelper.addTag(e.getBlock(), "tcppSender", nbtHelper.getTag(item, "tcppSender"));
 		nbtHelper.addTag(e.getBlock(), "tcppCommand", nbtHelper.getTag(item, "tcppCommand"));
 	}
 }

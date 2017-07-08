@@ -1,5 +1,9 @@
 package me.egg82.tcpp.commands.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -28,6 +32,27 @@ public class PotatoCommand extends PluginCommand {
 	}
 	
 	//public
+	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+		if (args.length == 1) {
+			ArrayList<String> retVal = new ArrayList<String>();
+			
+			if (args[0].isEmpty()) {
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					retVal.add(player.getName());
+				}
+			} else {
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					if (player.getName().toLowerCase().startsWith(args[0].toLowerCase())) {
+						retVal.add(player.getName());
+					}
+				}
+			}
+			
+			return retVal;
+		}
+		
+		return null;
+	}
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
@@ -45,20 +70,31 @@ public class PotatoCommand extends PluginCommand {
 			return;
 		}
 		
-		Player player = CommandUtil.getPlayerByName(args[0]);
-		
-		if (player == null) {
-			sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
-			return;
+		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
+		if (players.size() > 0) {
+			for (Player player : players) {
+				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+					continue;
+				}
+				
+				e(player.getUniqueId().toString(), player);
+			}
+		} else {
+			Player player = CommandUtil.getPlayerByName(args[0]);
+			
+			if (player == null) {
+				sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
+				dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
+				return;
+			}
+			if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+				sender.sendMessage(MessageType.PLAYER_IMMUNE);
+				dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
+				return;
+			}
+			
+			e(player.getUniqueId().toString(), player);
 		}
-		if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-			sender.sendMessage(MessageType.PLAYER_IMMUNE);
-			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
-			return;
-		}
-		
-		e(player.getUniqueId().toString(), player);
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}

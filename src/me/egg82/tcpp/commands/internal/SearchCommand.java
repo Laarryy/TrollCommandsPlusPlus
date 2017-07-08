@@ -1,9 +1,14 @@
 package me.egg82.tcpp.commands.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
@@ -21,6 +26,7 @@ import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotCommandErrorType;
 import ninja.egg82.plugin.enums.SpigotMessageType;
 import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.startup.InitRegistry;
 
 public class SearchCommand extends PluginCommand {
 	//vars
@@ -29,14 +35,40 @@ public class SearchCommand extends PluginCommand {
 	private IRegistry trollPageRegistry = (IRegistry) ServiceLocator.getService(TrollPageRegistry.class);
 	private IRegistry trollSearchRegistry = (IRegistry) ServiceLocator.getService(TrollSearchRegistry.class);
 	
+	private ArrayList<String> commandNames = new ArrayList<String>();
+	
 	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public SearchCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
+		
+		String[] list = ((String) ((PluginDescriptionFile) ((JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin")).getDescription()).getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
+		for (String entry : list) {
+			if (entry.contains("-= Available Commands =-")) {
+				continue;
+			}
+			
+			commandNames.add(entry.substring(0, entry.indexOf(':')).trim().split(" ")[1]);
+		}
 	}
 	
 	//public
+	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+		if (args.length == 0 || args[0].isEmpty()) {
+			return commandNames;
+		} else if (args.length == 1) {
+			ArrayList<String> retVal = new ArrayList<String>();
+			for (int i = 0; i < commandNames.size(); i++) {
+				if (commandNames.get(i).startsWith(args[0].toLowerCase())) {
+					retVal.add(commandNames.get(i));
+				}
+			}
+			return retVal;
+		}
+		
+		return null;
+	}
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {

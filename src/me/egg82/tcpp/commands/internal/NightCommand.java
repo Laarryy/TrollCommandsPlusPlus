@@ -1,5 +1,9 @@
 package me.egg82.tcpp.commands.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -25,9 +29,35 @@ public class NightCommand extends PluginCommand {
 	}
 	
 	//public
+	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+		if (args.length == 1) {
+			ArrayList<String> retVal = new ArrayList<String>();
+			
+			if (args[0].isEmpty()) {
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					retVal.add(player.getName());
+				}
+			} else {
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					if (player.getName().toLowerCase().startsWith(args[0].toLowerCase())) {
+						retVal.add(player.getName());
+					}
+				}
+			}
+			
+			return retVal;
+		}
+		
+		return null;
+	}
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
+		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_NIGHT)) {
+			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
+			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
+			return;
+		}
 		if (!CommandUtil.isArrayOfAllowedLength(args, 1)) {
 			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
 			String name = getClass().getSimpleName();
@@ -37,17 +67,42 @@ public class NightCommand extends PluginCommand {
 			return;
 		}
 		
-		if (!check()) {
-			return;
-		}
-		
-		Player player = CommandUtil.getPlayerByName(args[0]);
-		String uuid = player.getUniqueId().toString();
-		
-		if (player.isPlayerTimeRelative()) {
-			e(uuid, player);
+		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
+		if (players.size() > 0) {
+			for (Player player : players) {
+				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+					continue;
+				}
+				
+				String uuid = player.getUniqueId().toString();
+				
+				if (player.isPlayerTimeRelative()) {
+					e(uuid, player);
+				} else {
+					eUndo(uuid, player);
+				}
+			}
 		} else {
-			eUndo(uuid, player);
+			Player player = CommandUtil.getPlayerByName(args[0]);
+			
+			if (player == null) {
+				sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
+				dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
+				return;
+			}
+			if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+				sender.sendMessage(MessageType.PLAYER_IMMUNE);
+				dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
+				return;
+			}
+			
+			String uuid = player.getUniqueId().toString();
+			
+			if (player.isPlayerTimeRelative()) {
+				e(uuid, player);
+			} else {
+				eUndo(uuid, player);
+			}
 		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
@@ -61,10 +116,6 @@ public class NightCommand extends PluginCommand {
 	}
 	
 	protected void onUndo() {
-		if (!check()) {
-			return;
-		}
-		
 		Player player = CommandUtil.getPlayerByName(args[0]);
 		String uuid = player.getUniqueId().toString();
 		
@@ -78,28 +129,5 @@ public class NightCommand extends PluginCommand {
 		player.resetPlayerTime();
 		
 		sender.sendMessage(player.getName() + "'s time is no longer perma-night.");
-	}
-	
-	private boolean check() {
-		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_NIGHT)) {
-			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
-			return false;
-		}
-		
-		Player player = CommandUtil.getPlayerByName(args[0]);
-		
-		if (player == null) {
-			sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
-			return false;
-		}
-		if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-			sender.sendMessage(MessageType.PLAYER_IMMUNE);
-			dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
-			return false;
-		}
-		
-		return true;
 	}
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -24,6 +25,7 @@ import ninja.egg82.utils.ReflectUtil;
 public class TrollCommand extends PluginCommand {
 	//vars
 	private LanguageDatabase commandDatabase = (LanguageDatabase) ServiceLocator.getService(CommandSearchDatabase.class);
+	private ArrayList<String> commandNames = new ArrayList<String>();
 	private HashMap<String, PluginCommand> commands = new HashMap<String, PluginCommand>();
 	
 	//constructor
@@ -43,11 +45,35 @@ public class TrollCommand extends PluginCommand {
 			
 			// Put the command in a map for fast lookup/retrieval
 			String name = temp.get(i).getSimpleName();
-			commands.put(name.substring(0, name.length() - 7).toLowerCase(), run);
+			name = name.substring(0, name.length() - 7).toLowerCase();
+			commandNames.add(name);
+			commands.put(name, run);
 		}
 	}
 	
 	//public
+	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+		if (args.length == 0 || args[0].isEmpty()) {
+			// We want command names
+			return commandNames;
+		} else if (args.length == 1) {
+			// We want command names that start with the existing input
+			ArrayList<String> retVal = new ArrayList<String>();
+			for (int i = 0; i < commandNames.size(); i++) {
+				if (commandNames.get(i).startsWith(args[0].toLowerCase())) {
+					retVal.add(commandNames.get(i));
+				}
+			}
+			return retVal;
+		}
+		
+		// Pass it along to the command to handle
+		String commandName = args[0].toLowerCase();
+		ArrayList<String> newArgs = new ArrayList<String>(Arrays.asList(args));
+		newArgs.remove(0);
+		
+		return (commands.containsKey(commandName)) ? commands.get(commandName).tabComplete(sender, command, label, newArgs.toArray(new String[0])) : null;
+	}
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
@@ -119,6 +145,12 @@ public class TrollCommand extends PluginCommand {
 	}
 	
 	protected void onUndo() {
-		
+		for (Entry<String, PluginCommand> kvp : commands.entrySet()) {
+			PluginCommand run = kvp.getValue();
+			
+			run.setSender(sender);
+			run.setArgs(args);
+			run.undo();
+		}
 	}
 }

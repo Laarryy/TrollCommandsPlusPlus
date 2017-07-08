@@ -39,7 +39,7 @@ public class EffectTickCommand extends TickCommand {
 		}
 		
 		for (PotionEffectType e : effects) {
-			player.addPotionEffect(new PotionEffect(e, 140, 5), true);
+			player.addPotionEffect(new PotionEffect(e, Integer.MAX_VALUE, 5), true);
 		}
 	}
 }

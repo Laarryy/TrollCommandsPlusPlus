@@ -15,6 +15,7 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.reflection.nbt.INBTHelper;
+import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.startup.InitRegistry;
 
 public class AttachCommandEventCommand extends EventCommand {
@@ -55,7 +56,18 @@ public class AttachCommandEventCommand extends EventCommand {
 			if (clicked == top) {
 				InventoryHolder holder = bottom.getHolder();
 				if (holder instanceof Player) {
-					Bukkit.dispatchCommand((Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+					Player sender = CommandUtil.getPlayerByUuid((String) nbtHelper.getTag(item, "tcppSender"));
+					if (sender != null) {
+						CommandUtil.dispatchCommandAtPlayerLocation(sender, (Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+					} else {
+						if (CommandUtil.getOfflinePlayerByUuid((String) nbtHelper.getTag(item, "tcppSender")).isOp()) {
+							CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), (Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+						} else {
+							Bukkit.dispatchCommand((Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+						}
+					}
+					
+					nbtHelper.removeTag(item, "tcppSender");
 					nbtHelper.removeTag(item, "tcppCommand");
 				}
 			} else {
@@ -67,7 +79,18 @@ public class AttachCommandEventCommand extends EventCommand {
 				
 				InventoryHolder holder = top.getHolder();
 				if (holder instanceof Player) {
-					Bukkit.dispatchCommand((Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+					Player sender = CommandUtil.getPlayerByUuid((String) nbtHelper.getTag(item, "tcppSender"));
+					if (sender != null) {
+						CommandUtil.dispatchCommandAtPlayerLocation(sender, (Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+					} else {
+						if (CommandUtil.getOfflinePlayerByUuid((String) nbtHelper.getTag(item, "tcppSender")).isOp()) {
+							CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), (Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+						} else {
+							Bukkit.dispatchCommand((Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+						}
+					}
+					
+					nbtHelper.removeTag(item, "tcppSender");
 					nbtHelper.removeTag(item, "tcppCommand");
 				}
 			}
@@ -94,14 +117,36 @@ public class AttachCommandEventCommand extends EventCommand {
 				
 				InventoryHolder holder = top.getHolder();
 				if (holder instanceof Player) {
-					Bukkit.dispatchCommand((Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+					Player sender = CommandUtil.getPlayerByUuid((String) nbtHelper.getTag(item, "tcppSender"));
+					if (sender != null) {
+						CommandUtil.dispatchCommandAtPlayerLocation(sender, (Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+					} else {
+						if (CommandUtil.getOfflinePlayerByUuid((String) nbtHelper.getTag(item, "tcppSender")).isOp()) {
+							CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), (Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+						} else {
+							Bukkit.dispatchCommand((Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+						}
+					}
+					
+					nbtHelper.removeTag(item, "tcppSender");
 					nbtHelper.removeTag(item, "tcppCommand");
 				}
 			} else {
 				if (item.getItemMeta().getLore() == null) {
 					InventoryHolder holder = bottom.getHolder();
 					if (holder instanceof Player) {
-						Bukkit.dispatchCommand((Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+						Player sender = CommandUtil.getPlayerByUuid((String) nbtHelper.getTag(item, "tcppSender"));
+						if (sender != null) {
+							CommandUtil.dispatchCommandAtPlayerLocation(sender, (Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+						} else {
+							if (CommandUtil.getOfflinePlayerByUuid((String) nbtHelper.getTag(item, "tcppSender")).isOp()) {
+								CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), (Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+							} else {
+								Bukkit.dispatchCommand((Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+							}
+						}
+						
+						nbtHelper.removeTag(item, "tcppSender");
 						nbtHelper.removeTag(item, "tcppCommand");
 					}
 				}
