@@ -50,14 +50,14 @@ public class EnchantCommand extends PluginCommand {
 		if(args.length == 1) {
 			ArrayList<String> retVal = new ArrayList<String>();
 			
-			if (args[1].isEmpty()) {
+			if (args[0].isEmpty()) {
 				for (String name : enchantNameRegistry.getRegistryNames()) {
 					retVal.add((String) enchantNameRegistry.getRegister(name));
 				}
 			} else {
 				for (String name : enchantNameRegistry.getRegistryNames()) {
 					String value = (String) enchantNameRegistry.getRegister(name);
-					if (value.toLowerCase().startsWith(args[1].toLowerCase())) {
+					if (value.toLowerCase().startsWith(args[0].toLowerCase())) {
 						retVal.add(value);
 					}
 				}

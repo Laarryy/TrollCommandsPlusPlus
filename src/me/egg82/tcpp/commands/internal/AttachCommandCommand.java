@@ -124,6 +124,9 @@ public class AttachCommandCommand extends PluginCommand {
 		
 		ItemMeta meta = item.getItemMeta();
 		ArrayList<String> lore = new ArrayList<String>();
+		if (meta.hasLore()) {
+			lore.addAll(meta.getLore());
+		}
 		lore.add("Command to run:");
 		lore.add(ChatColor.GRAY + ChatColor.ITALIC.toString() + "/" + runnableCommand);
 		meta.setLore(lore);

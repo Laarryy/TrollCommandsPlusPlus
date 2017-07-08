@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.player.playerDropItem;
 
+import java.util.ArrayList;
+
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -32,7 +34,19 @@ public class AttachCommandEventCommand extends EventCommand {
 		}
 		
 		ItemMeta meta = e.getItemDrop().getItemStack().getItemMeta();
-		meta.setLore(null);
+		ArrayList<String> lore = new ArrayList<String>(meta.getLore());
+		int removeLine = -1;
+		for (int i = 0; i < lore.size(); i++) {
+			if (lore.get(i).contains("Command to run:")) {
+				removeLine = i;
+				break;
+			}
+		}
+		if (removeLine > -1) {
+			lore.remove(removeLine);
+			lore.remove(removeLine);
+		}
+		meta.setLore(lore);
 		e.getItemDrop().getItemStack().setItemMeta(meta);
 	}
 }

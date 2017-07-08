@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.inventory.inventoryClick;
 
+import java.util.ArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -72,7 +74,19 @@ public class AttachCommandEventCommand extends EventCommand {
 				}
 			} else {
 				ItemMeta meta = item.getItemMeta();
-				meta.setLore(null);
+				ArrayList<String> lore = new ArrayList<String>(meta.getLore());
+				int removeLine = -1;
+				for (int i = 0; i < lore.size(); i++) {
+					if (lore.get(i).contains("Command to run:")) {
+						removeLine = i;
+						break;
+					}
+				}
+				if (removeLine > -1) {
+					lore.remove(removeLine);
+					lore.remove(removeLine);
+				}
+				meta.setLore(lore);
 				item.setItemMeta(meta);
 				
 				update((Player) e.getWhoClicked());
@@ -110,7 +124,19 @@ public class AttachCommandEventCommand extends EventCommand {
 			
 			if (clicked == top) {
 				ItemMeta meta = item.getItemMeta();
-				meta.setLore(null);
+				ArrayList<String> lore = new ArrayList<String>(meta.getLore());
+				int removeLine = -1;
+				for (int i = 0; i < lore.size(); i++) {
+					if (lore.get(i).contains("Command to run:")) {
+						removeLine = i;
+						break;
+					}
+				}
+				if (removeLine > -1) {
+					lore.remove(removeLine);
+					lore.remove(removeLine);
+				}
+				meta.setLore(lore);
 				item.setItemMeta(meta);
 				
 				update((Player) e.getWhoClicked());

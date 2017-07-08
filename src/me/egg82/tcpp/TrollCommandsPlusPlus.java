@@ -147,7 +147,10 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 			});*/
 		}
 		
-		numCommands = SpigotReflectUtil.addCommandsFromPackage("me.egg82.tcpp.commands");
+		HashMap<String, String[]> aliasMap = new HashMap<String, String[]>();
+		aliasMap.put("TrollCommand", new String[] {"t"});
+		
+		numCommands = SpigotReflectUtil.addCommandsFromPackage("me.egg82.tcpp.commands", aliasMap);
 		numEvents = SpigotReflectUtil.addEventsFromPackage("me.egg82.tcpp.events");
 		numPermissions = SpigotReflectUtil.addPermissionsFromClass(PermissionsType.class);
 		numTicks = SpigotReflectUtil.addTicksFromPackage("me.egg82.tcpp.ticks");
