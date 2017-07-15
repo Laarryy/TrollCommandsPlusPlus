@@ -7,7 +7,7 @@ public class CommandSearchDatabase extends LanguageDatabase {
 	
 	//constructor
 	public CommandSearchDatabase() {
-		
+		super();
 	}
 	
 	//public

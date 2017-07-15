@@ -25,12 +25,12 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class ControlCommand extends PluginCommand {
 	//vars
-	private IRegistry controlRegistry = (IRegistry) ServiceLocator.getService(ControlRegistry.class);
+	private IRegistry controlRegistry = ServiceLocator.getService(ControlRegistry.class);
 	
-	private IDisguiseHelper disguiseHelper = (IDisguiseHelper) ServiceLocator.getService(IDisguiseHelper.class);
-	private ControlHelper controlHelper = (ControlHelper) ServiceLocator.getService(ControlHelper.class);
+	private IDisguiseHelper disguiseHelper = ServiceLocator.getService(IDisguiseHelper.class);
+	private ControlHelper controlHelper = ServiceLocator.getService(ControlHelper.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public ControlCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -119,7 +119,7 @@ public class ControlCommand extends PluginCommand {
 				return;
 			}
 			
-			Player controlledPlayer = (Player) controlRegistry.getRegister(controllerUuid);
+			Player controlledPlayer = controlRegistry.getRegister(controllerUuid, Player.class);
 			if (controlledPlayer != null) {
 				controlHelper.uncontrol(controllerUuid, controller);
 				if (controlledPlayer.getUniqueId().toString().equals(playerUuid)) {
@@ -154,7 +154,7 @@ public class ControlCommand extends PluginCommand {
 		String playerUuid = player.getUniqueId().toString();
 		
 		for (String controllerUuid : controlRegistry.getRegistryNames()) {
-			Player controlledPlayer = (Player) controlRegistry.getRegister(controllerUuid);
+			Player controlledPlayer = controlRegistry.getRegister(controllerUuid, Player.class);
 			
 			if (controlledPlayer.getUniqueId().toString().equals(playerUuid)) {
 				controlHelper.uncontrol(controllerUuid, CommandUtil.getPlayerByUuid(controllerUuid));

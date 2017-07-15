@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class SpoilCommand extends PluginCommand {
 	//vars
-	private IRegistry spoilRegistry = (IRegistry) ServiceLocator.getService(SpoilRegistry.class);
+	private IRegistry spoilRegistry = ServiceLocator.getService(SpoilRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public SpoilCommand(CommandSender sender, Command command, String label, String[] args) {

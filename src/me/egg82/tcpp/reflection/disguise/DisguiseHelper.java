@@ -12,7 +12,7 @@ import de.robingrether.idisguise.disguise.PlayerDisguise;;
 
 public class DisguiseHelper implements IDisguiseHelper {
 	//vars
-	DisguiseAPI api = Bukkit.getServicesManager().getRegistration(DisguiseAPI.class).getProvider();
+	private DisguiseAPI api = Bukkit.getServicesManager().getRegistration(DisguiseAPI.class).getProvider();
 	
 	//constructor
 	public DisguiseHelper() {

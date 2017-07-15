@@ -1,7 +1,6 @@
 package me.egg82.tcpp.events.player.playerJoin;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import me.egg82.tcpp.services.SpinRegistry;
@@ -9,12 +8,12 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 
-public class SpinEventCommand extends EventCommand {
+public class SpinEventCommand extends EventCommand<PlayerJoinEvent> {
 	//vars
-	private IRegistry spinRegistry = (IRegistry) ServiceLocator.getService(SpinRegistry.class);
+	private IRegistry spinRegistry = ServiceLocator.getService(SpinRegistry.class);
 	
 	//constructor
-	public SpinEventCommand(Event event) {
+	public SpinEventCommand(PlayerJoinEvent event) {
 		super(event);
 	}
 	
@@ -22,8 +21,7 @@ public class SpinEventCommand extends EventCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		PlayerJoinEvent e = (PlayerJoinEvent) event;
-		Player player = e.getPlayer();
+		Player player = event.getPlayer();
 		String uuid = player.getUniqueId().toString();
 		
 		if (spinRegistry.hasRegister(uuid)) {

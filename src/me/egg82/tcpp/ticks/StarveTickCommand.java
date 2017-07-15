@@ -9,7 +9,7 @@ import ninja.egg82.plugin.commands.TickCommand;
 
 public class StarveTickCommand extends TickCommand {
 	//vars
-	private IRegistry starveRegistry = (IRegistry) ServiceLocator.getService(StarveRegistry.class);
+	private IRegistry starveRegistry = ServiceLocator.getService(StarveRegistry.class);
 	
 	//constructor
 	public StarveTickCommand() {
@@ -23,7 +23,7 @@ public class StarveTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = starveRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (Player) starveRegistry.getRegister(name));
+			e(name, starveRegistry.getRegister(name, Player.class));
 		}
 	}
 	private void e(String uuid, Player player) {

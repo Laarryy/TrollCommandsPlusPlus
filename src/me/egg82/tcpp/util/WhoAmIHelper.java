@@ -12,8 +12,8 @@ import ninja.egg82.patterns.ServiceLocator;
 
 public class WhoAmIHelper {
 	//vars
-	private IRegistry whoAmIRegistry = (IRegistry) ServiceLocator.getService(WhoAmIRegistry.class);
-	private IRegistry whoAmINameRegistry = (IRegistry) ServiceLocator.getService(WhoAmINameRegistry.class);
+	private IRegistry whoAmIRegistry = ServiceLocator.getService(WhoAmIRegistry.class);
+	private IRegistry whoAmINameRegistry = ServiceLocator.getService(WhoAmINameRegistry.class);
 	
 	//constructor
 	public WhoAmIHelper() {
@@ -34,7 +34,7 @@ public class WhoAmIHelper {
 	public void stop(String uuid, Player player) {
 		whoAmIRegistry.setRegister(uuid, Player.class, null);
 		
-		List<String> names = (List<String>) whoAmINameRegistry.getRegister(uuid);
+		List<String> names = whoAmINameRegistry.getRegister(uuid, List.class);
 		player.setDisplayName(names.get(0));
 		player.setPlayerListName(names.get(1));
 		player.setCustomName(names.get(2));
@@ -45,7 +45,7 @@ public class WhoAmIHelper {
 	public void stopAll() {
 		String[] names = whoAmIRegistry.getRegistryNames();
 		for (int i = 0; i < names.length; i++) {
-			stop(names[i], (Player) whoAmIRegistry.getRegister(names[i]));
+			stop(names[i], whoAmIRegistry.getRegister(names[i], Player.class));
 		}
 	}
 	

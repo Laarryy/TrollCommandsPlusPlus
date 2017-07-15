@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 import javax.swing.Timer;
 
-import org.bstats.Metrics;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
@@ -32,10 +32,12 @@ import net.gravitydevelopment.updater.Updater.UpdateType;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.BasePlugin;
+import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.utils.SpigotReflectUtil;
 import ninja.egg82.plugin.utils.VersionUtil;
 import ninja.egg82.sql.LanguageDatabase;
 import ninja.egg82.startup.InitRegistry;
+import ninja.egg82.utils.ReflectUtil;
 import ninja.egg82.utils.StringUtil;
 
 public class TrollCommandsPlusPlus extends BasePlugin {
@@ -48,8 +50,6 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	private int numEvents = 0;
 	private int numPermissions = 0;
 	private int numTicks = 0;
-	
-	private ArrayList<String> commandNames = new ArrayList<String>();
 	
 	//constructor
 	public TrollCommandsPlusPlus() {
@@ -122,35 +122,32 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		}
 		
 		if (metrics != null) {
-			metrics.addCustomChart(new Metrics.AdvancedPie("commands") {
-				@Override
-				public HashMap<String, Integer> getValues(HashMap<String, Integer> values) {
-					IRegistry commandRegistry = (IRegistry) ServiceLocator.getService(CommandRegistry.class);
-					String[] names = commandRegistry.getRegistryNames();
-					for (String name : names) {
-						values.put(name, (Integer) commandRegistry.getRegister(name));
-					}
-					return values;
+			metrics.addCustomChart(new Metrics.AdvancedPie("commands", () -> {
+				IRegistry commandRegistry = (IRegistry) ServiceLocator.getService(CommandRegistry.class);
+				HashMap<String, Integer> values = new HashMap<String, Integer>();
+				String[] names = commandRegistry.getRegistryNames();
+				for (String name : names) {
+					values.put(name, (Integer) commandRegistry.getRegister(name));
 				}
-			});
-			/*metrics.addCustomChart(new Metrics.MultiLineChart("commands-ml") {
-				@Override
-				public HashMap<String, Integer> getValues(HashMap<String, Integer> values) {
-					IRegistry commandRegistry = (IRegistry) ServiceLocator.getService(CommandRegistry.class);
-					String[] names = commandRegistry.getRegistryNames();
-					for (String name : names) {
-						values.put(name, (Integer) commandRegistry.getRegister(name));
-					}
-					commandRegistry.clear();
-					return values;
+				return values;
+			}));
+			/*metrics.addCustomChart(new Metrics.MultiLineChart("commands-ml", () -> {
+				IRegistry commandRegistry = (IRegistry) ServiceLocator.getService(CommandRegistry.class);
+				HashMap<String, Integer> values = new HashMap<String, Integer>();
+				String[] names = commandRegistry.getRegistryNames();
+				for (String name : names) {
+					values.put(name, (Integer) commandRegistry.getRegister(name));
 				}
-			});*/
+				commandRegistry.clear();
+				return values;
+			}));*/
 		}
 		
 		HashMap<String, String[]> aliasMap = new HashMap<String, String[]>();
 		aliasMap.put("TrollCommand", new String[] {"t"});
 		
-		numCommands = SpigotReflectUtil.addCommandsFromPackage("me.egg82.tcpp.commands", aliasMap);
+		SpigotReflectUtil.addCommandsFromPackage("me.egg82.tcpp.commands", aliasMap);
+		numCommands = ReflectUtil.getClasses(PluginCommand.class, "me.egg82.tcpp.commands.internal").size();
 		numEvents = SpigotReflectUtil.addEventsFromPackage("me.egg82.tcpp.events");
 		numPermissions = SpigotReflectUtil.addPermissionsFromClass(PermissionsType.class);
 		numTicks = SpigotReflectUtil.addTicksFromPackage("me.egg82.tcpp.ticks");
@@ -163,19 +160,19 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	public void onDisable() {
 		super.onDisable();
 		
-		ControlHelper controlHelper = (ControlHelper) ServiceLocator.getService(ControlHelper.class);
+		ControlHelper controlHelper = ServiceLocator.getService(ControlHelper.class);
 		controlHelper.uncontrolAll();
 		
-		DisplayHelper displayHelper = (DisplayHelper) ServiceLocator.getService(DisplayHelper.class);
+		DisplayHelper displayHelper = ServiceLocator.getService(DisplayHelper.class);
 		displayHelper.unsurroundAll();
 		
-		VegetableHelper vegetableHelper = (VegetableHelper) ServiceLocator.getService(VegetableHelper.class);
+		VegetableHelper vegetableHelper = ServiceLocator.getService(VegetableHelper.class);
 		vegetableHelper.unvegetableAll();
 		
-		WhoAmIHelper whoAmIHelper = (WhoAmIHelper) ServiceLocator.getService(WhoAmIHelper.class);
+		WhoAmIHelper whoAmIHelper = ServiceLocator.getService(WhoAmIHelper.class);
 		whoAmIHelper.stopAll();
 		
-		WorldHoleHelper worldHoleHelper = (WorldHoleHelper) ServiceLocator.getService(WorldHoleHelper.class);
+		WorldHoleHelper worldHoleHelper = ServiceLocator.getService(WorldHoleHelper.class);
 		worldHoleHelper.undoAll();
 		
 		SpigotReflectUtil.clearAll();
@@ -223,8 +220,8 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	}
 	
 	private void populateLanguageDatabase() {
-		LanguageDatabase commandNameDatabase = (LanguageDatabase) ServiceLocator.getService(CommandSearchDatabase.class);
-		IRegistry keywordRegistry = (IRegistry) ServiceLocator.getService(KeywordRegistry.class);
+		LanguageDatabase commandNameDatabase = ServiceLocator.getService(CommandSearchDatabase.class);
+		IRegistry keywordRegistry = ServiceLocator.getService(KeywordRegistry.class);
 		PluginDescriptionFile descriptionFile = getDescription();
 		
 		String[] commands = ((String) descriptionFile.getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
@@ -236,8 +233,6 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 			
 			String command = entry.substring(0, entry.indexOf(':')).trim().split(" ")[1];
 			String description = entry.substring(entry.indexOf(':') + 1).trim();
-			
-			commandNames.add(command);
 			
 			if (command.equals("search") || command.equals("help")) {
 				continue;

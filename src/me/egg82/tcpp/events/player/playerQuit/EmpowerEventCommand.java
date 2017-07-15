@@ -1,17 +1,16 @@
 package me.egg82.tcpp.events.player.playerQuit;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffectType;
 
 import ninja.egg82.plugin.commands.EventCommand;
 
-public class EmpowerEventCommand extends EventCommand {
+public class EmpowerEventCommand extends EventCommand<PlayerQuitEvent> {
 	//vars
 	
 	//constructor
-	public EmpowerEventCommand(Event event) {
+	public EmpowerEventCommand(PlayerQuitEvent event) {
 		super(event);
 	}
 	
@@ -19,8 +18,7 @@ public class EmpowerEventCommand extends EventCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		PlayerQuitEvent e = (PlayerQuitEvent) event;
-		Player player = e.getPlayer();
+		Player player = event.getPlayer();
 		
 		if (player.hasPotionEffect(PotionEffectType.ABSORPTION)
 		&& player.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)

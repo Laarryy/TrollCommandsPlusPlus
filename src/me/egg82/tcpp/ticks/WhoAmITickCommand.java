@@ -13,7 +13,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class WhoAmITickCommand extends TickCommand {
 	//vars
-	private IRegistry whoAmIRegistry = (IRegistry) ServiceLocator.getService(WhoAmIRegistry.class);
+	private IRegistry whoAmIRegistry = ServiceLocator.getService(WhoAmIRegistry.class);
 	
 	//constructor
 	public WhoAmITickCommand() {
@@ -27,7 +27,7 @@ public class WhoAmITickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = whoAmIRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (Player) whoAmIRegistry.getRegister(name));
+			e(name, whoAmIRegistry.getRegister(name, Player.class));
 		}
 	}
 	private void e(String uuid, Player player) {

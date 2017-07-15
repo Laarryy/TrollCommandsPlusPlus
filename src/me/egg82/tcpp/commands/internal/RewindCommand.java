@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class RewindCommand extends PluginCommand {
 	//vars
-	private IRegistry rewindRegistry = (IRegistry) ServiceLocator.getService(RewindRegistry.class);
+	private IRegistry rewindRegistry = ServiceLocator.getService(RewindRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public RewindCommand(CommandSender sender, Command command, String label, String[] args) {

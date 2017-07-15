@@ -12,7 +12,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class ElectrifyTickCommand extends TickCommand {
 	//vars
-	private IRegistry electrifyRegistry = (IRegistry) ServiceLocator.getService(ElectrifyRegistry.class);
+	private IRegistry electrifyRegistry = ServiceLocator.getService(ElectrifyRegistry.class);
 	
 	//constructor
 	public ElectrifyTickCommand() {
@@ -26,7 +26,7 @@ public class ElectrifyTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = electrifyRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (Player) electrifyRegistry.getRegister(name));
+			e(name, electrifyRegistry.getRegister(name, Player.class));
 		}
 	}
 	private void e(String uuid, Player player) {

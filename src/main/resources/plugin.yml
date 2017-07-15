@@ -1,6 +1,6 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 4.17.36
+version: 4.18.37
 softdepend: [LibsDisguises,iDisguise,ProtocolLib]
 commands:
   troll:
@@ -17,12 +17,12 @@ commands:
       /troll bomb <player>: May balls of fire rain down upon thine enemy.
       /troll brittle <player>: They're made of glass!
       /troll burn <player>: AHH! FIRE! FIRE! FIIREE!!
-      /troll cannon [speed]: Shoots a primed TNT wherever you're looking.
+      /troll cannon [speed] [power]: Shoots a primed TNT wherever you're looking of adjustable speed and power.
       /troll clumsy <player>: Careful, or you'll end up dropping all of your stuff!
-      /troll comet [power]: Shoots a fireball of adjustable power.
+      /troll comet [speed] [power]: Shoots a fireball of adjustable speed and power.
       /troll control <player>: Allows you to take control of a player. Oooh, spoooky!
+      /troll convert <player> [type]: I hope they REALLY like potatoes. Or whatever you want, really.
       /troll creep <player>: Spawns a charged creeper at the player's location.
-      /troll day <player>: Sets the player's time to day permanently. Does not affect the server.
       /troll display <player>: Put your friends and enemies on display!
       /troll effect <player> <effect>: Applies the specified effect to the player indefinitely, or removes it if it has already been applied.
       /troll electrify <player>: Thine enemy shalt feel the wrath of many angry gods.
@@ -33,6 +33,7 @@ commands:
       /troll explodebuild <player>: The next block the player places explodes!
       /troll fakecrash <player>: Kicks the player with a nice little (or not-so-little) java exception message.
       /troll fakeop <player>: Sends a message to the player saying they are opped. They will not be.
+      /troll fill <player> <type>: Fills the player's inventory with the specified type. Because of course it does!
       /troll flip <player>: Makes the player do a 180.
       /troll foolsgold <player>: Ore! Ore everywhere, and not a drop to drink.
       /troll freeze <player>: Don't like someone? Turn them into a statue!
@@ -53,12 +54,10 @@ commands:
       /troll lift <player>: It's like flying, but only in one direction. And probably without a soft landing.
       /troll lock <player>: Prevents the player from interacting with their inventory or hotbar. They didn't REALLY need their sword, did they?
       /troll lure <player>: Attracts nearby monsters to the player.
-      /troll night <player>: Sets the player's time to night permanently. Does not affect the server.
       /troll nightmare <player>: Summons a waking nightmare for the player.
       /troll nopickup <player>: Stops the player from picking up items.
       /troll popup <player>: Randomly opens and closes the player's inventory.
       /troll portal <player>: The quickest way to The End!
-      /troll potato <player>: I hope they REALLY like potatoes.
       /troll public <player>: Gives everyone the chance to "inspect" the player's inventory. Freedom of information!
       /troll radiate <player>: Makes the player radiate toxicity, slowly killing all plant and animal-life around them.
       /troll randombreak <player>: Oh, diamonds-! Wait, why did I get dirt?
@@ -82,6 +81,7 @@ commands:
       /troll stop <player>: Stops any currently-active trolls against the player.
       /troll surround <player> <mob>: Surrounds the player with a specific mob type.
       /troll swap <player> <player>: Swaps two players' locations, Freaky Friday style.
+      /troll time <player> <time>: Sets the player's time to the time specified permanently. Does not affect the server.
       /troll trickle <player>: They're leaking XP all over the place!=
       /troll useless <player>: Renames all of the player's items to Useless.
       /troll vaporize <player>: Explodes the player with a specified power. To disable block damage, use a negative value.

@@ -2,51 +2,44 @@ package me.egg82.tcpp.events.player.asyncPlayerChat;
 
 import java.util.Set;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import me.egg82.tcpp.services.LagRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
-import ninja.egg82.startup.InitRegistry;
+import ninja.egg82.plugin.utils.TaskUtil;
 import ninja.egg82.utils.MathUtil;
 
-public class LagEventCommand extends EventCommand {
+public class LagEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 	//vars
-	private IRegistry lagRegistry = (IRegistry) ServiceLocator.getService(LagRegistry.class);
-	private JavaPlugin plugin = (JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin");
+	private IRegistry lagRegistry = ServiceLocator.getService(LagRegistry.class);
 	
 	//constructor
-	public LagEventCommand(Event event) {
+	public LagEventCommand(AsyncPlayerChatEvent event) {
 		super(event);
 	}
 	
 	//public
 
 	//private
-	@SuppressWarnings("deprecation")
 	protected void onExecute(long elapsedMilliseconds) {
-		AsyncPlayerChatEvent e = (AsyncPlayerChatEvent) event;
-		
-		if (e.isCancelled()) {
+		if (event.isCancelled()) {
 			return;
 		}
 		
-		Player player = e.getPlayer();
+		Player player = event.getPlayer();
 		
 		if (!lagRegistry.hasRegister(player.getUniqueId().toString())) {
 			return;
 		}
 		
 		// Snapshot of the event, since this event could be modified or destroyed later
-		Set<Player> recipients = e.getRecipients();
-		String format = e.getFormat();
+		Set<Player> recipients = event.getRecipients();
+		String format = event.getFormat();
 		String playerName = player.getDisplayName();
-		String message = e.getMessage();
+		String message = event.getMessage();
 		
 		Runnable chatRunner = new Runnable() {
 			public void run() {
@@ -56,13 +49,13 @@ public class LagEventCommand extends EventCommand {
 			}
 		};
 		
-		e.setCancelled(true);
+		event.setCancelled(true);
 		
 		// Manually chat for the player after a 2-3 second delay
-		if (e.isAsynchronous()) {
-			Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, chatRunner, MathUtil.fairRoundedRandom(40, 60));
+		if (event.isAsynchronous()) {
+			TaskUtil.runAsync(chatRunner, MathUtil.fairRoundedRandom(40, 60));
 		} else {
-			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, chatRunner, MathUtil.fairRoundedRandom(40, 60));
+			TaskUtil.runSync(chatRunner, MathUtil.fairRoundedRandom(40, 60));
 		}
 	}
 }

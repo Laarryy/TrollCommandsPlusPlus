@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class RandomPotionCommand extends PluginCommand {
 	//vars
-	private IRegistry randomPotionRegistry = (IRegistry) ServiceLocator.getService(RandomPotionRegistry.class);
+	private IRegistry randomPotionRegistry = ServiceLocator.getService(RandomPotionRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public RandomPotionCommand(CommandSender sender, Command command, String label, String[] args) {

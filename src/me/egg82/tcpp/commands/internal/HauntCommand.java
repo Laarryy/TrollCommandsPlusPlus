@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class HauntCommand extends PluginCommand {
 	//vars
-	private IRegistry hauntRegistry = (IRegistry) ServiceLocator.getService(HauntRegistry.class);
+	private IRegistry hauntRegistry = ServiceLocator.getService(HauntRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public HauntCommand(CommandSender sender, Command command, String label, String[] args) {

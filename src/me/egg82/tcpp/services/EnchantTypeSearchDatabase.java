@@ -11,10 +11,12 @@ import ninja.egg82.sql.LanguageDatabase;
 
 public class EnchantTypeSearchDatabase extends LanguageDatabase {
 	//vars
-	private IRegistry enchantNameRegistry = (IRegistry) ServiceLocator.getService(EnchantNameRegistry.class);
+	private IRegistry enchantNameRegistry = ServiceLocator.getService(EnchantNameRegistry.class);
 	
 	//constructor
 	public EnchantTypeSearchDatabase() {
+		super();
+		
 		Enchantment[] types = Enchantment.values();
 		
 		Arrays.sort(types, (a, b) -> {
@@ -39,7 +41,7 @@ public class EnchantTypeSearchDatabase extends LanguageDatabase {
 			ArrayList<String> fields = new ArrayList<String>();
 			String name = types[i].getName();
 			fields.add(name);
-			fields.add((String) enchantNameRegistry.getRegister(name));
+			fields.add(enchantNameRegistry.getRegister(name, String.class));
 			fields.addAll(Arrays.asList(name.split("_")));
 			
 			addRow(fields.toArray(new String[0]));

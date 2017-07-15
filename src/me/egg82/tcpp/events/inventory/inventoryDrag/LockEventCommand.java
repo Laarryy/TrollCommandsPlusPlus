@@ -1,7 +1,6 @@
 package me.egg82.tcpp.events.inventory.inventoryDrag;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryDragEvent;
 
 import me.egg82.tcpp.services.LockRegistry;
@@ -9,12 +8,12 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 
-public class LockEventCommand extends EventCommand {
+public class LockEventCommand extends EventCommand<InventoryDragEvent> {
 	//vars
-	private IRegistry lockRegistry = (IRegistry) ServiceLocator.getService(LockRegistry.class);
+	private IRegistry lockRegistry = ServiceLocator.getService(LockRegistry.class);
 	
 	//constructor
-	public LockEventCommand(Event event) {
+	public LockEventCommand(InventoryDragEvent event) {
 		super(event);
 	}
 	
@@ -22,18 +21,16 @@ public class LockEventCommand extends EventCommand {
 
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		InventoryDragEvent e = (InventoryDragEvent) event;
-		
-		if (e.isCancelled()) {
+		if (event.isCancelled()) {
 			return;
 		}
 		
-		Player player = (Player) e.getWhoClicked();
+		Player player = (Player) event.getWhoClicked();
 		
 		if (lockRegistry.hasRegister(player.getUniqueId().toString())) {
-			if (e.getInventory().getHolder() instanceof Player) {
-				if (((Player) e.getInventory().getHolder()).getUniqueId().compareTo(player.getUniqueId()) == 0) {
-					e.setCancelled(true);
+			if (event.getInventory().getHolder() instanceof Player) {
+				if (((Player) event.getInventory().getHolder()).getUniqueId().compareTo(player.getUniqueId()) == 0) {
+					event.setCancelled(true);
 				}
 			}
 		}

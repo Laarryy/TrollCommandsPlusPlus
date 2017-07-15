@@ -11,10 +11,12 @@ import ninja.egg82.sql.LanguageDatabase;
 
 public class PotionTypeSearchDatabase extends LanguageDatabase {
 	//vars
-	private IRegistry potionNameRegistry = (IRegistry) ServiceLocator.getService(PotionNameRegistry.class);
+	private IRegistry potionNameRegistry = ServiceLocator.getService(PotionNameRegistry.class);
 	
 	//constructor
 	public PotionTypeSearchDatabase() {
+		super();
+		
 		PotionEffectType[] types = PotionEffectType.values();
 		
 		Arrays.sort(types, (a, b) -> {
@@ -39,7 +41,7 @@ public class PotionTypeSearchDatabase extends LanguageDatabase {
 			ArrayList<String> fields = new ArrayList<String>();
 			String name = types[i].getName();
 			fields.add(name);
-			fields.add((String) potionNameRegistry.getRegister(name));
+			fields.add(potionNameRegistry.getRegister(name, String.class));
 			fields.addAll(Arrays.asList(name.split("_")));
 			
 			addRow(fields.toArray(new String[0]));

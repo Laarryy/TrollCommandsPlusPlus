@@ -8,7 +8,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
@@ -23,16 +22,15 @@ import ninja.egg82.plugin.enums.SpigotCommandErrorType;
 import ninja.egg82.plugin.enums.SpigotMessageType;
 import ninja.egg82.plugin.reflection.entity.IEntityHelper;
 import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.startup.InitRegistry;
+import ninja.egg82.plugin.utils.TaskUtil;
 
 public class KillCommand extends PluginCommand {
 	//vars
-	private IEntityHelper entityUtil = (IEntityHelper) ServiceLocator.getService(IEntityHelper.class);
+	private IEntityHelper entityUtil = ServiceLocator.getService(IEntityHelper.class);
 	
-	private IRegistry killRegistry = (IRegistry) ServiceLocator.getService(KillRegistry.class);
-	private JavaPlugin plugin = (JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin");
+	private IRegistry killRegistry = ServiceLocator.getService(KillRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public KillCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -145,7 +143,7 @@ public class KillCommand extends PluginCommand {
 		killRegistry.setRegister(uuid, Player.class, player);
 		
 		// Wait Xx20 ticks
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+		TaskUtil.runSync(new Runnable() {
 			public void run() {
 				// Is the player still in the registry, or have they been removed for one reason or another?
 				if (killRegistry.hasRegister(uuid)) {
@@ -154,7 +152,7 @@ public class KillCommand extends PluginCommand {
 					entityUtil.damage(player, EntityDamageEvent.DamageCause.SUICIDE, Double.MAX_VALUE);
 				}
 			}
-		}, (delay == 0) ? 1 : delay * 20);
+		}, delay * 20);
 		
 		metricsHelper.commandWasRun(this);
 		

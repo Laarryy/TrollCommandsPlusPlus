@@ -14,7 +14,7 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class NightmareTickCommand extends TickCommand {
 	//vars
-	private IRegistry nightmareRegistry = (IRegistry) ServiceLocator.getService(NightmareRegistry.class);
+	private IRegistry nightmareRegistry = ServiceLocator.getService(NightmareRegistry.class);
 	
 	//constructor
 	public NightmareTickCommand() {
@@ -29,7 +29,7 @@ public class NightmareTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = nightmareRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (ArrayDeque<IFakeLivingEntity>) nightmareRegistry.getRegister(name));
+			e(name, nightmareRegistry.getRegister(name, ArrayDeque.class));
 		}
 	}
 	private void e(String uuid, ArrayDeque<IFakeLivingEntity> entities) {

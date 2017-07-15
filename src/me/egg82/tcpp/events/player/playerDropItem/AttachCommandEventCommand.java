@@ -2,7 +2,6 @@ package me.egg82.tcpp.events.player.playerDropItem;
 
 import java.util.ArrayList;
 
-import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -10,12 +9,12 @@ import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.reflection.nbt.INBTHelper;
 
-public class AttachCommandEventCommand extends EventCommand {
+public class AttachCommandEventCommand extends EventCommand<PlayerDropItemEvent> {
 	//vars
-	private INBTHelper nbtHelper = (INBTHelper) ServiceLocator.getService(INBTHelper.class);
+	private INBTHelper nbtHelper = ServiceLocator.getService(INBTHelper.class);
 	
 	//constructor
-	public AttachCommandEventCommand(Event event) {
+	public AttachCommandEventCommand(PlayerDropItemEvent event) {
 		super(event);
 	}
 	
@@ -23,17 +22,15 @@ public class AttachCommandEventCommand extends EventCommand {
 
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		PlayerDropItemEvent e = (PlayerDropItemEvent) event;
-		
-		if (e.isCancelled()) {
+		if (event.isCancelled()) {
 			return;
 		}
 		
-		if (!nbtHelper.hasTag(e.getItemDrop().getItemStack(), "tcppCommand")) {
+		if (!nbtHelper.hasTag(event.getItemDrop().getItemStack(), "tcppCommand")) {
 			return;
 		}
 		
-		ItemMeta meta = e.getItemDrop().getItemStack().getItemMeta();
+		ItemMeta meta = event.getItemDrop().getItemStack().getItemMeta();
 		ArrayList<String> lore = new ArrayList<String>(meta.getLore());
 		int removeLine = -1;
 		for (int i = 0; i < lore.size(); i++) {
@@ -47,6 +44,6 @@ public class AttachCommandEventCommand extends EventCommand {
 			lore.remove(removeLine);
 		}
 		meta.setLore(lore);
-		e.getItemDrop().getItemStack().setItemMeta(meta);
+		event.getItemDrop().getItemStack().setItemMeta(meta);
 	}
 }

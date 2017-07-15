@@ -2,7 +2,6 @@ package me.egg82.tcpp.events.block.blockPlace;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import me.egg82.tcpp.services.RandomBuildRegistry;
@@ -10,31 +9,32 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.core.BlockData;
+import ninja.egg82.plugin.reflection.type.TypeFilterHelper;
 import ninja.egg82.plugin.utils.BlockUtil;
-import ninja.egg82.plugin.utils.MaterialHelper;
 import ninja.egg82.utils.MathUtil;
 
-public class RandomBuildEventCommand extends EventCommand {
+public class RandomBuildEventCommand extends EventCommand<BlockPlaceEvent> {
 	//vars
-	private IRegistry randomBuildRegistry = (IRegistry) ServiceLocator.getService(RandomBuildRegistry.class);
+	private IRegistry randomBuildRegistry = ServiceLocator.getService(RandomBuildRegistry.class);
 	
-	private MaterialHelper materialHelper = (MaterialHelper) ServiceLocator.getService(MaterialHelper.class);
 	private Material[] materials = null;
 
 	//constructor
-	public RandomBuildEventCommand(Event event) {
+	public RandomBuildEventCommand(BlockPlaceEvent event) {
 		super(event);
-		materials = materialHelper.filter(
-			materialHelper.filter(
-			materialHelper.filter(
-			materialHelper.filter(
-			materialHelper.filter(
-			materialHelper.filter(
-			materialHelper.filter(
-			materialHelper.filter(
-			materialHelper.filter(
-			materialHelper.filter(
-				materialHelper.getAllMaterials(),
+		
+		TypeFilterHelper<Material> materialFilterHelper = new TypeFilterHelper<Material>(Material.class);
+		materials = materialFilterHelper.filter(
+			materialFilterHelper.filter(
+			materialFilterHelper.filter(
+			materialFilterHelper.filter(
+			materialFilterHelper.filter(
+			materialFilterHelper.filter(
+			materialFilterHelper.filter(
+			materialFilterHelper.filter(
+			materialFilterHelper.filter(
+			materialFilterHelper.filter(
+				materialFilterHelper.getAllTypes(),
 			"_item", false),
 			"barrier", false),
 			"air", false),
@@ -51,21 +51,19 @@ public class RandomBuildEventCommand extends EventCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		BlockPlaceEvent e = (BlockPlaceEvent) event;
-		
-		if (e.isCancelled()) {
+		if (event.isCancelled()) {
 			return;
 		}
 		
-		Player player = e.getPlayer();
+		Player player = event.getPlayer();
 		String uuid = player.getUniqueId().toString();
 		
 		if (randomBuildRegistry.hasRegister(uuid)) {
 			int tries = 0;
 			do {
-				BlockUtil.setBlock(e.getBlock(), new BlockData(null, null, materials[MathUtil.fairRoundedRandom(0, materials.length - 1)]), true);
+				BlockUtil.setBlock(event.getBlock(), new BlockData(null, null, materials[MathUtil.fairRoundedRandom(0, materials.length - 1)]), true);
 				tries++;
-			} while (e.getBlock().getType() == Material.AIR && tries <= 100);
+			} while (event.getBlock().getType() == Material.AIR && tries <= 100);
 		}
 	}
 }

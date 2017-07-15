@@ -2,7 +2,6 @@ package me.egg82.tcpp.events.player.playerTeleport;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import me.egg82.tcpp.enums.PermissionsType;
@@ -14,13 +13,13 @@ import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.LocationUtil;
 
-public class VegetableEventCommand extends EventCommand {
+public class VegetableEventCommand extends EventCommand<PlayerTeleportEvent> {
 	//vars
-	private IRegistry vegetableRegistry = (IRegistry) ServiceLocator.getService(VegetableRegistry.class);
-	private IRegistry vegetableLocationRegistry = (IRegistry) ServiceLocator.getService(VegetableLocationRegistry.class);
+	private IRegistry vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
+	private IRegistry vegetableLocationRegistry = ServiceLocator.getService(VegetableLocationRegistry.class);
 	
 	//constructor
-	public VegetableEventCommand(Event event) {
+	public VegetableEventCommand(PlayerTeleportEvent event) {
 		super(event);
 	}
 	
@@ -28,18 +27,16 @@ public class VegetableEventCommand extends EventCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		PlayerTeleportEvent e = (PlayerTeleportEvent) event;
-		
-		if (e.isCancelled()) {
+		if (event.isCancelled()) {
 			return;
 		}
 		
-		Player player = e.getPlayer();
+		Player player = event.getPlayer();
 		String uuid = player.getUniqueId().toString();
 		
 		if (vegetableRegistry.hasRegister(uuid)) {
 			if (!CommandUtil.hasPermission(player, PermissionsType.FREECAM_WHILE_VEGETABLE)) {
-				e.setTo(LocationUtil.makeEqualXYZ(((Location) vegetableLocationRegistry.getRegister(uuid)).clone().add(0.0d, -1.0d, 0.0d), e.getTo()));
+				event.setTo(LocationUtil.makeEqualXYZ(((Location) vegetableLocationRegistry.getRegister(uuid)).clone().add(0.0d, -1.0d, 0.0d), event.getTo()));
 			}
 		}
 	}

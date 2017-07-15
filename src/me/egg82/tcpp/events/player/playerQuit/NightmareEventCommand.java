@@ -3,7 +3,6 @@ package me.egg82.tcpp.events.player.playerQuit;
 import java.util.ArrayDeque;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import me.egg82.tcpp.services.NightmareRegistry;
@@ -11,12 +10,12 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 
-public class NightmareEventCommand extends EventCommand {
+public class NightmareEventCommand extends EventCommand<PlayerQuitEvent> {
 	//vars
-	private IRegistry nightmareRegistry = (IRegistry) ServiceLocator.getService(NightmareRegistry.class);
+	private IRegistry nightmareRegistry = ServiceLocator.getService(NightmareRegistry.class);
 	
 	//constructor
-	public NightmareEventCommand(Event event) {
+	public NightmareEventCommand(PlayerQuitEvent event) {
 		super(event);
 	}
 	
@@ -24,8 +23,7 @@ public class NightmareEventCommand extends EventCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		PlayerQuitEvent e = (PlayerQuitEvent) event;
-		Player player = e.getPlayer();
+		Player player = event.getPlayer();
 		String uuid = player.getUniqueId().toString();
 		
 		if (!nightmareRegistry.hasRegister(uuid)) {

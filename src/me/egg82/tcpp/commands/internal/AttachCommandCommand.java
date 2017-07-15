@@ -29,11 +29,11 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class AttachCommandCommand extends PluginCommand {
 	//vars
-	private IPlayerHelper playerHelper = (IPlayerHelper) ServiceLocator.getService(IPlayerHelper.class);
-	private INBTHelper nbtHelper = (INBTHelper) ServiceLocator.getService(INBTHelper.class);
+	private IPlayerHelper playerHelper = ServiceLocator.getService(IPlayerHelper.class);
+	private INBTHelper nbtHelper = ServiceLocator.getService(INBTHelper.class);
 	private ArrayList<String> commandNames = new ArrayList<String>();
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public AttachCommandCommand(CommandSender sender, Command command, String label, String[] args) {

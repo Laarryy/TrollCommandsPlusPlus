@@ -2,11 +2,9 @@ package me.egg82.tcpp.util;
 
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import me.egg82.tcpp.services.HoleBlockRegistry;
 import me.egg82.tcpp.services.HotTubRegistry;
@@ -17,16 +15,15 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.core.BlockData;
 import ninja.egg82.plugin.utils.BlockUtil;
-import ninja.egg82.startup.InitRegistry;
+import ninja.egg82.plugin.utils.TaskUtil;
 
 public class WorldHoleHelper {
 	//vars
-	private IRegistry portalRegistry = (IRegistry) ServiceLocator.getService(PortalRegistry.class);
-	private IRegistry voidRegistry = (IRegistry) ServiceLocator.getService(VoidRegistry.class);
-	private IRegistry voidRadiusRegistry = (IRegistry) ServiceLocator.getService(VoidRadiusRegistry.class);
-	private IRegistry hotTubRegistry = (IRegistry) ServiceLocator.getService(HotTubRegistry.class);
-	private IRegistry holeBlockRegistry = (IRegistry) ServiceLocator.getService(HoleBlockRegistry.class);
-	private JavaPlugin plugin = (JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin");
+	private IRegistry portalRegistry = ServiceLocator.getService(PortalRegistry.class);
+	private IRegistry voidRegistry = ServiceLocator.getService(VoidRegistry.class);
+	private IRegistry voidRadiusRegistry = ServiceLocator.getService(VoidRadiusRegistry.class);
+	private IRegistry hotTubRegistry = ServiceLocator.getService(HotTubRegistry.class);
+	private IRegistry holeBlockRegistry = ServiceLocator.getService(HoleBlockRegistry.class);
 	
 	//constructor
 	public WorldHoleHelper() {
@@ -50,14 +47,14 @@ public class WorldHoleHelper {
 		holeBlockRegistry.setRegister(uuid, List.class, blockData);
 		
 		// Wait five seconds
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+		TaskUtil.runSync(new Runnable() {
 			public void run() {
 				portalRegistry.setRegister(uuid, Location.class, null);
 				holeBlockRegistry.setRegister(uuid, List.class, null);
 				// Put all the blocks we took earlier back
 				BlockUtil.setBlocks(blockData, centerLocation, 1, 2, 1, false);
 			}
-		}, 100);
+		}, 100L);
 	}
 	public void voidHole(String uuid, Player player) {
 		// Center should be halfway between player and zero
@@ -76,7 +73,7 @@ public class WorldHoleHelper {
 		holeBlockRegistry.setRegister(uuid, List.class, blockData);
 		
 		// Wait eight seconds
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+		TaskUtil.runSync(new Runnable() {
 			public void run() {
 				voidRegistry.setRegister(uuid, Location.class, null);
 				voidRadiusRegistry.setRegister(uuid, Integer.class, null);
@@ -84,7 +81,7 @@ public class WorldHoleHelper {
 				// Put all the blocks we took earlier back
 				BlockUtil.setBlocks(blockData, centerLocation, 1, yRadius, 1, false);
 			}
-		}, 160);
+		}, 160L);
 	}
 	public void hotTubHole(String uuid, Player player) {
 		// Center should be at player level, for a total of one block of depth (minus a layer for lava)
@@ -102,30 +99,36 @@ public class WorldHoleHelper {
 		holeBlockRegistry.setRegister(uuid, List.class, blockData);
 		
 		// Wait five seconds
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+		TaskUtil.runSync(new Runnable() {
 			public void run() {
 				hotTubRegistry.setRegister(uuid, Location.class, null);
 				holeBlockRegistry.setRegister(uuid, List.class, null);
 				// Put all the blocks we took earlier back
 				BlockUtil.setBlocks(blockData, centerLocation, 1, 1, 1, true);
 			}
-		}, 100);
+		}, 100L);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public void undoAll() {
 		String[] portalNames = portalRegistry.getRegistryNames();
 		for (int i = 0; i < portalNames.length; i++) {
-			BlockUtil.setBlocks((List<BlockData>) holeBlockRegistry.getRegister(portalNames[i]), (Location) portalRegistry.getRegister(portalNames[i]), 1, 2, 1, false);
+			BlockUtil.setBlocks(holeBlockRegistry.getRegister(portalNames[i], List.class), portalRegistry.getRegister(portalNames[i], Location.class), 1, 2, 1, false);
 		}
 		portalRegistry.clear();
 		
 		String[] voidNames = voidRegistry.getRegistryNames();
 		for (int i = 0; i < voidNames.length; i++) {
-			BlockUtil.setBlocks((List<BlockData>) holeBlockRegistry.getRegister(voidNames[i]), (Location) voidRegistry.getRegister(voidNames[i]), 1, (Integer) voidRadiusRegistry.getRegister(voidNames[i]), 1, false);
+			BlockUtil.setBlocks(holeBlockRegistry.getRegister(voidNames[i], List.class), voidRegistry.getRegister(voidNames[i], Location.class), 1, voidRadiusRegistry.getRegister(voidNames[i], Integer.class), 1, false);
 		}
 		voidRegistry.clear();
 		voidRadiusRegistry.clear();
+		
+		String[] hotTubNames = hotTubRegistry.getRegistryNames();
+		for (int i = 0; i < hotTubNames.length; i++) {
+			BlockUtil.setBlocks(holeBlockRegistry.getRegister(hotTubNames[i], List.class), hotTubRegistry.getRegister(hotTubNames[i], Location.class), 1, 1, 1, false);
+		}
+		hotTubRegistry.clear();
 		
 		holeBlockRegistry.clear();
 	}

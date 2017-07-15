@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class SnowballFightCommand extends PluginCommand {
 	//vars
-	private IRegistry snowballFightRegistry = (IRegistry) ServiceLocator.getService(SnowballFightRegistry.class);
+	private IRegistry snowballFightRegistry = ServiceLocator.getService(SnowballFightRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public SnowballFightCommand(CommandSender sender, Command command, String label, String[] args) {

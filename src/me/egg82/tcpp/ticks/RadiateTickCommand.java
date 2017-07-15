@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.BlockUtil;
 
 public class RadiateTickCommand extends TickCommand {
 	//vars
-	private IRegistry radiationRegistry = (IRegistry) ServiceLocator.getService(RadiateRegistry.class);
+	private IRegistry radiationRegistry = ServiceLocator.getService(RadiateRegistry.class);
 	
-	private IEntityHelper entityUtil = (IEntityHelper) ServiceLocator.getService(IEntityHelper.class);
+	private IEntityHelper entityUtil = ServiceLocator.getService(IEntityHelper.class);
 	
 	//constructor
 	public RadiateTickCommand() {
@@ -39,7 +39,7 @@ public class RadiateTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = radiationRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (Player) radiationRegistry.getRegister(name));
+			e(name, radiationRegistry.getRegister(name, Player.class));
 		}
 	}
 	private void e(String uuid, Player player) {

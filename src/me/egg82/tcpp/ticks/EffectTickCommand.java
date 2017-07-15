@@ -14,7 +14,7 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class EffectTickCommand extends TickCommand {
 	//vars
-	private IRegistry effectRegistry = (IRegistry) ServiceLocator.getService(EffectRegistry.class);
+	private IRegistry effectRegistry = ServiceLocator.getService(EffectRegistry.class);
 	
 	//constructor
 	public EffectTickCommand() {
@@ -29,7 +29,7 @@ public class EffectTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = effectRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (List<PotionEffectType>) effectRegistry.getRegister(name));
+			e(name, effectRegistry.getRegister(name, List.class));
 		}
 	}
 	private void e(String uuid, List<PotionEffectType> effects) {

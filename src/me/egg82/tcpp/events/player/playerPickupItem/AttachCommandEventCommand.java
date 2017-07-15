@@ -2,7 +2,6 @@ package me.egg82.tcpp.events.player.playerPickupItem;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -11,12 +10,12 @@ import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.reflection.nbt.INBTHelper;
 import ninja.egg82.plugin.utils.CommandUtil;
 
-public class AttachCommandEventCommand extends EventCommand {
+public class AttachCommandEventCommand extends EventCommand<PlayerPickupItemEvent> {
 	//vars
-	private INBTHelper nbtHelper = (INBTHelper) ServiceLocator.getService(INBTHelper.class);
+	private INBTHelper nbtHelper = ServiceLocator.getService(INBTHelper.class);
 	
 	//constructor
-	public AttachCommandEventCommand(Event event) {
+	public AttachCommandEventCommand(PlayerPickupItemEvent event) {
 		super(event);
 	}
 	
@@ -24,25 +23,23 @@ public class AttachCommandEventCommand extends EventCommand {
 
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		PlayerPickupItemEvent e = (PlayerPickupItemEvent) event;
-		
-		if (e.isCancelled()) {
+		if (event.isCancelled()) {
 			return;
 		}
 		
-		ItemStack item = e.getItem().getItemStack();
+		ItemStack item = event.getItem().getItemStack();
 		if (!nbtHelper.hasTag(item, "tcppCommand")) {
 			return;
 		}
 		
-		Player sender = CommandUtil.getPlayerByUuid((String) nbtHelper.getTag(item, "tcppSender"));
+		Player sender = CommandUtil.getPlayerByUuid(nbtHelper.getTag(item, "tcppSender", String.class));
 		if (sender != null) {
-			CommandUtil.dispatchCommandAtPlayerLocation(sender, e.getPlayer(), (String) nbtHelper.getTag(item, "tcppCommand"));
+			CommandUtil.dispatchCommandAtPlayerLocation(sender, event.getPlayer(), nbtHelper.getTag(item, "tcppCommand", String.class));
 		} else {
-			if (CommandUtil.getOfflinePlayerByUuid((String) nbtHelper.getTag(item, "tcppSender")).isOp()) {
-				CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), e.getPlayer(), (String) nbtHelper.getTag(item, "tcppCommand"));
+			if (CommandUtil.getOfflinePlayerByUuid(nbtHelper.getTag(item, "tcppSender", String.class)).isOp()) {
+				CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), event.getPlayer(), nbtHelper.getTag(item, "tcppCommand", String.class));
 			} else {
-				Bukkit.dispatchCommand(e.getPlayer(), (String) nbtHelper.getTag(item, "tcppCommand"));
+				Bukkit.dispatchCommand(event.getPlayer(), nbtHelper.getTag(item, "tcppCommand", String.class));
 			}
 		}
 		

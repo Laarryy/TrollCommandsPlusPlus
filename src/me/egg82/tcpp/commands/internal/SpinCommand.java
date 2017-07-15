@@ -24,10 +24,10 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class SpinCommand extends PluginCommand {
 	//vars
-	private IRegistry spinRegistry = (IRegistry) ServiceLocator.getService(SpinRegistry.class);
-	private IRegistry spinSpeedRegistry = (IRegistry) ServiceLocator.getService(SpinSpeedRegistry.class);
+	private IRegistry spinRegistry = ServiceLocator.getService(SpinRegistry.class);
+	private IRegistry spinSpeedRegistry = ServiceLocator.getService(SpinSpeedRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public SpinCommand(CommandSender sender, Command command, String label, String[] args) {

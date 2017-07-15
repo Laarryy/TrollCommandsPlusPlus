@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class TrickleCommand extends PluginCommand {
 	//vars
-	private IRegistry trickleRegistry = (IRegistry) ServiceLocator.getService(TrickleRegistry.class);
+	private IRegistry trickleRegistry = ServiceLocator.getService(TrickleRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public TrickleCommand(CommandSender sender, Command command, String label, String[] args) {

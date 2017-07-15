@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class LagCommand extends PluginCommand {
 	//vars
-	private IRegistry lagRegistry = (IRegistry) ServiceLocator.getService(LagRegistry.class);
+	private IRegistry lagRegistry = ServiceLocator.getService(LagRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public LagCommand(CommandSender sender, Command command, String label, String[] args) {

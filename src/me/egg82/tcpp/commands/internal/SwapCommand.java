@@ -22,7 +22,7 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class SwapCommand extends PluginCommand {
 	//vars
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public SwapCommand(CommandSender sender, Command command, String label, String[] args) {

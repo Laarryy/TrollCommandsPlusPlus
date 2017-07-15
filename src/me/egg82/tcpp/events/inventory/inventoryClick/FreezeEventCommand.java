@@ -1,6 +1,5 @@
 package me.egg82.tcpp.events.inventory.inventoryClick;
 
-import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import me.egg82.tcpp.services.FreezeRegistry;
@@ -8,12 +7,12 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 
-public class FreezeEventCommand extends EventCommand {
+public class FreezeEventCommand extends EventCommand<InventoryClickEvent> {
 	//vars
-	private IRegistry freezeRegistry = (IRegistry) ServiceLocator.getService(FreezeRegistry.class);
+	private IRegistry freezeRegistry = ServiceLocator.getService(FreezeRegistry.class);
 	
 	//constructor
-	public FreezeEventCommand(Event event) {
+	public FreezeEventCommand(InventoryClickEvent event) {
 		super(event);
 	}
 	
@@ -21,14 +20,12 @@ public class FreezeEventCommand extends EventCommand {
 
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		InventoryClickEvent e = (InventoryClickEvent) event;
-		
-		if (e.isCancelled()) {
+		if (event.isCancelled()) {
 			return;
 		}
 		
-		if (freezeRegistry.hasRegister(e.getWhoClicked().getUniqueId().toString())) {
-			e.setCancelled(true);
+		if (freezeRegistry.hasRegister(event.getWhoClicked().getUniqueId().toString())) {
+			event.setCancelled(true);
 		}
 	}
 }

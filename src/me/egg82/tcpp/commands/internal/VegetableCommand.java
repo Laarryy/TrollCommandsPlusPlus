@@ -28,13 +28,13 @@ import ninja.egg82.sql.LanguageDatabase;
 
 public class VegetableCommand extends PluginCommand {
 	//vars
-	private IRegistry vegetableRegistry = (IRegistry) ServiceLocator.getService(VegetableRegistry.class);
-	private IRegistry vegetableNameRegistry = (IRegistry) ServiceLocator.getService(VegetableNameRegistry.class);
+	private IRegistry vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
+	private IRegistry vegetableNameRegistry = ServiceLocator.getService(VegetableNameRegistry.class);
 	private ArrayList<String> vegetableNames = new ArrayList<String>();
 	
-	private LanguageDatabase vegetableTypeDatabase = (LanguageDatabase) ServiceLocator.getService(VegetableTypeSearchDatabase.class);
-	private VegetableHelper vegetableHelper = (VegetableHelper) ServiceLocator.getService(VegetableHelper.class);
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private LanguageDatabase vegetableTypeDatabase = ServiceLocator.getService(VegetableTypeSearchDatabase.class);
+	private VegetableHelper vegetableHelper = ServiceLocator.getService(VegetableHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public VegetableCommand(CommandSender sender, Command command, String label, String[] args) {

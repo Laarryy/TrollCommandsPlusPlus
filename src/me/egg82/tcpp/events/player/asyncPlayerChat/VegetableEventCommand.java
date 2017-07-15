@@ -2,7 +2,6 @@ package me.egg82.tcpp.events.player.asyncPlayerChat;
 
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import me.egg82.tcpp.enums.PermissionsType;
@@ -12,12 +11,12 @@ import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
 
-public class VegetableEventCommand extends EventCommand {
+public class VegetableEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 	//vars
-	private IRegistry vegetableItemRegistry = (IRegistry) ServiceLocator.getService(VegetableItemRegistry.class);
+	private IRegistry vegetableItemRegistry = ServiceLocator.getService(VegetableItemRegistry.class);
 	
 	//constructor
-	public VegetableEventCommand(Event event) {
+	public VegetableEventCommand(AsyncPlayerChatEvent event) {
 		super(event);
 	}
 	
@@ -25,14 +24,12 @@ public class VegetableEventCommand extends EventCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		AsyncPlayerChatEvent e = (AsyncPlayerChatEvent) event;
-		
-		if (e.isCancelled()) {
+		if (event.isCancelled()) {
 			return;
 		}
 		
-		Player player = e.getPlayer();
-		Item groundItem = (Item) vegetableItemRegistry.getRegister(player.getUniqueId().toString());
+		Player player = event.getPlayer();
+		Item groundItem = vegetableItemRegistry.getRegister(player.getUniqueId().toString(), Item.class);
 		
 		if (groundItem == null) {
 			return;
@@ -49,13 +46,13 @@ public class VegetableEventCommand extends EventCommand {
 			
 			String finalMessage = "";
 			// An approximation of the message's actual length, represented in a single string (such as "potato")
-			int numStrings = (int) Math.floor(e.getMessage().length() / type.length());
+			int numStrings = (int) Math.floor(event.getMessage().length() / type.length());
 			
 			for (int i = 0; i < Math.max(1, numStrings); i++) {
 				finalMessage += type + " ";
 			}
 			
-			e.setMessage(finalMessage.trim());
+			event.setMessage(finalMessage.trim());
 		}
 	}
 }

@@ -1,12 +1,9 @@
 package me.egg82.tcpp.events.entity.entityDamage;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import me.egg82.tcpp.services.LagEntityRegistry;
 import me.egg82.tcpp.services.LagRegistry;
@@ -14,19 +11,18 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.reflection.entity.IEntityHelper;
-import ninja.egg82.startup.InitRegistry;
+import ninja.egg82.plugin.utils.TaskUtil;
 import ninja.egg82.utils.MathUtil;
 
-public class LagEventCommand extends EventCommand {
+public class LagEventCommand extends EventCommand<EntityDamageEvent> {
 	//vars
-	private IEntityHelper entityUtil = (IEntityHelper) ServiceLocator.getService(IEntityHelper.class);
+	private IEntityHelper entityUtil = ServiceLocator.getService(IEntityHelper.class);
 	
-	private IRegistry lagRegistry = (IRegistry) ServiceLocator.getService(LagRegistry.class);
-	private IRegistry lagEntityRegistry = (IRegistry) ServiceLocator.getService(LagEntityRegistry.class);
-	private JavaPlugin plugin = (JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin");
+	private IRegistry lagRegistry = ServiceLocator.getService(LagRegistry.class);
+	private IRegistry lagEntityRegistry = ServiceLocator.getService(LagEntityRegistry.class);
 	
 	//constructor
-	public LagEventCommand(Event event) {
+	public LagEventCommand(EntityDamageEvent event) {
 		super(event);
 	}
 	
@@ -34,17 +30,15 @@ public class LagEventCommand extends EventCommand {
 
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		EntityDamageEvent e = (EntityDamageEvent) event;
-		
-		if (e.isCancelled()) {
+		if (event.isCancelled()) {
 			return;
 		}
 		
-		if (e.getEntityType() != EntityType.PLAYER) {
+		if (event.getEntityType() != EntityType.PLAYER) {
 			return;
 		}
 		
-		Player player = (Player) e.getEntity();
+		Player player = (Player) event.getEntity();
 		String uuid = player.getUniqueId().toString();
 		
 		if (lagEntityRegistry.hasRegister(uuid)) {
@@ -56,13 +50,13 @@ public class LagEventCommand extends EventCommand {
 		
 		lagEntityRegistry.setRegister(uuid, Entity.class, player);
 		
-		e.setCancelled(true);
+		event.setCancelled(true);
 		
 		// Manually doing the event after a random interval
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+		TaskUtil.runSync(new Runnable() {
 			public void run() {
 				// Cause the player damage
-				entityUtil.damage(player, e.getCause(), e.getDamage());
+				entityUtil.damage(player, event.getCause(), event.getDamage());
 				lagEntityRegistry.setRegister(uuid, Entity.class, null);
 			}
 		}, MathUtil.fairRoundedRandom(30, 50));

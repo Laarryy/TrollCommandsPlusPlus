@@ -3,7 +3,6 @@ package me.egg82.tcpp.events.player.playerTeleport;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import me.egg82.tcpp.services.InfinityRegistry;
@@ -12,12 +11,12 @@ import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.utils.LocationUtil;
 
-public class InfinityEventCommand extends EventCommand {
+public class InfinityEventCommand extends EventCommand<PlayerTeleportEvent> {
 	//vars
-	private IRegistry infinityRegistry = (IRegistry) ServiceLocator.getService(InfinityRegistry.class);
+	private IRegistry infinityRegistry = ServiceLocator.getService(InfinityRegistry.class);
 	
 	//constructor
-	public InfinityEventCommand(Event event) {
+	public InfinityEventCommand(PlayerTeleportEvent event) {
 		super(event);
 	}
 	
@@ -25,19 +24,17 @@ public class InfinityEventCommand extends EventCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		PlayerTeleportEvent e = (PlayerTeleportEvent) event;
-		
-		if (e.isCancelled()) {
+		if (event.isCancelled()) {
 			return;
 		}
 		
-		Player player = e.getPlayer();
+		Player player = event.getPlayer();
 		
 		if (!infinityRegistry.hasRegister(player.getUniqueId().toString())) {
 			return;
 		}
 		
-		Location toLocation = e.getTo().clone();
+		Location toLocation = event.getTo().clone();
 		World world = toLocation.getWorld();
 		double highestY = 0.0d;
 		
@@ -53,7 +50,7 @@ public class InfinityEventCommand extends EventCommand {
 		
 		if (toLocation.getY() <= highestY + 2.0d) {
 			toLocation.add(0.0d, 30.0d, 0.0d);
-			player.teleport(LocationUtil.makeEqualXYZ(toLocation, e.getTo()));
+			player.teleport(LocationUtil.makeEqualXYZ(toLocation, event.getTo()));
 		}
 	}
 }

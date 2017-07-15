@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class HurtCommand extends PluginCommand {
 	//vars
-	private IRegistry hurtRegistry = (IRegistry) ServiceLocator.getService(HurtRegistry.class);
+	private IRegistry hurtRegistry = ServiceLocator.getService(HurtRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public HurtCommand(CommandSender sender, Command command, String label, String[] args) {

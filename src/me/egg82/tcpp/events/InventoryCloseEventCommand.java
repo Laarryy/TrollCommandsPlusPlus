@@ -3,24 +3,25 @@ package me.egg82.tcpp.events;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.event.Event;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.utils.ReflectUtil;
 
-public class InventoryCloseEventCommand extends EventCommand {
+public class InventoryCloseEventCommand extends EventCommand<InventoryCloseEvent> {
 	//vars
-	private ArrayList<EventCommand> events = new ArrayList<EventCommand>();
+	private ArrayList<EventCommand<InventoryCloseEvent>> events = new ArrayList<EventCommand<InventoryCloseEvent>>();
 	
 	//constructor
-	public InventoryCloseEventCommand(Event event) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public InventoryCloseEventCommand(InventoryCloseEvent event) {
 		super(event);
 		
 		List<Class<? extends EventCommand>> commands = ReflectUtil.getClasses(EventCommand.class, "me.egg82.tcpp.events.inventory.inventoryClose");
 		for (int i = 0; i < commands.size(); i++) {
-			EventCommand run = null;
+			EventCommand<InventoryCloseEvent> run = null;
 			try {
-				run = commands.get(i).getDeclaredConstructor(Event.class).newInstance(event);
+				run = commands.get(i).getDeclaredConstructor(InventoryCloseEvent.class).newInstance(event);
 			} catch (Exception ex) {
 				continue;
 			}

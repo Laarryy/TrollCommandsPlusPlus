@@ -2,7 +2,6 @@ package me.egg82.tcpp.events.player.playerQuit;
 
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import me.egg82.tcpp.services.BludgerBallRegistry;
@@ -11,13 +10,13 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 
-public class BludgerEventCommand extends EventCommand {
+public class BludgerEventCommand extends EventCommand<PlayerQuitEvent> {
 	//vars
-	private IRegistry bludgerRegistry = (IRegistry) ServiceLocator.getService(BludgerRegistry.class);
-	private IRegistry bludgerBallRegistry = (IRegistry) ServiceLocator.getService(BludgerBallRegistry.class);
+	private IRegistry bludgerRegistry = ServiceLocator.getService(BludgerRegistry.class);
+	private IRegistry bludgerBallRegistry = ServiceLocator.getService(BludgerBallRegistry.class);
 	
 	//constructor
-	public BludgerEventCommand(Event event) {
+	public BludgerEventCommand(PlayerQuitEvent event) {
 		super(event);
 	}
 	
@@ -25,8 +24,7 @@ public class BludgerEventCommand extends EventCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		PlayerQuitEvent e = (PlayerQuitEvent) event;
-		Player player = e.getPlayer();
+		Player player = event.getPlayer();
 		String uuid = player.getUniqueId().toString();
 		
 		if (!bludgerRegistry.hasRegister(uuid)) {
@@ -35,7 +33,7 @@ public class BludgerEventCommand extends EventCommand {
 		
 		bludgerRegistry.setRegister(uuid, Player.class, null);
 		
-		((Fireball) bludgerBallRegistry.getRegister(uuid)).remove();
+		bludgerBallRegistry.getRegister(uuid, Fireball.class).remove();
 		bludgerBallRegistry.setRegister(uuid, Fireball.class, null);
 	}
 }

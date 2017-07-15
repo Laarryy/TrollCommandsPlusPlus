@@ -13,9 +13,9 @@ import ninja.egg82.patterns.ServiceLocator;
 
 public class DisplayHelper {
 	//vars
-	private IRegistry displayRegistry = (IRegistry) ServiceLocator.getService(DisplayRegistry.class);
-	private IRegistry displayBlockRegistry = (IRegistry) ServiceLocator.getService(DisplayBlockRegistry.class);
-	private IRegistry displayLocationRegistry = (IRegistry) ServiceLocator.getService(DisplayLocationRegistry.class);
+	private IRegistry displayRegistry = ServiceLocator.getService(DisplayRegistry.class);
+	private IRegistry displayBlockRegistry = ServiceLocator.getService(DisplayBlockRegistry.class);
+	private IRegistry displayLocationRegistry = ServiceLocator.getService(DisplayLocationRegistry.class);
 	
 	private HashSet<Location> addedBlockLocations = new HashSet<Location>();
 	

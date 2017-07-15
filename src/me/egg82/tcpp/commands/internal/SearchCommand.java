@@ -30,20 +30,20 @@ import ninja.egg82.startup.InitRegistry;
 
 public class SearchCommand extends PluginCommand {
 	//vars
-	private IRegistry trollInventoryRegistry = (IRegistry) ServiceLocator.getService(TrollInventoryRegistry.class);
-	private IRegistry trollPlayerRegistry = (IRegistry) ServiceLocator.getService(TrollPlayerRegistry.class);
-	private IRegistry trollPageRegistry = (IRegistry) ServiceLocator.getService(TrollPageRegistry.class);
-	private IRegistry trollSearchRegistry = (IRegistry) ServiceLocator.getService(TrollSearchRegistry.class);
+	private IRegistry trollInventoryRegistry = ServiceLocator.getService(TrollInventoryRegistry.class);
+	private IRegistry trollPlayerRegistry = ServiceLocator.getService(TrollPlayerRegistry.class);
+	private IRegistry trollPageRegistry = ServiceLocator.getService(TrollPageRegistry.class);
+	private IRegistry trollSearchRegistry = ServiceLocator.getService(TrollSearchRegistry.class);
 	
 	private ArrayList<String> commandNames = new ArrayList<String>();
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public SearchCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
 		
-		String[] list = ((String) ((PluginDescriptionFile) ((JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin")).getDescription()).getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
+		String[] list = ((String) ((PluginDescriptionFile) ServiceLocator.getService(InitRegistry.class).getRegister("plugin", JavaPlugin.class).getDescription()).getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
 		for (String entry : list) {
 			if (entry.contains("-= Available Commands =-")) {
 				continue;

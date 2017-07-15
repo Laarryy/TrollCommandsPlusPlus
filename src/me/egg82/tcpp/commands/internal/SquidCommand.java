@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class SquidCommand extends PluginCommand {
 	//vars
-	private IRegistry squidRegistry = (IRegistry) ServiceLocator.getService(SquidRegistry.class);
+	private IRegistry squidRegistry = ServiceLocator.getService(SquidRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public SquidCommand(CommandSender sender, Command command, String label, String[] args) {

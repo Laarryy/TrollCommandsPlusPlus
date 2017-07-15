@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class GrantWishesCommand extends PluginCommand {
 	//vars
-	private IRegistry grantWishesRegistry = (IRegistry) ServiceLocator.getService(GrantWishesRegistry.class);
+	private IRegistry grantWishesRegistry = ServiceLocator.getService(GrantWishesRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public GrantWishesCommand(CommandSender sender, Command command, String label, String[] args) {

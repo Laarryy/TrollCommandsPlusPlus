@@ -11,10 +11,12 @@ import ninja.egg82.sql.LanguageDatabase;
 
 public class VegetableTypeSearchDatabase extends LanguageDatabase {
 	//vars
-	private IRegistry vegetableNameRegistry = (IRegistry) ServiceLocator.getService(VegetableNameRegistry.class);
+	private IRegistry vegetableNameRegistry = ServiceLocator.getService(VegetableNameRegistry.class);
 	
 	//constructor
 	public VegetableTypeSearchDatabase() {
+		super();
+		
 		Material[] types = new Material[] {
 			Material.getMaterial("BEETROOT"),
 			Material.BROWN_MUSHROOM,
@@ -31,7 +33,7 @@ public class VegetableTypeSearchDatabase extends LanguageDatabase {
 			ArrayList<String> fields = new ArrayList<String>();
 			String name = types[i].name();
 			fields.add(name);
-			fields.add((String) vegetableNameRegistry.getRegister(name));
+			fields.add(vegetableNameRegistry.getRegister(name, String.class));
 			fields.addAll(Arrays.asList(name.split("_")));
 			
 			addRow(fields.toArray(new String[0]));

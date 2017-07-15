@@ -34,11 +34,11 @@ import ninja.egg82.sql.LanguageDatabase;
 
 public class EnchantCommand extends PluginCommand {
 	//vars
-	private LanguageDatabase enchantTypeDatabase = (LanguageDatabase) ServiceLocator.getService(EnchantTypeSearchDatabase.class);
-	private IPlayerHelper playerHelper = (IPlayerHelper) ServiceLocator.getService(IPlayerHelper.class);
-	private IRegistry enchantNameRegistry = (IRegistry) ServiceLocator.getService(EnchantNameRegistry.class);
+	private LanguageDatabase enchantTypeDatabase = ServiceLocator.getService(EnchantTypeSearchDatabase.class);
+	private IPlayerHelper playerHelper = ServiceLocator.getService(IPlayerHelper.class);
+	private IRegistry enchantNameRegistry = ServiceLocator.getService(EnchantNameRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public EnchantCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -52,11 +52,11 @@ public class EnchantCommand extends PluginCommand {
 			
 			if (args[0].isEmpty()) {
 				for (String name : enchantNameRegistry.getRegistryNames()) {
-					retVal.add((String) enchantNameRegistry.getRegister(name));
+					retVal.add(enchantNameRegistry.getRegister(name, String.class));
 				}
 			} else {
 				for (String name : enchantNameRegistry.getRegistryNames()) {
-					String value = (String) enchantNameRegistry.getRegister(name);
+					String value = enchantNameRegistry.getRegister(name, String.class);
 					if (value.toLowerCase().startsWith(args[0].toLowerCase())) {
 						retVal.add(value);
 					}

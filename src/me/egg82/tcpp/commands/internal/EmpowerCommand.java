@@ -19,9 +19,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class EmpowerCommand extends PluginCommand {
 	//vars
-	private IRegistry empowerRegistry = (IRegistry) ServiceLocator.getService(EmpowerRegistry.class);
+	private IRegistry empowerRegistry = ServiceLocator.getService(EmpowerRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public EmpowerCommand(CommandSender sender, Command command, String label, String[] args) {

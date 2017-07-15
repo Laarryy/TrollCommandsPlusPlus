@@ -26,12 +26,12 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class HotTubCommand extends PluginCommand {
 	//vars
-	private IRegistry portalRegistry = (IRegistry) ServiceLocator.getService(PortalRegistry.class);
-	private IRegistry voidRegistry = (IRegistry) ServiceLocator.getService(VoidRegistry.class);
-	private IRegistry hotTubRegistry = (IRegistry) ServiceLocator.getService(HotTubRegistry.class);
+	private IRegistry portalRegistry = ServiceLocator.getService(PortalRegistry.class);
+	private IRegistry voidRegistry = ServiceLocator.getService(VoidRegistry.class);
+	private IRegistry hotTubRegistry = ServiceLocator.getService(HotTubRegistry.class);
 	
-	private WorldHoleHelper worldHoleHelper = (WorldHoleHelper) ServiceLocator.getService(WorldHoleHelper.class);
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private WorldHoleHelper worldHoleHelper = ServiceLocator.getService(WorldHoleHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public HotTubCommand(CommandSender sender, Command command, String label, String[] args) {

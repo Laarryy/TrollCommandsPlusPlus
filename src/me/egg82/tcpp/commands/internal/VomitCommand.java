@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class VomitCommand extends PluginCommand {
 	//vars
-	private IRegistry vomitRegistry = (IRegistry) ServiceLocator.getService(VomitRegistry.class);
+	private IRegistry vomitRegistry = ServiceLocator.getService(VomitRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public VomitCommand(CommandSender sender, Command command, String label, String[] args) {

@@ -1,7 +1,6 @@
 package me.egg82.tcpp.events.player.playerPickupItem;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
 import me.egg82.tcpp.services.NoPickupRegistry;
@@ -9,12 +8,12 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 
-public class NoPickupEventCommand extends EventCommand {
+public class NoPickupEventCommand extends EventCommand<PlayerPickupItemEvent> {
 	//vars
-	private IRegistry noPickupRegistry = (IRegistry) ServiceLocator.getService(NoPickupRegistry.class);
+	private IRegistry noPickupRegistry = ServiceLocator.getService(NoPickupRegistry.class);
 	
 	//constructor
-	public NoPickupEventCommand(Event event) {
+	public NoPickupEventCommand(PlayerPickupItemEvent event) {
 		super(event);
 	}
 	
@@ -22,16 +21,14 @@ public class NoPickupEventCommand extends EventCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		PlayerPickupItemEvent e = (PlayerPickupItemEvent) event;
-		
-		if (e.isCancelled()) {
+		if (event.isCancelled()) {
 			return;
 		}
 		
-		Player player = e.getPlayer();
+		Player player = event.getPlayer();
 		
 		if (noPickupRegistry.hasRegister(player.getUniqueId().toString())) {
-			e.setCancelled(true);
+			event.setCancelled(true);
 		}
 	}
 }

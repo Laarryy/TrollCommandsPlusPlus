@@ -34,9 +34,9 @@ import ninja.egg82.utils.ReflectUtil;
 public class SurroundCommand extends PluginCommand {
 	//vars
 	private ArrayList<String> mobNames = new ArrayList<String>();
-	private LanguageDatabase mobTypeDatabase = (LanguageDatabase) ServiceLocator.getService(MobTypeSearchDatabase.class);
+	private LanguageDatabase mobTypeDatabase = ServiceLocator.getService(MobTypeSearchDatabase.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public SurroundCommand(CommandSender sender, Command command, String label, String[] args) {

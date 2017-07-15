@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class ExplodeBreakCommand extends PluginCommand {
 	//vars
-	private IRegistry explodeBreakRegistry = (IRegistry) ServiceLocator.getService(ExplodeBreakRegistry.class);
+	private IRegistry explodeBreakRegistry = ServiceLocator.getService(ExplodeBreakRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public ExplodeBreakCommand(CommandSender sender, Command command, String label, String[] args) {

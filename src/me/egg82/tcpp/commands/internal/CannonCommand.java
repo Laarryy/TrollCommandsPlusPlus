@@ -19,7 +19,7 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class CannonCommand extends PluginCommand {
 	//vars
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public CannonCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -43,7 +43,7 @@ public class CannonCommand extends PluginCommand {
 			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
 			return;
 		}
-		if (!CommandUtil.isArrayOfAllowedLength(args, 0, 1)) {
+		if (!CommandUtil.isArrayOfAllowedLength(args, 0, 1, 2)) {
 			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
@@ -54,6 +54,7 @@ public class CannonCommand extends PluginCommand {
 		
 		Player player = (Player) sender;
 		double speed = 2.0d;
+		double power = 1.0d;
 		
 		if (args.length == 1) {
 			try {
@@ -67,13 +68,27 @@ public class CannonCommand extends PluginCommand {
 				return;
 			}
 		}
+		if (args.length == 2) {
+			try {
+				power = Double.parseDouble(args[1]);
+			} catch (Exception ex) {
+				sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
+				String name = getClass().getSimpleName();
+				name = name.substring(0, name.length() - 7).toLowerCase();
+				sender.getServer().dispatchCommand(sender, "troll help " + name);
+				dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+				return;
+			}
+		}
 		
-		e(player, speed);
+		e(player, speed, power);
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
-	private void e(Player player, double speed) {
+	private void e(Player player, double speed, double power) {
 		TNTPrimed tnt = player.getWorld().spawn(player.getLocation(), TNTPrimed.class);
+		tnt.setYield((float) power);
+		tnt.setIsIncendiary((power > 0.0d) ? true : false);
 		Vector direction = player.getLocation().getDirection().multiply(speed);
 		tnt.setVelocity(direction);
 		

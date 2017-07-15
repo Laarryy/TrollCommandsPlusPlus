@@ -11,8 +11,8 @@ import ninja.egg82.plugin.commands.TickCommand;
 
 public class SpinTickCommand extends TickCommand {
 	//vars
-	private IRegistry spinRegistry = (IRegistry) ServiceLocator.getService(SpinRegistry.class);
-	private IRegistry spinSpeedRegistry = (IRegistry) ServiceLocator.getService(SpinSpeedRegistry.class);
+	private IRegistry spinRegistry = ServiceLocator.getService(SpinRegistry.class);
+	private IRegistry spinSpeedRegistry = ServiceLocator.getService(SpinSpeedRegistry.class);
 	
 	//constructor
 	public SpinTickCommand() {
@@ -26,7 +26,7 @@ public class SpinTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = spinRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (Player) spinRegistry.getRegister(name));
+			e(name, spinRegistry.getRegister(name, Player.class));
 		}
 	}
 	private void e(String uuid, Player player) {
@@ -35,7 +35,7 @@ public class SpinTickCommand extends TickCommand {
 		}
 		
 		Location newLocation = player.getLocation().clone();
-		float newYaw = newLocation.getYaw() + (float) spinSpeedRegistry.getRegister(uuid);
+		float newYaw = newLocation.getYaw() + spinSpeedRegistry.getRegister(uuid, Float.class);
 		
 		while (newYaw < 0.0f) {
 			newYaw += 360.0f;

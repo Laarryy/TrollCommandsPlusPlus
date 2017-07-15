@@ -11,8 +11,8 @@ import ninja.egg82.plugin.commands.TickCommand;
 
 public class BludgerTickCommand extends TickCommand {
 	//vars
-	private IRegistry bludgerRegistry = (IRegistry) ServiceLocator.getService(BludgerRegistry.class);
-	private IRegistry bludgerBallRegistry = (IRegistry) ServiceLocator.getService(BludgerBallRegistry.class);
+	private IRegistry bludgerRegistry = ServiceLocator.getService(BludgerRegistry.class);
+	private IRegistry bludgerBallRegistry = ServiceLocator.getService(BludgerBallRegistry.class);
 	
 	//constructor
 	public BludgerTickCommand() {
@@ -26,7 +26,7 @@ public class BludgerTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = bludgerRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (Player) bludgerRegistry.getRegister(name));
+			e(name, bludgerRegistry.getRegister(name, Player.class));
 		}
 	}
 	private void e(String uuid, Player player) {
@@ -34,7 +34,7 @@ public class BludgerTickCommand extends TickCommand {
 			return;
 		}
 		
-		Fireball fireball = (Fireball) bludgerBallRegistry.getRegister(uuid);
+		Fireball fireball = bludgerBallRegistry.getRegister(uuid, Fireball.class);
 		fireball.setVelocity(player.getLocation().toVector().subtract(fireball.getLocation().toVector()).normalize().multiply(0.35d));
 	}
 }

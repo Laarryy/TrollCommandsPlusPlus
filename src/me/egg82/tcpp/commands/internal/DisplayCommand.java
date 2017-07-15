@@ -29,13 +29,13 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class DisplayCommand extends PluginCommand {
 	//vars
-	private IRegistry displayRegistry = (IRegistry) ServiceLocator.getService(DisplayRegistry.class);
-	private IRegistry displayBlockRegistry = (IRegistry) ServiceLocator.getService(DisplayBlockRegistry.class);
-	private IRegistry displayLocationRegistry = (IRegistry) ServiceLocator.getService(DisplayLocationRegistry.class);
+	private IRegistry displayRegistry = ServiceLocator.getService(DisplayRegistry.class);
+	private IRegistry displayBlockRegistry = ServiceLocator.getService(DisplayBlockRegistry.class);
+	private IRegistry displayLocationRegistry = ServiceLocator.getService(DisplayLocationRegistry.class);
 	
-	private DisplayHelper displayHelper = (DisplayHelper) ServiceLocator.getService(DisplayHelper.class);
+	private DisplayHelper displayHelper = ServiceLocator.getService(DisplayHelper.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public DisplayCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -150,7 +150,7 @@ public class DisplayCommand extends PluginCommand {
 		dispatch(CommandEvent.COMPLETE, null);
 	}
 	private void eUndo(String uuid, Player player) {
-		displayHelper.unsurround((Location) displayLocationRegistry.getRegister(uuid));
+		displayHelper.unsurround(displayLocationRegistry.getRegister(uuid, Location.class));
 		displayRegistry.setRegister(uuid, Player.class, null);
 		displayBlockRegistry.setRegister(uuid, Set.class, null);
 		displayLocationRegistry.setRegister(uuid, Location.class, null);

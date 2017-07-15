@@ -22,7 +22,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class FakeCrashCommand extends PluginCommand {
 	//vars
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	private String[] messages = new String[] {
 		"Internal Exception: java.net.SocketException: Connection reset",

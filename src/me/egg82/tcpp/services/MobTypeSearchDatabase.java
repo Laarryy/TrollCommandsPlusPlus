@@ -15,6 +15,8 @@ public class MobTypeSearchDatabase extends LanguageDatabase {
 	
 	//constructor
 	public MobTypeSearchDatabase() {
+		super();
+		
 		EntityType[] types = EntityType.values();
 		
 		Arrays.sort(types, (a, b) -> {

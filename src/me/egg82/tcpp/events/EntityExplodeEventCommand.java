@@ -3,24 +3,25 @@ package me.egg82.tcpp.events;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.event.Event;
+import org.bukkit.event.entity.EntityExplodeEvent;
 
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.utils.ReflectUtil;
 
-public class EntityExplodeEventCommand extends EventCommand {
+public class EntityExplodeEventCommand extends EventCommand<EntityExplodeEvent> {
 	//vars
-	private ArrayList<EventCommand> events = new ArrayList<EventCommand>();
+	private ArrayList<EventCommand<EntityExplodeEvent>> events = new ArrayList<EventCommand<EntityExplodeEvent>>();
 	
 	//constructor
-	public EntityExplodeEventCommand(Event event) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public EntityExplodeEventCommand(EntityExplodeEvent event) {
 		super(event);
 		
 		List<Class<? extends EventCommand>> commands = ReflectUtil.getClasses(EventCommand.class, "me.egg82.tcpp.events.entity.entityExplode");
 		for (int i = 0; i < commands.size(); i++) {
-			EventCommand run = null;
+			EventCommand<EntityExplodeEvent> run = null;
 			try {
-				run = commands.get(i).getDeclaredConstructor(Event.class).newInstance(event);
+				run = commands.get(i).getDeclaredConstructor(EntityExplodeEvent.class).newInstance(event);
 			} catch (Exception ex) {
 				continue;
 			}

@@ -27,12 +27,12 @@ import ninja.egg82.sql.LanguageDatabase;
 
 public class EffectCommand extends PluginCommand {
 	//vars
-	private IRegistry effectRegistry = (IRegistry) ServiceLocator.getService(EffectRegistry.class);
-	private IRegistry potionNameRegistry = (IRegistry) ServiceLocator.getService(PotionNameRegistry.class);
+	private IRegistry effectRegistry = ServiceLocator.getService(EffectRegistry.class);
+	private IRegistry potionNameRegistry = ServiceLocator.getService(PotionNameRegistry.class);
 	
-	private LanguageDatabase potionTypeDatabase = (LanguageDatabase) ServiceLocator.getService(PotionTypeSearchDatabase.class);
+	private LanguageDatabase potionTypeDatabase = ServiceLocator.getService(PotionTypeSearchDatabase.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public EffectCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -62,11 +62,11 @@ public class EffectCommand extends PluginCommand {
 			
 			if (args[1].isEmpty()) {
 				for (String name : potionNameRegistry.getRegistryNames()) {
-					retVal.add((String) potionNameRegistry.getRegister(name));
+					retVal.add(potionNameRegistry.getRegister(name, String.class));
 				}
 			} else {
 				for (String name : potionNameRegistry.getRegistryNames()) {
-					String value = (String) potionNameRegistry.getRegister(name);
+					String value = potionNameRegistry.getRegister(name, String.class);
 					if (value.toLowerCase().startsWith(args[1].toLowerCase())) {
 						retVal.add(value);
 					}
@@ -155,7 +155,7 @@ public class EffectCommand extends PluginCommand {
 			
 			String uuid = player.getUniqueId().toString();
 			
-			List<PotionEffectType> currentEffects = (List<PotionEffectType>) effectRegistry.getRegister(uuid);
+			List<PotionEffectType> currentEffects = effectRegistry.getRegister(uuid, List.class);
 			
 			if (currentEffects == null || !currentEffects.contains(type)) {
 				e(uuid, player, type, currentEffects);
@@ -193,11 +193,11 @@ public class EffectCommand extends PluginCommand {
 		currentEffects.remove(potionType);
 		player.removePotionEffect(potionType);
 		
-		sender.sendMessage(player.getName() + " is no longer being affected by " + potionNameRegistry.getRegister(potionType.getName()) + ".");
+		sender.sendMessage(player.getName() + " is no longer being affected by " + potionNameRegistry.getRegister(potionType.getName(), String.class) + ".");
 	}
 	@SuppressWarnings("unchecked")
 	private void eUndo(String uuid, Player player) {
-		List<PotionEffectType> effects = (List<PotionEffectType>) effectRegistry.getRegister(uuid);
+		List<PotionEffectType> effects = effectRegistry.getRegister(uuid, List.class);
 		for (PotionEffectType potionType : effects) {
 			player.removePotionEffect(potionType);
 		}

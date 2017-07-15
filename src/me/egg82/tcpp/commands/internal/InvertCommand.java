@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class InvertCommand extends PluginCommand {
 	//vars
-	private IRegistry invertRegistry = (IRegistry) ServiceLocator.getService(InvertRegistry.class);
+	private IRegistry invertRegistry = ServiceLocator.getService(InvertRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public InvertCommand(CommandSender sender, Command command, String label, String[] args) {

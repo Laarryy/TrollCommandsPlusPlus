@@ -25,10 +25,10 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class AmnesiaCommand extends PluginCommand {
 	//vars
-	private IRegistry amnesiaRegistry = (IRegistry) ServiceLocator.getService(AmnesiaRegistry.class);
-	private IRegistry amnesiaMessageRegistry = (IRegistry) ServiceLocator.getService(AmnesiaMessageRegistry.class);
+	private IRegistry amnesiaRegistry = ServiceLocator.getService(AmnesiaRegistry.class);
+	private IRegistry amnesiaMessageRegistry = ServiceLocator.getService(AmnesiaMessageRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public AmnesiaCommand(CommandSender sender, Command command, String label, String[] args) {

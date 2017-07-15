@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import me.egg82.tcpp.services.FoolsGoldChunkRegistry;
@@ -20,15 +19,15 @@ import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.reflection.protocol.IFakeBlockHelper;
 import ninja.egg82.utils.MathUtil;
 
-public class FoolsGoldEventCommand extends EventCommand {
+public class FoolsGoldEventCommand extends EventCommand<PlayerMoveEvent> {
 	//vars
-	private IRegistry foolsGoldRegistry = (IRegistry) ServiceLocator.getService(FoolsGoldRegistry.class);
-	private IRegistry foolsGoldChunkRegistry = (IRegistry) ServiceLocator.getService(FoolsGoldChunkRegistry.class);
+	private IRegistry foolsGoldRegistry = ServiceLocator.getService(FoolsGoldRegistry.class);
+	private IRegistry foolsGoldChunkRegistry = ServiceLocator.getService(FoolsGoldChunkRegistry.class);
 	
-	private IFakeBlockHelper fakeBlockHelper = (IFakeBlockHelper) ServiceLocator.getService(IFakeBlockHelper.class);
+	private IFakeBlockHelper fakeBlockHelper = ServiceLocator.getService(IFakeBlockHelper.class);
 	
 	//constructor
-	public FoolsGoldEventCommand(Event event) {
+	public FoolsGoldEventCommand(PlayerMoveEvent event) {
 		super(event);
 	}
 	
@@ -37,25 +36,23 @@ public class FoolsGoldEventCommand extends EventCommand {
 	//private
 	@SuppressWarnings("unchecked")
 	protected void onExecute(long elapsedMilliseconds) {
-		PlayerMoveEvent e = (PlayerMoveEvent) event;
-		
-		if (e.isCancelled()) {
+		if (event.isCancelled()) {
 			return;
 		}
 		
-		Player player = e.getPlayer();
+		Player player = event.getPlayer();
 		String uuid = player.getUniqueId().toString();
 		
 		if (foolsGoldRegistry.hasRegister(uuid)) {
 			new Thread(new Runnable() {
 				public void run() {
-					if (e.getTo().getChunk().getX() != e.getFrom().getChunk().getX() || e.getTo().getChunk().getZ() != e.getFrom().getChunk().getZ()) {
-						List<Location> blocks = (List<Location>) foolsGoldRegistry.getRegister(uuid);
-						List<Pair<Integer, Integer>> chunks = (List<Pair<Integer, Integer>>) foolsGoldChunkRegistry.getRegister(uuid);
+					if (event.getTo().getChunk().getX() != event.getFrom().getChunk().getX() || event.getTo().getChunk().getZ() != event.getFrom().getChunk().getZ()) {
+						List<Location> blocks = foolsGoldRegistry.getRegister(uuid, List.class);
+						List<Pair<Integer, Integer>> chunks = foolsGoldChunkRegistry.getRegister(uuid, List.class);
 						
-						int chunkX = e.getTo().getChunk().getX();
-						int chunkZ = e.getTo().getChunk().getZ();
-						World world = e.getTo().getWorld();
+						int chunkX = event.getTo().getChunk().getX();
+						int chunkZ = event.getTo().getChunk().getZ();
+						World world = event.getTo().getWorld();
 						
 						ArrayList<Pair<Integer, Integer>> currentChunks = new ArrayList<Pair<Integer, Integer>>();
 						

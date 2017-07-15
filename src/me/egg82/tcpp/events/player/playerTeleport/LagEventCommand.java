@@ -1,28 +1,23 @@
 package me.egg82.tcpp.events.player.playerTeleport;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import me.egg82.tcpp.services.LagRegistry;
 import me.egg82.tcpp.services.LagTimeRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
-import ninja.egg82.startup.InitRegistry;
+import ninja.egg82.plugin.utils.TaskUtil;
 import ninja.egg82.utils.MathUtil;
 
-public class LagEventCommand extends EventCommand {
+public class LagEventCommand extends EventCommand<PlayerTeleportEvent> {
 	//vars
-	private IRegistry lagRegistry = (IRegistry) ServiceLocator.getService(LagRegistry.class);
-	private IRegistry lagTimeRegistry = (IRegistry) ServiceLocator.getService(LagTimeRegistry.class);
-	private JavaPlugin plugin = (JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin");
+	private IRegistry lagRegistry = ServiceLocator.getService(LagRegistry.class);
+	private IRegistry lagTimeRegistry = ServiceLocator.getService(LagTimeRegistry.class);
 	
 	//constructor
-	public LagEventCommand(Event event) {
+	public LagEventCommand(PlayerTeleportEvent event) {
 		super(event);
 	}
 	
@@ -30,13 +25,11 @@ public class LagEventCommand extends EventCommand {
 
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		PlayerTeleportEvent e = (PlayerTeleportEvent) event;
-		
-		if (e.isCancelled()) {
+		if (event.isCancelled()) {
 			return;
 		}
 		
-		Player player = e.getPlayer();
+		Player player = event.getPlayer();
 		String uuid = player.getUniqueId().toString();
 		
 		if (!lagRegistry.hasRegister(uuid)) {
@@ -50,16 +43,16 @@ public class LagEventCommand extends EventCommand {
 		
 		// 15% chance that we lag the player
 		if (Math.random() <= 0.15d) {
-			Location from = e.getFrom();
+			Location from = event.getFrom();
 			lagTimeRegistry.setRegister(uuid, Location.class, from);
 			
 			// Just teleporting the player to their old location after 0.5-1 seconds
-			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+			TaskUtil.runSync(new Runnable() {
 				public void run() {
-					player.teleport(e.getFrom());
+					player.teleport(from);
 					
 					// Wait 1.75-2.5 seconds until we start lagging movement again. More realistic this way
-					Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					TaskUtil.runSync(new Runnable() {
 						public void run() {
 							lagTimeRegistry.setRegister(uuid, Location.class, null);
 						}

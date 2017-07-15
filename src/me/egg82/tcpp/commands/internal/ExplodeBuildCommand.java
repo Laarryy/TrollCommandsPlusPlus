@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class ExplodeBuildCommand extends PluginCommand {
 	//vars
-	private IRegistry explodeBuildRegistry = (IRegistry) ServiceLocator.getService(ExplodeBuildRegistry.class);
+	private IRegistry explodeBuildRegistry = ServiceLocator.getService(ExplodeBuildRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public ExplodeBuildCommand(CommandSender sender, Command command, String label, String[] args) {

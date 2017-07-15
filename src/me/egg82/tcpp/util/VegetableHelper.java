@@ -18,10 +18,10 @@ import ninja.egg82.plugin.utils.BlockUtil;
 
 public class VegetableHelper {
 	//vars
-	private IRegistry vegetableRegistry = (IRegistry) ServiceLocator.getService(VegetableRegistry.class);
-	private IRegistry vegetableItemRegistry = (IRegistry) ServiceLocator.getService(VegetableItemRegistry.class);
-	private IRegistry vegetableModeRegistry = (IRegistry) ServiceLocator.getService(VegetableModeRegistry.class);
-	private IRegistry vegetableLocationRegistry = (IRegistry) ServiceLocator.getService(VegetableLocationRegistry.class);
+	private IRegistry vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
+	private IRegistry vegetableItemRegistry = ServiceLocator.getService(VegetableItemRegistry.class);
+	private IRegistry vegetableModeRegistry = ServiceLocator.getService(VegetableModeRegistry.class);
+	private IRegistry vegetableLocationRegistry = ServiceLocator.getService(VegetableLocationRegistry.class);
 	
 	//constructor
 	public VegetableHelper() {
@@ -50,8 +50,8 @@ public class VegetableHelper {
 	}
 	public void unvegetable(String uuid, Player player) {
 		Location playerLocation = player.getLocation().clone();
-		Item groundItem = (Item) vegetableItemRegistry.getRegister(uuid);
-		GameMode oldMode = (GameMode) vegetableModeRegistry.getRegister(uuid);
+		Item groundItem = vegetableItemRegistry.getRegister(uuid, Item.class);
+		GameMode oldMode = vegetableModeRegistry.getRegister(uuid, GameMode.class);
 		
 		vegetableRegistry.setRegister(uuid, Player.class, null);
 		vegetableItemRegistry.setRegister(uuid, Item.class, null);
@@ -66,7 +66,7 @@ public class VegetableHelper {
 	public void unvegetableAll() {
 		String[] names = vegetableRegistry.getRegistryNames();
 		for (int i = 0; i < names.length; i++) {
-			unvegetable(names[i], (Player) vegetableRegistry.getRegister(names[i]));
+			unvegetable(names[i], vegetableRegistry.getRegister(names[i], Player.class));
 		}
 	}
 	

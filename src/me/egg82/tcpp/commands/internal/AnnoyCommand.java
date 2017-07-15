@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class AnnoyCommand extends PluginCommand {
 	//vars
-	private IRegistry annoyRegistry = (IRegistry) ServiceLocator.getService(AnnoyRegistry.class);
+	private IRegistry annoyRegistry = ServiceLocator.getService(AnnoyRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public AnnoyCommand(CommandSender sender, Command command, String label, String[] args) {

@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class RadiateCommand extends PluginCommand {
 	//vars
-	private IRegistry radiateRegistry = (IRegistry) ServiceLocator.getService(RadiateRegistry.class);
+	private IRegistry radiateRegistry = ServiceLocator.getService(RadiateRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public RadiateCommand(CommandSender sender, Command command, String label, String[] args) {

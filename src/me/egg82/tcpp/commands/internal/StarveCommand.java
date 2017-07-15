@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class StarveCommand extends PluginCommand {
 	//vars
-	private IRegistry starveRegistry = (IRegistry) ServiceLocator.getService(StarveRegistry.class);
+	private IRegistry starveRegistry = ServiceLocator.getService(StarveRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public StarveCommand(CommandSender sender, Command command, String label, String[] args) {

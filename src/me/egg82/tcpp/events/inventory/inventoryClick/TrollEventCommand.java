@@ -2,7 +2,6 @@ package me.egg82.tcpp.events.inventory.inventoryClick;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -16,15 +15,15 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 
-public class TrollEventCommand extends EventCommand {
+public class TrollEventCommand extends EventCommand<InventoryClickEvent> {
 	//vars
-	private IRegistry trollInventoryRegistry = (IRegistry) ServiceLocator.getService(TrollInventoryRegistry.class);
-	private IRegistry trollPlayerRegistry = (IRegistry) ServiceLocator.getService(TrollPlayerRegistry.class);
-	private IRegistry trollPageRegistry = (IRegistry) ServiceLocator.getService(TrollPageRegistry.class);
-	private IRegistry trollSearchRegistry = (IRegistry) ServiceLocator.getService(TrollSearchRegistry.class);
+	private IRegistry trollInventoryRegistry = ServiceLocator.getService(TrollInventoryRegistry.class);
+	private IRegistry trollPlayerRegistry = ServiceLocator.getService(TrollPlayerRegistry.class);
+	private IRegistry trollPageRegistry = ServiceLocator.getService(TrollPageRegistry.class);
+	private IRegistry trollSearchRegistry = ServiceLocator.getService(TrollSearchRegistry.class);
 	
 	//constructor
-	public TrollEventCommand(Event event) {
+	public TrollEventCommand(InventoryClickEvent event) {
 		super(event);
 	}
 	
@@ -32,25 +31,23 @@ public class TrollEventCommand extends EventCommand {
 
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		InventoryClickEvent e = (InventoryClickEvent) event;
-		
-		if (e.isCancelled()) {
+		if (event.isCancelled()) {
 			return;
 		}
 		
-		Player player = (Player) e.getWhoClicked();
+		Player player = (Player) event.getWhoClicked();
 		String uuid = player.getUniqueId().toString();
 		
 		if (!trollInventoryRegistry.hasRegister(uuid)) {
 			return;
 		}
 		
-		if (e.getClickedInventory() == null || e.getClickedInventory() != e.getInventory()) {
-			e.setCancelled(true);
+		if (event.getClickedInventory() == null || event.getClickedInventory() != event.getInventory()) {
+			event.setCancelled(true);
 			return;
 		}
 		
-		ItemStack item = e.getCurrentItem();
+		ItemStack item = event.getCurrentItem();
 		if (item == null || item.getType() == Material.AIR) {
 			return;
 		}
@@ -58,22 +55,22 @@ public class TrollEventCommand extends EventCommand {
 		String name = item.getItemMeta().getDisplayName().toLowerCase();
 		
 		if (name.contains("previous")) {
-			int newPage = ((Integer) trollPageRegistry.getRegister(uuid)) - 1;
-			Inventory inv = GuiUtil.createInventory(player, (String) trollSearchRegistry.getRegister(uuid), newPage);
+			int newPage = trollPageRegistry.getRegister(uuid, Integer.class) - 1;
+			Inventory inv = GuiUtil.createInventory(player,  trollSearchRegistry.getRegister(uuid, String.class), newPage);
 			trollPageRegistry.setRegister(uuid, Integer.class, newPage);
-			e.getInventory().setContents(inv.getContents());
+			event.getInventory().setContents(inv.getContents());
 		} else if (name.contains("next")) {
-			int newPage = ((Integer) trollPageRegistry.getRegister(uuid)) + 1;
-			Inventory inv = GuiUtil.createInventory(player, (String) trollSearchRegistry.getRegister(uuid), newPage);
+			int newPage = trollPageRegistry.getRegister(uuid, Integer.class) + 1;
+			Inventory inv = GuiUtil.createInventory(player, trollSearchRegistry.getRegister(uuid, String.class), newPage);
 			trollPageRegistry.setRegister(uuid, Integer.class, newPage);
-			e.getInventory().setContents(inv.getContents());
+			event.getInventory().setContents(inv.getContents());
 		} else if (name.contains("close")) {
 			player.closeInventory();
 		} else {
-			player.getServer().dispatchCommand(player, "troll " + name.substring(name.indexOf('/') + 1) + " " + ((Player) trollPlayerRegistry.getRegister(uuid)).getName());
+			player.getServer().dispatchCommand(player, "troll " + name.substring(name.indexOf('/') + 1) + " " + trollPlayerRegistry.getRegister(uuid, Player.class).getName());
 			player.closeInventory();
 		}
 		
-		e.setCancelled(true);
+		event.setCancelled(true);
 	}
 }

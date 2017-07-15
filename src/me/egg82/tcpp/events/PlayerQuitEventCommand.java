@@ -3,24 +3,25 @@ package me.egg82.tcpp.events;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.utils.ReflectUtil;
 
-public class PlayerQuitEventCommand extends EventCommand {
+public class PlayerQuitEventCommand extends EventCommand<PlayerQuitEvent> {
 	//vars
-	private ArrayList<EventCommand> events = new ArrayList<EventCommand>();
+	private ArrayList<EventCommand<PlayerQuitEvent>> events = new ArrayList<EventCommand<PlayerQuitEvent>>();
 	
 	//constructor
-	public PlayerQuitEventCommand(Event event) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public PlayerQuitEventCommand(PlayerQuitEvent event) {
 		super(event);
 		
 		List<Class<? extends EventCommand>> commands = ReflectUtil.getClasses(EventCommand.class, "me.egg82.tcpp.events.player.playerQuit");
 		for (int i = 0; i < commands.size(); i++) {
-			EventCommand run = null;
+			EventCommand<PlayerQuitEvent> run = null;
 			try {
-				run = commands.get(i).getDeclaredConstructor(Event.class).newInstance(event);
+				run = commands.get(i).getDeclaredConstructor(PlayerQuitEvent.class).newInstance(event);
 			} catch (Exception ex) {
 				continue;
 			}

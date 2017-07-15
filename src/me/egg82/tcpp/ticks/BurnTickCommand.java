@@ -9,7 +9,7 @@ import ninja.egg82.plugin.commands.TickCommand;
 
 public class BurnTickCommand extends TickCommand {
 	//vars
-	private IRegistry burnRegistry = (IRegistry) ServiceLocator.getService(BurnRegistry.class);
+	private IRegistry burnRegistry = ServiceLocator.getService(BurnRegistry.class);
 	
 	//constructor
 	public BurnTickCommand() {
@@ -23,7 +23,7 @@ public class BurnTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = burnRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (Player) burnRegistry.getRegister(name));
+			e(name, burnRegistry.getRegister(name, Player.class));
 		}
 	}
 	private void e(String uuid, Player player) {
@@ -31,6 +31,6 @@ public class BurnTickCommand extends TickCommand {
 			return;
 		}
 		
-		player.setFireTicks(40);
+		player.setFireTicks(45);
 	}
 }

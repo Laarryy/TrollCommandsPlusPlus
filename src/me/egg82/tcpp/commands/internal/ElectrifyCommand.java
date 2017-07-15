@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class ElectrifyCommand extends PluginCommand {
 	//vars
-	private IRegistry electrifyRegistry = (IRegistry) ServiceLocator.getService(ElectrifyRegistry.class);
+	private IRegistry electrifyRegistry = ServiceLocator.getService(ElectrifyRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public ElectrifyCommand(CommandSender sender, Command command, String label, String[] args) {

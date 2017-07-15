@@ -1,16 +1,13 @@
 package me.egg82.tcpp.events.block.blockPlace;
 
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import me.egg82.tcpp.services.LagBlockRegistry;
 import me.egg82.tcpp.services.LagRegistry;
@@ -19,17 +16,16 @@ import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.core.BlockData;
 import ninja.egg82.plugin.utils.BlockUtil;
-import ninja.egg82.startup.InitRegistry;
+import ninja.egg82.plugin.utils.TaskUtil;
 import ninja.egg82.utils.MathUtil;
 
-public class LagEventCommand extends EventCommand {
+public class LagEventCommand extends EventCommand<BlockPlaceEvent> {
 	//vars
-	private IRegistry lagRegistry = (IRegistry) ServiceLocator.getService(LagRegistry.class);
-	private IRegistry lagBlockRegistry = (IRegistry) ServiceLocator.getService(LagBlockRegistry.class);
-	private JavaPlugin plugin = (JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin");
+	private IRegistry lagRegistry = ServiceLocator.getService(LagRegistry.class);
+	private IRegistry lagBlockRegistry = ServiceLocator.getService(LagBlockRegistry.class);
 	
 	//constructor
-	public LagEventCommand(Event event) {
+	public LagEventCommand(BlockPlaceEvent event) {
 		super(event);
 	}
 	
@@ -37,21 +33,19 @@ public class LagEventCommand extends EventCommand {
 
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		BlockPlaceEvent e = (BlockPlaceEvent) event;
-		
-		if (e.isCancelled()) {
+		if (event.isCancelled()) {
 			return;
 		}
 		
-		Player player = e.getPlayer();
+		Player player = event.getPlayer();
 		
-		Block block = e.getBlock();
+		Block block = event.getBlock();
 		Location blockLocation = block.getLocation();
 		String locationString = blockLocation.getWorld() + "," + blockLocation.getX() + "," + blockLocation.getY() + "," + blockLocation.getZ();
 		
 		// Block is currently being lagged. Nobody should interact with it.
 		if (lagBlockRegistry.hasRegister(locationString)) {
-			e.setCancelled(true);
+			event.setCancelled(true);
 			return;
 		}
 		if (!lagRegistry.hasRegister(player.getUniqueId().toString())) {
@@ -61,15 +55,15 @@ public class LagEventCommand extends EventCommand {
 		lagBlockRegistry.setRegister(locationString, Location.class, blockLocation);
 		
 		// Capture the current state of everything
-		BlockState blockState = e.getBlock().getState();
+		BlockState blockState = event.getBlock().getState();
 		Material blockType = blockState.getType();
-		ItemStack hand = e.getItemInHand();
+		ItemStack hand = event.getItemInHand();
 		GameMode gameMode = player.getGameMode();
 		
-		e.setCancelled(true);
+		event.setCancelled(true);
 		
 		// Manually doing the event after 1.5-2.5 seconds
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+		TaskUtil.runSync(new Runnable() {
 			public void run() {
 				if (gameMode != GameMode.CREATIVE) {
 					// Set the inventory

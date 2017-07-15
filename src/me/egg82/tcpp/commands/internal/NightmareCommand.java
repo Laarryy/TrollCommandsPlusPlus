@@ -32,12 +32,12 @@ import ninja.egg82.utils.MathUtil;
 
 public class NightmareCommand extends PluginCommand {
 	//vars
-	private IRegistry nightmareRegistry = (IRegistry) ServiceLocator.getService(NightmareRegistry.class);
+	private IRegistry nightmareRegistry = ServiceLocator.getService(NightmareRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
-	private IFakeEntityHelper fakeEntityHelper = (IFakeEntityHelper) ServiceLocator.getService(IFakeEntityHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
+	private IFakeEntityHelper fakeEntityHelper = ServiceLocator.getService(IFakeEntityHelper.class);
 	
-	private String gameVersion = (String) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("game.version");
+	private String gameVersion = ServiceLocator.getService(InitRegistry.class).getRegister("game.version", String.class);
 	
 	//constructor
 	public NightmareCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -87,7 +87,7 @@ public class NightmareCommand extends PluginCommand {
 			dispatch(CommandEvent.ERROR, CommandErrorType.NO_LIBRARY);
 			return;
 		}
-		if (gameVersion == "1.8" || gameVersion == "1.8.1" || gameVersion == "1.8.3" || gameVersion == "1.8.8") {
+		if (gameVersion.equals("1.8") || gameVersion.equals("1.8.1") || gameVersion.equals("1.8.3") || gameVersion.equals("1.8.8")) {
 			sender.sendMessage(MessageType.WRONG_GAME_VERSION);
 			dispatch(CommandEvent.ERROR, CommandErrorType.WRONG_GAME_VERSION);
 			return;
@@ -177,7 +177,7 @@ public class NightmareCommand extends PluginCommand {
 	}
 	@SuppressWarnings("unchecked")
 	private void eUndo(String uuid, Player player) {
-		ArrayDeque<IFakeLivingEntity> entities = (ArrayDeque<IFakeLivingEntity>) nightmareRegistry.getRegister(uuid);
+		ArrayDeque<IFakeLivingEntity> entities = nightmareRegistry.getRegister(uuid, ArrayDeque.class);
 		
 		new Thread(new Runnable() {
 			public void run() {

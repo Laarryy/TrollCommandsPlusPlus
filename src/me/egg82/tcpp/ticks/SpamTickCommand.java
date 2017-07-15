@@ -10,7 +10,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class SpamTickCommand extends TickCommand {
 	//vars
-	private IRegistry spamRegistry = (IRegistry) ServiceLocator.getService(SpamRegistry.class);
+	private IRegistry spamRegistry = ServiceLocator.getService(SpamRegistry.class);
 	
 	private String[] spam = new String[] {
 		"<Totally Legit> MAKE MONEY FROM HOME ONLINE! NO GIMMICKS! Call now!",
@@ -60,7 +60,7 @@ public class SpamTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = spamRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (Player) spamRegistry.getRegister(name));
+			e(name, spamRegistry.getRegister(name, Player.class));
 		}
 	}
 	private void e(String uuid, Player player) {

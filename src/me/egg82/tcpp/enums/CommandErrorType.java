@@ -16,6 +16,7 @@ public class CommandErrorType {
 	public static final String COMMAND_NOT_FOUND = "commandNotFound";
 	public static final String ENCHANT_NOT_FOUND = "enchantNotFound";
 	public static final String VEGETABLE_NOT_FOUND = "vegetableNotFound";
+	public static final String MATERIAL_NOT_FOUND = "materialNotFound";
 	
 	//constructor
 	public CommandErrorType() {

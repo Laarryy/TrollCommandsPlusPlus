@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class NoPickupCommand extends PluginCommand {
 	//vars
-	private IRegistry noPickupRegistry = (IRegistry) ServiceLocator.getService(NoPickupRegistry.class);
+	private IRegistry noPickupRegistry = ServiceLocator.getService(NoPickupRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public NoPickupCommand(CommandSender sender, Command command, String label, String[] args) {

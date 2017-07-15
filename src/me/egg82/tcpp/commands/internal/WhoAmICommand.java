@@ -24,10 +24,10 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class WhoAmICommand extends PluginCommand {
 	//vars
-	private IRegistry whoAmIRegistry = (IRegistry) ServiceLocator.getService(WhoAmIRegistry.class);
+	private IRegistry whoAmIRegistry = ServiceLocator.getService(WhoAmIRegistry.class);
 	
-	private WhoAmIHelper whoAmIHelper = (WhoAmIHelper) ServiceLocator.getService(WhoAmIHelper.class);
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private WhoAmIHelper whoAmIHelper = ServiceLocator.getService(WhoAmIHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public WhoAmICommand(CommandSender sender, Command command, String label, String[] args) {

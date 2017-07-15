@@ -3,24 +3,25 @@ package me.egg82.tcpp.events;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.utils.ReflectUtil;
 
-public class PlayerPickupItemEventCommand extends EventCommand {
+public class PlayerPickupItemEventCommand extends EventCommand<PlayerPickupItemEvent> {
 	//vars
-	private ArrayList<EventCommand> events = new ArrayList<EventCommand>();
+	private ArrayList<EventCommand<PlayerPickupItemEvent>> events = new ArrayList<EventCommand<PlayerPickupItemEvent>>();
 	
 	//constructor
-	public PlayerPickupItemEventCommand(Event event) {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public PlayerPickupItemEventCommand(PlayerPickupItemEvent event) {
 		super(event);
 		
 		List<Class<? extends EventCommand>> commands = ReflectUtil.getClasses(EventCommand.class, "me.egg82.tcpp.events.player.playerPickupItem");
 		for (int i = 0; i < commands.size(); i++) {
-			EventCommand run = null;
+			EventCommand<PlayerPickupItemEvent> run = null;
 			try {
-				run = commands.get(i).getDeclaredConstructor(Event.class).newInstance(event);
+				run = commands.get(i).getDeclaredConstructor(PlayerPickupItemEvent.class).newInstance(event);
 			} catch (Exception ex) {
 				continue;
 			}

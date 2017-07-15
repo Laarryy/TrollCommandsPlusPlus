@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class GarbleCommand extends PluginCommand {
 	//vars
-	private IRegistry garbleRegistry = (IRegistry) ServiceLocator.getService(GarbleRegistry.class);
+	private IRegistry garbleRegistry = ServiceLocator.getService(GarbleRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public GarbleCommand(CommandSender sender, Command command, String label, String[] args) {

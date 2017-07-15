@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class AloneCommand extends PluginCommand {
 	//vars
-	private IRegistry aloneRegistry = (IRegistry) ServiceLocator.getService(AloneRegistry.class);
+	private IRegistry aloneRegistry = ServiceLocator.getService(AloneRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public AloneCommand(CommandSender sender, Command command, String label, String[] args) {

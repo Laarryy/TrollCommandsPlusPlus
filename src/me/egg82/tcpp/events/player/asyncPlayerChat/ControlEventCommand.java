@@ -1,7 +1,6 @@
 package me.egg82.tcpp.events.player.asyncPlayerChat;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import me.egg82.tcpp.enums.MessageType;
@@ -12,12 +11,12 @@ import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
 
-public class ControlEventCommand extends EventCommand {
+public class ControlEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 	//vars
-	private IRegistry controlRegistry = (IRegistry) ServiceLocator.getService(ControlRegistry.class);
+	private IRegistry controlRegistry = ServiceLocator.getService(ControlRegistry.class);
 	
 	//constructor
-	public ControlEventCommand(Event event) {
+	public ControlEventCommand(AsyncPlayerChatEvent event) {
 		super(event);
 	}
 	
@@ -25,27 +24,25 @@ public class ControlEventCommand extends EventCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		AsyncPlayerChatEvent e = (AsyncPlayerChatEvent) event;
-		
-		if (e.isCancelled()) {
+		if (event.isCancelled()) {
 			return;
 		}
 		
-		Player player = e.getPlayer();
-		Player controlledPlayer = (Player) controlRegistry.getRegister(player.getUniqueId().toString());
+		Player player = event.getPlayer();
+		Player controlledPlayer = controlRegistry.getRegister(player.getUniqueId().toString(), Player.class);
 		
 		if (controlledPlayer != null) {
 			// Player is controlling someone
-			controlledPlayer.chat(e.getMessage());
-			e.setCancelled(true);
+			controlledPlayer.chat(event.getMessage());
+			event.setCancelled(true);
 		}
 		
 		String controllerUuid = controlRegistry.getName(player);
 		if (controllerUuid != null) {
 			// Player is being controlled by someone
 			if (!CommandUtil.hasPermission(player, PermissionsType.CHAT_WHILE_CONTROLLED)) {
-				player.sendMessage(MessageType.NO_CHAT);
-				e.setCancelled(true);
+				player.sendMessage(MessageType.NO_CHAT_CONTROL);
+				event.setCancelled(true);
 			}
 		}
 	}

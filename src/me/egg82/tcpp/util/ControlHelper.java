@@ -5,7 +5,6 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import me.egg82.tcpp.reflection.disguise.IDisguiseHelper;
 import me.egg82.tcpp.services.ControlInventoryRegistry;
@@ -14,16 +13,15 @@ import me.egg82.tcpp.services.ControlRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.startup.InitRegistry;
+import ninja.egg82.plugin.utils.TaskUtil;
 
 public class ControlHelper {
 	//vars
-	private IRegistry controlRegistry = (IRegistry) ServiceLocator.getService(ControlRegistry.class);
-	private IRegistry controlModeRegistry = (IRegistry) ServiceLocator.getService(ControlModeRegistry.class);
-	private IRegistry controlInventoryRegistry = (IRegistry) ServiceLocator.getService(ControlInventoryRegistry.class);
-	private JavaPlugin plugin = (JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin");
+	private IRegistry controlRegistry = ServiceLocator.getService(ControlRegistry.class);
+	private IRegistry controlModeRegistry = ServiceLocator.getService(ControlModeRegistry.class);
+	private IRegistry controlInventoryRegistry = ServiceLocator.getService(ControlInventoryRegistry.class);
 	
-	private IDisguiseHelper disguiseHelper = (IDisguiseHelper) ServiceLocator.getService(IDisguiseHelper.class);
+	private IDisguiseHelper disguiseHelper = ServiceLocator.getService(IDisguiseHelper.class);
 	
 	//constructor
 	public ControlHelper() {
@@ -56,7 +54,7 @@ public class ControlHelper {
 		uncontrol(controllerUuid, controller, true);
 	}
 	public void uncontrol(String controllerUuid, Player controller, boolean vanish) {
-		Player player = (Player) controlRegistry.getRegister(controllerUuid);
+		Player player = controlRegistry.getRegister(controllerUuid, Player.class);
 		
 		PlayerInventory controllerInventory = controller.getInventory();
 		PlayerInventory playerInventory = player.getInventory();
@@ -67,14 +65,14 @@ public class ControlHelper {
 				p.hidePlayer(controller);
 			}
 			// Wait 10 seconds
-			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+			TaskUtil.runSync(new Runnable() {
 				public void run() {
 					// Make controller visible
 					for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 						p.showPlayer(controller);
 					}
 				}
-			}, 200);
+			}, 200L);
 		}
 		
 		disguiseHelper.undisguise(controller);
@@ -84,8 +82,8 @@ public class ControlHelper {
 		playerInventory.setContents(controllerInventory.getContents());
 		player.setGameMode(controller.getGameMode());
 		
-		controllerInventory.setContents((ItemStack[]) controlInventoryRegistry.getRegister(controllerUuid));
-		controller.setGameMode((GameMode) controlModeRegistry.getRegister(controllerUuid));
+		controllerInventory.setContents(controlInventoryRegistry.getRegister(controllerUuid, ItemStack[].class));
+		controller.setGameMode(controlModeRegistry.getRegister(controllerUuid, GameMode.class));
 		
 		controlModeRegistry.setRegister(controllerUuid, GameMode.class, null);
 		controlInventoryRegistry.setRegister(controllerUuid, ItemStack[].class, null);

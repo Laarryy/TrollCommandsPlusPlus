@@ -28,10 +28,10 @@ import ninja.egg82.utils.MathUtil;
 
 public class BludgerCommand extends PluginCommand {
 	//vars
-	private IRegistry bludgerRegistry = (IRegistry) ServiceLocator.getService(BludgerRegistry.class);
-	private IRegistry bludgerBallRegistry = (IRegistry) ServiceLocator.getService(BludgerBallRegistry.class);
+	private IRegistry bludgerRegistry = ServiceLocator.getService(BludgerRegistry.class);
+	private IRegistry bludgerBallRegistry = ServiceLocator.getService(BludgerBallRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public BludgerCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -160,7 +160,7 @@ public class BludgerCommand extends PluginCommand {
 	private void eUndo(String uuid, Player player) {
 		bludgerRegistry.setRegister(uuid, Player.class, null);
 		
-		((Fireball) bludgerBallRegistry.getRegister(uuid)).remove();
+		bludgerBallRegistry.getRegister(uuid, Fireball.class).remove();
 		bludgerBallRegistry.setRegister(uuid, Fireball.class, null);
 		
 		sender.sendMessage(player.getName() + " is no longer being chased by a bludger.");

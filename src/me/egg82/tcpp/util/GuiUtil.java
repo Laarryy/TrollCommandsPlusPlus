@@ -27,7 +27,7 @@ import ninja.egg82.startup.InitRegistry;
 
 public class GuiUtil {
 	//vars
-	private static LanguageDatabase ldb = null;
+	private static LanguageDatabase commandDatabase = null;
 	private static HashMap<String, Pair<String, String>> commands = null;
 	private static String[] allCommands = null;
 	
@@ -40,12 +40,12 @@ public class GuiUtil {
 	
 	//public
 	public static Inventory createInventory(Player permissionsPlayer, String search, int page) {
-		if (ldb == null) {
-			ldb = (LanguageDatabase) ServiceLocator.getService(CommandSearchDatabase.class);
+		if (commandDatabase == null) {
+			commandDatabase = ServiceLocator.getService(CommandSearchDatabase.class);
 		}
 		if (commands == null) {
 			commands = new HashMap<String, Pair<String, String>>();
-			String[] list = ((String) ((PluginDescriptionFile) ((JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin")).getDescription()).getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
+			String[] list = ((String) ((PluginDescriptionFile) ServiceLocator.getService(InitRegistry.class).getRegister("plugin", JavaPlugin.class).getDescription()).getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
 			
 			for (String entry : list) {
 				if (entry.contains("-= Available Commands =-")) {
@@ -68,7 +68,7 @@ public class GuiUtil {
 			Arrays.sort(allCommands);
 		}
 		if (guiRegistry == null) {
-			guiRegistry = (IRegistry) ServiceLocator.getService(GuiRegistry.class);
+			guiRegistry = ServiceLocator.getService(GuiRegistry.class);
 		}
 		
 		if (page < 0) {
@@ -81,7 +81,7 @@ public class GuiUtil {
 		if (search == null || search.isEmpty()) {
 			commands = allCommands;
 		} else {
-			commands = ldb.getValues(ldb.naturalLanguage(search, false, ' '), 0);
+			commands = commandDatabase.getValues(commandDatabase.naturalLanguage(search, false, ' '), 0);
 		}
 		if (commands == null) {
 			commands = new String[0];
@@ -119,9 +119,9 @@ public class GuiUtil {
 		
 		if (guiRegistry.hasRegister(command)) {
 			if (guiRegistry.hasRegister(command + "_data")) {
-				item = new ItemStack((Material) guiRegistry.getRegister(command), 1, (short) guiRegistry.getRegister(command + "_data"));
+				item = new ItemStack(guiRegistry.getRegister(command, Material.class), 1, guiRegistry.getRegister(command + "_data", Short.class));
 			} else {
-				item = new ItemStack((Material) guiRegistry.getRegister(command));
+				item = new ItemStack(guiRegistry.getRegister(command, Material.class));
 			}
 		} else {
 			item = new ItemStack(Material.STONE);
@@ -137,8 +137,8 @@ public class GuiUtil {
 			lore.add(ChatColor.RED + ChatColor.ITALIC.toString() + "You do not have permissions");
 			lore.add(ChatColor.RED + ChatColor.ITALIC.toString() + "to run this command!");
 		}
-		lore.addAll(splitDescription((String) commands.get(command).getRight()));
-		lore.add(ChatColor.YELLOW + (String) commands.get(command).getLeft());
+		lore.addAll(splitDescription(commands.get(command).getRight()));
+		lore.add(ChatColor.YELLOW + commands.get(command).getLeft());
 		meta.setLore(lore);
 		
 		item.setItemMeta(meta);

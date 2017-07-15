@@ -13,8 +13,8 @@ import ninja.egg82.utils.MathUtil;
 
 public class SquidTickCommand extends TickCommand {
 	//vars
-	private IRegistry squidRegistry = (IRegistry) ServiceLocator.getService(SquidRegistry.class);
-	private IRegistry squidDeathRegistry = (IRegistry) ServiceLocator.getService(SquidDeathRegistry.class);
+	private IRegistry squidRegistry = ServiceLocator.getService(SquidRegistry.class);
+	private IRegistry squidDeathRegistry = ServiceLocator.getService(SquidDeathRegistry.class);
 	
 	//constructor
 	public SquidTickCommand() {
@@ -28,7 +28,7 @@ public class SquidTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = squidRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (Player) squidRegistry.getRegister(name));
+			e(name, squidRegistry.getRegister(name, Player.class));
 		}
 	}
 	private void e(String uuid, Player player) {

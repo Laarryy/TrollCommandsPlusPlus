@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class BombCommand extends PluginCommand {
 	//vars
-	private IRegistry bombRegistry = (IRegistry) ServiceLocator.getService(BombRegistry.class);
+	private IRegistry bombRegistry = ServiceLocator.getService(BombRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public BombCommand(CommandSender sender, Command command, String label, String[] args) {

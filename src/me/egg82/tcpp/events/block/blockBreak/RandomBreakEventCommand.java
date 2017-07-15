@@ -5,7 +5,6 @@ import java.util.Collection;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -15,32 +14,33 @@ import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.core.BlockData;
 import ninja.egg82.plugin.reflection.player.IPlayerHelper;
+import ninja.egg82.plugin.reflection.type.TypeFilterHelper;
 import ninja.egg82.plugin.utils.BlockUtil;
-import ninja.egg82.plugin.utils.MaterialHelper;
 import ninja.egg82.utils.MathUtil;
 
-public class RandomBreakEventCommand extends EventCommand {
+public class RandomBreakEventCommand extends EventCommand<BlockBreakEvent> {
 	//vars
-	private IRegistry randomBreakRegistry = (IRegistry) ServiceLocator.getService(RandomBreakRegistry.class);
+	private IRegistry randomBreakRegistry = ServiceLocator.getService(RandomBreakRegistry.class);
 	
-	private IPlayerHelper playerHelper = (IPlayerHelper) ServiceLocator.getService(IPlayerHelper.class);
-	private MaterialHelper materialHelper = (MaterialHelper) ServiceLocator.getService(MaterialHelper.class);
+	private IPlayerHelper playerHelper = ServiceLocator.getService(IPlayerHelper.class);
 	private Material[] materials = null;
 	
 	//constructor
-	public RandomBreakEventCommand(Event event) {
+	public RandomBreakEventCommand(BlockBreakEvent event) {
 		super(event);
-		materials = materialHelper.filter(
-			materialHelper.filter(
-			materialHelper.filter(
-			materialHelper.filter(
-			materialHelper.filter(
-			materialHelper.filter(
-			materialHelper.filter(
-			materialHelper.filter(
-			materialHelper.filter(
-			materialHelper.filter(
-				materialHelper.getAllMaterials(),
+		
+		TypeFilterHelper<Material> materialFilterHelper = new TypeFilterHelper<Material>(Material.class);
+		materials = materialFilterHelper.filter(
+			materialFilterHelper.filter(
+			materialFilterHelper.filter(
+			materialFilterHelper.filter(
+			materialFilterHelper.filter(
+			materialFilterHelper.filter(
+			materialFilterHelper.filter(
+			materialFilterHelper.filter(
+			materialFilterHelper.filter(
+			materialFilterHelper.filter(
+				materialFilterHelper.getAllTypes(),
 			"_block", false),
 			"barrier", false),
 			"air", false),
@@ -57,26 +57,24 @@ public class RandomBreakEventCommand extends EventCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		BlockBreakEvent e = (BlockBreakEvent) event;
-		
-		if (e.isCancelled()) {
+		if (event.isCancelled()) {
 			return;
 		}
 		
-		Player player = e.getPlayer();
+		Player player = event.getPlayer();
 		String uuid = player.getUniqueId().toString();
 		
 		if (randomBreakRegistry.hasRegister(uuid)) {
-			e.setCancelled(true);
+			event.setCancelled(true);
 			
 			if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-				Collection<ItemStack> drops = e.getBlock().getDrops(playerHelper.getItemInMainHand(player));
+				Collection<ItemStack> drops = event.getBlock().getDrops(playerHelper.getItemInMainHand(player));
 				for (ItemStack item : drops) {
-					player.getWorld().dropItemNaturally(e.getBlock().getLocation(), new ItemStack(materials[MathUtil.fairRoundedRandom(0, materials.length - 1)], item.getAmount()));
+					player.getWorld().dropItemNaturally(event.getBlock().getLocation(), new ItemStack(materials[MathUtil.fairRoundedRandom(0, materials.length - 1)], item.getAmount()));
 				}
 			}
 			
-			BlockUtil.setBlock(e.getBlock(), new BlockData(null, null, Material.AIR), true);
+			BlockUtil.setBlock(event.getBlock(), new BlockData(null, null, Material.AIR), true);
 		}
 	}
 }

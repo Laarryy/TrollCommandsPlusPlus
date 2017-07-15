@@ -26,14 +26,13 @@ import ninja.egg82.plugin.enums.SpigotMessageType;
 import ninja.egg82.plugin.reflection.entity.IEntityHelper;
 import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LocationUtil;
 import ninja.egg82.utils.MathUtil;
 
 public class StampedeCommand extends PluginCommand {
 	//vars
-	private IEntityHelper entityUtil = (IEntityHelper) ServiceLocator.getService(IEntityHelper.class);
+	private IEntityHelper entityUtil = ServiceLocator.getService(IEntityHelper.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public StampedeCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -111,7 +110,7 @@ public class StampedeCommand extends PluginCommand {
 		int numCows = MathUtil.fairRoundedRandom(10, 20);
 		Location playerLocation = player.getLocation().clone();
 		Location herdLocation = BlockUtil.getTopWalkableBlock(new Location(playerLocation.getWorld(), MathUtil.random(playerLocation.getX() - 5.0d, playerLocation.getX() + 5.0d), playerLocation.getY(), MathUtil.random(playerLocation.getZ() - 5.0d, playerLocation.getZ() + 5.0d)));
-		Vector cowVelocity = LocationUtil.moveSmoothly(herdLocation, playerLocation, 3.0d);
+		Vector cowVelocity = playerLocation.toVector().subtract(herdLocation.toVector()).normalize().multiply(1.5d);
 		
 		for (int i = 0; i < numCows; i++) {
 			spawnCow(player, herdLocation, cowVelocity);
@@ -124,7 +123,7 @@ public class StampedeCommand extends PluginCommand {
 	private void spawnCow(Player player, Location location, Vector velocity) {
 		Cow c = player.getWorld().spawn(location, Cow.class);
 		Silverfish f = player.getWorld().spawn(location, Silverfish.class);
-		f.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1200, 3), true);
+		f.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 3), true);
 		
 		entityUtil.addPassenger(f, c);
 		

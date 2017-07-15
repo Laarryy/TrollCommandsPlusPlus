@@ -14,20 +14,24 @@ import org.bukkit.inventory.PlayerInventory;
 import me.egg82.tcpp.enums.CommandErrorType;
 import me.egg82.tcpp.enums.MessageType;
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.services.MaterialNameRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CommandEvent;
+import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotCommandErrorType;
 import ninja.egg82.plugin.enums.SpigotMessageType;
 import ninja.egg82.plugin.utils.CommandUtil;
 
-public class PotatoCommand extends PluginCommand {
+public class FillCommand extends PluginCommand {
 	//vars
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private IRegistry materialNameRegistry = ServiceLocator.getService(MaterialNameRegistry.class);
+	
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
-	public PotatoCommand(CommandSender sender, Command command, String label, String[] args) {
+	public FillCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
 	}
 	
@@ -49,6 +53,23 @@ public class PotatoCommand extends PluginCommand {
 			}
 			
 			return retVal;
+		} else if(args.length == 2) {
+			ArrayList<String> retVal = new ArrayList<String>();
+			
+			if (args[1].isEmpty()) {
+				for (String name : materialNameRegistry.getRegistryNames()) {
+					retVal.add(materialNameRegistry.getRegister(name, String.class));
+				}
+			} else {
+				for (String name : materialNameRegistry.getRegistryNames()) {
+					String value = materialNameRegistry.getRegister(name, String.class);
+					if (value.toLowerCase().startsWith(args[1].toLowerCase())) {
+						retVal.add(value);
+					}
+				}
+			}
+			
+			return retVal;
 		}
 		
 		return null;
@@ -56,18 +77,28 @@ public class PotatoCommand extends PluginCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_POTATO)) {
+		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_FILL)) {
 			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
 			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
 			return;
 		}
-		if (!CommandUtil.isArrayOfAllowedLength(args, 1)) {
+		if (!CommandUtil.isArrayOfAllowedLength(args, 2)) {
 			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
 			sender.getServer().dispatchCommand(sender, "troll help " + name);
 			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
 			return;
+		}
+		
+		Material type = Material.getMaterial(args[1].replaceAll(" ", "_").toUpperCase());
+		if (type == null) {
+			type = Material.getMaterial(args[1].replaceAll(" ", "_").toUpperCase() + "_ITEM");
+			if (type == null) {
+				sender.sendMessage(MessageType.MATERIAL_NOT_FOUND);
+				dispatch(CommandEvent.ERROR, CommandErrorType.MATERIAL_NOT_FOUND);
+				return;
+			}
 		}
 		
 		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
@@ -77,7 +108,7 @@ public class PotatoCommand extends PluginCommand {
 					continue;
 				}
 				
-				e(player.getUniqueId().toString(), player);
+				e(player.getUniqueId().toString(), player, type);
 			}
 		} else {
 			Player player = CommandUtil.getPlayerByName(args[0]);
@@ -93,18 +124,18 @@ public class PotatoCommand extends PluginCommand {
 				return;
 			}
 			
-			e(player.getUniqueId().toString(), player);
+			e(player.getUniqueId().toString(), player, type);
 		}
 		
 		dispatch(CommandEvent.COMPLETE, null);
 	}
-	private void e(String uuid, Player player) {
+	private void e(String uuid, Player player, Material type) {
 		PlayerInventory inv = player.getInventory();
 		ItemStack[] items = inv.getContents();
 		
 		for (int i = 0; i < items.length; i++) {
-			if (items[i] != null) {
-				items[i] = new ItemStack(Material.POTATO_ITEM, items[i].getAmount());
+			if (items[i] == null || items[i].getType() == Material.AIR) {
+				items[i] = new ItemStack(type, type.getMaxStackSize());
 			}
 		}
 		
@@ -112,7 +143,13 @@ public class PotatoCommand extends PluginCommand {
 		
 		metricsHelper.commandWasRun(this);
 		
-		sender.sendMessage(player.getName() + "'s inventory is now potato.");
+		String name = type.name().toLowerCase();
+		if (name.substring(-5) == "_item") {
+			name = name.substring(0, name.length() - 5);
+		}
+		name.replaceAll("_", " ");
+		
+		sender.sendMessage(player.getName() + "'s inventory is now filled with " + name + "s!");
 	}
 	
 	protected void onUndo() {

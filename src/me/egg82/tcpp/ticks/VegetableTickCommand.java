@@ -16,9 +16,9 @@ import ninja.egg82.plugin.utils.LocationUtil;
 
 public class VegetableTickCommand extends TickCommand {
 	//vars
-	private IRegistry vegetableRegistry = (IRegistry) ServiceLocator.getService(VegetableRegistry.class);
-	private IRegistry vegetableItemRegistry = (IRegistry) ServiceLocator.getService(VegetableItemRegistry.class);
-	private IRegistry vegetableLocationRegistry = (IRegistry) ServiceLocator.getService(VegetableLocationRegistry.class);
+	private IRegistry vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
+	private IRegistry vegetableItemRegistry = ServiceLocator.getService(VegetableItemRegistry.class);
+	private IRegistry vegetableLocationRegistry = ServiceLocator.getService(VegetableLocationRegistry.class);
 	
 	//constructor
 	public VegetableTickCommand() {
@@ -32,7 +32,7 @@ public class VegetableTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = vegetableRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (Player) vegetableRegistry.getRegister(name));
+			e(name, vegetableRegistry.getRegister(name, Player.class));
 		}
 	}
 	private void e(String uuid, Player player) {
@@ -43,8 +43,8 @@ public class VegetableTickCommand extends TickCommand {
 			return;
 		}
 		
-		Item groundItem = (Item) vegetableItemRegistry.getRegister(uuid);
-		Location oldItemLocation = (Location) vegetableLocationRegistry.getRegister(uuid);
+		Item groundItem = vegetableItemRegistry.getRegister(uuid, Item.class);
+		Location oldItemLocation = vegetableLocationRegistry.getRegister(uuid, Location.class);
 		
 		Location playerLocation = player.getEyeLocation();
 		Location newItemLocation = groundItem.getLocation();

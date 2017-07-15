@@ -25,7 +25,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class BanishCommand extends PluginCommand {
 	//vars
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public BanishCommand(CommandSender sender, Command command, String label, String[] args) {

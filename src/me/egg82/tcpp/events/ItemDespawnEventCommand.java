@@ -3,24 +3,25 @@ package me.egg82.tcpp.events;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.event.Event;
+import org.bukkit.event.entity.ItemDespawnEvent;
 
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.utils.ReflectUtil;
 
-public class ItemDespawnEventCommand extends EventCommand {
+public class ItemDespawnEventCommand extends EventCommand<ItemDespawnEvent> {
 	//vars
-	private ArrayList<EventCommand> events = new ArrayList<EventCommand>();
+	private ArrayList<EventCommand<ItemDespawnEvent>> events = new ArrayList<EventCommand<ItemDespawnEvent>>();
 	
 	//constructor
-	public ItemDespawnEventCommand(Event event) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public ItemDespawnEventCommand(ItemDespawnEvent event) {
 		super(event);
 		
 		List<Class<? extends EventCommand>> commands = ReflectUtil.getClasses(EventCommand.class, "me.egg82.tcpp.events.entity.itemDespawn");
 		for (int i = 0; i < commands.size(); i++) {
-			EventCommand run = null;
+			EventCommand<ItemDespawnEvent> run = null;
 			try {
-				run = commands.get(i).getDeclaredConstructor(Event.class).newInstance(event);
+				run = commands.get(i).getDeclaredConstructor(ItemDespawnEvent.class).newInstance(event);
 			} catch (Exception ex) {
 				continue;
 			}

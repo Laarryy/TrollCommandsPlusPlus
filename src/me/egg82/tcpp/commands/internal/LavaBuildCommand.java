@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class LavaBuildCommand extends PluginCommand {
 	//vars
-	private IRegistry lavaBuildRegistry = (IRegistry) ServiceLocator.getService(LavaBuildRegistry.class);
+	private IRegistry lavaBuildRegistry = ServiceLocator.getService(LavaBuildRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public LavaBuildCommand(CommandSender sender, Command command, String label, String[] args) {

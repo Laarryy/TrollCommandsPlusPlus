@@ -24,9 +24,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class InfinityCommand extends PluginCommand {
 	//vars
-	private IRegistry infinityRegistry = (IRegistry) ServiceLocator.getService(InfinityRegistry.class);
+	private IRegistry infinityRegistry = ServiceLocator.getService(InfinityRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public InfinityCommand(CommandSender sender, Command command, String label, String[] args) {

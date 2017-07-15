@@ -10,7 +10,7 @@ import ninja.egg82.plugin.commands.TickCommand;
 
 public class LevitateTickCommand extends TickCommand {
 	//vars
-	private IRegistry levitateRegistry = (IRegistry) ServiceLocator.getService(LevitateRegistry.class);
+	private IRegistry levitateRegistry = ServiceLocator.getService(LevitateRegistry.class);
 	
 	//constructor
 	public LevitateTickCommand() {
@@ -24,7 +24,7 @@ public class LevitateTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = levitateRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (Player) levitateRegistry.getRegister(name));
+			e(name, levitateRegistry.getRegister(name, Player.class));
 		}
 	}
 	private void e(String uuid, Player player) {

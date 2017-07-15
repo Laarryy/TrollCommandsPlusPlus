@@ -31,11 +31,11 @@ import ninja.egg82.utils.MathUtil;
 
 public class FoolsGoldCommand extends PluginCommand {
 	//vars
-	private IRegistry foolsGoldRegistry = (IRegistry) ServiceLocator.getService(FoolsGoldRegistry.class);
-	private IRegistry foolsGoldChunkRegistry = (IRegistry) ServiceLocator.getService(FoolsGoldChunkRegistry.class);
+	private IRegistry foolsGoldRegistry = ServiceLocator.getService(FoolsGoldRegistry.class);
+	private IRegistry foolsGoldChunkRegistry = ServiceLocator.getService(FoolsGoldChunkRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
-	private IFakeBlockHelper fakeBlockHelper = (IFakeBlockHelper) ServiceLocator.getService(IFakeBlockHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
+	private IFakeBlockHelper fakeBlockHelper = ServiceLocator.getService(IFakeBlockHelper.class);
 	
 	//constructor
 	public FoolsGoldCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -181,7 +181,7 @@ public class FoolsGoldCommand extends PluginCommand {
 	}
 	@SuppressWarnings("unchecked")
 	private void eUndo(String uuid, Player player) {
-		List<Location> blocks = (List<Location>) foolsGoldRegistry.getRegister(uuid);
+		List<Location> blocks = foolsGoldRegistry.getRegister(uuid, List.class);
 		
 		new Thread(new Runnable() {
 			public void run() {

@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class PopupCommand extends PluginCommand {
 	//vars
-	private IRegistry popupRegistry = (IRegistry) ServiceLocator.getService(PopupRegistry.class);
+	private IRegistry popupRegistry = ServiceLocator.getService(PopupRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public PopupCommand(CommandSender sender, Command command, String label, String[] args) {

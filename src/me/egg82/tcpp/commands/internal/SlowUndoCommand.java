@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class SlowUndoCommand extends PluginCommand {
 	//vars
-	private IRegistry slowUndoRegistry = (IRegistry) ServiceLocator.getService(SlowUndoRegistry.class);
+	private IRegistry slowUndoRegistry = ServiceLocator.getService(SlowUndoRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public SlowUndoCommand(CommandSender sender, Command command, String label, String[] args) {

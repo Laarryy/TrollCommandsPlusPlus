@@ -13,8 +13,8 @@ import ninja.egg82.plugin.commands.TickCommand;
 
 public class AmnesiaTickCommand extends TickCommand {
 	//vars
-	private IRegistry amnesiaRegistry = (IRegistry) ServiceLocator.getService(AmnesiaRegistry.class);
-	private IRegistry amnesiaMessageRegistry = (IRegistry) ServiceLocator.getService(AmnesiaMessageRegistry.class);
+	private IRegistry amnesiaRegistry = ServiceLocator.getService(AmnesiaRegistry.class);
+	private IRegistry amnesiaMessageRegistry = ServiceLocator.getService(AmnesiaMessageRegistry.class);
 	
 	//constructor
 	public AmnesiaTickCommand() {
@@ -28,7 +28,7 @@ public class AmnesiaTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = amnesiaMessageRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (Player) amnesiaRegistry.getRegister(name));
+			e(name, amnesiaRegistry.getRegister(name, Player.class));
 		}
 	}
 	@SuppressWarnings("unchecked")
@@ -37,7 +37,7 @@ public class AmnesiaTickCommand extends TickCommand {
 			return;
 		}
 		
-		List<String> messages = (List<String>) amnesiaMessageRegistry.getRegister(uuid);
+		List<String> messages = amnesiaMessageRegistry.getRegister(uuid, List.class);
 		Iterator<String> i = messages.iterator();
 		
 		while (i.hasNext()) {

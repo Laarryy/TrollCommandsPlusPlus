@@ -7,7 +7,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -19,13 +18,13 @@ import ninja.egg82.plugin.reflection.player.IPlayerHelper;
 import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.CommandUtil;
 
-public class AttachCommandEventCommand extends EventCommand {
+public class AttachCommandEventCommand extends EventCommand<BlockBreakEvent> {
 	//vars
-	private INBTHelper nbtHelper = (INBTHelper) ServiceLocator.getService(INBTHelper.class);
-	private IPlayerHelper playerHelper = (IPlayerHelper) ServiceLocator.getService(IPlayerHelper.class);
+	private INBTHelper nbtHelper = ServiceLocator.getService(INBTHelper.class);
+	private IPlayerHelper playerHelper = ServiceLocator.getService(IPlayerHelper.class);
 	
 	//constructor
-	public AttachCommandEventCommand(Event event) {
+	public AttachCommandEventCommand(BlockBreakEvent event) {
 		super(event);
 	}
 	
@@ -33,14 +32,12 @@ public class AttachCommandEventCommand extends EventCommand {
 
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		BlockBreakEvent e = (BlockBreakEvent) event;
-		
-		if (e.isCancelled()) {
+		if (event.isCancelled()) {
 			return;
 		}
 		
-		Block block = e.getBlock();
-		Player player = e.getPlayer();
+		Block block = event.getBlock();
+		Player player = event.getPlayer();
 		
 		if (!nbtHelper.supportsBlocks()) {
 			return;
@@ -49,24 +46,24 @@ public class AttachCommandEventCommand extends EventCommand {
 			return;
 		}
 		
-		e.setCancelled(true);
+		event.setCancelled(true);
 		
 		if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-			Collection<ItemStack> drops = e.getBlock().getDrops(playerHelper.getItemInMainHand(player));
+			Collection<ItemStack> drops = event.getBlock().getDrops(playerHelper.getItemInMainHand(player));
 			for (ItemStack item : drops) {
 				nbtHelper.addTag(item, "tcppSender", nbtHelper.getTag(block, "tcppSender"));
 				nbtHelper.addTag(item, "tcppCommand", nbtHelper.getTag(block, "tcppCommand"));
-				player.getWorld().dropItemNaturally(e.getBlock().getLocation(), item);
+				player.getWorld().dropItemNaturally(event.getBlock().getLocation(), item);
 			}
 		} else {
-			Player sender = CommandUtil.getPlayerByUuid((String) nbtHelper.getTag(block, "tcppSender"));
+			Player sender = CommandUtil.getPlayerByUuid(nbtHelper.getTag(block, "tcppSender", String.class));
 			if (sender != null) {
-				CommandUtil.dispatchCommandAtPlayerLocation(sender, player, (String) nbtHelper.getTag(block, "tcppCommand"));
+				CommandUtil.dispatchCommandAtPlayerLocation(sender, player, nbtHelper.getTag(block, "tcppCommand", String.class));
 			} else {
-				if (CommandUtil.getOfflinePlayerByUuid((String) nbtHelper.getTag(block, "tcppSender")).isOp()) {
-					CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), player, (String) nbtHelper.getTag(block, "tcppCommand"));
+				if (CommandUtil.getOfflinePlayerByUuid(nbtHelper.getTag(block, "tcppSender", String.class)).isOp()) {
+					CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), player, nbtHelper.getTag(block, "tcppCommand", String.class));
 				} else {
-					Bukkit.dispatchCommand(player, (String) nbtHelper.getTag(block, "tcppCommand"));
+					Bukkit.dispatchCommand(player, nbtHelper.getTag(block, "tcppCommand", String.class));
 				}
 			}
 		}

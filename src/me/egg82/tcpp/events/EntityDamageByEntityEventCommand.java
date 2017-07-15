@@ -3,24 +3,25 @@ package me.egg82.tcpp.events;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.event.Event;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.utils.ReflectUtil;
 
-public class EntityDamageByEntityEventCommand extends EventCommand {
+public class EntityDamageByEntityEventCommand extends EventCommand<EntityDamageByEntityEvent> {
 	//vars
-	private ArrayList<EventCommand> events = new ArrayList<EventCommand>();
+	private ArrayList<EventCommand<EntityDamageByEntityEvent>> events = new ArrayList<EventCommand<EntityDamageByEntityEvent>>();
 	
 	//constructor
-	public EntityDamageByEntityEventCommand(Event event) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public EntityDamageByEntityEventCommand(EntityDamageByEntityEvent event) {
 		super(event);
 		
 		List<Class<? extends EventCommand>> commands = ReflectUtil.getClasses(EventCommand.class, "me.egg82.tcpp.events.entity.entityDamageByEntity");
 		for (int i = 0; i < commands.size(); i++) {
-			EventCommand run = null;
+			EventCommand<EntityDamageByEntityEvent> run = null;
 			try {
-				run = commands.get(i).getDeclaredConstructor(Event.class).newInstance(event);
+				run = commands.get(i).getDeclaredConstructor(EntityDamageByEntityEvent.class).newInstance(event);
 			} catch (Exception ex) {
 				continue;
 			}

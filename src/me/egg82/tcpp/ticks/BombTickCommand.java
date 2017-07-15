@@ -13,7 +13,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class BombTickCommand extends TickCommand {
 	//vars
-	private IRegistry bombRegistry = (IRegistry) ServiceLocator.getService(BombRegistry.class);
+	private IRegistry bombRegistry = ServiceLocator.getService(BombRegistry.class);
 	
 	//constructor
 	public BombTickCommand() {
@@ -27,7 +27,7 @@ public class BombTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = bombRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (Player) bombRegistry.getRegister(name));
+			e(name, bombRegistry.getRegister(name, Player.class));
 		}
 	}
 	private void e(String uuid, Player player) {

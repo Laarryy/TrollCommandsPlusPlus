@@ -22,11 +22,10 @@ import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotCommandErrorType;
 import ninja.egg82.plugin.enums.SpigotMessageType;
 import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LocationUtil;
 
 public class LureCommand extends PluginCommand {
 	//vars
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public LureCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -143,7 +142,7 @@ public class LureCommand extends PluginCommand {
 					
 				}
 				
-				e.setVelocity(LocationUtil.moveSmoothly(e.getLocation(), player.getLocation()));
+				e.setVelocity(player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23d));
 			}
 		}
 		

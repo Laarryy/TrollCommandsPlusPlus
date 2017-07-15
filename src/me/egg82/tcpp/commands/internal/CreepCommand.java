@@ -26,7 +26,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class CreepCommand extends PluginCommand {
 	//vars
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public CreepCommand(CommandSender sender, Command command, String label, String[] args) {

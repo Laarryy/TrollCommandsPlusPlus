@@ -3,24 +3,25 @@ package me.egg82.tcpp.events;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.event.Event;
+import org.bukkit.event.inventory.InventoryClickEvent;
 
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.utils.ReflectUtil;
 
-public class InventoryClickEventCommand extends EventCommand {
+public class InventoryClickEventCommand extends EventCommand<InventoryClickEvent> {
 	//vars
-	private ArrayList<EventCommand> events = new ArrayList<EventCommand>();
+	private ArrayList<EventCommand<InventoryClickEvent>> events = new ArrayList<EventCommand<InventoryClickEvent>>();
 	
 	//constructor
-	public InventoryClickEventCommand(Event event) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public InventoryClickEventCommand(InventoryClickEvent event) {
 		super(event);
 		
 		List<Class<? extends EventCommand>> commands = ReflectUtil.getClasses(EventCommand.class, "me.egg82.tcpp.events.inventory.inventoryClick");
 		for (int i = 0; i < commands.size(); i++) {
-			EventCommand run = null;
+			EventCommand<InventoryClickEvent> run = null;
 			try {
-				run = commands.get(i).getDeclaredConstructor(Event.class).newInstance(event);
+				run = commands.get(i).getDeclaredConstructor(InventoryClickEvent.class).newInstance(event);
 			} catch (Exception ex) {
 				continue;
 			}

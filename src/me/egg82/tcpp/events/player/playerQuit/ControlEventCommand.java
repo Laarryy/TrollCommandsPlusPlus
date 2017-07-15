@@ -1,7 +1,6 @@
 package me.egg82.tcpp.events.player.playerQuit;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import me.egg82.tcpp.services.ControlRegistry;
@@ -11,14 +10,14 @@ import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
 
-public class ControlEventCommand extends EventCommand {
+public class ControlEventCommand extends EventCommand<PlayerQuitEvent> {
 	//vars
-	private IRegistry controlRegistry = (IRegistry) ServiceLocator.getService(ControlRegistry.class);
+	private IRegistry controlRegistry = ServiceLocator.getService(ControlRegistry.class);
 	
-	private ControlHelper controlHelper = (ControlHelper) ServiceLocator.getService(ControlHelper.class);
+	private ControlHelper controlHelper = ServiceLocator.getService(ControlHelper.class);
 	
 	//constructor
-	public ControlEventCommand(Event event) {
+	public ControlEventCommand(PlayerQuitEvent event) {
 		super(event);
 	}
 	
@@ -26,8 +25,7 @@ public class ControlEventCommand extends EventCommand {
 
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		PlayerQuitEvent e = (PlayerQuitEvent) event;
-		Player player = e.getPlayer();
+		Player player = event.getPlayer();
 		String uuid = player.getUniqueId().toString();
 		
 		if (controlRegistry.hasRegister(uuid)) {

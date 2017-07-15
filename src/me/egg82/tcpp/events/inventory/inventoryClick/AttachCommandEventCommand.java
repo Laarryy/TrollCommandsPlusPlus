@@ -4,30 +4,25 @@ import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.reflection.nbt.INBTHelper;
 import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.startup.InitRegistry;
+import ninja.egg82.plugin.utils.TaskUtil;
 
-public class AttachCommandEventCommand extends EventCommand {
+public class AttachCommandEventCommand extends EventCommand<InventoryClickEvent> {
 	//vars
-	private INBTHelper nbtHelper = (INBTHelper) ServiceLocator.getService(INBTHelper.class);
-	
-	private JavaPlugin plugin = (JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin");
+	private INBTHelper nbtHelper = ServiceLocator.getService(INBTHelper.class);
 	
 	//constructor
-	public AttachCommandEventCommand(Event event) {
+	public AttachCommandEventCommand(InventoryClickEvent event) {
 		super(event);
 	}
 	
@@ -35,21 +30,19 @@ public class AttachCommandEventCommand extends EventCommand {
 
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		InventoryClickEvent e = (InventoryClickEvent) event;
-		
-		if (e.isCancelled()) {
+		if (event.isCancelled()) {
 			return;
 		}
 		
 		ItemStack item = null;
-		InventoryAction action = e.getAction();
+		InventoryAction action = event.getAction();
 		
-		Inventory bottom = e.getView().getBottomInventory();
-		Inventory top = e.getView().getTopInventory();
-		Inventory clicked = e.getClickedInventory();
+		Inventory bottom = event.getView().getBottomInventory();
+		Inventory top = event.getView().getTopInventory();
+		Inventory clicked = event.getClickedInventory();
 		
 		if (action == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
-			item = e.getCurrentItem();
+			item = event.getCurrentItem();
 			
 			if (!nbtHelper.hasTag(item, "tcppCommand")) {
 				return;
@@ -58,14 +51,14 @@ public class AttachCommandEventCommand extends EventCommand {
 			if (clicked == top) {
 				InventoryHolder holder = bottom.getHolder();
 				if (holder instanceof Player) {
-					Player sender = CommandUtil.getPlayerByUuid((String) nbtHelper.getTag(item, "tcppSender"));
+					Player sender = CommandUtil.getPlayerByUuid(nbtHelper.getTag(item, "tcppSender", String.class));
 					if (sender != null) {
-						CommandUtil.dispatchCommandAtPlayerLocation(sender, (Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+						CommandUtil.dispatchCommandAtPlayerLocation(sender, (Player) holder, nbtHelper.getTag(item, "tcppCommand", String.class));
 					} else {
-						if (CommandUtil.getOfflinePlayerByUuid((String) nbtHelper.getTag(item, "tcppSender")).isOp()) {
-							CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), (Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+						if (CommandUtil.getOfflinePlayerByUuid(nbtHelper.getTag(item, "tcppSender", String.class)).isOp()) {
+							CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), (Player) holder, nbtHelper.getTag(item, "tcppCommand", String.class));
 						} else {
-							Bukkit.dispatchCommand((Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+							Bukkit.dispatchCommand((Player) holder, nbtHelper.getTag(item, "tcppCommand", String.class));
 						}
 					}
 					
@@ -89,18 +82,18 @@ public class AttachCommandEventCommand extends EventCommand {
 				meta.setLore(lore);
 				item.setItemMeta(meta);
 				
-				update((Player) e.getWhoClicked());
+				update((Player) event.getWhoClicked());
 				
 				InventoryHolder holder = top.getHolder();
 				if (holder instanceof Player) {
-					Player sender = CommandUtil.getPlayerByUuid((String) nbtHelper.getTag(item, "tcppSender"));
+					Player sender = CommandUtil.getPlayerByUuid(nbtHelper.getTag(item, "tcppSender", String.class));
 					if (sender != null) {
-						CommandUtil.dispatchCommandAtPlayerLocation(sender, (Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+						CommandUtil.dispatchCommandAtPlayerLocation(sender, (Player) holder, nbtHelper.getTag(item, "tcppCommand", String.class));
 					} else {
-						if (CommandUtil.getOfflinePlayerByUuid((String) nbtHelper.getTag(item, "tcppSender")).isOp()) {
-							CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), (Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+						if (CommandUtil.getOfflinePlayerByUuid(nbtHelper.getTag(item, "tcppSender", String.class)).isOp()) {
+							CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), (Player) holder, nbtHelper.getTag(item, "tcppCommand", String.class));
 						} else {
-							Bukkit.dispatchCommand((Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+							Bukkit.dispatchCommand((Player) holder, nbtHelper.getTag(item, "tcppCommand", String.class));
 						}
 					}
 					
@@ -116,7 +109,7 @@ public class AttachCommandEventCommand extends EventCommand {
 			|| action == InventoryAction.PLACE_SOME
 			|| action == InventoryAction.SWAP_WITH_CURSOR
 		) {
-			item = e.getCursor();
+			item = event.getCursor();
 			
 			if (!nbtHelper.hasTag(item, "tcppCommand")) {
 				return;
@@ -139,18 +132,18 @@ public class AttachCommandEventCommand extends EventCommand {
 				meta.setLore(lore);
 				item.setItemMeta(meta);
 				
-				update((Player) e.getWhoClicked());
+				update((Player) event.getWhoClicked());
 				
 				InventoryHolder holder = top.getHolder();
 				if (holder instanceof Player) {
-					Player sender = CommandUtil.getPlayerByUuid((String) nbtHelper.getTag(item, "tcppSender"));
+					Player sender = CommandUtil.getPlayerByUuid(nbtHelper.getTag(item, "tcppSender", String.class));
 					if (sender != null) {
-						CommandUtil.dispatchCommandAtPlayerLocation(sender, (Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+						CommandUtil.dispatchCommandAtPlayerLocation(sender, (Player) holder, nbtHelper.getTag(item, "tcppCommand", String.class));
 					} else {
-						if (CommandUtil.getOfflinePlayerByUuid((String) nbtHelper.getTag(item, "tcppSender")).isOp()) {
-							CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), (Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+						if (CommandUtil.getOfflinePlayerByUuid(nbtHelper.getTag(item, "tcppSender", String.class)).isOp()) {
+							CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), (Player) holder, nbtHelper.getTag(item, "tcppCommand", String.class));
 						} else {
-							Bukkit.dispatchCommand((Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+							Bukkit.dispatchCommand((Player) holder, nbtHelper.getTag(item, "tcppCommand", String.class));
 						}
 					}
 					
@@ -161,14 +154,14 @@ public class AttachCommandEventCommand extends EventCommand {
 				if (item.getItemMeta().getLore() == null) {
 					InventoryHolder holder = bottom.getHolder();
 					if (holder instanceof Player) {
-						Player sender = CommandUtil.getPlayerByUuid((String) nbtHelper.getTag(item, "tcppSender"));
+						Player sender = CommandUtil.getPlayerByUuid(nbtHelper.getTag(item, "tcppSender", String.class));
 						if (sender != null) {
-							CommandUtil.dispatchCommandAtPlayerLocation(sender, (Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+							CommandUtil.dispatchCommandAtPlayerLocation(sender, (Player) holder, nbtHelper.getTag(item, "tcppCommand", String.class));
 						} else {
-							if (CommandUtil.getOfflinePlayerByUuid((String) nbtHelper.getTag(item, "tcppSender")).isOp()) {
-								CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), (Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+							if (CommandUtil.getOfflinePlayerByUuid(nbtHelper.getTag(item, "tcppSender", String.class)).isOp()) {
+								CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), (Player) holder, nbtHelper.getTag(item, "tcppCommand", String.class));
 							} else {
-								Bukkit.dispatchCommand((Player) holder, (String) nbtHelper.getTag(item, "tcppCommand"));
+								Bukkit.dispatchCommand((Player) holder, nbtHelper.getTag(item, "tcppCommand", String.class));
 							}
 						}
 						
@@ -183,7 +176,7 @@ public class AttachCommandEventCommand extends EventCommand {
 	}
 	
 	private void update(Player player) {
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+		TaskUtil.runSync(new Runnable() {
 			public void run() {
 				player.updateInventory();
 			}

@@ -7,21 +7,22 @@ import me.egg82.tcpp.services.HauntRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.plugin.utils.SoundHelper;
+import ninja.egg82.plugin.reflection.type.TypeFilterHelper;
 import ninja.egg82.utils.MathUtil;
 
 public class HauntTickCommand extends TickCommand {
 	//vars
-	private IRegistry hauntRegistry = (IRegistry) ServiceLocator.getService(HauntRegistry.class);
+	private IRegistry hauntRegistry = ServiceLocator.getService(HauntRegistry.class);
 	
-	private SoundHelper soundHelper = (SoundHelper) ServiceLocator.getService(SoundHelper.class);
 	private Sound[] sounds = null;
 	
 	//constructor
 	public HauntTickCommand() {
 		super();
 		ticks = 20L;
-		sounds = soundHelper.getAllSounds();
+		
+		TypeFilterHelper<Sound> soundFilterHelper = new TypeFilterHelper<Sound>(Sound.class);
+		sounds = soundFilterHelper.getAllTypes();
 	}
 	
 	//public
@@ -30,7 +31,7 @@ public class HauntTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = hauntRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (Player) hauntRegistry.getRegister(name));
+			e(name, hauntRegistry.getRegister(name, Player.class));
 		}
 	}
 	private void e(String uuid, Player player) {

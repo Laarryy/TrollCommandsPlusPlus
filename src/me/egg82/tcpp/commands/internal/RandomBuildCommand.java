@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class RandomBuildCommand extends PluginCommand {
 	//vars
-	private IRegistry randomBuildRegistry = (IRegistry) ServiceLocator.getService(RandomBuildRegistry.class);
+	private IRegistry randomBuildRegistry = ServiceLocator.getService(RandomBuildRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public RandomBuildCommand(CommandSender sender, Command command, String label, String[] args) {

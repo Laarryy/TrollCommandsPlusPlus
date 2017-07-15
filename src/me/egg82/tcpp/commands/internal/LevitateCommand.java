@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class LevitateCommand extends PluginCommand {
 	//vars
-	private IRegistry levitateRegistry = (IRegistry) ServiceLocator.getService(LevitateRegistry.class);
+	private IRegistry levitateRegistry = ServiceLocator.getService(LevitateRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public LevitateCommand(CommandSender sender, Command command, String label, String[] args) {

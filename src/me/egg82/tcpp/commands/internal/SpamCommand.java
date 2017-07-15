@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class SpamCommand extends PluginCommand {
 	//vars
-	private IRegistry spamRegistry = (IRegistry) ServiceLocator.getService(SpamRegistry.class);
+	private IRegistry spamRegistry = ServiceLocator.getService(SpamRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public SpamCommand(CommandSender sender, Command command, String label, String[] args) {

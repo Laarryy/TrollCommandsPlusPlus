@@ -3,24 +3,25 @@ package me.egg82.tcpp.events;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.utils.ReflectUtil;
 
-public class PlayerTeleportEventCommand extends EventCommand {
+public class PlayerTeleportEventCommand extends EventCommand<PlayerTeleportEvent> {
 	//vars
-	private ArrayList<EventCommand> events = new ArrayList<EventCommand>();
+	private ArrayList<EventCommand<PlayerTeleportEvent>> events = new ArrayList<EventCommand<PlayerTeleportEvent>>();
 	
 	//constructor
-	public PlayerTeleportEventCommand(Event event) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public PlayerTeleportEventCommand(PlayerTeleportEvent event) {
 		super(event);
 		
 		List<Class<? extends EventCommand>> commands = ReflectUtil.getClasses(EventCommand.class, "me.egg82.tcpp.events.player.playerTeleport");
 		for (int i = 0; i < commands.size(); i++) {
-			EventCommand run = null;
+			EventCommand<PlayerTeleportEvent> run = null;
 			try {
-				run = commands.get(i).getDeclaredConstructor(Event.class).newInstance(event);
+				run = commands.get(i).getDeclaredConstructor(PlayerTeleportEvent.class).newInstance(event);
 			} catch (Exception ex) {
 				continue;
 			}

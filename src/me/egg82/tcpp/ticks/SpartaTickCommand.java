@@ -14,8 +14,8 @@ import ninja.egg82.utils.MathUtil;
 
 public class SpartaTickCommand extends TickCommand {
 	//vars
-	private IRegistry spartaRegistry = (IRegistry) ServiceLocator.getService(SpartaRegistry.class);
-	private IRegistry spartaArrowRegistry = (IRegistry) ServiceLocator.getService(SpartaArrowRegistry.class);
+	private IRegistry spartaRegistry = ServiceLocator.getService(SpartaRegistry.class);
+	private IRegistry spartaArrowRegistry = ServiceLocator.getService(SpartaArrowRegistry.class);
 	
 	//constructor
 	public SpartaTickCommand() {
@@ -29,7 +29,7 @@ public class SpartaTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = spartaRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (Player) spartaRegistry.getRegister(name));
+			e(name, spartaRegistry.getRegister(name, Player.class));
 		}
 	}
 	private void e(String uuid, Player player) {

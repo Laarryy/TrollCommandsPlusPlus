@@ -9,7 +9,7 @@ import ninja.egg82.plugin.commands.TickCommand;
 
 public class HurtTickCommand extends TickCommand {
 	//vars
-	private IRegistry hurtRegistry = (IRegistry) ServiceLocator.getService(HurtRegistry.class);
+	private IRegistry hurtRegistry = ServiceLocator.getService(HurtRegistry.class);
 	
 	//constructor
 	public HurtTickCommand() {
@@ -23,7 +23,7 @@ public class HurtTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = hurtRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (Player) hurtRegistry.getRegister(name));
+			e(name, hurtRegistry.getRegister(name, Player.class));
 		}
 	}
 	private void e(String uuid, Player player) {

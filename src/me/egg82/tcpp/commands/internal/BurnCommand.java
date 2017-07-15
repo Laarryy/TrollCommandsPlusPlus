@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class BurnCommand extends PluginCommand {
 	//vars
-	private IRegistry burnRegistry = (IRegistry) ServiceLocator.getService(BurnRegistry.class);
+	private IRegistry burnRegistry = ServiceLocator.getService(BurnRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public BurnCommand(CommandSender sender, Command command, String label, String[] args) {

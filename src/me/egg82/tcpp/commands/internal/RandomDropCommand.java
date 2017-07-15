@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class RandomDropCommand extends PluginCommand {
 	//vars
-	private IRegistry randomDropRegistry = (IRegistry) ServiceLocator.getService(RandomDropRegistry.class);
+	private IRegistry randomDropRegistry = ServiceLocator.getService(RandomDropRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public RandomDropCommand(CommandSender sender, Command command, String label, String[] args) {

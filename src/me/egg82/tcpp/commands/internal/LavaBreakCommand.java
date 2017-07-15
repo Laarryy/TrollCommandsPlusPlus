@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class LavaBreakCommand extends PluginCommand {
 	//vars
-	private IRegistry lavaBreakRegistry = (IRegistry) ServiceLocator.getService(LavaBreakRegistry.class);
+	private IRegistry lavaBreakRegistry = ServiceLocator.getService(LavaBreakRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public LavaBreakCommand(CommandSender sender, Command command, String label, String[] args) {

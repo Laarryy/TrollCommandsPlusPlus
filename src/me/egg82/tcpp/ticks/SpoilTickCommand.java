@@ -17,7 +17,7 @@ import ninja.egg82.plugin.commands.TickCommand;
 
 public class SpoilTickCommand extends TickCommand {
 	//vars
-	private IRegistry spoilRegistry = (IRegistry) ServiceLocator.getService(SpoilRegistry.class);
+	private IRegistry spoilRegistry = ServiceLocator.getService(SpoilRegistry.class);
 	
 	//constructor
 	public SpoilTickCommand() {
@@ -31,7 +31,7 @@ public class SpoilTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = spoilRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (Player) spoilRegistry.getRegister(name));
+			e(name, spoilRegistry.getRegister(name, Player.class));
 		}
 	}
 	private void e(String uuid, Player player) {
@@ -66,15 +66,16 @@ public class SpoilTickCommand extends TickCommand {
 				if (typeString.contains("raw") || typeString.contains("cooked") || typeString.contains("fish")) {
 					placeItem(rottenFlesh, inventory);
 				} else if (typeString.contains("apple")
-				|| typeString.contains("potato")
-				|| typeString.contains("beetroot")
-				|| type == Material.BREAD
-				|| type == Material.CAKE
-				|| typeString.contains("carrot")
-				|| typeString.contains("chorus")
-				|| type == Material.COOKIE
-				|| type == Material.PUMPKIN_PIE
-				|| typeString.equals("rabbit_stew")) {
+					|| typeString.contains("potato")
+					|| typeString.contains("beetroot")
+					|| type == Material.BREAD
+					|| type == Material.CAKE
+					|| typeString.contains("carrot")
+					|| typeString.contains("chorus")
+					|| type == Material.COOKIE
+					|| type == Material.PUMPKIN_PIE
+					|| typeString.equals("rabbit_stew"))
+				{
 					// Do nothing, as we'll be removing the item below anyway
 				} else {
 					continue;

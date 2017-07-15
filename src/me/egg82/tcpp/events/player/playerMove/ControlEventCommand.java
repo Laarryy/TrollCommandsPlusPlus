@@ -1,7 +1,6 @@
 package me.egg82.tcpp.events.player.playerMove;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import me.egg82.tcpp.enums.PermissionsType;
@@ -12,12 +11,12 @@ import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.LocationUtil;
 
-public class ControlEventCommand extends EventCommand {
+public class ControlEventCommand extends EventCommand<PlayerMoveEvent> {
 	//vars
-	private IRegistry controlRegistry = (IRegistry) ServiceLocator.getService(ControlRegistry.class);
+	private IRegistry controlRegistry = ServiceLocator.getService(ControlRegistry.class);
 	
 	//constructor
-	public ControlEventCommand(Event event) {
+	public ControlEventCommand(PlayerMoveEvent event) {
 		super(event);
 	}
 	
@@ -25,19 +24,17 @@ public class ControlEventCommand extends EventCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		PlayerMoveEvent e = (PlayerMoveEvent) event;
-		
-		if (e.isCancelled()) {
+		if (event.isCancelled()) {
 			return;
 		}
 		
-		Player player = e.getPlayer();
+		Player player = event.getPlayer();
 		Player controlledPlayer = (Player) controlRegistry.getRegister(player.getUniqueId().toString());
 		
 		if (controlledPlayer != null) {
 			// Player is controlling someone
 			if (!CommandUtil.hasPermission(controlledPlayer, PermissionsType.FREECAM_WHILE_CONTROLLED)) {
-				controlledPlayer.teleport(LocationUtil.makeEqualXYZ(player.getLocation(), controlledPlayer.getLocation()));
+				controlledPlayer.teleport(LocationUtil.makeEqualXYZ(LocationUtil.getLocationBehind(player.getLocation(), 1.5d).subtract(0.0d, 1.0d, 0.0d), controlledPlayer.getLocation()));
 			}
 		}
 		
@@ -47,7 +44,7 @@ public class ControlEventCommand extends EventCommand {
 		if (controller != null) {
 			// Player is being controlled by someone
 			if (!CommandUtil.hasPermission(player, PermissionsType.FREECAM_WHILE_CONTROLLED)) {
-				e.setTo(LocationUtil.makeEqualXYZ(controller.getLocation(), e.getTo()));
+				event.setTo(LocationUtil.makeEqualXYZ(LocationUtil.getLocationBehind(controller.getLocation(), 1.5d).subtract(0.0d, 1.0d, 0.0d), event.getTo()));
 			}
 		}
 	}

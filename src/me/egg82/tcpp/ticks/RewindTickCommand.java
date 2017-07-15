@@ -9,7 +9,7 @@ import ninja.egg82.plugin.commands.TickCommand;
 
 public class RewindTickCommand extends TickCommand {
 	//vars
-	private IRegistry rewindRegistry = (IRegistry) ServiceLocator.getService(RewindRegistry.class);
+	private IRegistry rewindRegistry = ServiceLocator.getService(RewindRegistry.class);
 	
 	//constructor
 	public RewindTickCommand() {
@@ -23,7 +23,7 @@ public class RewindTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = rewindRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (Player) rewindRegistry.getRegister(name));
+			e(name, rewindRegistry.getRegister(name, Player.class));
 		}
 	}
 	private void e(String uuid, Player player) {
@@ -31,6 +31,6 @@ public class RewindTickCommand extends TickCommand {
 			return;
 		}
 		
-		player.setPlayerTime(player.getPlayerTime() - 100, false);
+		player.setPlayerTime(player.getPlayerTime() - 100L, false);
 	}
 }

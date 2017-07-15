@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class RandomBreakCommand extends PluginCommand {
 	//vars
-	private IRegistry randomBreakRegistry = (IRegistry) ServiceLocator.getService(RandomBreakRegistry.class);
+	private IRegistry randomBreakRegistry = ServiceLocator.getService(RandomBreakRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public RandomBreakCommand(CommandSender sender, Command command, String label, String[] args) {

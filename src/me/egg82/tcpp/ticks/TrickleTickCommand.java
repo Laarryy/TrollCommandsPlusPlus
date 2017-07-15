@@ -13,7 +13,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class TrickleTickCommand extends TickCommand {
 	//vars
-	private IRegistry trickleRegistry = (IRegistry) ServiceLocator.getService(TrickleRegistry.class);
+	private IRegistry trickleRegistry = ServiceLocator.getService(TrickleRegistry.class);
 	
 	//constructor
 	public TrickleTickCommand() {
@@ -27,7 +27,7 @@ public class TrickleTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = trickleRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (Player) trickleRegistry.getRegister(name));
+			e(name, trickleRegistry.getRegister(name, Player.class));
 		}
 	}
 	private void e(String uuid, Player player) {

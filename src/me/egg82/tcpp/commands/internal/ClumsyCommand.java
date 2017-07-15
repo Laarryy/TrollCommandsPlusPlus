@@ -23,9 +23,9 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class ClumsyCommand extends PluginCommand {
 	//vars
-	private IRegistry clumsyRegistry = (IRegistry) ServiceLocator.getService(ClumsyRegistry.class);
+	private IRegistry clumsyRegistry = ServiceLocator.getService(ClumsyRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public ClumsyCommand(CommandSender sender, Command command, String label, String[] args) {

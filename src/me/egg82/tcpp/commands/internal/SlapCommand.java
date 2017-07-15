@@ -23,7 +23,7 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class SlapCommand extends PluginCommand {
 	//vars
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public SlapCommand(CommandSender sender, Command command, String label, String[] args) {

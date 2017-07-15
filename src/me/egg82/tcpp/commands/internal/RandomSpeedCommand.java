@@ -25,10 +25,10 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class RandomSpeedCommand extends PluginCommand {
 	//vars
-	private IRegistry randomSpeedRegistry = (IRegistry) ServiceLocator.getService(RandomSpeedRegistry.class);
-	private IRegistry randomSpeedSaveRegistry = (IRegistry) ServiceLocator.getService(RandomSpeedSaveRegistry.class);
+	private IRegistry randomSpeedRegistry = ServiceLocator.getService(RandomSpeedRegistry.class);
+	private IRegistry randomSpeedSaveRegistry = ServiceLocator.getService(RandomSpeedSaveRegistry.class);
 	
-	private MetricsHelper metricsHelper = (MetricsHelper) ServiceLocator.getService(MetricsHelper.class);
+	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
 	public RandomSpeedCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -136,7 +136,7 @@ public class RandomSpeedCommand extends PluginCommand {
 	@SuppressWarnings("unchecked")
 	private void eUndo(String uuid, Player player) {
 		randomSpeedRegistry.setRegister(uuid, Player.class, null);
-		Pair<Float, Float> originalSpeed = (Pair<Float, Float>) randomSpeedSaveRegistry.getRegister(uuid);
+		Pair<Float, Float> originalSpeed = randomSpeedSaveRegistry.getRegister(uuid, Pair.class);
 		player.setWalkSpeed(originalSpeed.getLeft());
 		player.setFlySpeed(originalSpeed.getRight());
 		randomSpeedSaveRegistry.setRegister(uuid, Pair.class, null);

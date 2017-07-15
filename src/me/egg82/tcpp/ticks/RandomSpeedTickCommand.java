@@ -10,7 +10,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class RandomSpeedTickCommand extends TickCommand {
 	//vars
-	private IRegistry randomSpeedRegistry = (IRegistry) ServiceLocator.getService(RandomSpeedRegistry.class);
+	private IRegistry randomSpeedRegistry = ServiceLocator.getService(RandomSpeedRegistry.class);
 	
 	//constructor
 	public RandomSpeedTickCommand() {
@@ -24,7 +24,7 @@ public class RandomSpeedTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = randomSpeedRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (Player) randomSpeedRegistry.getRegister(name));
+			e(name, randomSpeedRegistry.getRegister(name, Player.class));
 		}
 	}
 	private void e(String uuid, Player player) {

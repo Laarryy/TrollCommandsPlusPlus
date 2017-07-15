@@ -3,24 +3,25 @@ package me.egg82.tcpp.events;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.event.Event;
+import org.bukkit.event.entity.EntityShootBowEvent;
 
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.utils.ReflectUtil;
 
-public class EntityShootBowEventCommand extends EventCommand {
+public class EntityShootBowEventCommand extends EventCommand<EntityShootBowEvent> {
 	//vars
-	private ArrayList<EventCommand> events = new ArrayList<EventCommand>();
+	private ArrayList<EventCommand<EntityShootBowEvent>> events = new ArrayList<EventCommand<EntityShootBowEvent>>();
 	
 	//constructor
-	public EntityShootBowEventCommand(Event event) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public EntityShootBowEventCommand(EntityShootBowEvent event) {
 		super(event);
 		
 		List<Class<? extends EventCommand>> commands = ReflectUtil.getClasses(EventCommand.class, "me.egg82.tcpp.events.entity.entityShootBow");
 		for (int i = 0; i < commands.size(); i++) {
-			EventCommand run = null;
+			EventCommand<EntityShootBowEvent> run = null;
 			try {
-				run = commands.get(i).getDeclaredConstructor(Event.class).newInstance(event);
+				run = commands.get(i).getDeclaredConstructor(EntityShootBowEvent.class).newInstance(event);
 			} catch (Exception ex) {
 				continue;
 			}

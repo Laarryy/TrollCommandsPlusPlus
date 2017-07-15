@@ -30,7 +30,7 @@ public class PermissionsType {
 	public static final String COMMAND_BURN = "tcpp.command.burn";
 	public static final String COMMAND_SPAM = "tcpp.command.spam";
 	public static final String COMMAND_KILL = "tcpp.command.kill";
-	public static final String COMMAND_POTATO = "tcpp.command.potato";
+	public static final String COMMAND_CONVERT = "tcpp.command.convert";
 	public static final String COMMAND_STARVE = "tcpp.command.starve";
 	public static final String COMMAND_HURT = "tcpp.command.hurt";
 	public static final String COMMAND_VOID = "tcpp.command.void";
@@ -43,7 +43,6 @@ public class PermissionsType {
 	public static final String COMMAND_ALONE = "tcpp.command.alone";
 	public static final String COMMAND_ANNOY = "tcpp.command.annoy";
 	public static final String COMMAND_SPARTA = "tcpp.command.sparta";
-	public static final String COMMAND_NIGHT = "tcpp.command.night";
 	public static final String COMMAND_REWIND = "tcpp.command.rewind";
 	public static final String COMMAND_LAG = "tcpp.command.lag";
 	public static final String COMMAND_EXPLODE_BREAK = "tcpp.command.explodeBreak";
@@ -60,7 +59,7 @@ public class PermissionsType {
 	public static final String COMMAND_AMNESIA = "tcpp.command.amnesia";
 	public static final String COMMAND_EXPLODE_BUILD = "tcpp.command.explodeBuild";
 	public static final String COMMAND_SLOW_UNDO = "tcpp.command.slowUndo";
-	public static final String COMMAND_DAY = "tcpp.command.day";
+	public static final String COMMAND_TIME = "tcpp.command.time";
 	public static final String COMMAND_FAKE_OP = "tcpp.command.fakeOp";
 	public static final String COMMAND_INSPECT = "tcpp.command.inspect";
 	public static final String COMMAND_PUBLIC = "tcpp.command.public";
@@ -92,6 +91,7 @@ public class PermissionsType {
 	public static final String COMMAND_HELP = "tcpp.command.help";
 	public static final String COMMAND_EFFECT = "tcpp.command.effect";
 	public static final String COMMAND_ENCHANT = "tcpp.command.enchant";
+	public static final String COMMAND_FILL = "tcpp.command.fill";
 	
 	//constructor
 	public PermissionsType() {

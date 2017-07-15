@@ -1,7 +1,6 @@
 package me.egg82.tcpp.events.player.playerJoin;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import me.egg82.tcpp.services.LagRegistry;
@@ -9,12 +8,12 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 
-public class LagEventCommand extends EventCommand {
+public class LagEventCommand extends EventCommand<PlayerJoinEvent> {
 	//vars
-	private IRegistry lagRegistry = (IRegistry) ServiceLocator.getService(LagRegistry.class);
+	private IRegistry lagRegistry = ServiceLocator.getService(LagRegistry.class);
 	
 	//constructor
-	public LagEventCommand(Event event) {
+	public LagEventCommand(PlayerJoinEvent event) {
 		super(event);
 	}
 	
@@ -22,8 +21,7 @@ public class LagEventCommand extends EventCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		PlayerJoinEvent e = (PlayerJoinEvent) event;
-		Player player = e.getPlayer();
+		Player player = event.getPlayer();
 		String uuid = player.getUniqueId().toString();
 		
 		if (lagRegistry.hasRegister(uuid)) {

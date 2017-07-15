@@ -10,8 +10,8 @@ import ninja.egg82.plugin.commands.TickCommand;
 
 public class ClearEntityTickCommand extends TickCommand {
 	//vars
-	private IRegistry squidDeathRegistry = (IRegistry) ServiceLocator.getService(SquidDeathRegistry.class);
-	private IRegistry spartaArrowRegistry = (IRegistry) ServiceLocator.getService(SpartaArrowRegistry.class);
+	private IRegistry squidDeathRegistry = ServiceLocator.getService(SquidDeathRegistry.class);
+	private IRegistry spartaArrowRegistry = ServiceLocator.getService(SpartaArrowRegistry.class);
 	
 	//constructor
 	public ClearEntityTickCommand() {
@@ -25,12 +25,12 @@ public class ClearEntityTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = squidDeathRegistry.getRegistryNames();
 		for (String name : names) {
-			e(squidDeathRegistry, name, (Entity) squidDeathRegistry.getRegister(name));
+			e(squidDeathRegistry, name, squidDeathRegistry.getRegister(name, Entity.class));
 		}
 		
 		names = spartaArrowRegistry.getRegistryNames();
 		for (String name : names) {
-			e(spartaArrowRegistry, name, (Entity) spartaArrowRegistry.getRegister(name));
+			e(spartaArrowRegistry, name, spartaArrowRegistry.getRegister(name, Entity.class));
 		}
 	}
 	private void e(IRegistry registry, String uuid, Entity entity) {

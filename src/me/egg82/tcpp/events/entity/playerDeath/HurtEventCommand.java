@@ -1,7 +1,6 @@
 package me.egg82.tcpp.events.entity.playerDeath;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import me.egg82.tcpp.services.HurtRegistry;
@@ -9,12 +8,12 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 
-public class HurtEventCommand extends EventCommand {
+public class HurtEventCommand extends EventCommand<PlayerDeathEvent> {
 	//vars
-	IRegistry hurtRegistry = (IRegistry) ServiceLocator.getService(HurtRegistry.class);
+	IRegistry hurtRegistry = ServiceLocator.getService(HurtRegistry.class);
 	
 	//constructor
-	public HurtEventCommand(Event event) {
+	public HurtEventCommand(PlayerDeathEvent event) {
 		super(event);
 	}
 	
@@ -22,7 +21,6 @@ public class HurtEventCommand extends EventCommand {
 
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		PlayerDeathEvent e = (PlayerDeathEvent) event;
-		hurtRegistry.setRegister(e.getEntity().getUniqueId().toString(), Player.class, null);
+		hurtRegistry.setRegister(event.getEntity().getUniqueId().toString(), Player.class, null);
 	}
 }

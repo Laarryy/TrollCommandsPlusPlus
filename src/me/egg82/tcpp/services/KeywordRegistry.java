@@ -201,6 +201,20 @@ public class KeywordRegistry extends Registry {
 			"rope",
 			"string"
 		});
+		setRegister("convert", String[].class, new String[] {
+			"tuber",
+			"plant",
+			"spud",
+			"inventory",
+			"change",
+			"adapt",
+			"modify",
+			"reorganize",
+			"switch",
+			"transform",
+			"translate",
+			"alter"
+		});
 		setRegister("creep", String[].class, new String[] {
 			"egg",
 			"creeper",
@@ -213,13 +227,6 @@ public class KeywordRegistry extends Registry {
 			"generate",
 			"hatch",
 			"make"
-		});
-		setRegister("day", String[].class, new String[] {
-			"glowstone",
-			"sun",
-			"light",
-			"time",
-			"white"
 		});
 		setRegister("display", String[].class, new String[] {
 			"thin",
@@ -316,6 +323,22 @@ public class KeywordRegistry extends Registry {
 			"bogus",
 			"phony",
 			"artificial"
+		});
+		setRegister("fill", String[].class, new String[] {
+			"leaves",
+			"occupy",
+			"block",
+			"clog",
+			"inventory",
+			"cram",
+			"crowd",
+			"load",
+			"overflow",
+			"pack",
+			"saturate",
+			"stuff",
+			"congest",
+			"inflate"
 		});
 		setRegister("flip", String[].class, new String[] {
 			"wood",
@@ -436,7 +459,6 @@ public class KeywordRegistry extends Registry {
 			"upside",
 			"down",
 			"backtrack",
-			"convert",
 			"revert",
 			"upend"
 		});
@@ -561,15 +583,6 @@ public class KeywordRegistry extends Registry {
 			"revulsion",
 			"spinning"
 		});
-		setRegister("night", String[].class, new String[] {
-			"nether",
-			"star",
-			"moon",
-			"bed",
-			"black",
-			"dark",
-			"twilight"
-		});
 		setRegister("nightmare", String[].class, new String[] {
 			"obsidian",
 			"night",
@@ -604,13 +617,6 @@ public class KeywordRegistry extends Registry {
 			"opening",
 			"drop",
 			"fall"
-		});
-		setRegister("potato", String[].class, new String[] {
-			"tuber",
-			"plant",
-			"spud",
-			"vegetable",
-			"tuber"
 		});
 		setRegister("public", String[].class, new String[] {
 			"dispenser",
@@ -850,6 +856,18 @@ public class KeywordRegistry extends Registry {
 			"switch",
 			"trade",
 			"change"
+		});
+		setRegister("time", String[].class, new String[] {
+			"nether",
+			"star",
+			"sun",
+			"light",
+			"white",
+			"moon",
+			"bed",
+			"black",
+			"dark",
+			"twilight"
 		});
 		setRegister("trickle", String[].class, new String[] {
 			"leak",

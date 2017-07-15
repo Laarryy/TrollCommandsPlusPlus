@@ -2,7 +2,6 @@ package me.egg82.tcpp.events.player.playerInteractEntity;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -15,12 +14,12 @@ import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
 
-public class EmpowerEventCommand extends EventCommand {
+public class EmpowerEventCommand extends EventCommand<PlayerInteractEntityEvent> {
 	//vars
-	private IRegistry empowerRegistry = (IRegistry) ServiceLocator.getService(EmpowerRegistry.class);
+	private IRegistry empowerRegistry = ServiceLocator.getService(EmpowerRegistry.class);
 	
 	//constructor
-	public EmpowerEventCommand(Event event) {
+	public EmpowerEventCommand(PlayerInteractEntityEvent event) {
 		super(event);
 	}
 	
@@ -28,25 +27,23 @@ public class EmpowerEventCommand extends EventCommand {
 
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		PlayerInteractEntityEvent e = (PlayerInteractEntityEvent) event;
-		
-		if (e.isCancelled()) {
+		if (event.isCancelled()) {
 			return;
 		}
 		
-		Player player = e.getPlayer();
+		Player player = event.getPlayer();
 		String uuid = player.getUniqueId().toString();
 		
 		if (!empowerRegistry.hasRegister(uuid)) {
 			return;
 		}
-		if (!(e.getRightClicked() instanceof LivingEntity)) {
+		if (!(event.getRightClicked() instanceof LivingEntity)) {
 			player.sendMessage(MessageType.NOT_LIVING);
 			empowerRegistry.setRegister(uuid, Player.class, null);
 			return;
 		}
 		
-		LivingEntity entity = (LivingEntity) e.getRightClicked();
+		LivingEntity entity = (LivingEntity) event.getRightClicked();
 		
 		if (entity instanceof Player) {
 			if (CommandUtil.hasPermission((Player) entity, PermissionsType.IMMUNE)) {

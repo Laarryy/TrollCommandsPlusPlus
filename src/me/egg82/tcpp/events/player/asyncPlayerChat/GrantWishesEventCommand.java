@@ -1,31 +1,26 @@
 package me.egg82.tcpp.events.player.asyncPlayerChat;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import me.egg82.tcpp.services.GrantWishesRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.utils.LocationUtil;
-import ninja.egg82.startup.InitRegistry;
+import ninja.egg82.plugin.utils.TaskUtil;
 
-public class GrantWishesEventCommand extends EventCommand {
+public class GrantWishesEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 	//vars
-	private IRegistry grantWishesRegistry = (IRegistry) ServiceLocator.getService(GrantWishesRegistry.class);
-	
-	private JavaPlugin plugin = (JavaPlugin) ((IRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("plugin");
+	private IRegistry grantWishesRegistry = ServiceLocator.getService(GrantWishesRegistry.class);
 	
 	//constructor
-	public GrantWishesEventCommand(Event event) {
+	public GrantWishesEventCommand(AsyncPlayerChatEvent event) {
 		super(event);
 	}
 	
@@ -33,17 +28,15 @@ public class GrantWishesEventCommand extends EventCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		AsyncPlayerChatEvent e = (AsyncPlayerChatEvent) event;
-		
-		if (e.isCancelled()) {
+		if (event.isCancelled()) {
 			return;
 		}
 		
-		Player player = e.getPlayer();
+		Player player = event.getPlayer();
 		Location playerLoc = player.getLocation();
 		
 		if (grantWishesRegistry.hasRegister(player.getUniqueId().toString())) {
-			String search = e.getMessage().toLowerCase();
+			String search = event.getMessage().toLowerCase();
 			
 			if (search.contains("blaze")) {
 				spawn(EntityType.BLAZE, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
@@ -138,7 +131,7 @@ public class GrantWishesEventCommand extends EventCommand {
 		}
 	}
 	private void spawn(EntityType type, Location loc, Player player) {
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+		TaskUtil.runSync(new Runnable() {
 			public void run() {
 				Entity entity = loc.getWorld().spawn(loc, type.getEntityClass());
 				entity.setVelocity(LocationUtil.moveSmoothly(loc, player.getLocation()));

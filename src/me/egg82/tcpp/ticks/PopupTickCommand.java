@@ -9,7 +9,7 @@ import ninja.egg82.plugin.commands.TickCommand;
 
 public class PopupTickCommand extends TickCommand {
 	//vars
-	private IRegistry popupRegistry = (IRegistry) ServiceLocator.getService(PopupRegistry.class);
+	private IRegistry popupRegistry = ServiceLocator.getService(PopupRegistry.class);
 	
 	//constructor
 	public PopupTickCommand() {
@@ -23,7 +23,7 @@ public class PopupTickCommand extends TickCommand {
 	protected void onExecute(long elapsedMilliseconds) {
 		String[] names = popupRegistry.getRegistryNames();
 		for (String name : names) {
-			e(name, (Player) popupRegistry.getRegister(name));
+			e(name, popupRegistry.getRegister(name, Player.class));
 		}
 	}
 	private void e(String uuid, Player player) {

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -24,7 +25,7 @@ import ninja.egg82.utils.ReflectUtil;
 
 public class TrollCommand extends PluginCommand {
 	//vars
-	private LanguageDatabase commandDatabase = (LanguageDatabase) ServiceLocator.getService(CommandSearchDatabase.class);
+	private LanguageDatabase commandDatabase = ServiceLocator.getService(CommandSearchDatabase.class);
 	private ArrayList<String> commandNames = new ArrayList<String>();
 	private HashMap<String, PluginCommand> commands = new HashMap<String, PluginCommand>();
 	
@@ -133,6 +134,8 @@ public class TrollCommand extends PluginCommand {
 				sender.sendMessage(MessageType.COMMAND_NOT_FOUND);
 				dispatch(CommandEvent.ERROR, CommandErrorType.COMMAND_NOT_FOUND);
 				return;
+			} else {
+				sender.sendMessage(ChatColor.YELLOW + "Running \"" + search[0].toLowerCase() + "\" as a \"best guess\" since the command \"" + commandName.toLowerCase() + "\" doesn't exist.");
 			}
 		}
 		
