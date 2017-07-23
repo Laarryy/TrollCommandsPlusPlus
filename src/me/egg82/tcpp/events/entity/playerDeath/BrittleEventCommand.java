@@ -1,6 +1,7 @@
 package me.egg82.tcpp.events.entity.playerDeath;
 
-import org.bukkit.entity.Player;
+import java.util.UUID;
+
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import me.egg82.tcpp.services.BrittleRegistry;
@@ -10,7 +11,7 @@ import ninja.egg82.plugin.commands.EventCommand;
 
 public class BrittleEventCommand extends EventCommand<PlayerDeathEvent> {
 	//vars
-	private IRegistry brittleRegistry = ServiceLocator.getService(BrittleRegistry.class);
+	private IRegistry<UUID> brittleRegistry = ServiceLocator.getService(BrittleRegistry.class);
 	
 	//constructor
 	public BrittleEventCommand(PlayerDeathEvent event) {
@@ -21,6 +22,6 @@ public class BrittleEventCommand extends EventCommand<PlayerDeathEvent> {
 
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		brittleRegistry.setRegister(event.getEntity().getUniqueId().toString(), Player.class, null);
+		brittleRegistry.removeRegister(event.getEntity().getUniqueId());
 	}
 }

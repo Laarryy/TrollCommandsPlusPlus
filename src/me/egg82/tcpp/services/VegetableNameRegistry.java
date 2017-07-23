@@ -2,18 +2,18 @@ package me.egg82.tcpp.services;
 
 import ninja.egg82.patterns.Registry;
 
-public class VegetableNameRegistry extends Registry {
+public class VegetableNameRegistry extends Registry<String> {
 	//vars
 	
 	//constructor
 	public VegetableNameRegistry() {
-		super();
+		super(String.class);
 		
-		setRegister("BEETROOT", String.class, "Beetroot");
-		setRegister("BROWN_MUSHROOM", String.class, "Brown Mushroom");
-		setRegister("CARROT_ITEM", String.class, "Carrot");
-		setRegister("POTATO_ITEM", String.class, "Potato");
-		setRegister("RED_MUSHROOM", String.class, "Red Mushroom");
+		setRegister("BEETROOT", "Beetroot");
+		setRegister("BROWN_MUSHROOM", "Brown Mushroom");
+		setRegister("CARROT_ITEM", "Carrot");
+		setRegister("POTATO_ITEM", "Potato");
+		setRegister("RED_MUSHROOM", "Red Mushroom");
 	}
 	
 	//public

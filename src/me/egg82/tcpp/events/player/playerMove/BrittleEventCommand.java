@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.player.playerMove;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -15,7 +17,7 @@ public class BrittleEventCommand extends EventCommand<PlayerMoveEvent> {
 	//vars
 	private IEntityHelper entityUtil = ServiceLocator.getService(IEntityHelper.class);
 	
-	private IRegistry brittleRegistry = ServiceLocator.getService(BrittleRegistry.class);
+	private IRegistry<UUID> brittleRegistry = ServiceLocator.getService(BrittleRegistry.class);
 	
 	//constructor
 	public BrittleEventCommand(PlayerMoveEvent event) {
@@ -32,7 +34,7 @@ public class BrittleEventCommand extends EventCommand<PlayerMoveEvent> {
 		
 		Player player = event.getPlayer();
 		
-		if (brittleRegistry.hasRegister(player.getUniqueId().toString())) {
+		if (brittleRegistry.hasRegister(player.getUniqueId())) {
 			Location to = event.getTo();
 			double toY = to.getY();
 			double blockY = (double) to.getBlockY();

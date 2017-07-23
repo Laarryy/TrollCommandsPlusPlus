@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.block.blockPlace;
 
+import java.util.UUID;
+
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,8 +23,8 @@ import ninja.egg82.utils.MathUtil;
 
 public class LagEventCommand extends EventCommand<BlockPlaceEvent> {
 	//vars
-	private IRegistry lagRegistry = ServiceLocator.getService(LagRegistry.class);
-	private IRegistry lagBlockRegistry = ServiceLocator.getService(LagBlockRegistry.class);
+	private IRegistry<UUID> lagRegistry = ServiceLocator.getService(LagRegistry.class);
+	private IRegistry<Location> lagBlockRegistry = ServiceLocator.getService(LagBlockRegistry.class);
 	
 	//constructor
 	public LagEventCommand(BlockPlaceEvent event) {
@@ -41,18 +43,17 @@ public class LagEventCommand extends EventCommand<BlockPlaceEvent> {
 		
 		Block block = event.getBlock();
 		Location blockLocation = block.getLocation();
-		String locationString = blockLocation.getWorld() + "," + blockLocation.getX() + "," + blockLocation.getY() + "," + blockLocation.getZ();
 		
 		// Block is currently being lagged. Nobody should interact with it.
-		if (lagBlockRegistry.hasRegister(locationString)) {
+		if (lagBlockRegistry.hasRegister(blockLocation)) {
 			event.setCancelled(true);
 			return;
 		}
-		if (!lagRegistry.hasRegister(player.getUniqueId().toString())) {
+		if (!lagRegistry.hasRegister(player.getUniqueId())) {
 			return;
 		}
 		
-		lagBlockRegistry.setRegister(locationString, Location.class, blockLocation);
+		lagBlockRegistry.setRegister(blockLocation, null);
 		
 		// Capture the current state of everything
 		BlockState blockState = event.getBlock().getState();
@@ -78,7 +79,7 @@ public class LagEventCommand extends EventCommand<BlockPlaceEvent> {
 				
 				// Break the block using the captured state
 				BlockUtil.setBlock(block, new BlockData(null, blockState, blockType), true);
-				lagBlockRegistry.setRegister(locationString, Location.class, null);
+				lagBlockRegistry.removeRegister(blockLocation);
 			}
 		}, MathUtil.fairRoundedRandom(30, 50));
 	}

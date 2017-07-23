@@ -1,6 +1,7 @@
 package me.egg82.tcpp.events.entity.potionSplash;
 
 import java.util.Collection;
+import java.util.UUID;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -17,7 +18,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class RandomPotionEventCommand extends EventCommand<PotionSplashEvent> {
 	//vars
-	private IRegistry randomPotionRegistry = ServiceLocator.getService(RandomPotionRegistry.class);
+	private IRegistry<UUID> randomPotionRegistry = ServiceLocator.getService(RandomPotionRegistry.class);
 	
 	private PotionEffectType[] effects = null;
 	
@@ -41,7 +42,7 @@ public class RandomPotionEventCommand extends EventCommand<PotionSplashEvent> {
 			return;
 		}
 		
-		if (randomPotionRegistry.hasRegister(((Player) event.getPotion().getShooter()).getUniqueId().toString())) {
+		if (randomPotionRegistry.hasRegister(((Player) event.getPotion().getShooter()).getUniqueId())) {
 			Collection<PotionEffect> potionEffects = event.getPotion().getEffects();
 			
 			int numEffects = potionEffects.size();

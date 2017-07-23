@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.player.playerInteract;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -18,8 +20,8 @@ import ninja.egg82.utils.MathUtil;
 
 public class LagEventCommand extends EventCommand<PlayerInteractEvent> {
 	//vars
-	private IRegistry lagRegistry = ServiceLocator.getService(LagRegistry.class);
-	private IRegistry lagBlockRegistry = ServiceLocator.getService(LagBlockRegistry.class);
+	private IRegistry<UUID> lagRegistry = ServiceLocator.getService(LagRegistry.class);
+	private IRegistry<Location> lagBlockRegistry = ServiceLocator.getService(LagBlockRegistry.class);
 	
 	//constauctor
 	public LagEventCommand(PlayerInteractEvent event) {
@@ -38,14 +40,13 @@ public class LagEventCommand extends EventCommand<PlayerInteractEvent> {
 		
 		Block block = event.getClickedBlock();
 		Location blockLocation = block.getLocation();
-		String locationString = blockLocation.getWorld() + "," + blockLocation.getX() + "," + blockLocation.getY() + "," + blockLocation.getZ();
 		
 		// Block is currently being lagged. Nobody should interact with it.
-		if (lagBlockRegistry.hasRegister(locationString)) {
+		if (lagBlockRegistry.hasRegister(blockLocation)) {
 			event.setCancelled(true);
 			return;
 		}
-		if (!lagRegistry.hasRegister(player.getUniqueId().toString())) {
+		if (!lagRegistry.hasRegister(player.getUniqueId())) {
 			return;
 		}
 		
@@ -59,7 +60,7 @@ public class LagEventCommand extends EventCommand<PlayerInteractEvent> {
 		}
 		
 		event.setCancelled(true);
-		lagBlockRegistry.setRegister(locationString, Location.class, blockLocation);
+		lagBlockRegistry.setRegister(blockLocation, null);
 		
 		// Manually doing the event after 1.5-2.5 seconds
 		TaskUtil.runSync(new Runnable() {
@@ -69,7 +70,7 @@ public class LagEventCommand extends EventCommand<PlayerInteractEvent> {
 					player.openInventory(((InventoryHolder) blockState).getInventory());
 				}
 				
-				lagBlockRegistry.setRegister(locationString, Location.class, null);
+				lagBlockRegistry.removeRegister(blockLocation);
 			}
 		}, MathUtil.fairRoundedRandom(30, 50));
 	}

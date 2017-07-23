@@ -1,5 +1,7 @@
 package me.egg82.tcpp.ticks;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -16,9 +18,9 @@ import ninja.egg82.plugin.utils.LocationUtil;
 
 public class VegetableTickCommand extends TickCommand {
 	//vars
-	private IRegistry vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
-	private IRegistry vegetableItemRegistry = ServiceLocator.getService(VegetableItemRegistry.class);
-	private IRegistry vegetableLocationRegistry = ServiceLocator.getService(VegetableLocationRegistry.class);
+	private IRegistry<UUID> vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
+	private IRegistry<UUID> vegetableItemRegistry = ServiceLocator.getService(VegetableItemRegistry.class);
+	private IRegistry<UUID> vegetableLocationRegistry = ServiceLocator.getService(VegetableLocationRegistry.class);
 	
 	//constructor
 	public VegetableTickCommand() {
@@ -30,13 +32,13 @@ public class VegetableTickCommand extends TickCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		String[] names = vegetableRegistry.getRegistryNames();
-		for (String name : names) {
-			e(name, vegetableRegistry.getRegister(name, Player.class));
+		UUID[] keys = vegetableRegistry.getRegistryKeys();
+		for (UUID key : keys) {
+			e(key, CommandUtil.getPlayerByUuid(key));
 		}
 	}
-	private void e(String uuid, Player player) {
-		if (!player.isOnline()) {
+	private void e(UUID uuid, Player player) {
+		if (player == null || !player.isOnline()) {
 			return;
 		}
 		if (CommandUtil.hasPermission(player, PermissionsType.FREECAM_WHILE_VEGETABLE)) {
@@ -52,7 +54,7 @@ public class VegetableTickCommand extends TickCommand {
 		newItemLocation.setDirection(playerLocation.getDirection());
 		
 		if (!LocationUtil.areEqualXYZ(oldItemLocation, newItemLocation, 0.25d)) {
-			vegetableLocationRegistry.setRegister(uuid, Location.class, newItemLocation.clone());
+			vegetableLocationRegistry.setRegister(uuid, newItemLocation.clone());
 			player.teleport(LocationUtil.makeEqualXYZ(newItemLocation.clone().add(0.0d, -1.0d, 0.0d), playerLocation));
 		}
 	}

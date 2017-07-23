@@ -1,6 +1,7 @@
 package me.egg82.tcpp.ticks;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -14,7 +15,7 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class EffectTickCommand extends TickCommand {
 	//vars
-	private IRegistry effectRegistry = ServiceLocator.getService(EffectRegistry.class);
+	private IRegistry<UUID> effectRegistry = ServiceLocator.getService(EffectRegistry.class);
 	
 	//constructor
 	public EffectTickCommand() {
@@ -27,13 +28,12 @@ public class EffectTickCommand extends TickCommand {
 	//private
 	@SuppressWarnings("unchecked")
 	protected void onExecute(long elapsedMilliseconds) {
-		String[] names = effectRegistry.getRegistryNames();
-		for (String name : names) {
-			e(name, effectRegistry.getRegister(name, List.class));
+		UUID[] keys = effectRegistry.getRegistryKeys();
+		for (UUID key : keys) {
+			e(key, CommandUtil.getPlayerByUuid(key), effectRegistry.getRegister(key, List.class));
 		}
 	}
-	private void e(String uuid, List<PotionEffectType> effects) {
-		Player player = CommandUtil.getPlayerByUuid(uuid);
+	private void e(UUID uuid, Player player, List<PotionEffectType> effects) {
 		if (player == null || !player.isOnline()) {
 			return;
 		}

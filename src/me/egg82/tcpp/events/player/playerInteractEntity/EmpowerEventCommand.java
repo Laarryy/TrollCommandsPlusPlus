@@ -1,22 +1,27 @@
 package me.egg82.tcpp.events.player.playerInteractEntity;
 
+import java.util.UUID;
+
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import me.egg82.tcpp.enums.MessageType;
+import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.services.EmpowerEntityRegistry;
 import me.egg82.tcpp.services.EmpowerRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.utils.LanguageUtil;
 
 public class EmpowerEventCommand extends EventCommand<PlayerInteractEntityEvent> {
 	//vars
-	private IRegistry empowerRegistry = ServiceLocator.getService(EmpowerRegistry.class);
+	private IRegistry<UUID> empowerRegistry = ServiceLocator.getService(EmpowerRegistry.class);
+	private IRegistry<UUID> empowerEntityRegistry = ServiceLocator.getService(EmpowerEntityRegistry.class);
 	
 	//constructor
 	public EmpowerEventCommand(PlayerInteractEntityEvent event) {
@@ -32,14 +37,14 @@ public class EmpowerEventCommand extends EventCommand<PlayerInteractEntityEvent>
 		}
 		
 		Player player = event.getPlayer();
-		String uuid = player.getUniqueId().toString();
+		UUID uuid = player.getUniqueId();
 		
 		if (!empowerRegistry.hasRegister(uuid)) {
 			return;
 		}
 		if (!(event.getRightClicked() instanceof LivingEntity)) {
-			player.sendMessage(MessageType.NOT_LIVING);
-			empowerRegistry.setRegister(uuid, Player.class, null);
+			player.sendMessage(LanguageUtil.getString(LanguageType.NOT_LIVING));
+			empowerRegistry.removeRegister(uuid);
 			return;
 		}
 		
@@ -47,18 +52,14 @@ public class EmpowerEventCommand extends EventCommand<PlayerInteractEntityEvent>
 		
 		if (entity instanceof Player) {
 			if (CommandUtil.hasPermission((Player) entity, PermissionsType.IMMUNE)) {
-				player.sendMessage(MessageType.PLAYER_IMMUNE);
+				player.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
 				return;
 			}
 		}
 		
-		if (entity.hasPotionEffect(PotionEffectType.ABSORPTION)
-			&& entity.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)
-			&& entity.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)
-			&& entity.hasPotionEffect(PotionEffectType.HEALTH_BOOST)
-			&& entity.hasPotionEffect(PotionEffectType.INCREASE_DAMAGE)
-			&& entity.hasPotionEffect(PotionEffectType.SPEED)) {
-			// Disempower them
+		UUID entityUuid = entity.getUniqueId();
+		
+		if (empowerEntityRegistry.hasRegister(entityUuid)) {
 			entity.removePotionEffect(PotionEffectType.ABSORPTION);
 			entity.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
 			entity.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
@@ -67,9 +68,9 @@ public class EmpowerEventCommand extends EventCommand<PlayerInteractEntityEvent>
 			entity.removePotionEffect(PotionEffectType.REGENERATION);
 			entity.removePotionEffect(PotionEffectType.SPEED);
 			
-			player.sendMessage(MessageType.DISEMPOWERED);
+			empowerEntityRegistry.removeRegister(entityUuid);
+			player.sendMessage(LanguageUtil.getString(LanguageType.DISEMPOWERED));
 		} else {
-			// Empower them
 			entity.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, Integer.MAX_VALUE, 5), true);
 			entity.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 5), true);
 			entity.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 5), true);
@@ -78,9 +79,10 @@ public class EmpowerEventCommand extends EventCommand<PlayerInteractEntityEvent>
 			entity.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, Integer.MAX_VALUE, 5), true);
 			entity.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 5), true);
 			
-			player.sendMessage(MessageType.EMPOWERED);
+			empowerEntityRegistry.setRegister(entityUuid, null);
+			player.sendMessage(LanguageUtil.getString(LanguageType.EMPOWERED));
 		}
 		
-		empowerRegistry.setRegister(uuid, Player.class, null);
+		empowerRegistry.removeRegister(uuid);
 	}
 }

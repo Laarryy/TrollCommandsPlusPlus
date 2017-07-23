@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.player.playerDropItem;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
@@ -13,7 +15,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class RandomDropEventCommand extends EventCommand<PlayerDropItemEvent> {
 	//vars
-	private IRegistry randomDropRegistry = ServiceLocator.getService(RandomDropRegistry.class);
+	private IRegistry<UUID> randomDropRegistry = ServiceLocator.getService(RandomDropRegistry.class);
 	
 	private Material[] materials = null;
 	
@@ -53,7 +55,7 @@ public class RandomDropEventCommand extends EventCommand<PlayerDropItemEvent> {
 			return;
 		}
 		
-		if (randomDropRegistry.hasRegister(event.getPlayer().getUniqueId().toString())) {
+		if (randomDropRegistry.hasRegister(event.getPlayer().getUniqueId())) {
 			event.getItemDrop().setItemStack(new ItemStack(materials[MathUtil.fairRoundedRandom(0, materials.length - 1)], event.getItemDrop().getItemStack().getAmount()));
 		}
 	}

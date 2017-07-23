@@ -3,6 +3,7 @@ package me.egg82.tcpp.events.player.playerDropItem;
 import java.util.ArrayList;
 
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import ninja.egg82.patterns.ServiceLocator;
@@ -26,11 +27,13 @@ public class AttachCommandEventCommand extends EventCommand<PlayerDropItemEvent>
 			return;
 		}
 		
-		if (!nbtHelper.hasTag(event.getItemDrop().getItemStack(), "tcppCommand")) {
+		ItemStack item = event.getItemDrop().getItemStack();
+		
+		if (!nbtHelper.getCompound(item).hasTag("tcppCommand")) {
 			return;
 		}
 		
-		ItemMeta meta = event.getItemDrop().getItemStack().getItemMeta();
+		ItemMeta meta = item.getItemMeta();
 		ArrayList<String> lore = new ArrayList<String>(meta.getLore());
 		int removeLine = -1;
 		for (int i = 0; i < lore.size(); i++) {
@@ -44,6 +47,6 @@ public class AttachCommandEventCommand extends EventCommand<PlayerDropItemEvent>
 			lore.remove(removeLine);
 		}
 		meta.setLore(lore);
-		event.getItemDrop().getItemStack().setItemMeta(meta);
+		item.setItemMeta(meta);
 	}
 }

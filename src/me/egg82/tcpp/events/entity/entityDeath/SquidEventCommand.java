@@ -1,6 +1,7 @@
 package me.egg82.tcpp.events.entity.entityDeath;
 
-import org.bukkit.entity.Squid;
+import java.util.UUID;
+
 import org.bukkit.event.entity.EntityDeathEvent;
 
 import me.egg82.tcpp.services.SquidDeathRegistry;
@@ -10,7 +11,7 @@ import ninja.egg82.plugin.commands.EventCommand;
 
 public class SquidEventCommand extends EventCommand<EntityDeathEvent> {
 	//vars
-	private IRegistry squidDeathRegistry = ServiceLocator.getService(SquidDeathRegistry.class);
+	private IRegistry<UUID> squidDeathRegistry = ServiceLocator.getService(SquidDeathRegistry.class);
 	
 	//constructor
 	public SquidEventCommand(EntityDeathEvent event) {
@@ -21,12 +22,12 @@ public class SquidEventCommand extends EventCommand<EntityDeathEvent> {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		String uuid = event.getEntity().getUniqueId().toString();
+		UUID uuid = event.getEntity().getUniqueId();
 		
 		if (squidDeathRegistry.hasRegister(uuid)) {
 			event.getDrops().clear();
 			event.setDroppedExp(0);
-			squidDeathRegistry.setRegister(uuid, Squid.class, null);
+			squidDeathRegistry.removeRegister(uuid);
 		}
 	}
 }

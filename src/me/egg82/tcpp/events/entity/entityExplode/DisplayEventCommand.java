@@ -2,19 +2,20 @@ package me.egg82.tcpp.events.entity.entityExplode;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
-import me.egg82.tcpp.services.DisplayBlockRegistry;
+import me.egg82.tcpp.services.DisplayRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 
 public class DisplayEventCommand extends EventCommand<EntityExplodeEvent> {
 	//vars
-	private IRegistry displayBlockRegistry = ServiceLocator.getService(DisplayBlockRegistry.class);
+	private IRegistry<UUID> displayRegistry = ServiceLocator.getService(DisplayRegistry.class);
 	
 	//constructor
 	public DisplayEventCommand(EntityExplodeEvent event) {
@@ -32,9 +33,9 @@ public class DisplayEventCommand extends EventCommand<EntityExplodeEvent> {
 		
 		List<Block> blocks = event.blockList();
 		
-		String[] names = displayBlockRegistry.getRegistryNames();
-		for (String name : names) {
-			for (Location loc : (Set<Location>) displayBlockRegistry.getRegister(name)) {
+		UUID[] keys = displayRegistry.getRegistryKeys();
+		for (UUID key : keys) {
+			for (Location loc : (Set<Location>) displayRegistry.getRegister(key)) {
 				blocks.remove(loc.getBlock());
 			}
 		}

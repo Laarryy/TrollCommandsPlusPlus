@@ -11,7 +11,7 @@ import ninja.egg82.sql.LanguageDatabase;
 
 public class EnchantTypeSearchDatabase extends LanguageDatabase {
 	//vars
-	private IRegistry enchantNameRegistry = ServiceLocator.getService(EnchantNameRegistry.class);
+	private IRegistry<String> enchantNameRegistry = ServiceLocator.getService(EnchantNameRegistry.class);
 	
 	//constructor
 	public EnchantTypeSearchDatabase() {

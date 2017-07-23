@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.block.blockBreak;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -15,7 +17,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class SlowUndoEventCommand extends EventCommand<BlockBreakEvent> {
 	//vars
-	private IRegistry slowUndoRegistry = ServiceLocator.getService(SlowUndoRegistry.class);
+	private IRegistry<UUID> slowUndoRegistry = ServiceLocator.getService(SlowUndoRegistry.class);
 	
 	//constructor
 	public SlowUndoEventCommand(BlockBreakEvent event) {
@@ -32,7 +34,7 @@ public class SlowUndoEventCommand extends EventCommand<BlockBreakEvent> {
 		
 		Player player = event.getPlayer();
 		
-		if (!slowUndoRegistry.hasRegister(player.getUniqueId().toString())) {
+		if (!slowUndoRegistry.hasRegister(player.getUniqueId())) {
 			return;
 		}
 		

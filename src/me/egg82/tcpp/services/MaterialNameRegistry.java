@@ -4,12 +4,12 @@ import org.bukkit.Material;
 
 import ninja.egg82.patterns.Registry;
 
-public class MaterialNameRegistry extends Registry {
+public class MaterialNameRegistry extends Registry<String> {
 	//vars
 	
 	//constructor
 	public MaterialNameRegistry() {
-		super();
+		super(String.class);
 		
 		Material[] types = Material.values();
 		
@@ -17,7 +17,7 @@ public class MaterialNameRegistry extends Registry {
 			if (types[i] == null) {
 				continue;
 			}
-			setRegister(types[i].name(), Material.class, types[i]);
+			setRegister(types[i].name(), types[i]);
 		}
 	}
 	

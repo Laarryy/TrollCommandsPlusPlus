@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.block.blockPlace;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,7 +18,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class SlowUndoEventCommand extends EventCommand<BlockPlaceEvent> {
 	//vars
-	private IRegistry slowUndoRegistry = ServiceLocator.getService(SlowUndoRegistry.class);
+	private IRegistry<UUID> slowUndoRegistry = ServiceLocator.getService(SlowUndoRegistry.class);
 	
 	//constructor
 	public SlowUndoEventCommand(BlockPlaceEvent event) {
@@ -33,7 +35,7 @@ public class SlowUndoEventCommand extends EventCommand<BlockPlaceEvent> {
 		
 		Player player = event.getPlayer();
 		
-		if (!slowUndoRegistry.hasRegister(player.getUniqueId().toString())) {
+		if (!slowUndoRegistry.hasRegister(player.getUniqueId())) {
 			return;
 		}
 		

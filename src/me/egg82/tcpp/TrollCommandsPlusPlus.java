@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.logging.Level;
 
 import javax.swing.Timer;
 
@@ -13,6 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 
+import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.reflection.disguise.DisguiseHelper;
 import me.egg82.tcpp.reflection.disguise.LibsDisguisesHelper;
@@ -22,6 +24,7 @@ import me.egg82.tcpp.services.CommandSearchDatabase;
 import me.egg82.tcpp.services.KeywordRegistry;
 import me.egg82.tcpp.util.ControlHelper;
 import me.egg82.tcpp.util.DisplayHelper;
+import me.egg82.tcpp.util.FoolsGoldHelper;
 import me.egg82.tcpp.util.MetricsHelper;
 import me.egg82.tcpp.util.VegetableHelper;
 import me.egg82.tcpp.util.WhoAmIHelper;
@@ -33,6 +36,8 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.BasePlugin;
 import ninja.egg82.plugin.commands.PluginCommand;
+import ninja.egg82.plugin.reflection.exceptionHandlers.IExceptionHandler;
+import ninja.egg82.plugin.services.LanguageRegistry;
 import ninja.egg82.plugin.utils.SpigotReflectUtil;
 import ninja.egg82.plugin.utils.VersionUtil;
 import ninja.egg82.sql.LanguageDatabase;
@@ -51,9 +56,15 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	private int numPermissions = 0;
 	private int numTicks = 0;
 	
+	private IExceptionHandler exceptionHandler = null;
+	
 	//constructor
 	public TrollCommandsPlusPlus() {
+		super();
 		
+		getLogger().setLevel(Level.WARNING);
+		exceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
+		exceptionHandler.connect("872a465ad3ed465a94136d1978e28ec0", "production");
 	}
 	
 	//public
@@ -101,13 +112,15 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		
 		ServiceLocator.provideService(ControlHelper.class);
 		ServiceLocator.provideService(DisplayHelper.class);
+		ServiceLocator.provideService(FoolsGoldHelper.class);
 		ServiceLocator.provideService(VegetableHelper.class);
 		ServiceLocator.provideService(WhoAmIHelper.class);
 		ServiceLocator.provideService(WorldHoleHelper.class);
 		ServiceLocator.provideService(MetricsHelper.class);
 		ServiceLocator.provideService(CommandSearchDatabase.class, false);
 		
-		populateLanguageDatabase();
+		populateCommandDatabase();
+		populateLanguage();
 		
 		updateTimer = new Timer(24 * 60 * 60 * 1000, onUpdateTimer);
 	}
@@ -123,11 +136,11 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		
 		if (metrics != null) {
 			metrics.addCustomChart(new Metrics.AdvancedPie("commands", () -> {
-				IRegistry commandRegistry = (IRegistry) ServiceLocator.getService(CommandRegistry.class);
+				IRegistry<String> commandRegistry = ServiceLocator.getService(CommandRegistry.class);
 				HashMap<String, Integer> values = new HashMap<String, Integer>();
-				String[] names = commandRegistry.getRegistryNames();
-				for (String name : names) {
-					values.put(name, (Integer) commandRegistry.getRegister(name));
+				String[] keys = commandRegistry.getRegistryKeys();
+				for (String key : keys) {
+					values.put(key, commandRegistry.getRegister(key, Integer.class));
 				}
 				return values;
 			}));
@@ -182,6 +195,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	//private
 	private ActionListener onUpdateTimer = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
+			exceptionHandler.addThread(Thread.currentThread());
 			checkUpdate();
 		}
 	};
@@ -219,9 +233,9 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		info(ChatColor.GREEN + "--== " + ChatColor.LIGHT_PURPLE + "TrollCommands++ Disabled" + ChatColor.GREEN + " ==--");
 	}
 	
-	private void populateLanguageDatabase() {
+	private void populateCommandDatabase() {
 		LanguageDatabase commandNameDatabase = ServiceLocator.getService(CommandSearchDatabase.class);
-		IRegistry keywordRegistry = ServiceLocator.getService(KeywordRegistry.class);
+		IRegistry<String> keywordRegistry = ServiceLocator.getService(KeywordRegistry.class);
 		PluginDescriptionFile descriptionFile = getDescription();
 		
 		String[] commands = ((String) descriptionFile.getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
@@ -251,5 +265,22 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 			
 			commandNameDatabase.addRow(row.toArray(new String[0]));
 		}
+	}
+	private void populateLanguage() {
+		IRegistry<String> languageRegistry = ServiceLocator.getService(LanguageRegistry.class);
+		
+		languageRegistry.setRegister(LanguageType.PLAYER_IMMUNE, ChatColor.RED + "Player is immune.");
+		languageRegistry.setRegister(LanguageType.INVALID_TARGET, ChatColor.RED + "The target you've chosen is invalid.");
+		languageRegistry.setRegister(LanguageType.INVALID_LIBRARY, ChatColor.RED + "This command has been disabled because there is no recognized backing library available. Please install one and restart the server to enable this command.");
+		languageRegistry.setRegister(LanguageType.COMMAND_IN_USE, ChatColor.RED + "This command is currently in use against this player. Please wait for it to complete before using it again.");
+		languageRegistry.setRegister(LanguageType.NO_CHAT_CONTROL, ChatColor.RED + "You do not have permissions to chat while being controlled!");
+		languageRegistry.setRegister(LanguageType.NO_CHAT_FROZEN, ChatColor.RED + "You do not have permissions to chat while frozen!");
+		languageRegistry.setRegister(LanguageType.NOT_LIVING, ChatColor.RED + "The entity you have selected is neither a player nor a mob!");
+		languageRegistry.setRegister(LanguageType.EMPOWERED, "The entity you have selected is now empowered!");
+		languageRegistry.setRegister(LanguageType.DISEMPOWERED, "The entity you have selected is now disempowered!");
+		languageRegistry.setRegister(LanguageType.INVALID_VERSION, ChatColor.RED + "This command has been disabled because this version of Minecraft doesn't support it.");
+		languageRegistry.setRegister(LanguageType.INVALID_TYPE, ChatColor.RED + "Searched type is invalid or was not found.");
+		languageRegistry.setRegister(LanguageType.INVALID_COMMAND, ChatColor.RED + "Command is invalid.");
+		languageRegistry.setRegister(LanguageType.INVALID_ITEM, ChatColor.RED + "Item is invalid.");
 	}
 }

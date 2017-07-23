@@ -14,18 +14,24 @@ import org.bukkit.help.HelpTopic;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.egg82.tcpp.enums.CommandErrorType;
-import me.egg82.tcpp.enums.MessageType;
+import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.exceptions.InvalidItemException;
+import me.egg82.tcpp.exceptions.InvalidLibraryException;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.events.CommandEvent;
+import ninja.egg82.events.CompleteEventArgs;
+import ninja.egg82.events.ExceptionEventArgs;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.SpigotCommandErrorType;
-import ninja.egg82.plugin.enums.SpigotMessageType;
+import ninja.egg82.plugin.core.nbt.INBTCompound;
+import ninja.egg82.plugin.enums.SpigotLanguageType;
+import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
+import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
+import ninja.egg82.plugin.exceptions.SenderNotAllowedException;
 import ninja.egg82.plugin.reflection.nbt.INBTHelper;
 import ninja.egg82.plugin.reflection.player.IPlayerHelper;
 import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.utils.LanguageUtil;
 
 public class AttachCommandCommand extends PluginCommand {
 	//vars
@@ -81,30 +87,45 @@ public class AttachCommandCommand extends PluginCommand {
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
 		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_ATTACH_COMMAND)) {
-			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
-			return;
-		}
-		if (args.length == 0) {
-			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
-			String name = getClass().getSimpleName();
-			name = name.substring(0, name.length() - 7).toLowerCase();
-			sender.getServer().dispatchCommand(sender, "troll help " + name);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
+			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_ATTACH_COMMAND)));
 			return;
 		}
 		if (!nbtHelper.isValidLibrary()) {
-			sender.sendMessage(MessageType.NO_LIBRARY);
-			dispatch(CommandEvent.ERROR, CommandErrorType.NO_LIBRARY);
+			sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_LIBRARY));
+			onError().invoke(this, new ExceptionEventArgs<InvalidLibraryException>(new InvalidLibraryException(nbtHelper)));
 			return;
 		}
 		if (!CommandUtil.isPlayer(sender)) {
-			sender.sendMessage(SpigotMessageType.CONSOLE_NOT_ALLOWED);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.CONSOLE_NOT_ALLOWED);
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.SENDER_NOT_ALLOWED));
+			onError().invoke(this, new ExceptionEventArgs<SenderNotAllowedException>(new SenderNotAllowedException(sender, this)));
 			return;
 		}
 		
 		ItemStack item = playerHelper.getItemInMainHand((Player) sender);
+		
+		if (item == null || item.getType() == Material.AIR) {
+			sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_ITEM));
+			onError().invoke(this, new ExceptionEventArgs<InvalidItemException>(new InvalidItemException(item)));
+			return;
+		}
+		
+		INBTCompound compound = nbtHelper.getCompound(item);
+		
+		if (args.length == 0) {
+			if (compound.hasTag("tcppCommand")) {
+				eUndo(item, compound);
+				onComplete().invoke(this, CompleteEventArgs.EMPTY);
+				return;
+			} else {
+				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
+				String name = getClass().getSimpleName();
+				name = name.substring(0, name.length() - 7).toLowerCase();
+				sender.getServer().dispatchCommand(sender, "troll help " + name);
+				onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
+				return;
+			}
+		}
 		
 		String command = "";
 		for (int i = 0; i < args.length; i++) {
@@ -112,15 +133,17 @@ public class AttachCommandCommand extends PluginCommand {
 		}
 		command = command.trim();
 		
-		if (item != null && item.getType() != Material.AIR) {
-			e(item, command);
+		if (!compound.hasTag("tcppCommand")) {
+			e(item, compound, command);
+		} else {
+			eUndo(item, compound);
 		}
 		
-		dispatch(CommandEvent.COMPLETE, null);
+		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
-	private void e(ItemStack item, String runnableCommand) {
-		nbtHelper.addTag(item, "tcppSender", ((Player) sender).getUniqueId().toString());
-		nbtHelper.addTag(item, "tcppCommand", runnableCommand);
+	private void e(ItemStack item, INBTCompound compound, String runnableCommand) {
+		compound.setString("tcppSender", ((Player) sender).getUniqueId().toString());
+		compound.setString("tcppCommand", runnableCommand);
 		
 		ItemMeta meta = item.getItemMeta();
 		ArrayList<String> lore = new ArrayList<String>();
@@ -139,5 +162,27 @@ public class AttachCommandCommand extends PluginCommand {
 	
 	protected void onUndo() {
 		
+	}
+	private void eUndo(ItemStack item, INBTCompound compound) {
+		compound.removeTag("tcppSender");
+		compound.removeTag("tcppCommand");
+		
+		ItemMeta meta = item.getItemMeta();
+		ArrayList<String> lore = new ArrayList<String>(meta.getLore());
+		int removeLine = -1;
+		for (int i = 0; i < lore.size(); i++) {
+			if (lore.get(i).contains("Command to run:")) {
+				removeLine = i;
+				break;
+			}
+		}
+		if (removeLine > -1) {
+			lore.remove(removeLine);
+			lore.remove(removeLine);
+		}
+		meta.setLore(lore);
+		item.setItemMeta(meta);
+		
+		sender.sendMessage("There is no longer a command attached to this item.");
 	}
 }

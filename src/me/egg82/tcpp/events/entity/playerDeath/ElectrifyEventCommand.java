@@ -1,6 +1,7 @@
 package me.egg82.tcpp.events.entity.playerDeath;
 
-import org.bukkit.entity.Player;
+import java.util.UUID;
+
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import me.egg82.tcpp.services.ElectrifyRegistry;
@@ -10,7 +11,7 @@ import ninja.egg82.plugin.commands.EventCommand;
 
 public class ElectrifyEventCommand extends EventCommand<PlayerDeathEvent> {
 	//vars
-	IRegistry electrifyRegistry = ServiceLocator.getService(ElectrifyRegistry.class);
+	private IRegistry<UUID> electrifyRegistry = ServiceLocator.getService(ElectrifyRegistry.class);
 	
 	//constructor
 	public ElectrifyEventCommand(PlayerDeathEvent event) {
@@ -21,6 +22,6 @@ public class ElectrifyEventCommand extends EventCommand<PlayerDeathEvent> {
 
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		electrifyRegistry.setRegister(event.getEntity().getUniqueId().toString(), Player.class, null);
+		electrifyRegistry.removeRegister(event.getEntity().getUniqueId());
 	}
 }

@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.entity.entityDamage;
 
+import java.util.UUID;
+
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -14,7 +16,7 @@ public class BrittleEventCommand extends EventCommand<EntityDamageEvent> {
 	//vars
 	private IEntityHelper entityUtil = ServiceLocator.getService(IEntityHelper.class);
 	
-	private IRegistry brittleRegistry = ServiceLocator.getService(BrittleRegistry.class);
+	private IRegistry<UUID> brittleRegistry = ServiceLocator.getService(BrittleRegistry.class);
 	
 	//constructor
 	public BrittleEventCommand(EntityDamageEvent event) {
@@ -34,7 +36,7 @@ public class BrittleEventCommand extends EventCommand<EntityDamageEvent> {
 		
 		Player player = (Player) event.getEntity();
 		
-		if (brittleRegistry.hasRegister(player.getUniqueId().toString())) {
+		if (brittleRegistry.hasRegister(player.getUniqueId())) {
 			player.setHealth(0.0d);
 			entityUtil.damage(player, event.getCause(), Double.MAX_VALUE);
 		}

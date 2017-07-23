@@ -14,18 +14,23 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.enums.CommandErrorType;
-import me.egg82.tcpp.enums.MessageType;
+import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.exceptions.InvalidTypeException;
+import me.egg82.tcpp.exceptions.PlayerImmuneException;
 import me.egg82.tcpp.services.MobTypeSearchDatabase;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.events.CommandEvent;
+import ninja.egg82.events.CompleteEventArgs;
+import ninja.egg82.events.ExceptionEventArgs;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.SpigotCommandErrorType;
-import ninja.egg82.plugin.enums.SpigotMessageType;
+import ninja.egg82.plugin.enums.SpigotLanguageType;
+import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
+import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
+import ninja.egg82.plugin.exceptions.PlayerNotFoundException;
 import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.utils.LanguageUtil;
 import ninja.egg82.plugin.utils.LocationUtil;
 import ninja.egg82.sql.LanguageDatabase;
 import ninja.egg82.utils.MathUtil;
@@ -108,16 +113,16 @@ public class SurroundCommand extends PluginCommand {
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
 		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_SURROUND)) {
-			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
+			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_SURROUND)));
 			return;
 		}
 		if (args.length < 2) {
-			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
 			sender.getServer().dispatchCommand(sender, "troll help " + name);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
 			return;
 		}
 		
@@ -134,15 +139,15 @@ public class SurroundCommand extends PluginCommand {
 			String[] types = mobTypeDatabase.getValues(mobTypeDatabase.naturalLanguage(search, false), 0);
 			
 			if (types == null || types.length == 0) {
-				sender.sendMessage(MessageType.MOB_NOT_FOUND);
-				dispatch(CommandEvent.ERROR, CommandErrorType.MOB_NOT_FOUND);
+				sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_TYPE));
+				onError().invoke(this, new ExceptionEventArgs<InvalidTypeException>(new InvalidTypeException(search)));
 				return;
 			}
 			
 			type = EntityType.valueOf(types[0].toUpperCase());
 			if (type == null) {
-				sender.sendMessage(MessageType.MOB_NOT_FOUND);
-				dispatch(CommandEvent.ERROR, CommandErrorType.MOB_NOT_FOUND);
+				sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_TYPE));
+				onError().invoke(this, new ExceptionEventArgs<InvalidTypeException>(new InvalidTypeException(search)));
 				return;
 			}
 		}
@@ -160,20 +165,20 @@ public class SurroundCommand extends PluginCommand {
 			Player player = CommandUtil.getPlayerByName(args[0]);
 			
 			if (player == null) {
-				sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
-				dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
+				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.PLAYER_NOT_FOUND));
+				onError().invoke(this, new ExceptionEventArgs<PlayerNotFoundException>(new PlayerNotFoundException(args[0])));
 				return;
 			}
 			if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-				sender.sendMessage(MessageType.PLAYER_IMMUNE);
-				dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
+				sender.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
+				onError().invoke(this, new ExceptionEventArgs<PlayerImmuneException>(new PlayerImmuneException(player)));
 				return;
 			}
 			
 			e(player.getUniqueId().toString(), player, type);
 		}
 		
-		dispatch(CommandEvent.COMPLETE, null);
+		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	private void e(String uuid, Player player, EntityType mobType) {
 		Location[] mobLocations = LocationUtil.getCircleAround(player.getLocation(), MathUtil.random(4.0d,  6.0d), MathUtil.fairRoundedRandom(8, 12));

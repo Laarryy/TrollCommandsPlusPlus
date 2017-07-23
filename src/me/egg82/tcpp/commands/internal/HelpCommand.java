@@ -10,18 +10,21 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.egg82.tcpp.enums.CommandErrorType;
-import me.egg82.tcpp.enums.MessageType;
+import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.exceptions.InvalidCommandException;
 import me.egg82.tcpp.services.CommandSearchDatabase;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.events.CommandEvent;
-import ninja.egg82.patterns.Pair;
+import ninja.egg82.events.CompleteEventArgs;
+import ninja.egg82.events.ExceptionEventArgs;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.tuples.Pair;
 import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.SpigotCommandErrorType;
-import ninja.egg82.plugin.enums.SpigotMessageType;
+import ninja.egg82.plugin.enums.SpigotLanguageType;
+import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
+import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
 import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.utils.LanguageUtil;
 import ninja.egg82.sql.LanguageDatabase;
 import ninja.egg82.startup.InitRegistry;
 import ninja.egg82.utils.StringUtil;
@@ -73,14 +76,14 @@ public class HelpCommand extends PluginCommand {
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
 		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_HELP)) {
-			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
+			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_HELP)));
 			return;
 		}
 		if (args.length == 0) {
-			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
 			e("help", commands.get("help"));
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
 			return;
 		}
 		
@@ -98,8 +101,8 @@ public class HelpCommand extends PluginCommand {
 			String[] list = commandDatabase.getValues(commandDatabase.naturalLanguage(search, false), 0);
 			
 			if (list == null || list.length == 0) {
-				sender.sendMessage(MessageType.COMMAND_NOT_FOUND);
-				dispatch(CommandEvent.ERROR, CommandErrorType.COMMAND_NOT_FOUND);
+				sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_COMMAND));
+				onError().invoke(this, new ExceptionEventArgs<InvalidCommandException>(new InvalidCommandException(search)));
 				return;
 			}
 			
@@ -107,15 +110,15 @@ public class HelpCommand extends PluginCommand {
 			commandValues = commands.get(command);
 			
 			if (commandValues == null) {
-				sender.sendMessage(MessageType.COMMAND_NOT_FOUND);
-				dispatch(CommandEvent.ERROR, CommandErrorType.COMMAND_NOT_FOUND);
+				sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_COMMAND));
+				onError().invoke(this, new ExceptionEventArgs<InvalidCommandException>(new InvalidCommandException(search)));
 				return;
 			}
 		}
 		
 		e(command, commandValues);
 		
-		dispatch(CommandEvent.COMPLETE, null);
+		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	private void e(String command, Pair<String, String> commandValues) {
 		metricsHelper.commandWasRun(this);

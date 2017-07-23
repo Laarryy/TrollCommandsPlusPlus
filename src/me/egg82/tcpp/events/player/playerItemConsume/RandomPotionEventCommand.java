@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.player.playerItemConsume;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -17,7 +19,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class RandomPotionEventCommand extends EventCommand<PlayerItemConsumeEvent> {
 	//vars
-	private IRegistry randomPotionRegistry = ServiceLocator.getService(RandomPotionRegistry.class);
+	private IRegistry<UUID> randomPotionRegistry = ServiceLocator.getService(RandomPotionRegistry.class);
 	
 	private IPlayerHelper playerUtil = ServiceLocator.getService(IPlayerHelper.class);
 	private PotionEffectType[] effects = null;
@@ -40,7 +42,7 @@ public class RandomPotionEventCommand extends EventCommand<PlayerItemConsumeEven
 		
 		Player player = event.getPlayer();
 		
-		if (randomPotionRegistry.hasRegister(player.getUniqueId().toString())) {
+		if (randomPotionRegistry.hasRegister(player.getUniqueId())) {
 			ItemStack items = playerUtil.getItemInMainHand(player);
 			
 			if (items.getType() == Material.POTION) {

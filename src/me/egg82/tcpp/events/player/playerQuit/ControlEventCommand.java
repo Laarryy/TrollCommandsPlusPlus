@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.player.playerQuit;
 
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -12,7 +14,7 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class ControlEventCommand extends EventCommand<PlayerQuitEvent> {
 	//vars
-	private IRegistry controlRegistry = ServiceLocator.getService(ControlRegistry.class);
+	private IRegistry<UUID> controlRegistry = ServiceLocator.getService(ControlRegistry.class);
 	
 	private ControlHelper controlHelper = ServiceLocator.getService(ControlHelper.class);
 	
@@ -26,7 +28,7 @@ public class ControlEventCommand extends EventCommand<PlayerQuitEvent> {
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
 		Player player = event.getPlayer();
-		String uuid = player.getUniqueId().toString();
+		UUID uuid = player.getUniqueId();
 		
 		if (controlRegistry.hasRegister(uuid)) {
 			// The player that quit/got kicked was controlling someone.
@@ -34,13 +36,15 @@ public class ControlEventCommand extends EventCommand<PlayerQuitEvent> {
 			controlHelper.uncontrol(uuid, player);
 		}
 		
-		String controllerUuid = controlRegistry.getName(player);
+		UUID controllerUuid = controlRegistry.getKey(player.getUniqueId());
 		
 		if (controllerUuid != null) {
 			// The player that quit/got kicked was being controlled by someone.
 			Player controller = CommandUtil.getPlayerByUuid(controllerUuid);
-			controller.sendMessage(player.getName() + " has quit or been kicked!");
-			controlHelper.uncontrol(controllerUuid, controller);
+			if (controller != null) {
+				controller.sendMessage(player.getName() + " has quit or been kicked!");
+				controlHelper.uncontrol(controllerUuid, controller);
+			}
 		}
 	}
 }

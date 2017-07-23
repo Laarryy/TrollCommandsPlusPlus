@@ -1,5 +1,7 @@
 package me.egg82.tcpp.ticks;
 
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -7,10 +9,11 @@ import me.egg82.tcpp.services.LevitateRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
+import ninja.egg82.plugin.utils.CommandUtil;
 
 public class LevitateTickCommand extends TickCommand {
 	//vars
-	private IRegistry levitateRegistry = ServiceLocator.getService(LevitateRegistry.class);
+	private IRegistry<UUID> levitateRegistry = ServiceLocator.getService(LevitateRegistry.class);
 	
 	//constructor
 	public LevitateTickCommand() {
@@ -22,13 +25,13 @@ public class LevitateTickCommand extends TickCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		String[] names = levitateRegistry.getRegistryNames();
-		for (String name : names) {
-			e(name, levitateRegistry.getRegister(name, Player.class));
+		UUID[] keys = levitateRegistry.getRegistryKeys();
+		for (UUID key : keys) {
+			e(key, CommandUtil.getPlayerByUuid(key));
 		}
 	}
-	private void e(String uuid, Player player) {
-		if (!player.isOnline()) {
+	private void e(UUID uuid, Player player) {
+		if (player == null || !player.isOnline()) {
 			return;
 		}
 		

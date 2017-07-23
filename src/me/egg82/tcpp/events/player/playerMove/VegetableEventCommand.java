@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.player.playerMove;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -15,8 +17,8 @@ import ninja.egg82.plugin.utils.LocationUtil;
 
 public class VegetableEventCommand extends EventCommand<PlayerMoveEvent> {
 	//vars
-	private IRegistry vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
-	private IRegistry vegetableLocationRegistry = ServiceLocator.getService(VegetableLocationRegistry.class);
+	private IRegistry<UUID> vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
+	private IRegistry<UUID> vegetableLocationRegistry = ServiceLocator.getService(VegetableLocationRegistry.class);
 	
 	//constructor
 	public VegetableEventCommand(PlayerMoveEvent event) {
@@ -32,7 +34,7 @@ public class VegetableEventCommand extends EventCommand<PlayerMoveEvent> {
 		}
 		
 		Player player = event.getPlayer();
-		String uuid = player.getUniqueId().toString();
+		UUID uuid = player.getUniqueId();
 		
 		if (vegetableRegistry.hasRegister(uuid)) {
 			if (!CommandUtil.hasPermission(player, PermissionsType.FREECAM_WHILE_VEGETABLE)) {

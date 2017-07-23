@@ -1,5 +1,7 @@
 package me.egg82.tcpp.ticks;
 
+import java.util.UUID;
+
 import org.bukkit.entity.Entity;
 
 import me.egg82.tcpp.services.SpartaArrowRegistry;
@@ -10,8 +12,8 @@ import ninja.egg82.plugin.commands.TickCommand;
 
 public class ClearEntityTickCommand extends TickCommand {
 	//vars
-	private IRegistry squidDeathRegistry = ServiceLocator.getService(SquidDeathRegistry.class);
-	private IRegistry spartaArrowRegistry = ServiceLocator.getService(SpartaArrowRegistry.class);
+	private IRegistry<UUID> squidDeathRegistry = ServiceLocator.getService(SquidDeathRegistry.class);
+	private IRegistry<UUID> spartaArrowRegistry = ServiceLocator.getService(SpartaArrowRegistry.class);
 	
 	//constructor
 	public ClearEntityTickCommand() {
@@ -23,20 +25,20 @@ public class ClearEntityTickCommand extends TickCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		String[] names = squidDeathRegistry.getRegistryNames();
-		for (String name : names) {
-			e(squidDeathRegistry, name, squidDeathRegistry.getRegister(name, Entity.class));
+		UUID[] keys = squidDeathRegistry.getRegistryKeys();
+		for (UUID key : keys) {
+			e(squidDeathRegistry, key, squidDeathRegistry.getRegister(key, Entity.class));
 		}
 		
-		names = spartaArrowRegistry.getRegistryNames();
-		for (String name : names) {
-			e(spartaArrowRegistry, name, spartaArrowRegistry.getRegister(name, Entity.class));
+		keys = spartaArrowRegistry.getRegistryKeys();
+		for (UUID key : keys) {
+			e(spartaArrowRegistry, key, spartaArrowRegistry.getRegister(key, Entity.class));
 		}
 	}
-	private void e(IRegistry registry, String uuid, Entity entity) {
+	private void e(IRegistry<UUID> registry, UUID uuid, Entity entity) {
 		if (entity.getTicksLived() >= 100L) {
 			entity.remove();
-			registry.setRegister(uuid, Entity.class, null);
+			registry.removeRegister(uuid);
 		}
 	}
 }

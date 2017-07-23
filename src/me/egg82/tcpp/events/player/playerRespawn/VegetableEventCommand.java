@@ -1,16 +1,18 @@
 package me.egg82.tcpp.events.player.playerRespawn;
 
-import org.bukkit.entity.Item;
+import java.util.UUID;
+
+import org.bukkit.Location;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import me.egg82.tcpp.services.VegetableItemRegistry;
+import me.egg82.tcpp.services.VegetableLocationRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 
 public class VegetableEventCommand extends EventCommand<PlayerRespawnEvent> {
 	//vars
-	private IRegistry vegetableItemRegistry = ServiceLocator.getService(VegetableItemRegistry.class);
+	private IRegistry<UUID> vegetableLocationRegistry = ServiceLocator.getService(VegetableLocationRegistry.class);
 	
 	//constructor
 	public VegetableEventCommand(PlayerRespawnEvent event) {
@@ -21,9 +23,9 @@ public class VegetableEventCommand extends EventCommand<PlayerRespawnEvent> {
 
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		Item groundItem = vegetableItemRegistry.getRegister(event.getPlayer().getUniqueId().toString(), Item.class);
-		if (groundItem != null) {
-			event.setRespawnLocation(groundItem.getLocation());
+		Location itemLocation = vegetableLocationRegistry.getRegister(event.getPlayer().getUniqueId(), Location.class);
+		if (itemLocation != null) {
+			event.setRespawnLocation(itemLocation);
 		}
 	}
 }

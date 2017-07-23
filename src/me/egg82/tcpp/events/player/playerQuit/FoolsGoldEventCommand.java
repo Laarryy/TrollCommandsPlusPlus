@@ -1,19 +1,17 @@
 package me.egg82.tcpp.events.player.playerQuit;
 
-import java.util.List;
+import java.util.UUID;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import me.egg82.tcpp.services.FoolsGoldChunkRegistry;
-import me.egg82.tcpp.services.FoolsGoldRegistry;
-import ninja.egg82.patterns.IRegistry;
+import me.egg82.tcpp.util.FoolsGoldHelper;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 
 public class FoolsGoldEventCommand extends EventCommand<PlayerQuitEvent> {
 	//vars
-	private IRegistry foolsGoldRegistry = ServiceLocator.getService(FoolsGoldRegistry.class);
-	private IRegistry foolsGoldChunkRegistry = ServiceLocator.getService(FoolsGoldChunkRegistry.class);
+	private FoolsGoldHelper foolsGoldHelper = ServiceLocator.getService(FoolsGoldHelper.class);
 	
 	//constructor
 	public FoolsGoldEventCommand(PlayerQuitEvent event) {
@@ -24,9 +22,9 @@ public class FoolsGoldEventCommand extends EventCommand<PlayerQuitEvent> {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		String uuid = event.getPlayer().getUniqueId().toString();
+		Player player = event.getPlayer();
+		UUID uuid = player.getUniqueId();
 		
-		foolsGoldRegistry.setRegister(uuid, List.class, null);
-		foolsGoldChunkRegistry.setRegister(uuid, List.class, null);
+		foolsGoldHelper.removePlayer(uuid, player);
 	}
 }

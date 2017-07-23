@@ -1,13 +1,15 @@
 package me.egg82.tcpp.services;
 
+import java.util.UUID;
+
 import ninja.egg82.patterns.Registry;
 
-public class KillRegistry extends Registry {
+public class KillRegistry extends Registry<UUID> {
 	//vars
 	
 	//constructor
 	public KillRegistry() {
-		super();
+		super(UUID.class);
 	}
 	
 	//public

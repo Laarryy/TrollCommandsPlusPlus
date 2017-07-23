@@ -2,29 +2,35 @@ package me.egg82.tcpp.commands.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.enums.CommandErrorType;
-import me.egg82.tcpp.enums.MessageType;
+import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.exceptions.PlayerImmuneException;
+import me.egg82.tcpp.services.LureRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.events.CommandEvent;
+import ninja.egg82.events.CompleteEventArgs;
+import ninja.egg82.events.ExceptionEventArgs;
+import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.SpigotCommandErrorType;
-import ninja.egg82.plugin.enums.SpigotMessageType;
+import ninja.egg82.plugin.enums.SpigotLanguageType;
+import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
+import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
+import ninja.egg82.plugin.exceptions.PlayerNotFoundException;
 import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.utils.LanguageUtil;
 
 public class LureCommand extends PluginCommand {
 	//vars
+	private IRegistry<UUID> lureRegistry = ServiceLocator.getService(LureRegistry.class);
+	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
@@ -58,100 +64,95 @@ public class LureCommand extends PluginCommand {
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
 		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_LURE)) {
-			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
+			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_LURE)));
 			return;
 		}
 		if (!CommandUtil.isArrayOfAllowedLength(args, 1)) {
-			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
 			sender.getServer().dispatchCommand(sender, "troll help " + name);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
 			return;
 		}
 		
 		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
 		if (players.size() > 0) {
 			for (Player player : players) {
-				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-					continue;
-				}
+				UUID uuid = player.getUniqueId();
 				
-				e(player.getUniqueId().toString(), player);
+				if (!lureRegistry.hasRegister(uuid)) {
+					if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+						continue;
+					}
+					
+					e(uuid, player);
+				} else {
+					eUndo(uuid, player);
+				}
 			}
 		} else {
 			Player player = CommandUtil.getPlayerByName(args[0]);
 			
 			if (player == null) {
-				sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
-				dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
-				return;
-			}
-			if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-				sender.sendMessage(MessageType.PLAYER_IMMUNE);
-				dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
+				OfflinePlayer offlinePlayer = CommandUtil.getOfflinePlayerByName(args[0]);
+				if (offlinePlayer != null) {
+					UUID uuid = offlinePlayer.getUniqueId();
+					if (lureRegistry.hasRegister(uuid)) {
+						eUndo(uuid, offlinePlayer);
+						onComplete().invoke(this, CompleteEventArgs.EMPTY);
+						return;
+					}
+				}
+				
+				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.PLAYER_NOT_FOUND));
+				onError().invoke(this, new ExceptionEventArgs<PlayerNotFoundException>(new PlayerNotFoundException(args[0])));
 				return;
 			}
 			
-			e(player.getUniqueId().toString(), player);
-		}
-		
-		dispatch(CommandEvent.COMPLETE, null);
-	}
-	private void e(String uuid, Player player) {
-		List<Entity> entities = player.getNearbyEntities(1000.0d, 512.0d, 1000.0d);
-		for (Entity e : entities) {
-			EntityType type = e.getType();
-			String typeString = type.name().toLowerCase();
-			if (
-					type == EntityType.BLAZE ||
-					type == EntityType.CAVE_SPIDER ||
-					type == EntityType.CREEPER ||
-					type == EntityType.ENDER_DRAGON ||
-					type == EntityType.ENDERMAN ||
-					type == EntityType.ENDERMITE ||
-					type == EntityType.GHAST || 
-					type == EntityType.GIANT ||
-					type == EntityType.MAGMA_CUBE ||
-					type == EntityType.PIG_ZOMBIE ||
-					type == EntityType.SILVERFISH ||
-					type == EntityType.SKELETON ||
-					type == EntityType.SLIME ||
-					type == EntityType.SPIDER ||
-					type == EntityType.WITCH ||
-					type == EntityType.WITHER ||
-					type == EntityType.ZOMBIE ||
-					typeString == "shulker" ||
-					typeString == "polar_bear" ||
-					typeString == "stray" ||
-					typeString == "husk" ||
-					typeString == "vindicator" ||
-					typeString == "evoker" ||
-					typeString == "vex" ||
-					typeString == "illusioner"
-			) {
-				if (type == EntityType.PIG_ZOMBIE) {
-					PigZombie pig = (PigZombie) e;
-					pig.setAngry(true);
+			UUID uuid = player.getUniqueId();
+			
+			if (!lureRegistry.hasRegister(uuid)) {
+				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+					sender.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
+					onError().invoke(this, new ExceptionEventArgs<PlayerImmuneException>(new PlayerImmuneException(player)));
+					return;
 				}
 				
-				try {
-					((Creature) e).setTarget(player);
-				} catch (Exception ex) {
-					
-				}
-				
-				e.setVelocity(player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23d));
+				e(player.getUniqueId(), player);
+			} else {
+				eUndo(uuid, player);
 			}
 		}
 		
+		onComplete().invoke(this, CompleteEventArgs.EMPTY);
+	}
+	private void e(UUID uuid, Player player) {
+		lureRegistry.setRegister(uuid, null);
 		metricsHelper.commandWasRun(this);
 		
-		sender.sendMessage("Nearby monsters have been lured to " + player.getName() + ".");
+		sender.sendMessage("Nearby monsters are being lured tooward " + player.getName() + "!");
 	}
 	
 	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		UUID uuid = player.getUniqueId();
 		
+		if (lureRegistry.hasRegister(uuid)) {
+			eUndo(uuid, player);
+		}
+		
+		onComplete().invoke(this, CompleteEventArgs.EMPTY);
+	}
+	private void eUndo(UUID uuid, Player player) {
+		lureRegistry.removeRegister(uuid);
+		
+		sender.sendMessage("Nearby enemies are no longer being lured toward " + player.getName() + ".");
+	}
+	private void eUndo(UUID uuid, OfflinePlayer player) {
+		lureRegistry.removeRegister(uuid);
+		
+		sender.sendMessage("Nearby enemies are no longer being lured toward " + player.getName() + ".");
 	}
 }

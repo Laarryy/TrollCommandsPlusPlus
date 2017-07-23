@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.inventory.inventoryDrag;
 
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryDragEvent;
 
@@ -10,7 +12,7 @@ import ninja.egg82.plugin.commands.EventCommand;
 
 public class LockEventCommand extends EventCommand<InventoryDragEvent> {
 	//vars
-	private IRegistry lockRegistry = ServiceLocator.getService(LockRegistry.class);
+	private IRegistry<UUID> lockRegistry = ServiceLocator.getService(LockRegistry.class);
 	
 	//constructor
 	public LockEventCommand(InventoryDragEvent event) {
@@ -27,9 +29,9 @@ public class LockEventCommand extends EventCommand<InventoryDragEvent> {
 		
 		Player player = (Player) event.getWhoClicked();
 		
-		if (lockRegistry.hasRegister(player.getUniqueId().toString())) {
+		if (lockRegistry.hasRegister(player.getUniqueId())) {
 			if (event.getInventory().getHolder() instanceof Player) {
-				if (((Player) event.getInventory().getHolder()).getUniqueId().compareTo(player.getUniqueId()) == 0) {
+				if (((Player) event.getInventory().getHolder()).getUniqueId().equals(player.getUniqueId())) {
 					event.setCancelled(true);
 				}
 			}

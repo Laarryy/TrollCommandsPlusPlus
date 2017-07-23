@@ -19,8 +19,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.egg82.tcpp.services.CommandSearchDatabase;
 import me.egg82.tcpp.services.GuiRegistry;
 import ninja.egg82.patterns.IRegistry;
-import ninja.egg82.patterns.Pair;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.tuples.Pair;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.sql.LanguageDatabase;
 import ninja.egg82.startup.InitRegistry;
@@ -31,7 +31,7 @@ public class GuiUtil {
 	private static HashMap<String, Pair<String, String>> commands = null;
 	private static String[] allCommands = null;
 	
-	private static IRegistry guiRegistry = null;
+	private static IRegistry<String> guiRegistry = null;
 	
 	//constructor
 	public GuiUtil() {

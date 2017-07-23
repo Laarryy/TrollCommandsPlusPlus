@@ -7,7 +7,7 @@ import ninja.egg82.plugin.commands.PluginCommand;
 
 public class MetricsHelper {
 	//vars
-	private IRegistry commandRegistry = ServiceLocator.getService(CommandRegistry.class);
+	private IRegistry<String> commandRegistry = ServiceLocator.getService(CommandRegistry.class);
 	
 	//constructor
 	public MetricsHelper() {
@@ -31,7 +31,7 @@ public class MetricsHelper {
 		}
 		currentRuns += numTimes;
 		
-		commandRegistry.setRegister(name, Integer.class, currentRuns);
+		commandRegistry.setRegister(name, currentRuns);
 	}
 	
 	public void clear() {

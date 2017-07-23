@@ -1,5 +1,7 @@
 package me.egg82.tcpp.ticks;
 
+import java.util.UUID;
+
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -8,11 +10,12 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.reflection.type.TypeFilterHelper;
+import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.utils.MathUtil;
 
 public class HauntTickCommand extends TickCommand {
 	//vars
-	private IRegistry hauntRegistry = ServiceLocator.getService(HauntRegistry.class);
+	private IRegistry<UUID> hauntRegistry = ServiceLocator.getService(HauntRegistry.class);
 	
 	private Sound[] sounds = null;
 	
@@ -29,13 +32,13 @@ public class HauntTickCommand extends TickCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		String[] names = hauntRegistry.getRegistryNames();
-		for (String name : names) {
-			e(name, hauntRegistry.getRegister(name, Player.class));
+		UUID[] keys = hauntRegistry.getRegistryKeys();
+		for (UUID key : keys) {
+			e(key, CommandUtil.getPlayerByUuid(key));
 		}
 	}
-	private void e(String uuid, Player player) {
-		if(!player.isOnline()) {
+	private void e(UUID uuid, Player player) {
+		if (player == null || !player.isOnline()) {
 			return;
 		}
 		

@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.player.playerMove;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -13,7 +15,7 @@ import ninja.egg82.plugin.utils.LocationUtil;
 
 public class InfinityEventCommand extends EventCommand<PlayerMoveEvent> {
 	//vars
-	private IRegistry infinityRegistry = ServiceLocator.getService(InfinityRegistry.class);
+	private IRegistry<UUID> infinityRegistry = ServiceLocator.getService(InfinityRegistry.class);
 	
 	//constructor
 	public InfinityEventCommand(PlayerMoveEvent event) {
@@ -30,7 +32,7 @@ public class InfinityEventCommand extends EventCommand<PlayerMoveEvent> {
 		
 		Player player = event.getPlayer();
 		
-		if (!infinityRegistry.hasRegister(player.getUniqueId().toString())) {
+		if (!infinityRegistry.hasRegister(player.getUniqueId())) {
 			return;
 		}
 		

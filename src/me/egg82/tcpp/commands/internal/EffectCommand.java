@@ -2,33 +2,40 @@ package me.egg82.tcpp.commands.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
-import me.egg82.tcpp.enums.CommandErrorType;
-import me.egg82.tcpp.enums.MessageType;
+import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.exceptions.InvalidTypeException;
+import me.egg82.tcpp.exceptions.PlayerImmuneException;
 import me.egg82.tcpp.services.EffectRegistry;
 import me.egg82.tcpp.services.PotionNameRegistry;
 import me.egg82.tcpp.services.PotionTypeSearchDatabase;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.events.CommandEvent;
+import ninja.egg82.events.CompleteEventArgs;
+import ninja.egg82.events.ExceptionEventArgs;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.SpigotCommandErrorType;
-import ninja.egg82.plugin.enums.SpigotMessageType;
+import ninja.egg82.plugin.enums.SpigotLanguageType;
+import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
+import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
+import ninja.egg82.plugin.exceptions.PlayerNotFoundException;
 import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.utils.LanguageUtil;
 import ninja.egg82.sql.LanguageDatabase;
 
 public class EffectCommand extends PluginCommand {
 	//vars
-	private IRegistry effectRegistry = ServiceLocator.getService(EffectRegistry.class);
-	private IRegistry potionNameRegistry = ServiceLocator.getService(PotionNameRegistry.class);
+	private IRegistry<UUID> effectRegistry = ServiceLocator.getService(EffectRegistry.class);
+	private IRegistry<String> potionNameRegistry = ServiceLocator.getService(PotionNameRegistry.class);
 	
 	private LanguageDatabase potionTypeDatabase = ServiceLocator.getService(PotionTypeSearchDatabase.class);
 	
@@ -61,11 +68,11 @@ public class EffectCommand extends PluginCommand {
 			ArrayList<String> retVal = new ArrayList<String>();
 			
 			if (args[1].isEmpty()) {
-				for (String name : potionNameRegistry.getRegistryNames()) {
+				for (String name : potionNameRegistry.getRegistryKeys()) {
 					retVal.add(potionNameRegistry.getRegister(name, String.class));
 				}
 			} else {
-				for (String name : potionNameRegistry.getRegistryNames()) {
+				for (String name : potionNameRegistry.getRegistryKeys()) {
 					String value = potionNameRegistry.getRegister(name, String.class);
 					if (value.toLowerCase().startsWith(args[1].toLowerCase())) {
 						retVal.add(value);
@@ -83,16 +90,41 @@ public class EffectCommand extends PluginCommand {
 	@SuppressWarnings("unchecked")
 	protected void onExecute(long elapsedMilliseconds) {
 		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_EFFECT)) {
-			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
+			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_EFFECT)));
 			return;
 		}
-		if (args.length < 2) {
-			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
+		if (args.length == 0) {
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
 			sender.getServer().dispatchCommand(sender, "troll help " + name);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
+			return;
+		}
+		
+		if (args.length == 1) {
+			Player player = CommandUtil.getPlayerByName(args[0]);
+			if (player == null) {
+				OfflinePlayer offlinePlayer = CommandUtil.getOfflinePlayerByName(args[0]);
+				if (offlinePlayer != null) {
+					UUID uuid = offlinePlayer.getUniqueId();
+					if (effectRegistry.hasRegister(uuid)) {
+						eUndo(uuid, offlinePlayer);
+						onComplete().invoke(this, CompleteEventArgs.EMPTY);
+						return;
+					}
+				}
+				
+				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.PLAYER_NOT_FOUND));
+				onError().invoke(this, new ExceptionEventArgs<PlayerNotFoundException>(new PlayerNotFoundException(args[0])));
+				return;
+			}
+			
+			UUID uuid = player.getUniqueId();
+			
+			eUndo(uuid, player);
+			onComplete().invoke(this, CompleteEventArgs.EMPTY);
 			return;
 		}
 		
@@ -109,15 +141,15 @@ public class EffectCommand extends PluginCommand {
 			String[] types = potionTypeDatabase.getValues(potionTypeDatabase.naturalLanguage(search, false), 0);
 			
 			if (types == null || types.length == 0) {
-				sender.sendMessage(MessageType.POTION_NOT_FOUND);
-				dispatch(CommandEvent.ERROR, CommandErrorType.POTION_NOT_FOUND);
+				sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_TYPE));
+				onError().invoke(this, new ExceptionEventArgs<InvalidTypeException>(new InvalidTypeException(search)));
 				return;
 			}
 			
 			type = PotionEffectType.getByName(types[0].toUpperCase());
 			if (type == null) {
-				sender.sendMessage(MessageType.POTION_NOT_FOUND);
-				dispatch(CommandEvent.ERROR, CommandErrorType.POTION_NOT_FOUND);
+				sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_TYPE));
+				onError().invoke(this, new ExceptionEventArgs<InvalidTypeException>(new InvalidTypeException(search)));
 				return;
 			}
 		}
@@ -125,15 +157,15 @@ public class EffectCommand extends PluginCommand {
 		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
 		if (players.size() > 0) {
 			for (Player player : players) {
-				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-					continue;
-				}
-				
-				String uuid = player.getUniqueId().toString();
+				UUID uuid = player.getUniqueId();
 				
 				List<PotionEffectType> currentEffects = (List<PotionEffectType>) effectRegistry.getRegister(uuid);
 				
 				if (currentEffects == null || !currentEffects.contains(type)) {
+					if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+						continue;
+					}
+					
 					e(uuid, player, type, currentEffects);
 				} else {
 					eUndo(uuid, player, type, currentEffects);
@@ -143,33 +175,45 @@ public class EffectCommand extends PluginCommand {
 			Player player = CommandUtil.getPlayerByName(args[0]);
 			
 			if (player == null) {
-				sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
-				dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
-				return;
-			}
-			if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-				sender.sendMessage(MessageType.PLAYER_IMMUNE);
-				dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
+				OfflinePlayer offlinePlayer = CommandUtil.getOfflinePlayerByName(args[0]);
+				if (offlinePlayer != null) {
+					UUID uuid = offlinePlayer.getUniqueId();
+					if (effectRegistry.hasRegister(uuid)) {
+						List<PotionEffectType> currentEffects = effectRegistry.getRegister(uuid, List.class);
+						eUndo(uuid, offlinePlayer, type, currentEffects);
+						onComplete().invoke(this, CompleteEventArgs.EMPTY);
+						return;
+					}
+				}
+				
+				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.PLAYER_NOT_FOUND));
+				onError().invoke(this, new ExceptionEventArgs<PlayerNotFoundException>(new PlayerNotFoundException(args[0])));
 				return;
 			}
 			
-			String uuid = player.getUniqueId().toString();
+			UUID uuid = player.getUniqueId();
 			
 			List<PotionEffectType> currentEffects = effectRegistry.getRegister(uuid, List.class);
 			
 			if (currentEffects == null || !currentEffects.contains(type)) {
+				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+					sender.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
+					onError().invoke(this, new ExceptionEventArgs<PlayerImmuneException>(new PlayerImmuneException(player)));
+					return;
+				}
+				
 				e(uuid, player, type, currentEffects);
 			} else {
 				eUndo(uuid, player, type, currentEffects);
 			}
 		}
 		
-		dispatch(CommandEvent.COMPLETE, null);
+		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
-	private void e(String uuid, Player player, PotionEffectType potionType, List<PotionEffectType> currentEffects) {
+	private void e(UUID uuid, Player player, PotionEffectType potionType, List<PotionEffectType> currentEffects) {
 		if (currentEffects == null) {
 			currentEffects = new ArrayList<PotionEffectType>();
-			effectRegistry.setRegister(uuid, List.class, currentEffects);
+			effectRegistry.setRegister(uuid, currentEffects);
 		}
 		
 		currentEffects.add(potionType);
@@ -181,28 +225,46 @@ public class EffectCommand extends PluginCommand {
 	
 	protected void onUndo() {
 		Player player = CommandUtil.getPlayerByName(args[0]);
-		String uuid = player.getUniqueId().toString();
+		UUID uuid = player.getUniqueId();
 		
 		if (effectRegistry.hasRegister(uuid)) {
-			eUndo(player.getUniqueId().toString(), player);
+			eUndo(uuid, player);
 		}
 		
-		dispatch(CommandEvent.COMPLETE, null);
+		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
-	private void eUndo(String uuid, Player player, PotionEffectType potionType, List<PotionEffectType> currentEffects) {
+	private void eUndo(UUID uuid, Player player, PotionEffectType potionType, List<PotionEffectType> currentEffects) {
 		currentEffects.remove(potionType);
 		player.removePotionEffect(potionType);
+		
+		if (currentEffects.size() == 0) {
+			effectRegistry.removeRegister(uuid);
+		}
+		
+		sender.sendMessage(player.getName() + " is no longer being affected by " + potionNameRegistry.getRegister(potionType.getName(), String.class) + ".");
+	}
+	private void eUndo(UUID uuid, OfflinePlayer player, PotionEffectType potionType, List<PotionEffectType> currentEffects) {
+		currentEffects.remove(potionType);
+		
+		if (currentEffects.size() == 0) {
+			effectRegistry.removeRegister(uuid);
+		}
 		
 		sender.sendMessage(player.getName() + " is no longer being affected by " + potionNameRegistry.getRegister(potionType.getName(), String.class) + ".");
 	}
 	@SuppressWarnings("unchecked")
-	private void eUndo(String uuid, Player player) {
+	private void eUndo(UUID uuid, Player player) {
 		List<PotionEffectType> effects = effectRegistry.getRegister(uuid, List.class);
 		for (PotionEffectType potionType : effects) {
 			player.removePotionEffect(potionType);
 		}
 		
-		effectRegistry.setRegister(uuid, List.class, null);
+		effectRegistry.removeRegister(uuid);
+		
+		sender.sendMessage(player.getName() + " no longer has any permanent potion effects.");
+	}
+	private void eUndo(UUID uuid, OfflinePlayer player) {
+		effectRegistry.removeRegister(uuid);
 		
 		sender.sendMessage(player.getName() + " no longer has any permanent potion effects.");
 	}

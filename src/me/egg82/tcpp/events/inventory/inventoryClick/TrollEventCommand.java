@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.inventory.inventoryClick;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -17,10 +19,10 @@ import ninja.egg82.plugin.commands.EventCommand;
 
 public class TrollEventCommand extends EventCommand<InventoryClickEvent> {
 	//vars
-	private IRegistry trollInventoryRegistry = ServiceLocator.getService(TrollInventoryRegistry.class);
-	private IRegistry trollPlayerRegistry = ServiceLocator.getService(TrollPlayerRegistry.class);
-	private IRegistry trollPageRegistry = ServiceLocator.getService(TrollPageRegistry.class);
-	private IRegistry trollSearchRegistry = ServiceLocator.getService(TrollSearchRegistry.class);
+	private IRegistry<UUID> trollInventoryRegistry = ServiceLocator.getService(TrollInventoryRegistry.class);
+	private IRegistry<UUID> trollPlayerRegistry = ServiceLocator.getService(TrollPlayerRegistry.class);
+	private IRegistry<UUID> trollPageRegistry = ServiceLocator.getService(TrollPageRegistry.class);
+	private IRegistry<UUID> trollSearchRegistry = ServiceLocator.getService(TrollSearchRegistry.class);
 	
 	//constructor
 	public TrollEventCommand(InventoryClickEvent event) {
@@ -36,7 +38,7 @@ public class TrollEventCommand extends EventCommand<InventoryClickEvent> {
 		}
 		
 		Player player = (Player) event.getWhoClicked();
-		String uuid = player.getUniqueId().toString();
+		UUID uuid = player.getUniqueId();
 		
 		if (!trollInventoryRegistry.hasRegister(uuid)) {
 			return;
@@ -57,12 +59,12 @@ public class TrollEventCommand extends EventCommand<InventoryClickEvent> {
 		if (name.contains("previous")) {
 			int newPage = trollPageRegistry.getRegister(uuid, Integer.class) - 1;
 			Inventory inv = GuiUtil.createInventory(player,  trollSearchRegistry.getRegister(uuid, String.class), newPage);
-			trollPageRegistry.setRegister(uuid, Integer.class, newPage);
+			trollPageRegistry.setRegister(uuid, newPage);
 			event.getInventory().setContents(inv.getContents());
 		} else if (name.contains("next")) {
 			int newPage = trollPageRegistry.getRegister(uuid, Integer.class) + 1;
 			Inventory inv = GuiUtil.createInventory(player, trollSearchRegistry.getRegister(uuid, String.class), newPage);
-			trollPageRegistry.setRegister(uuid, Integer.class, newPage);
+			trollPageRegistry.setRegister(uuid, newPage);
 			event.getInventory().setContents(inv.getContents());
 		} else if (name.contains("close")) {
 			player.closeInventory();

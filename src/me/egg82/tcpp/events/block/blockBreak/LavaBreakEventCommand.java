@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.block.blockBreak;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -11,7 +13,7 @@ import ninja.egg82.plugin.commands.EventCommand;
 
 public class LavaBreakEventCommand extends EventCommand<BlockBreakEvent> {
 	//vars
-	private IRegistry lavaBreakRegistry = ServiceLocator.getService(LavaBreakRegistry.class);
+	private IRegistry<UUID> lavaBreakRegistry = ServiceLocator.getService(LavaBreakRegistry.class);
 	
 	//constructor
 	public LavaBreakEventCommand(BlockBreakEvent event) {
@@ -27,12 +29,12 @@ public class LavaBreakEventCommand extends EventCommand<BlockBreakEvent> {
 		}
 		
 		Player player = event.getPlayer();
-		String uuid = player.getUniqueId().toString();
+		UUID uuid = player.getUniqueId();
 		
 		if (lavaBreakRegistry.hasRegister(uuid)) {
 			event.setCancelled(true);
 			event.getBlock().setType(Material.LAVA);
-			lavaBreakRegistry.setRegister(uuid, Player.class, null);
+			lavaBreakRegistry.removeRegister(uuid);
 		}
 	}
 }

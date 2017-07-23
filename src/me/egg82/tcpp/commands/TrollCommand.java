@@ -10,16 +10,18 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-import me.egg82.tcpp.enums.CommandErrorType;
-import me.egg82.tcpp.enums.MessageType;
+import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.exceptions.InvalidCommandException;
 import me.egg82.tcpp.services.CommandSearchDatabase;
-import ninja.egg82.events.CommandEvent;
+import ninja.egg82.events.ExceptionEventArgs;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.SpigotCommandErrorType;
-import ninja.egg82.plugin.enums.SpigotMessageType;
+import ninja.egg82.plugin.enums.SpigotLanguageType;
+import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
+import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
 import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.utils.LanguageUtil;
 import ninja.egg82.sql.LanguageDatabase;
 import ninja.egg82.utils.ReflectUtil;
 
@@ -79,14 +81,14 @@ public class TrollCommand extends PluginCommand {
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
 		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_TROLL)) {
-			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
+			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_TROLL)));
 			return;
 		}
 		if (args.length == 0) {
-			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
 			sender.getServer().dispatchCommand(sender, "help " + command.getName());
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
 			return;
 		}
 		
@@ -124,15 +126,15 @@ public class TrollCommand extends PluginCommand {
 			String[] search = commandDatabase.getValues(commandDatabase.naturalLanguage(commandName, false), 0);
 			
 			if (search == null || search.length == 0) {
-				sender.sendMessage(MessageType.COMMAND_NOT_FOUND);
-				dispatch(CommandEvent.ERROR, CommandErrorType.COMMAND_NOT_FOUND);
+				sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_COMMAND));
+				onError().invoke(this, new ExceptionEventArgs<InvalidCommandException>(new InvalidCommandException(commandName)));
 				return;
 			}
 			
 			run = commands.get(search[0].toLowerCase());
 			if (run == null) {
-				sender.sendMessage(MessageType.COMMAND_NOT_FOUND);
-				dispatch(CommandEvent.ERROR, CommandErrorType.COMMAND_NOT_FOUND);
+				sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_COMMAND));
+				onError().invoke(this, new ExceptionEventArgs<InvalidCommandException>(new InvalidCommandException(commandName)));
 				return;
 			} else {
 				sender.sendMessage(ChatColor.YELLOW + "Running \"" + search[0].toLowerCase() + "\" as a \"best guess\" since the command \"" + commandName.toLowerCase() + "\" doesn't exist.");

@@ -1,13 +1,15 @@
 package me.egg82.tcpp.services;
 
+import java.util.UUID;
+
 import ninja.egg82.patterns.Registry;
 
-public class SquidRegistry extends Registry {
+public class SquidRegistry extends Registry<UUID> {
 	//vars
 	
 	//constructor
 	public SquidRegistry() {
-		super();
+		super(UUID.class);
 	}
 	
 	//public

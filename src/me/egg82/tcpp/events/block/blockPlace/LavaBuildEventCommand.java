@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.block.blockPlace;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -11,7 +13,7 @@ import ninja.egg82.plugin.commands.EventCommand;
 
 public class LavaBuildEventCommand extends EventCommand<BlockPlaceEvent> {
 	//vars
-	private IRegistry lavaBuildRegistry = ServiceLocator.getService(LavaBuildRegistry.class);
+	private IRegistry<UUID> lavaBuildRegistry = ServiceLocator.getService(LavaBuildRegistry.class);
 	
 	//constructor
 	public LavaBuildEventCommand(BlockPlaceEvent event) {
@@ -27,11 +29,11 @@ public class LavaBuildEventCommand extends EventCommand<BlockPlaceEvent> {
 		}
 		
 		Player player = event.getPlayer();
-		String uuid = player.getUniqueId().toString();
+		UUID uuid = player.getUniqueId();
 		
 		if (lavaBuildRegistry.hasRegister(uuid)) {
 			event.getBlock().setType(Material.LAVA);
-			lavaBuildRegistry.setRegister(uuid, Player.class, null);
+			lavaBuildRegistry.removeRegister(uuid);
 		}
 	}
 }

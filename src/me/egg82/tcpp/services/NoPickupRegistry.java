@@ -1,13 +1,15 @@
 package me.egg82.tcpp.services;
 
+import java.util.UUID;
+
 import ninja.egg82.patterns.Registry;
 
-public class NoPickupRegistry extends Registry {
+public class NoPickupRegistry extends Registry<UUID> {
 	//vars
 	
 	//constructor
 	public NoPickupRegistry() {
-		super();
+		super(UUID.class);
 	}
 	
 	//public

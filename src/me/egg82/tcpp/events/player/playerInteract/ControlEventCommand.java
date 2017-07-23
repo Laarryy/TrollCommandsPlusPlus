@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.player.playerInteract;
 
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -12,7 +14,7 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class ControlEventCommand extends EventCommand<PlayerInteractEvent> {
 	//vars
-	private IRegistry controlRegistry = ServiceLocator.getService(ControlRegistry.class);
+	private IRegistry<UUID> controlRegistry = ServiceLocator.getService(ControlRegistry.class);
 	
 	//constructor
 	public ControlEventCommand(PlayerInteractEvent event) {
@@ -29,7 +31,7 @@ public class ControlEventCommand extends EventCommand<PlayerInteractEvent> {
 		
 		Player player = event.getPlayer();
 		
-		String controllerUuid = controlRegistry.getName(player);
+		UUID controllerUuid = controlRegistry.getKey(player.getUniqueId());
 		if (controllerUuid != null) {
 			// Player is being controlled by someone
 			if (!CommandUtil.hasPermission(player, PermissionsType.FREECAM_WHILE_CONTROLLED)) {

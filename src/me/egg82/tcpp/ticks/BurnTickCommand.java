@@ -1,15 +1,18 @@
 package me.egg82.tcpp.ticks;
 
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.services.BurnRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
+import ninja.egg82.plugin.utils.CommandUtil;
 
 public class BurnTickCommand extends TickCommand {
 	//vars
-	private IRegistry burnRegistry = ServiceLocator.getService(BurnRegistry.class);
+	private IRegistry<UUID> burnRegistry = ServiceLocator.getService(BurnRegistry.class);
 	
 	//constructor
 	public BurnTickCommand() {
@@ -21,16 +24,16 @@ public class BurnTickCommand extends TickCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		String[] names = burnRegistry.getRegistryNames();
-		for (String name : names) {
-			e(name, burnRegistry.getRegister(name, Player.class));
+		UUID[] keys = burnRegistry.getRegistryKeys();
+		for (UUID key : keys) {
+			e(key, CommandUtil.getPlayerByUuid(key));
 		}
 	}
-	private void e(String uuid, Player player) {
-		if (!player.isOnline()) {
+	private void e(UUID uuid, Player player) {
+		if (player == null || !player.isOnline()) {
 			return;
 		}
 		
-		player.setFireTicks(45);
+		player.setFireTicks(50);
 	}
 }

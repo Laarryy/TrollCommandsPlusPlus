@@ -1,16 +1,19 @@
 package me.egg82.tcpp.ticks;
 
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.services.SpamRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
+import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.utils.MathUtil;
 
 public class SpamTickCommand extends TickCommand {
 	//vars
-	private IRegistry spamRegistry = ServiceLocator.getService(SpamRegistry.class);
+	private IRegistry<UUID> spamRegistry = ServiceLocator.getService(SpamRegistry.class);
 	
 	private String[] spam = new String[] {
 		"<Totally Legit> MAKE MONEY FROM HOME ONLINE! NO GIMMICKS! Call now!",
@@ -58,13 +61,13 @@ public class SpamTickCommand extends TickCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		String[] names = spamRegistry.getRegistryNames();
-		for (String name : names) {
-			e(name, spamRegistry.getRegister(name, Player.class));
+		UUID[] keys = spamRegistry.getRegistryKeys();
+		for (UUID key : keys) {
+			e(key, CommandUtil.getPlayerByUuid(key));
 		}
 	}
-	private void e(String uuid, Player player) {
-		if (!player.isOnline()) {
+	private void e(UUID uuid, Player player) {
+		if (player == null || !player.isOnline()) {
 			return;
 		}
 		

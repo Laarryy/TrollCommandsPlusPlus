@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.player.playerMove;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -11,7 +13,7 @@ import ninja.egg82.plugin.commands.EventCommand;
 
 public class DisplayEventCommand extends EventCommand<PlayerMoveEvent> {
 	//vars
-	private IRegistry displayLocationRegistry = ServiceLocator.getService(DisplayLocationRegistry.class);
+	private IRegistry<UUID> displayLocationRegistry = ServiceLocator.getService(DisplayLocationRegistry.class);
 	
 	//constructor
 	public DisplayEventCommand(PlayerMoveEvent event) {
@@ -27,7 +29,7 @@ public class DisplayEventCommand extends EventCommand<PlayerMoveEvent> {
 		}
 		
 		Player player = event.getPlayer();
-		String uuid = player.getUniqueId().toString();
+		UUID uuid = player.getUniqueId();
 		
 		if (displayLocationRegistry.hasRegister(uuid)) {
 			Location loc = displayLocationRegistry.getRegister(uuid, Location.class);

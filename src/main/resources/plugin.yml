@@ -1,6 +1,6 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 4.18.37
+version: 4.19.38
 softdepend: [LibsDisguises,iDisguise,ProtocolLib]
 commands:
   troll:
@@ -21,10 +21,10 @@ commands:
       /troll clumsy <player>: Careful, or you'll end up dropping all of your stuff!
       /troll comet [speed] [power]: Shoots a fireball of adjustable speed and power.
       /troll control <player>: Allows you to take control of a player. Oooh, spoooky!
-      /troll convert <player> [type]: I hope they REALLY like potatoes. Or whatever you want, really.
+      /troll convert <player> <type>: I hope they REALLY like potatoes. Or whatever you want, really.
       /troll creep <player>: Spawns a charged creeper at the player's location.
       /troll display <player>: Put your friends and enemies on display!
-      /troll effect <player> <effect>: Applies the specified effect to the player indefinitely, or removes it if it has already been applied.
+      /troll effect <player> [effect]: Applies the specified effect to the player indefinitely, or removes it if it has already been applied. Optionally removes all applied effects.
       /troll electrify <player>: Thine enemy shalt feel the wrath of many angry gods.
       /troll empower: Empowers (or disempowers) the next player or mob you right-click. Give them the strength to defeat thine enemy!
       /troll enchant <type> [level]: Enchants (or disenchants) the item you're holding with the specified enchantment. Optionally takes a level for the enchantment.
@@ -45,7 +45,7 @@ commands:
       /troll hurt <player>: Where is all this damage coming from?!
       /troll infinity <player>: Makes the player fall indefinitely.
       /troll inspect <player>: Allows you to "inspect" the player's inventory.
-      /troll invert <player>: Left is right, up is down! Only works for flight.
+      /troll invert <player>: Left is right, up is down! Reverses the player's flight controls.
       /troll kill <player> [seconds]: Kills a player with a delay.
       /troll lag <player>: Makes the player experience fake lag. Does not affect the server.
       /troll lavabreak <player>: The next block a player breaks turns to lava.

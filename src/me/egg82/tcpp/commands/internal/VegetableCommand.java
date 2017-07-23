@@ -2,6 +2,7 @@ package me.egg82.tcpp.commands.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -9,27 +10,32 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.enums.CommandErrorType;
-import me.egg82.tcpp.enums.MessageType;
+import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.exceptions.InvalidTypeException;
+import me.egg82.tcpp.exceptions.PlayerImmuneException;
 import me.egg82.tcpp.services.VegetableNameRegistry;
 import me.egg82.tcpp.services.VegetableRegistry;
 import me.egg82.tcpp.services.VegetableTypeSearchDatabase;
 import me.egg82.tcpp.util.MetricsHelper;
 import me.egg82.tcpp.util.VegetableHelper;
-import ninja.egg82.events.CommandEvent;
+import ninja.egg82.events.CompleteEventArgs;
+import ninja.egg82.events.ExceptionEventArgs;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.SpigotCommandErrorType;
-import ninja.egg82.plugin.enums.SpigotMessageType;
+import ninja.egg82.plugin.enums.SpigotLanguageType;
+import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
+import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
+import ninja.egg82.plugin.exceptions.PlayerNotFoundException;
 import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.utils.LanguageUtil;
 import ninja.egg82.sql.LanguageDatabase;
 
 public class VegetableCommand extends PluginCommand {
 	//vars
-	private IRegistry vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
-	private IRegistry vegetableNameRegistry = ServiceLocator.getService(VegetableNameRegistry.class);
+	private IRegistry<UUID> vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
+	private IRegistry<String> vegetableNameRegistry = ServiceLocator.getService(VegetableNameRegistry.class);
 	private ArrayList<String> vegetableNames = new ArrayList<String>();
 	
 	private LanguageDatabase vegetableTypeDatabase = ServiceLocator.getService(VegetableTypeSearchDatabase.class);
@@ -40,11 +46,9 @@ public class VegetableCommand extends PluginCommand {
 	public VegetableCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
 		
-		vegetableNames.add("Beetroot");
-		vegetableNames.add("Brown Mushroom");
-		vegetableNames.add("Carrot");
-		vegetableNames.add("Potato");
-		vegetableNames.add("Red Mushroom");
+		for (String key : vegetableNameRegistry.getRegistryKeys()) {
+			vegetableNames.add(vegetableNameRegistry.getRegister(key, String.class));
+		}
 	}
 	
 	//public
@@ -87,16 +91,16 @@ public class VegetableCommand extends PluginCommand {
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
 		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_VEGETABLE)) {
-			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
+			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_VEGETABLE)));
 			return;
 		}
 		if (args.length == 0) {
-			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
 			sender.getServer().dispatchCommand(sender, "troll help " + name);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
 			return;
 		}
 		
@@ -116,15 +120,15 @@ public class VegetableCommand extends PluginCommand {
 				String[] types = vegetableTypeDatabase.getValues(vegetableTypeDatabase.naturalLanguage(search, false), 0);
 				
 				if (types == null || types.length == 0) {
-					sender.sendMessage(MessageType.VEGETABLE_NOT_FOUND);
-					dispatch(CommandEvent.ERROR, CommandErrorType.VEGETABLE_NOT_FOUND);
+					sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_TYPE));
+					onError().invoke(this,  new ExceptionEventArgs<InvalidTypeException>(new InvalidTypeException(search)));
 					return;
 				}
 				
 				type = Material.getMaterial(types[0].toUpperCase());
 				if (type == null) {
-					sender.sendMessage(MessageType.VEGETABLE_NOT_FOUND);
-					dispatch(CommandEvent.ERROR, CommandErrorType.VEGETABLE_NOT_FOUND);
+					sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_TYPE));
+					onError().invoke(this,  new ExceptionEventArgs<InvalidTypeException>(new InvalidTypeException(search)));
 					return;
 				}
 			}
@@ -133,13 +137,13 @@ public class VegetableCommand extends PluginCommand {
 		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
 		if (players.size() > 0) {
 			for (Player player : players) {
-				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-					continue;
-				}
-				
-				String uuid = player.getUniqueId().toString();
+				UUID uuid = player.getUniqueId();
 				
 				if (!vegetableRegistry.hasRegister(uuid)) {
+					if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+						continue;
+					}
+					
 					e(uuid, player, type);
 				} else {
 					eUndo(uuid, player);
@@ -149,28 +153,29 @@ public class VegetableCommand extends PluginCommand {
 			Player player = CommandUtil.getPlayerByName(args[0]);
 			
 			if (player == null) {
-				sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
-				dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
-				return;
-			}
-			if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-				sender.sendMessage(MessageType.PLAYER_IMMUNE);
-				dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
+				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.PLAYER_NOT_FOUND));
+				onError().invoke(this, new ExceptionEventArgs<PlayerNotFoundException>(new PlayerNotFoundException(args[0])));
 				return;
 			}
 			
-			String uuid = player.getUniqueId().toString();
+			UUID uuid = player.getUniqueId();
 			
 			if (!vegetableRegistry.hasRegister(uuid)) {
+				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+					sender.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
+					onError().invoke(this, new ExceptionEventArgs<PlayerImmuneException>(new PlayerImmuneException(player)));
+					return;
+				}
+				
 				e(uuid, player, type);
 			} else {
 				eUndo(uuid, player);
 			}
 		}
 		
-		dispatch(CommandEvent.COMPLETE, null);
+		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
-	private void e(String uuid, Player player, Material vegetable) {
+	private void e(UUID uuid, Player player, Material vegetable) {
 		vegetableHelper.vegetable(uuid, player, vegetable);
 		metricsHelper.commandWasRun(this);
 		
@@ -179,15 +184,15 @@ public class VegetableCommand extends PluginCommand {
 	
 	protected void onUndo() {
 		Player player = CommandUtil.getPlayerByName(args[0]);
-		String uuid = player.getUniqueId().toString();
+		UUID uuid = player.getUniqueId();
 		
 		if (vegetableRegistry.hasRegister(uuid)) {
 			eUndo(uuid, player);
 		}
 		
-		dispatch(CommandEvent.COMPLETE, null);
+		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
-	private void eUndo(String uuid, Player player) {
+	private void eUndo(UUID uuid, Player player) {
 		vegetableHelper.unvegetable(uuid, player);
 		
 		sender.sendMessage(player.getName() + " is no longer a vegetable.");

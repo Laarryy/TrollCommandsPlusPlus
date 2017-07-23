@@ -2,6 +2,7 @@ package me.egg82.tcpp.commands.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -11,22 +12,29 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import me.egg82.tcpp.enums.CommandErrorType;
-import me.egg82.tcpp.enums.MessageType;
+import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.exceptions.InvalidTypeException;
+import me.egg82.tcpp.exceptions.PlayerImmuneException;
+import me.egg82.tcpp.services.ConvertRegistry;
 import me.egg82.tcpp.services.MaterialNameRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.events.CommandEvent;
+import ninja.egg82.events.CompleteEventArgs;
+import ninja.egg82.events.ExceptionEventArgs;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.SpigotCommandErrorType;
-import ninja.egg82.plugin.enums.SpigotMessageType;
+import ninja.egg82.plugin.enums.SpigotLanguageType;
+import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
+import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
+import ninja.egg82.plugin.exceptions.PlayerNotFoundException;
 import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.utils.LanguageUtil;
 
 public class ConvertCommand extends PluginCommand {
 	//vars
-	private IRegistry materialNameRegistry = ServiceLocator.getService(MaterialNameRegistry.class);
+	private IRegistry<UUID> convertRegistry = ServiceLocator.getService(ConvertRegistry.class);
+	private IRegistry<String> materialNameRegistry = ServiceLocator.getService(MaterialNameRegistry.class);
 	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
@@ -57,12 +65,12 @@ public class ConvertCommand extends PluginCommand {
 			ArrayList<String> retVal = new ArrayList<String>();
 			
 			if (args[1].isEmpty()) {
-				for (String name : materialNameRegistry.getRegistryNames()) {
-					retVal.add(materialNameRegistry.getRegister(name, String.class));
+				for (String key : materialNameRegistry.getRegistryKeys()) {
+					retVal.add(materialNameRegistry.getRegister(key, String.class));
 				}
 			} else {
-				for (String name : materialNameRegistry.getRegistryNames()) {
-					String value = materialNameRegistry.getRegister(name, String.class);
+				for (String key : materialNameRegistry.getRegistryKeys()) {
+					String value = materialNameRegistry.getRegister(key, String.class);
 					if (value.toLowerCase().startsWith(args[1].toLowerCase())) {
 						retVal.add(value);
 					}
@@ -78,27 +86,27 @@ public class ConvertCommand extends PluginCommand {
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
 		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_CONVERT)) {
-			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
+			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_CONVERT)));
 			return;
 		}
 		if (!CommandUtil.isArrayOfAllowedLength(args, 1, 2)) {
-			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
 			sender.getServer().dispatchCommand(sender, "troll help " + name);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
 			return;
 		}
 		
-		Material type = Material.POTATO_ITEM;
+		Material type = null;
 		if (args.length == 2) {
 			type = Material.getMaterial(args[1].replaceAll(" ", "_").toUpperCase());
 			if (type == null) {
 				type = Material.getMaterial(args[1].replaceAll(" ", "_").toUpperCase() + "_ITEM");
 				if (type == null) {
-					sender.sendMessage(MessageType.MATERIAL_NOT_FOUND);
-					dispatch(CommandEvent.ERROR, CommandErrorType.MATERIAL_NOT_FOUND);
+					sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_TYPE));
+					onError().invoke(this, new ExceptionEventArgs<InvalidTypeException>(new InvalidTypeException(args[1])));
 					return;
 				}
 			}
@@ -107,34 +115,54 @@ public class ConvertCommand extends PluginCommand {
 		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
 		if (players.size() > 0) {
 			for (Player player : players) {
-				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-					continue;
+				if (type != null) {
+					if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+						continue;
+					}
+					
+					e(player.getUniqueId(), player, type);
+				} else {
+					eUndo(player.getUniqueId(), player);
 				}
-				
-				e(player.getUniqueId().toString(), player, type);
 			}
 		} else {
 			Player player = CommandUtil.getPlayerByName(args[0]);
 			
 			if (player == null) {
-				sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
-				dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
-				return;
-			}
-			if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-				sender.sendMessage(MessageType.PLAYER_IMMUNE);
-				dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
+				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.PLAYER_NOT_FOUND));
+				onError().invoke(this, new ExceptionEventArgs<PlayerNotFoundException>(new PlayerNotFoundException(args[0])));
 				return;
 			}
 			
-			e(player.getUniqueId().toString(), player, type);
+			if (type != null) {
+				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+					sender.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
+					onError().invoke(this, new ExceptionEventArgs<PlayerImmuneException>(new PlayerImmuneException(player)));
+					return;
+				}
+				
+				e(player.getUniqueId(), player, type);
+			} else {
+				eUndo(player.getUniqueId(), player);
+			}
 		}
 		
-		dispatch(CommandEvent.COMPLETE, null);
+		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
-	private void e(String uuid, Player player, Material type) {
+	@SuppressWarnings("unchecked")
+	private void e(UUID uuid, Player player, Material type) {
 		PlayerInventory inv = player.getInventory();
 		ItemStack[] items = inv.getContents();
+		List<ItemStack[]> conversions = null;
+		
+		if (convertRegistry.hasRegister(uuid)) {
+			conversions = convertRegistry.getRegister(uuid, List.class);
+		} else {
+			conversions = new ArrayList<ItemStack[]>();
+			convertRegistry.setRegister(uuid, conversions);
+		}
+		
+		conversions.add(items.clone());
 		
 		for (int i = 0; i < items.length; i++) {
 			if (items[i] != null && items[i].getType() != Material.AIR) {
@@ -143,6 +171,7 @@ public class ConvertCommand extends PluginCommand {
 		}
 		
 		inv.setContents(items);
+		player.updateInventory();
 		
 		metricsHelper.commandWasRun(this);
 		
@@ -150,12 +179,35 @@ public class ConvertCommand extends PluginCommand {
 		if (name.substring(name.length() - 5) == "_item") {
 			name = name.substring(0, name.length() - 5);
 		}
-		name.replaceAll("_", " ");
+		name.replace('_', ' ');
 		
 		sender.sendMessage(player.getName() + "'s inventory is now " + name + ".");
 	}
 	
 	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		UUID uuid = player.getUniqueId();
 		
+		if (convertRegistry.hasRegister(uuid)) {
+			eUndo(uuid, player);
+		}
+		
+		onComplete().invoke(this, CompleteEventArgs.EMPTY);
+	}
+	@SuppressWarnings("unchecked")
+	private void eUndo(UUID uuid, Player player) {
+		if (!convertRegistry.hasRegister(uuid)) {
+			sender.sendMessage("No conversions left to undo for " + player.getName() + ".");
+			return;
+		}
+		
+		List<ItemStack[]> conversions = convertRegistry.getRegister(uuid, List.class);
+		player.getInventory().setContents(conversions.remove(conversions.size() - 1));
+		player.updateInventory();
+		if (conversions.size() == 0) {
+			convertRegistry.removeRegister(uuid);
+		}
+		
+		sender.sendMessage("Undid one conversion for " + player.getName() + ".");
 	}
 }

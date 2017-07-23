@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.block.blockPlace;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -11,7 +13,7 @@ import ninja.egg82.plugin.commands.EventCommand;
 
 public class ExplodeBuildEventCommand extends EventCommand<BlockPlaceEvent> {
 	//vars
-	private IRegistry explodeBuildRegistry = ServiceLocator.getService(ExplodeBuildRegistry.class);
+	private IRegistry<UUID> explodeBuildRegistry = ServiceLocator.getService(ExplodeBuildRegistry.class);
 
 	//constructor
 	public ExplodeBuildEventCommand(BlockPlaceEvent event) {
@@ -27,12 +29,12 @@ public class ExplodeBuildEventCommand extends EventCommand<BlockPlaceEvent> {
 		}
 		
 		Player player = event.getPlayer();
-		String uuid = player.getUniqueId().toString();
+		UUID uuid = player.getUniqueId();
 		
 		if (explodeBuildRegistry.hasRegister(uuid)) {
 			Location blockLocation = event.getBlock().getLocation();
 			blockLocation.getWorld().createExplosion(blockLocation.getX() + 0.5d, blockLocation.getY() + 0.5d, blockLocation.getZ() + 0.5d, 4.0f, true, true);
-			explodeBuildRegistry.setRegister(uuid, Player.class, null);
+			explodeBuildRegistry.removeRegister(uuid);
 		}
 	}
 }

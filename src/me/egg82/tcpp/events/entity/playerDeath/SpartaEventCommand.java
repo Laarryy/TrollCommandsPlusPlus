@@ -1,6 +1,7 @@
 package me.egg82.tcpp.events.entity.playerDeath;
 
-import org.bukkit.entity.Player;
+import java.util.UUID;
+
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import me.egg82.tcpp.services.SpartaRegistry;
@@ -10,7 +11,7 @@ import ninja.egg82.plugin.commands.EventCommand;
 
 public class SpartaEventCommand extends EventCommand<PlayerDeathEvent> {
 	//vars
-	private IRegistry spartaRegistry = ServiceLocator.getService(SpartaRegistry.class);
+	private IRegistry<UUID> spartaRegistry = ServiceLocator.getService(SpartaRegistry.class);
 	
 	//constructor
 	public SpartaEventCommand(PlayerDeathEvent event) {
@@ -21,6 +22,6 @@ public class SpartaEventCommand extends EventCommand<PlayerDeathEvent> {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		spartaRegistry.setRegister(event.getEntity().getUniqueId().toString(), Player.class, null);
+		spartaRegistry.removeRegister(event.getEntity().getUniqueId());
 	}
 }

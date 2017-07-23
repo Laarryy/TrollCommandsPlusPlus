@@ -1,6 +1,7 @@
 package me.egg82.tcpp.ticks;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -12,12 +13,13 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.utils.BlockUtil;
+import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.LocationUtil;
 import ninja.egg82.utils.MathUtil;
 
 public class ClumsyTickCommand extends TickCommand {
 	//vars
-	private IRegistry clumsyRegistry = ServiceLocator.getService(ClumsyRegistry.class);
+	private IRegistry<UUID> clumsyRegistry = ServiceLocator.getService(ClumsyRegistry.class);
 	
 	//constructor
 	public ClumsyTickCommand() {
@@ -29,13 +31,13 @@ public class ClumsyTickCommand extends TickCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		String[] names = clumsyRegistry.getRegistryNames();
-		for (String name : names) {
-			e(name, clumsyRegistry.getRegister(name, Player.class));
+		UUID[] keys = clumsyRegistry.getRegistryKeys();
+		for (UUID key : keys) {
+			e(key, CommandUtil.getPlayerByUuid(key));
 		}
 	}
-	private void e(String uuid, Player player) {
-		if (!player.isOnline()) {
+	private void e(UUID uuid, Player player) {
+		if (player == null || !player.isOnline()) {
 			return;
 		}
 		

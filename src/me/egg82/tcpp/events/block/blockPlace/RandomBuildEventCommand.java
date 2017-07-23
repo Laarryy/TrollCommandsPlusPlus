@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.block.blockPlace;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -15,7 +17,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class RandomBuildEventCommand extends EventCommand<BlockPlaceEvent> {
 	//vars
-	private IRegistry randomBuildRegistry = ServiceLocator.getService(RandomBuildRegistry.class);
+	private IRegistry<UUID> randomBuildRegistry = ServiceLocator.getService(RandomBuildRegistry.class);
 	
 	private Material[] materials = null;
 
@@ -56,7 +58,7 @@ public class RandomBuildEventCommand extends EventCommand<BlockPlaceEvent> {
 		}
 		
 		Player player = event.getPlayer();
-		String uuid = player.getUniqueId().toString();
+		UUID uuid = player.getUniqueId();
 		
 		if (randomBuildRegistry.hasRegister(uuid)) {
 			int tries = 0;

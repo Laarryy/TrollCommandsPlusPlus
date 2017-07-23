@@ -1,8 +1,7 @@
 package me.egg82.tcpp.events.player.playerQuit;
 
-import java.util.ArrayDeque;
+import java.util.UUID;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import me.egg82.tcpp.services.NightmareRegistry;
@@ -12,7 +11,7 @@ import ninja.egg82.plugin.commands.EventCommand;
 
 public class NightmareEventCommand extends EventCommand<PlayerQuitEvent> {
 	//vars
-	private IRegistry nightmareRegistry = ServiceLocator.getService(NightmareRegistry.class);
+	private IRegistry<UUID> nightmareRegistry = ServiceLocator.getService(NightmareRegistry.class);
 	
 	//constructor
 	public NightmareEventCommand(PlayerQuitEvent event) {
@@ -23,13 +22,6 @@ public class NightmareEventCommand extends EventCommand<PlayerQuitEvent> {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		Player player = event.getPlayer();
-		String uuid = player.getUniqueId().toString();
-		
-		if (!nightmareRegistry.hasRegister(uuid)) {
-			return;
-		}
-		
-		nightmareRegistry.setRegister(uuid, ArrayDeque.class, null);
+		nightmareRegistry.removeRegister(event.getPlayer().getUniqueId());
 	}
 }

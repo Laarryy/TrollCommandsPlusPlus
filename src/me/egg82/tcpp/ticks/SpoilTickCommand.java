@@ -3,6 +3,7 @@ package me.egg82.tcpp.ticks;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -14,10 +15,11 @@ import me.egg82.tcpp.services.SpoilRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
+import ninja.egg82.plugin.utils.CommandUtil;
 
 public class SpoilTickCommand extends TickCommand {
 	//vars
-	private IRegistry spoilRegistry = ServiceLocator.getService(SpoilRegistry.class);
+	private IRegistry<UUID> spoilRegistry = ServiceLocator.getService(SpoilRegistry.class);
 	
 	//constructor
 	public SpoilTickCommand() {
@@ -29,13 +31,13 @@ public class SpoilTickCommand extends TickCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		String[] names = spoilRegistry.getRegistryNames();
-		for (String name : names) {
-			e(name, spoilRegistry.getRegister(name, Player.class));
+		UUID[] keys = spoilRegistry.getRegistryKeys();
+		for (UUID key : keys) {
+			e(key, CommandUtil.getPlayerByUuid(key));
 		}
 	}
-	private void e(String uuid, Player player) {
-		if (!player.isOnline()) {
+	private void e(UUID uuid, Player player) {
+		if (player == null || !player.isOnline()) {
 			return;
 		}
 		

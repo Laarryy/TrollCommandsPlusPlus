@@ -1,6 +1,7 @@
 package me.egg82.tcpp.util;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -9,6 +10,7 @@ import org.bukkit.entity.Player;
 import me.egg82.tcpp.services.HoleBlockRegistry;
 import me.egg82.tcpp.services.HotTubRegistry;
 import me.egg82.tcpp.services.PortalRegistry;
+import me.egg82.tcpp.services.HoleRegistry;
 import me.egg82.tcpp.services.VoidRadiusRegistry;
 import me.egg82.tcpp.services.VoidRegistry;
 import ninja.egg82.patterns.IRegistry;
@@ -19,11 +21,12 @@ import ninja.egg82.plugin.utils.TaskUtil;
 
 public class WorldHoleHelper {
 	//vars
-	private IRegistry portalRegistry = ServiceLocator.getService(PortalRegistry.class);
-	private IRegistry voidRegistry = ServiceLocator.getService(VoidRegistry.class);
-	private IRegistry voidRadiusRegistry = ServiceLocator.getService(VoidRadiusRegistry.class);
-	private IRegistry hotTubRegistry = ServiceLocator.getService(HotTubRegistry.class);
-	private IRegistry holeBlockRegistry = ServiceLocator.getService(HoleBlockRegistry.class);
+	private IRegistry<UUID> holeRegistry = ServiceLocator.getService(HoleRegistry.class);
+	private IRegistry<UUID> portalRegistry = ServiceLocator.getService(PortalRegistry.class);
+	private IRegistry<UUID> voidRegistry = ServiceLocator.getService(VoidRegistry.class);
+	private IRegistry<UUID> voidRadiusRegistry = ServiceLocator.getService(VoidRadiusRegistry.class);
+	private IRegistry<UUID> hotTubRegistry = ServiceLocator.getService(HotTubRegistry.class);
+	private IRegistry<UUID> holeBlockRegistry = ServiceLocator.getService(HoleBlockRegistry.class);
 	
 	//constructor
 	public WorldHoleHelper() {
@@ -31,11 +34,12 @@ public class WorldHoleHelper {
 	}
 	
 	//public
-	public void portalHole(String uuid, Player player) {
+	public void portalHole(UUID uuid, Player player) {
 		// Center should be three blocks below player, for a total of five blocks of depth minus a layer for portals
 		Location centerLocation = player.getLocation().clone().subtract(0.0d, 3.0d, 0.0d);
 		
-		portalRegistry.setRegister(uuid, Location.class, centerLocation);
+		holeRegistry.setRegister(uuid, null);
+		portalRegistry.setRegister(uuid, centerLocation);
 		
 		// Get all blocks, 3x3x5 (LxWxH)
 		List<BlockData> blockData = BlockUtil.getBlocks(centerLocation, 1, 2, 1);
@@ -44,50 +48,58 @@ public class WorldHoleHelper {
 		// Fill bottom layer of new air blocks with portals
 		BlockUtil.clearBlocks(centerLocation.clone().subtract(0.0d, 2.0d, 0.0d), Material.ENDER_PORTAL, 1, 0, 1, false);
 		
-		holeBlockRegistry.setRegister(uuid, List.class, blockData);
+		holeBlockRegistry.setRegister(uuid, blockData);
+		
+		player.setFlying(false);
 		
 		// Wait five seconds
 		TaskUtil.runSync(new Runnable() {
 			public void run() {
-				portalRegistry.setRegister(uuid, Location.class, null);
-				holeBlockRegistry.setRegister(uuid, List.class, null);
+				holeRegistry.removeRegister(uuid);
+				portalRegistry.removeRegister(uuid);
+				holeBlockRegistry.removeRegister(uuid);
 				// Put all the blocks we took earlier back
 				BlockUtil.setBlocks(blockData, centerLocation, 1, 2, 1, false);
 			}
 		}, 100L);
 	}
-	public void voidHole(String uuid, Player player) {
+	public void voidHole(UUID uuid, Player player) {
 		// Center should be halfway between player and zero
 		Location centerLocation = player.getLocation().clone();
 		int yRadius = (int) Math.floor(centerLocation.getY() / 2.0d);
 		centerLocation.subtract(0.0d, centerLocation.getY() / 2.0d, 0.0d);
 		
-		voidRegistry.setRegister(uuid, Location.class, centerLocation);
-		voidRadiusRegistry.setRegister(uuid, Integer.class, yRadius);
+		holeRegistry.setRegister(uuid, null);
+		voidRegistry.setRegister(uuid, centerLocation);
+		voidRadiusRegistry.setRegister(uuid, yRadius);
 		
 		// Get all blocks, 3x3xY (LxWxH)
 		List<BlockData> blockData = BlockUtil.getBlocks(centerLocation, 1, yRadius, 1);
 		// Fill the previous 3x3xY area with air
 		BlockUtil.clearBlocks(centerLocation, Material.AIR, 1, yRadius, 1, false);
 		
-		holeBlockRegistry.setRegister(uuid, List.class, blockData);
+		holeBlockRegistry.setRegister(uuid, blockData);
+		
+		player.setFlying(false);
 		
 		// Wait eight seconds
 		TaskUtil.runSync(new Runnable() {
 			public void run() {
-				voidRegistry.setRegister(uuid, Location.class, null);
-				voidRadiusRegistry.setRegister(uuid, Integer.class, null);
-				holeBlockRegistry.setRegister(uuid, List.class, null);
+				holeRegistry.removeRegister(uuid);
+				voidRegistry.removeRegister(uuid);
+				voidRadiusRegistry.removeRegister(uuid);
+				holeBlockRegistry.removeRegister(uuid);
 				// Put all the blocks we took earlier back
 				BlockUtil.setBlocks(blockData, centerLocation, 1, yRadius, 1, false);
 			}
 		}, 160L);
 	}
-	public void hotTubHole(String uuid, Player player) {
+	public void hotTubHole(UUID uuid, Player player) {
 		// Center should be at player level, for a total of one block of depth (minus a layer for lava)
 		Location centerLocation = player.getLocation().clone();
 		
-		hotTubRegistry.setRegister(uuid, Location.class, centerLocation);
+		holeRegistry.setRegister(uuid, null);
+		hotTubRegistry.setRegister(uuid, centerLocation);
 		
 		// Get all blocks, 3x3x2 (LxWxH)
 		List<BlockData> blockData = BlockUtil.getBlocks(centerLocation, 1, 1, 1);
@@ -96,13 +108,16 @@ public class WorldHoleHelper {
 		// Fill bottom layer of new air blocks with lava
 		BlockUtil.clearBlocks(centerLocation.clone().subtract(0.0d, 1.0d, 0.0d), Material.STATIONARY_LAVA, 1, 0, 1, false);
 		
-		holeBlockRegistry.setRegister(uuid, List.class, blockData);
+		holeBlockRegistry.setRegister(uuid, blockData);
+		
+		player.setFlying(false);
 		
 		// Wait five seconds
 		TaskUtil.runSync(new Runnable() {
 			public void run() {
-				hotTubRegistry.setRegister(uuid, Location.class, null);
-				holeBlockRegistry.setRegister(uuid, List.class, null);
+				holeRegistry.removeRegister(uuid);
+				hotTubRegistry.removeRegister(uuid);
+				holeBlockRegistry.removeRegister(uuid);
 				// Put all the blocks we took earlier back
 				BlockUtil.setBlocks(blockData, centerLocation, 1, 1, 1, true);
 			}
@@ -111,26 +126,27 @@ public class WorldHoleHelper {
 	
 	@SuppressWarnings("unchecked")
 	public void undoAll() {
-		String[] portalNames = portalRegistry.getRegistryNames();
-		for (int i = 0; i < portalNames.length; i++) {
-			BlockUtil.setBlocks(holeBlockRegistry.getRegister(portalNames[i], List.class), portalRegistry.getRegister(portalNames[i], Location.class), 1, 2, 1, false);
+		UUID[] portalKeys = portalRegistry.getRegistryKeys();
+		for (int i = 0; i < portalKeys.length; i++) {
+			BlockUtil.setBlocks(holeBlockRegistry.getRegister(portalKeys[i], List.class), portalRegistry.getRegister(portalKeys[i], Location.class), 1, 2, 1, false);
 		}
 		portalRegistry.clear();
 		
-		String[] voidNames = voidRegistry.getRegistryNames();
-		for (int i = 0; i < voidNames.length; i++) {
-			BlockUtil.setBlocks(holeBlockRegistry.getRegister(voidNames[i], List.class), voidRegistry.getRegister(voidNames[i], Location.class), 1, voidRadiusRegistry.getRegister(voidNames[i], Integer.class), 1, false);
+		UUID[] voidKeys = voidRegistry.getRegistryKeys();
+		for (int i = 0; i < voidKeys.length; i++) {
+			BlockUtil.setBlocks(holeBlockRegistry.getRegister(voidKeys[i], List.class), voidRegistry.getRegister(voidKeys[i], Location.class), 1, voidRadiusRegistry.getRegister(voidKeys[i], Integer.class), 1, false);
 		}
 		voidRegistry.clear();
 		voidRadiusRegistry.clear();
 		
-		String[] hotTubNames = hotTubRegistry.getRegistryNames();
-		for (int i = 0; i < hotTubNames.length; i++) {
-			BlockUtil.setBlocks(holeBlockRegistry.getRegister(hotTubNames[i], List.class), hotTubRegistry.getRegister(hotTubNames[i], Location.class), 1, 1, 1, false);
+		UUID[] hotTubKeys = hotTubRegistry.getRegistryKeys();
+		for (int i = 0; i < hotTubKeys.length; i++) {
+			BlockUtil.setBlocks(holeBlockRegistry.getRegister(hotTubKeys[i], List.class), hotTubRegistry.getRegister(hotTubKeys[i], Location.class), 1, 1, 1, false);
 		}
 		hotTubRegistry.clear();
 		
 		holeBlockRegistry.clear();
+		holeRegistry.clear();
 	}
 	
 	//private

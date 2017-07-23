@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.player.asyncPlayerChat;
 
+import java.util.UUID;
+
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -13,7 +15,7 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class VegetableEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 	//vars
-	private IRegistry vegetableItemRegistry = ServiceLocator.getService(VegetableItemRegistry.class);
+	private IRegistry<UUID> vegetableItemRegistry = ServiceLocator.getService(VegetableItemRegistry.class);
 	
 	//constructor
 	public VegetableEventCommand(AsyncPlayerChatEvent event) {
@@ -29,7 +31,7 @@ public class VegetableEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 		}
 		
 		Player player = event.getPlayer();
-		Item groundItem = vegetableItemRegistry.getRegister(player.getUniqueId().toString(), Item.class);
+		Item groundItem = vegetableItemRegistry.getRegister(player.getUniqueId(), Item.class);
 		
 		if (groundItem == null) {
 			return;

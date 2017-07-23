@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.player.playerItemConsume;
 
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
@@ -15,7 +17,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class VomitEventCommand extends EventCommand<PlayerItemConsumeEvent> {
 	//vars
-	private IRegistry vomitRegistry = ServiceLocator.getService(VomitRegistry.class);
+	private IRegistry<UUID> vomitRegistry = ServiceLocator.getService(VomitRegistry.class);
 	
 	private IPlayerHelper playerUtil = ServiceLocator.getService(IPlayerHelper.class);
 	
@@ -34,7 +36,7 @@ public class VomitEventCommand extends EventCommand<PlayerItemConsumeEvent> {
 		
 		Player player = event.getPlayer();
 		
-		if (vomitRegistry.hasRegister(player.getUniqueId().toString())) {
+		if (vomitRegistry.hasRegister(player.getUniqueId())) {
 			ItemStack items = playerUtil.getItemInMainHand(player);
 			
 			ItemStack droppedItem = new ItemStack(items);

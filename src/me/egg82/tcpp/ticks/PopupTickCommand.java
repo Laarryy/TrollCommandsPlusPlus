@@ -1,15 +1,18 @@
 package me.egg82.tcpp.ticks;
 
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.services.PopupRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
+import ninja.egg82.plugin.utils.CommandUtil;
 
 public class PopupTickCommand extends TickCommand {
 	//vars
-	private IRegistry popupRegistry = ServiceLocator.getService(PopupRegistry.class);
+	private IRegistry<UUID> popupRegistry = ServiceLocator.getService(PopupRegistry.class);
 	
 	//constructor
 	public PopupTickCommand() {
@@ -21,13 +24,13 @@ public class PopupTickCommand extends TickCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		String[] names = popupRegistry.getRegistryNames();
-		for (String name : names) {
-			e(name, popupRegistry.getRegister(name, Player.class));
+		UUID[] keys = popupRegistry.getRegistryKeys();
+		for (UUID key : keys) {
+			e(key, CommandUtil.getPlayerByUuid(key));
 		}
 	}
-	private void e(String uuid, Player player) {
-		if (!player.isOnline()) {
+	private void e(UUID uuid, Player player) {
+		if (player == null || !player.isOnline()) {
 			return;
 		}
 		

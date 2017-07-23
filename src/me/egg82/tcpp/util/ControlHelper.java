@@ -1,5 +1,7 @@
 package me.egg82.tcpp.util;
 
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -17,9 +19,9 @@ import ninja.egg82.plugin.utils.TaskUtil;
 
 public class ControlHelper {
 	//vars
-	private IRegistry controlRegistry = ServiceLocator.getService(ControlRegistry.class);
-	private IRegistry controlModeRegistry = ServiceLocator.getService(ControlModeRegistry.class);
-	private IRegistry controlInventoryRegistry = ServiceLocator.getService(ControlInventoryRegistry.class);
+	private IRegistry<UUID> controlRegistry = ServiceLocator.getService(ControlRegistry.class);
+	private IRegistry<UUID> controlModeRegistry = ServiceLocator.getService(ControlModeRegistry.class);
+	private IRegistry<UUID> controlInventoryRegistry = ServiceLocator.getService(ControlInventoryRegistry.class);
 	
 	private IDisguiseHelper disguiseHelper = ServiceLocator.getService(IDisguiseHelper.class);
 	
@@ -29,15 +31,15 @@ public class ControlHelper {
 	}
 	
 	//public
-	public void control(String controllerUuid, Player controller, String uuid, Player player) {
+	public void control(UUID controllerUuid, Player controller, UUID playerUuid, Player player) {
 		PlayerInventory controllerInventory = controller.getInventory();
 		PlayerInventory playerInventory = player.getInventory();
 		
 		disguiseHelper.disguiseAsPlayer(controller, player);
 		
-		controlRegistry.setRegister(controllerUuid, Player.class, player);
-		controlModeRegistry.setRegister(controllerUuid, GameMode.class, controller.getGameMode());
-		controlInventoryRegistry.setRegister(controllerUuid, ItemStack[].class, controllerInventory.getContents());
+		controlRegistry.setRegister(controllerUuid, playerUuid);
+		controlModeRegistry.setRegister(controllerUuid, controller.getGameMode());
+		controlInventoryRegistry.setRegister(controllerUuid, controllerInventory.getContents());
 		
 		controllerInventory.setContents(playerInventory.getContents());
 		controller.setGameMode(player.getGameMode());
@@ -50,11 +52,11 @@ public class ControlHelper {
 		controller.sendMessage("You are now controlling " + player.getName() + "!");
 		player.sendMessage("You are now being controlled!");
 	}
-	public void uncontrol(String controllerUuid, Player controller) {
+	public void uncontrol(UUID controllerUuid, Player controller) {
 		uncontrol(controllerUuid, controller, true);
 	}
-	public void uncontrol(String controllerUuid, Player controller, boolean vanish) {
-		Player player = controlRegistry.getRegister(controllerUuid, Player.class);
+	public void uncontrol(UUID controllerUuid, Player controller, boolean vanish) {
+		Player player = CommandUtil.getPlayerByUuid(controlRegistry.getRegister(controllerUuid, UUID.class));
 		
 		PlayerInventory controllerInventory = controller.getInventory();
 		PlayerInventory playerInventory = player.getInventory();
@@ -85,18 +87,18 @@ public class ControlHelper {
 		controllerInventory.setContents(controlInventoryRegistry.getRegister(controllerUuid, ItemStack[].class));
 		controller.setGameMode(controlModeRegistry.getRegister(controllerUuid, GameMode.class));
 		
-		controlModeRegistry.setRegister(controllerUuid, GameMode.class, null);
-		controlInventoryRegistry.setRegister(controllerUuid, ItemStack[].class, null);
-		controlRegistry.setRegister(controllerUuid, Player.class, null);
+		controlModeRegistry.removeRegister(controllerUuid);
+		controlInventoryRegistry.removeRegister(controllerUuid);
+		controlRegistry.removeRegister(controllerUuid);
 		
 		controller.sendMessage("You are no longer controlling " + player.getName() + ".");
 		player.sendMessage("You are no longer being controlled.");
 	}
 	
 	public void uncontrolAll() {
-		String[] names = controlRegistry.getRegistryNames();
-		for (int i = 0; i < names.length; i++) {
-			uncontrol(names[i], CommandUtil.getPlayerByUuid(names[i]), false);
+		UUID[] keys = controlRegistry.getRegistryKeys();
+		for (UUID key : keys) {
+			uncontrol(key, CommandUtil.getPlayerByUuid(key), false);
 		}
 	}
 	

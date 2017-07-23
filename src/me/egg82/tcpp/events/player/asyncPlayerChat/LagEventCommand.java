@@ -1,6 +1,7 @@
 package me.egg82.tcpp.events.player.asyncPlayerChat;
 
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -9,12 +10,13 @@ import me.egg82.tcpp.services.LagRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.plugin.reflection.exceptionHandlers.RollbarExceptionHandler;
 import ninja.egg82.plugin.utils.TaskUtil;
 import ninja.egg82.utils.MathUtil;
 
 public class LagEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 	//vars
-	private IRegistry lagRegistry = ServiceLocator.getService(LagRegistry.class);
+	private IRegistry<UUID> lagRegistry = ServiceLocator.getService(LagRegistry.class);
 	
 	//constructor
 	public LagEventCommand(AsyncPlayerChatEvent event) {
@@ -31,7 +33,7 @@ public class LagEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 		
 		Player player = event.getPlayer();
 		
-		if (!lagRegistry.hasRegister(player.getUniqueId().toString())) {
+		if (!lagRegistry.hasRegister(player.getUniqueId())) {
 			return;
 		}
 		
@@ -43,6 +45,10 @@ public class LagEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 		
 		Runnable chatRunner = new Runnable() {
 			public void run() {
+				if (event.isAsynchronous()) {
+					ServiceLocator.getService(RollbarExceptionHandler.class).addThread(Thread.currentThread());
+				}
+				
 				recipients.forEach((v) -> {
 					v.sendMessage(String.format(format, playerName, message));
 				});

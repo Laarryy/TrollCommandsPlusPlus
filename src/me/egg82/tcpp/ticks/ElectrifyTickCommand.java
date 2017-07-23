@@ -1,5 +1,7 @@
 package me.egg82.tcpp.ticks;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -8,11 +10,12 @@ import me.egg82.tcpp.services.ElectrifyRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
+import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.utils.MathUtil;
 
 public class ElectrifyTickCommand extends TickCommand {
 	//vars
-	private IRegistry electrifyRegistry = ServiceLocator.getService(ElectrifyRegistry.class);
+	private IRegistry<UUID> electrifyRegistry = ServiceLocator.getService(ElectrifyRegistry.class);
 	
 	//constructor
 	public ElectrifyTickCommand() {
@@ -24,13 +27,13 @@ public class ElectrifyTickCommand extends TickCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		String[] names = electrifyRegistry.getRegistryNames();
-		for (String name : names) {
-			e(name, electrifyRegistry.getRegister(name, Player.class));
+		UUID[] keys = electrifyRegistry.getRegistryKeys();
+		for (UUID key : keys) {
+			e(key, CommandUtil.getPlayerByUuid(key));
 		}
 	}
-	private void e(String uuid, Player player) {
-		if (!player.isOnline()) {
+	private void e(UUID uuid, Player player) {
+		if (player == null || !player.isOnline()) {
 			return;
 		}
 		

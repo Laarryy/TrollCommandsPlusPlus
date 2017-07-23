@@ -1,8 +1,8 @@
 package me.egg82.tcpp.events.inventory.inventoryClose;
 
-import org.bukkit.entity.Player;
+import java.util.UUID;
+
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.Inventory;
 
 import me.egg82.tcpp.services.TrollInventoryRegistry;
 import me.egg82.tcpp.services.TrollPageRegistry;
@@ -14,10 +14,10 @@ import ninja.egg82.plugin.commands.EventCommand;
 
 public class TrollEventCommand extends EventCommand<InventoryCloseEvent> {
 	//vars
-	private IRegistry trollInventoryRegistry = ServiceLocator.getService(TrollInventoryRegistry.class);
-	private IRegistry trollPlayerRegistry = ServiceLocator.getService(TrollPlayerRegistry.class);
-	private IRegistry trollPageRegistry = ServiceLocator.getService(TrollPageRegistry.class);
-	private IRegistry trollSearchRegistry = ServiceLocator.getService(TrollSearchRegistry.class);
+	private IRegistry<UUID> trollInventoryRegistry = ServiceLocator.getService(TrollInventoryRegistry.class);
+	private IRegistry<UUID> trollPlayerRegistry = ServiceLocator.getService(TrollPlayerRegistry.class);
+	private IRegistry<UUID> trollPageRegistry = ServiceLocator.getService(TrollPageRegistry.class);
+	private IRegistry<UUID> trollSearchRegistry = ServiceLocator.getService(TrollSearchRegistry.class);
 	
 	//constructor
 	public TrollEventCommand(InventoryCloseEvent event) {
@@ -28,16 +28,16 @@ public class TrollEventCommand extends EventCommand<InventoryCloseEvent> {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		String uuid = event.getPlayer().getUniqueId().toString();
+		UUID uuid = event.getPlayer().getUniqueId();
 		
 		// This is one lookup faster than not having it. Optimize where we can.
 		if (!trollInventoryRegistry.hasRegister(uuid)) {
 			return;
 		}
 		
-		trollInventoryRegistry.setRegister(uuid, Inventory.class, null);
-		trollPlayerRegistry.setRegister(uuid, Player.class, null);
-		trollPageRegistry.setRegister(uuid, Integer.class, null);
-		trollSearchRegistry.setRegister(uuid, String.class, null);
+		trollInventoryRegistry.removeRegister(uuid);
+		trollPlayerRegistry.removeRegister(uuid);
+		trollPageRegistry.removeRegister(uuid);
+		trollSearchRegistry.removeRegister(uuid);
 	}
 }

@@ -11,7 +11,7 @@ import ninja.egg82.sql.LanguageDatabase;
 
 public class PotionTypeSearchDatabase extends LanguageDatabase {
 	//vars
-	private IRegistry potionNameRegistry = ServiceLocator.getService(PotionNameRegistry.class);
+	private IRegistry<String> potionNameRegistry = ServiceLocator.getService(PotionNameRegistry.class);
 	
 	//constructor
 	public PotionTypeSearchDatabase() {

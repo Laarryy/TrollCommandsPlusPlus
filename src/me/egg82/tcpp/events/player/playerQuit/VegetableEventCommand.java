@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.player.playerQuit;
 
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -11,7 +13,7 @@ import ninja.egg82.plugin.commands.EventCommand;
 
 public class VegetableEventCommand extends EventCommand<PlayerQuitEvent> {
 	//vars
-	private IRegistry vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
+	private IRegistry<UUID> vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
 	
 	private VegetableHelper vegetableHelper = ServiceLocator.getService(VegetableHelper.class);
 	
@@ -25,7 +27,7 @@ public class VegetableEventCommand extends EventCommand<PlayerQuitEvent> {
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
 		Player player = event.getPlayer();
-		String uuid = player.getUniqueId().toString();
+		UUID uuid = player.getUniqueId();
 		
 		if (vegetableRegistry.hasRegister(uuid)) {
 			vegetableHelper.unvegetable(uuid, player);

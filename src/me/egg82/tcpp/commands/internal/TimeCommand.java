@@ -8,16 +8,20 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.enums.CommandErrorType;
-import me.egg82.tcpp.enums.MessageType;
+import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.exceptions.PlayerImmuneException;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.events.CommandEvent;
+import ninja.egg82.events.CompleteEventArgs;
+import ninja.egg82.events.ExceptionEventArgs;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.SpigotCommandErrorType;
-import ninja.egg82.plugin.enums.SpigotMessageType;
+import ninja.egg82.plugin.enums.SpigotLanguageType;
+import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
+import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
+import ninja.egg82.plugin.exceptions.PlayerNotFoundException;
 import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.utils.LanguageUtil;
 
 public class TimeCommand extends PluginCommand {
 	//vars
@@ -77,16 +81,16 @@ public class TimeCommand extends PluginCommand {
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
 		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_TIME)) {
-			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
+			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_TIME)));
 			return;
 		}
 		if (!CommandUtil.isArrayOfAllowedLength(args, 2)) {
-			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
 			sender.getServer().dispatchCommand(sender, "troll help " + name);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
 			return;
 		}
 		
@@ -111,11 +115,11 @@ public class TimeCommand extends PluginCommand {
 			try {
 				time = Long.parseLong(args[1]);
 			} catch (Exception ex) {
-				sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
+				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
 				String name = getClass().getSimpleName();
 				name = name.substring(0, name.length() - 7).toLowerCase();
 				sender.getServer().dispatchCommand(sender, "troll help " + name);
-				dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+				onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
 				return;
 			}
 		}
@@ -123,44 +127,41 @@ public class TimeCommand extends PluginCommand {
 		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
 		if (players.size() > 0) {
 			for (Player player : players) {
-				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-					continue;
-				}
-				
-				String uuid = player.getUniqueId().toString();
-				
 				if (player.isPlayerTimeRelative()) {
-					e(uuid, player, time);
+					if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+						continue;
+					}
+					
+					e(player, time);
 				} else {
-					eUndo(uuid, player);
+					eUndo(player);
 				}
 			}
 		} else {
 			Player player = CommandUtil.getPlayerByName(args[0]);
 			
 			if (player == null) {
-				sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
-				dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
+				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.PLAYER_NOT_FOUND));
+				onError().invoke(this, new ExceptionEventArgs<PlayerNotFoundException>(new PlayerNotFoundException(args[0])));
 				return;
 			}
-			if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-				sender.sendMessage(MessageType.PLAYER_IMMUNE);
-				dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
-				return;
-			}
-			
-			String uuid = player.getUniqueId().toString();
 			
 			if (player.isPlayerTimeRelative()) {
-				e(uuid, player, time);
+				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+					sender.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
+					onError().invoke(this, new ExceptionEventArgs<PlayerImmuneException>(new PlayerImmuneException(player)));
+					return;
+				}
+				
+				e(player, time);
 			} else {
-				eUndo(uuid, player);
+				eUndo(player);
 			}
 		}
 		
-		dispatch(CommandEvent.COMPLETE, null);
+		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
-	private void e(String uuid, Player player, long time) {
+	private void e(Player player, long time) {
 		player.setPlayerTime(time, false);
 		
 		metricsHelper.commandWasRun(this);
@@ -170,15 +171,14 @@ public class TimeCommand extends PluginCommand {
 	
 	protected void onUndo() {
 		Player player = CommandUtil.getPlayerByName(args[0]);
-		String uuid = player.getUniqueId().toString();
 		
 		if (!player.isPlayerTimeRelative()) {
-			eUndo(uuid, player);
+			eUndo(player);
 		}
 		
-		dispatch(CommandEvent.COMPLETE, null);
+		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
-	private void eUndo(String uuid, Player player) {
+	private void eUndo(Player player) {
 		player.resetPlayerTime();
 		
 		sender.sendMessage(player.getName() + "'s time is no longer permanent.");

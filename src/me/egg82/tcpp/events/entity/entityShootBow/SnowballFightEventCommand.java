@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.entity.entityShootBow;
 
+import java.util.UUID;
+
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -13,7 +15,7 @@ import ninja.egg82.plugin.commands.EventCommand;
 
 public class SnowballFightEventCommand extends EventCommand<EntityShootBowEvent> {
 	//vars
-	private IRegistry snowballFightRegistry = ServiceLocator.getService(SnowballFightRegistry.class);
+	private IRegistry<UUID> snowballFightRegistry = ServiceLocator.getService(SnowballFightRegistry.class);
 	
 	//constructor
 	public SnowballFightEventCommand(EntityShootBowEvent event) {
@@ -32,7 +34,7 @@ public class SnowballFightEventCommand extends EventCommand<EntityShootBowEvent>
 		}
 		
 		Player player = (Player) event.getEntity();
-		String uuid = player.getUniqueId().toString();
+		UUID uuid = player.getUniqueId();
 		
 		if (snowballFightRegistry.hasRegister(uuid)) {
 			Entity ent = event.getProjectile();

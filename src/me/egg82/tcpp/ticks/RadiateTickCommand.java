@@ -2,6 +2,7 @@ package me.egg82.tcpp.ticks;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,10 +21,11 @@ import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.core.BlockData;
 import ninja.egg82.plugin.reflection.entity.IEntityHelper;
 import ninja.egg82.plugin.utils.BlockUtil;
+import ninja.egg82.plugin.utils.CommandUtil;
 
 public class RadiateTickCommand extends TickCommand {
 	//vars
-	private IRegistry radiationRegistry = ServiceLocator.getService(RadiateRegistry.class);
+	private IRegistry<UUID> radiationRegistry = ServiceLocator.getService(RadiateRegistry.class);
 	
 	private IEntityHelper entityUtil = ServiceLocator.getService(IEntityHelper.class);
 	
@@ -37,13 +39,13 @@ public class RadiateTickCommand extends TickCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		String[] names = radiationRegistry.getRegistryNames();
-		for (String name : names) {
-			e(name, radiationRegistry.getRegister(name, Player.class));
+		UUID[] keys = radiationRegistry.getRegistryKeys();
+		for (UUID key : keys) {
+			e(key, CommandUtil.getPlayerByUuid(key));
 		}
 	}
-	private void e(String uuid, Player player) {
-		if (!player.isOnline()) {
+	private void e(UUID uuid, Player player) {
+		if (player == null || !player.isOnline()) {
 			return;
 		}
 		

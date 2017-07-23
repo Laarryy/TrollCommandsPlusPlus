@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>TrollCommandsPlusPlus</artifactId>
-  <version>4.18.37</version>
+  <version>4.19.38</version>
   <name>TrollCommandsPlusPlus</name>
   <description>TCPP for Spigot/Bukkit</description>
   <build>
@@ -77,6 +77,12 @@
       <id>robingrether-repo</id>
       <url>http://repo.robingrether.de/</url>
     </repository>
+    <!-- Uncomment if you're having problems with ProtocolLib-4.2.0-SNAPSHOT jar not being found -->
+    <!-- Eclipse doesn't like this repo for some reason, so comment it again after it's done downloading the jar -->
+    <!-- <repository>
+      <id>libsdisguises-fix</id>
+      <url>http://mvn.yawk.at/</url>
+    </repository> -->
   </repositories>
   <dependencies>
     <dependency>
@@ -99,12 +105,12 @@
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>egg82-lib</artifactId>
-      <version>1.4.11</version>
+      <version>1.5.14</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>spigot-lib</artifactId>
-      <version>1.7.24</version>
+      <version>1.7.27</version>
     </dependency>
     <dependency>
       <groupId>net.gravitydevelopment.updater</groupId>

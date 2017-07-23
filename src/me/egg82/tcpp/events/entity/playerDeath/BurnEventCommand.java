@@ -1,6 +1,7 @@
 package me.egg82.tcpp.events.entity.playerDeath;
 
-import org.bukkit.entity.Player;
+import java.util.UUID;
+
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import me.egg82.tcpp.services.BurnRegistry;
@@ -10,7 +11,7 @@ import ninja.egg82.plugin.commands.EventCommand;
 
 public class BurnEventCommand extends EventCommand<PlayerDeathEvent> {
 	//vars
-	IRegistry burnRegistry = ServiceLocator.getService(BurnRegistry.class);
+	private IRegistry<UUID> burnRegistry = ServiceLocator.getService(BurnRegistry.class);
 	
 	//constructor
 	public BurnEventCommand(PlayerDeathEvent event) {
@@ -21,6 +22,6 @@ public class BurnEventCommand extends EventCommand<PlayerDeathEvent> {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		burnRegistry.setRegister(event.getEntity().getUniqueId().toString(), Player.class, null);
+		burnRegistry.removeRegister(event.getEntity().getUniqueId());
 	}
 }

@@ -16,27 +16,31 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.egg82.tcpp.enums.CommandErrorType;
-import me.egg82.tcpp.enums.MessageType;
+import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.exceptions.InvalidTypeException;
 import me.egg82.tcpp.services.EnchantNameRegistry;
 import me.egg82.tcpp.services.EnchantTypeSearchDatabase;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.events.CommandEvent;
+import ninja.egg82.events.CompleteEventArgs;
+import ninja.egg82.events.ExceptionEventArgs;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.SpigotCommandErrorType;
-import ninja.egg82.plugin.enums.SpigotMessageType;
+import ninja.egg82.plugin.enums.SpigotLanguageType;
+import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
+import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
+import ninja.egg82.plugin.exceptions.SenderNotAllowedException;
 import ninja.egg82.plugin.reflection.player.IPlayerHelper;
 import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.utils.LanguageUtil;
 import ninja.egg82.sql.LanguageDatabase;
 
 public class EnchantCommand extends PluginCommand {
 	//vars
 	private LanguageDatabase enchantTypeDatabase = ServiceLocator.getService(EnchantTypeSearchDatabase.class);
 	private IPlayerHelper playerHelper = ServiceLocator.getService(IPlayerHelper.class);
-	private IRegistry enchantNameRegistry = ServiceLocator.getService(EnchantNameRegistry.class);
+	private IRegistry<String> enchantNameRegistry = ServiceLocator.getService(EnchantNameRegistry.class);
 	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
@@ -51,12 +55,12 @@ public class EnchantCommand extends PluginCommand {
 			ArrayList<String> retVal = new ArrayList<String>();
 			
 			if (args[0].isEmpty()) {
-				for (String name : enchantNameRegistry.getRegistryNames()) {
-					retVal.add(enchantNameRegistry.getRegister(name, String.class));
+				for (String key : enchantNameRegistry.getRegistryKeys()) {
+					retVal.add(enchantNameRegistry.getRegister(key, String.class));
 				}
 			} else {
-				for (String name : enchantNameRegistry.getRegistryNames()) {
-					String value = enchantNameRegistry.getRegister(name, String.class);
+				for (String key : enchantNameRegistry.getRegistryKeys()) {
+					String value = enchantNameRegistry.getRegister(key, String.class);
 					if (value.toLowerCase().startsWith(args[0].toLowerCase())) {
 						retVal.add(value);
 					}
@@ -72,21 +76,21 @@ public class EnchantCommand extends PluginCommand {
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
 		if (!CommandUtil.isPlayer(sender)) {
-			sender.sendMessage(SpigotMessageType.CONSOLE_NOT_ALLOWED);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.CONSOLE_NOT_ALLOWED);
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.SENDER_NOT_ALLOWED));
+			onError().invoke(this, new ExceptionEventArgs<SenderNotAllowedException>(new SenderNotAllowedException(sender, this)));
 			return;
 		}
 		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_ENCHANT)) {
-			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
+			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_ENCHANT)));
 			return;
 		}
 		if (args.length == 0) {
-			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
 			sender.getServer().dispatchCommand(sender, "troll help " + name);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
 			return;
 		}
 		
@@ -103,15 +107,15 @@ public class EnchantCommand extends PluginCommand {
 			String[] types = enchantTypeDatabase.getValues(enchantTypeDatabase.naturalLanguage(search, false), 0);
 			
 			if (types == null || types.length == 0) {
-				sender.sendMessage(MessageType.ENCHANT_NOT_FOUND);
-				dispatch(CommandEvent.ERROR, CommandErrorType.ENCHANT_NOT_FOUND);
+				sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_TYPE));
+				onError().invoke(this, new ExceptionEventArgs<InvalidTypeException>(new InvalidTypeException(search)));
 				return;
 			}
 			
 			type = Enchantment.getByName(types[0].toUpperCase());
 			if (type == null) {
-				sender.sendMessage(MessageType.ENCHANT_NOT_FOUND);
-				dispatch(CommandEvent.ERROR, CommandErrorType.ENCHANT_NOT_FOUND);
+				sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_TYPE));
+				onError().invoke(this, new ExceptionEventArgs<InvalidTypeException>(new InvalidTypeException(search)));
 				return;
 			}
 		}
@@ -126,9 +130,10 @@ public class EnchantCommand extends PluginCommand {
 		ItemStack item = playerHelper.getItemInMainHand((Player) sender);
 		if (item != null && item.getType() != Material.AIR) {
 			e(item, type, level);
+			((Player) sender).updateInventory();
 		}
 		
-		dispatch(CommandEvent.COMPLETE, null);
+		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	private void e(ItemStack item, Enchantment enchant, int level) {
 		if (item.getType() == Material.BOOK) {
@@ -205,7 +210,7 @@ public class EnchantCommand extends PluginCommand {
 					lore.add(line);
 					continue;
 				}
-				Enchantment enchant = Enchantment.getByName(enchantNameRegistry.getName(enchantName));
+				Enchantment enchant = Enchantment.getByName(enchantNameRegistry.getKey(enchantName));
 				if (enchant == null) {
 					lore.add(line);
 					continue;

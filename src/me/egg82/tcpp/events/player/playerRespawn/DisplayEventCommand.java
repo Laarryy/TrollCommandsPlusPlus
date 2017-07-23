@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.player.playerRespawn;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
@@ -10,7 +12,7 @@ import ninja.egg82.plugin.commands.EventCommand;
 
 public class DisplayEventCommand extends EventCommand<PlayerRespawnEvent> {
 	//vars
-	private IRegistry displayLocationRegistry = ServiceLocator.getService(DisplayLocationRegistry.class);
+	private IRegistry<UUID> displayLocationRegistry = ServiceLocator.getService(DisplayLocationRegistry.class);
 	
 	//constructor
 	public DisplayEventCommand(PlayerRespawnEvent event) {
@@ -21,7 +23,7 @@ public class DisplayEventCommand extends EventCommand<PlayerRespawnEvent> {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		Location loc = displayLocationRegistry.getRegister(event.getPlayer().getUniqueId().toString(), Location.class);
+		Location loc = displayLocationRegistry.getRegister(event.getPlayer().getUniqueId(), Location.class);
 		if (loc != null) {
 			event.setRespawnLocation(loc);
 		}

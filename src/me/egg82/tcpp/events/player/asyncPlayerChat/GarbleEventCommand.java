@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.player.asyncPlayerChat;
 
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
@@ -11,7 +13,7 @@ import ninja.egg82.utils.StringUtil;
 
 public class GarbleEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 	//vars
-	IRegistry garbleRegistry = ServiceLocator.getService(GarbleRegistry.class);
+	private IRegistry<UUID> garbleRegistry = ServiceLocator.getService(GarbleRegistry.class);
 	
 	//constructor
 	public GarbleEventCommand(AsyncPlayerChatEvent event) {
@@ -28,7 +30,7 @@ public class GarbleEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 		
 		Player player = event.getPlayer();
 		
-		if (garbleRegistry.hasRegister(player.getUniqueId().toString())) {
+		if (garbleRegistry.hasRegister(player.getUniqueId())) {
 			String oldMessage = String.format(event.getFormat(), player.getDisplayName(), event.getMessage());
 			event.setMessage(StringUtil.randomString(event.getMessage().length()));
 			event.getRecipients().remove(player);

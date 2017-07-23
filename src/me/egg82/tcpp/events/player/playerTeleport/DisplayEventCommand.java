@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.player.playerTeleport;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -11,7 +13,7 @@ import ninja.egg82.plugin.commands.EventCommand;
 
 public class DisplayEventCommand extends EventCommand<PlayerTeleportEvent> {
 	//vars
-	private IRegistry displayLocationRegistry = ServiceLocator.getService(DisplayLocationRegistry.class);
+	private IRegistry<UUID> displayLocationRegistry = ServiceLocator.getService(DisplayLocationRegistry.class);
 	
 	//constructor
 	public DisplayEventCommand(PlayerTeleportEvent event) {
@@ -27,10 +29,10 @@ public class DisplayEventCommand extends EventCommand<PlayerTeleportEvent> {
 		}
 		
 		Player player = event.getPlayer();
-		String uuid = player.getUniqueId().toString();
+		UUID uuid = player.getUniqueId();
 		
 		if (displayLocationRegistry.hasRegister(uuid)) {
-			Location loc = (Location) displayLocationRegistry.getRegister(uuid);
+			Location loc = displayLocationRegistry.getRegister(uuid, Location.class);
 			if (event.getTo().distanceSquared(loc) >= 4) {
 				event.setCancelled(true);
 				player.teleport(loc);

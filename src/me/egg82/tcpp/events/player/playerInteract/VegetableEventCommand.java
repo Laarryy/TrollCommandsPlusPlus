@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.player.playerInteract;
 
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -12,7 +14,7 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class VegetableEventCommand extends EventCommand<PlayerInteractEvent> {
 	//vars
-	private IRegistry vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
+	private IRegistry<UUID> vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
 	
 	//constructor
 	public VegetableEventCommand(PlayerInteractEvent event) {
@@ -29,7 +31,7 @@ public class VegetableEventCommand extends EventCommand<PlayerInteractEvent> {
 		
 		Player player = event.getPlayer();
 		
-		if (vegetableRegistry.hasRegister(event.getPlayer().getUniqueId().toString())) {
+		if (vegetableRegistry.hasRegister(event.getPlayer().getUniqueId())) {
 			if (!CommandUtil.hasPermission(player, PermissionsType.FREECAM_WHILE_VEGETABLE)) {
 				event.setCancelled(true);
 			}

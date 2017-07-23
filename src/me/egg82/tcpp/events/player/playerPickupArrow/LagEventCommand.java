@@ -1,6 +1,7 @@
 package me.egg82.tcpp.events.player.playerPickupArrow;
 
-import org.bukkit.entity.Player;
+import java.util.UUID;
+
 import org.bukkit.event.player.PlayerPickupArrowEvent;
 
 import me.egg82.tcpp.services.LagItemRegistry;
@@ -12,8 +13,8 @@ import ninja.egg82.utils.MathUtil;
 
 public class LagEventCommand extends EventCommand<PlayerPickupArrowEvent> {
 	//vars
-	private IRegistry lagRegistry = ServiceLocator.getService(LagRegistry.class);
-	private IRegistry lagItemRegistry = ServiceLocator.getService(LagItemRegistry.class);
+	private IRegistry<UUID> lagRegistry = ServiceLocator.getService(LagRegistry.class);
+	private IRegistry<UUID> lagItemRegistry = ServiceLocator.getService(LagItemRegistry.class);
 	
 	//constructor
 	public LagEventCommand(PlayerPickupArrowEvent event) {
@@ -28,24 +29,21 @@ public class LagEventCommand extends EventCommand<PlayerPickupArrowEvent> {
 			return;
 		}
 		
-		Player player = event.getPlayer();
-		String uuid = player.getUniqueId().toString();
-		
-		if (!lagRegistry.hasRegister(uuid)) {
+		if (!lagRegistry.hasRegister(event.getPlayer().getUniqueId())) {
 			return;
 		}
 		
-		String itemUuid = event.getItem().getUniqueId().toString();
+		UUID uuid = event.getItem().getUniqueId();
 		
-		Long pickupTime = lagItemRegistry.getRegister(uuid + "," + itemUuid, Long.class);
+		Long pickupTime = lagItemRegistry.getRegister(uuid, Long.class);
 		
 		if (pickupTime == null) {
 			event.setCancelled(true);
-			lagItemRegistry.setRegister(uuid + "," + itemUuid, Long.class, System.currentTimeMillis() + MathUtil.fairRoundedRandom(1500, 2500));
+			lagItemRegistry.setRegister(uuid, System.currentTimeMillis() + MathUtil.fairRoundedRandom(1500, 2500));
 		} else if (System.currentTimeMillis() < pickupTime) {
 			event.setCancelled(true);
 		} else {
-			lagItemRegistry.setRegister(uuid + "," + itemUuid, Long.class, null);
+			lagItemRegistry.removeRegister(uuid);
 		}
 	}
 }

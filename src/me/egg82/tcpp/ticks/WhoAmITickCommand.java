@@ -1,5 +1,7 @@
 package me.egg82.tcpp.ticks;
 
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -13,7 +15,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class WhoAmITickCommand extends TickCommand {
 	//vars
-	private IRegistry whoAmIRegistry = ServiceLocator.getService(WhoAmIRegistry.class);
+	private IRegistry<UUID> whoAmIRegistry = ServiceLocator.getService(WhoAmIRegistry.class);
 	
 	//constructor
 	public WhoAmITickCommand() {
@@ -25,13 +27,13 @@ public class WhoAmITickCommand extends TickCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		String[] names = whoAmIRegistry.getRegistryNames();
-		for (String name : names) {
-			e(name, whoAmIRegistry.getRegister(name, Player.class));
+		UUID[] keys = whoAmIRegistry.getRegistryKeys();
+		for (UUID key : keys) {
+			e(key, CommandUtil.getPlayerByUuid(key));
 		}
 	}
-	private void e(String uuid, Player player) {
-		if (!player.isOnline()) {
+	private void e(UUID uuid, Player player) {
+		if (player == null || !player.isOnline()) {
 			return;
 		}
 		

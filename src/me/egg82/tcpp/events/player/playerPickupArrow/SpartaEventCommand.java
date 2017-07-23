@@ -1,15 +1,17 @@
 package me.egg82.tcpp.events.player.playerPickupArrow;
 
+import java.util.UUID;
+
 import org.bukkit.event.player.PlayerPickupArrowEvent;
 
-import me.egg82.tcpp.services.SpartaRegistry;
+import me.egg82.tcpp.services.SpartaArrowRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 
 public class SpartaEventCommand extends EventCommand<PlayerPickupArrowEvent> {
 	//vars
-	private IRegistry spartaRegistry = ServiceLocator.getService(SpartaRegistry.class);
+	private IRegistry<UUID> spartaArrowRegistry = ServiceLocator.getService(SpartaArrowRegistry.class);
 	
 	//constructor
 	public SpartaEventCommand(PlayerPickupArrowEvent event) {
@@ -24,7 +26,7 @@ public class SpartaEventCommand extends EventCommand<PlayerPickupArrowEvent> {
 			return;
 		}
 		
-		if (spartaRegistry.hasRegister(event.getArrow().getUniqueId().toString())) {
+		if (spartaArrowRegistry.hasRegister(event.getArrow().getUniqueId())) {
 			event.setCancelled(true);
 		}
 	}

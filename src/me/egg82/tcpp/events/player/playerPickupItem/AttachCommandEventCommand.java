@@ -3,10 +3,10 @@ package me.egg82.tcpp.events.player.playerPickupItem;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.inventory.ItemStack;
 
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.plugin.core.nbt.INBTCompound;
 import ninja.egg82.plugin.reflection.nbt.INBTHelper;
 import ninja.egg82.plugin.utils.CommandUtil;
 
@@ -27,23 +27,23 @@ public class AttachCommandEventCommand extends EventCommand<PlayerPickupItemEven
 			return;
 		}
 		
-		ItemStack item = event.getItem().getItemStack();
-		if (!nbtHelper.hasTag(item, "tcppCommand")) {
+		INBTCompound itemCompound = nbtHelper.getCompound(event.getItem().getItemStack());
+		if (!itemCompound.hasTag("tcppCommand")) {
 			return;
 		}
 		
-		Player sender = CommandUtil.getPlayerByUuid(nbtHelper.getTag(item, "tcppSender", String.class));
+		Player sender = CommandUtil.getPlayerByUuid(itemCompound.getString("tcppSender"));
 		if (sender != null) {
-			CommandUtil.dispatchCommandAtPlayerLocation(sender, event.getPlayer(), nbtHelper.getTag(item, "tcppCommand", String.class));
+			CommandUtil.dispatchCommandAtPlayerLocation(sender, event.getPlayer(), itemCompound.getString("tcppCommand"));
 		} else {
-			if (CommandUtil.getOfflinePlayerByUuid(nbtHelper.getTag(item, "tcppSender", String.class)).isOp()) {
-				CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), event.getPlayer(), nbtHelper.getTag(item, "tcppCommand", String.class));
+			if (CommandUtil.getOfflinePlayerByUuid(itemCompound.getString("tcppSender")).isOp()) {
+				CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), event.getPlayer(), itemCompound.getString("tcppCommand"));
 			} else {
-				Bukkit.dispatchCommand(event.getPlayer(), nbtHelper.getTag(item, "tcppCommand", String.class));
+				Bukkit.dispatchCommand(event.getPlayer(), itemCompound.getString("tcppCommand"));
 			}
 		}
 		
-		nbtHelper.removeTag(item, "tcppSender");
-		nbtHelper.removeTag(item, "tcppCommand");
+		itemCompound.removeTag("tcppSender");
+		itemCompound.removeTag("tcppCommand");
 	}
 }

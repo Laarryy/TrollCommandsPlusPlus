@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.player.playerPickupItem;
 
+import java.util.UUID;
+
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
 import me.egg82.tcpp.services.VegetableItemRegistry;
@@ -9,7 +11,7 @@ import ninja.egg82.plugin.commands.EventCommand;
 
 public class VegetableEventCommand extends EventCommand<PlayerPickupItemEvent> {
 	//vars
-	private IRegistry vegetableItemRegistry = ServiceLocator.getService(VegetableItemRegistry.class);
+	private IRegistry<UUID> vegetableItemRegistry = ServiceLocator.getService(VegetableItemRegistry.class);
 	
 	//constructor
 	public VegetableEventCommand(PlayerPickupItemEvent event) {

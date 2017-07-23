@@ -10,17 +10,22 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.enums.CommandErrorType;
-import me.egg82.tcpp.enums.MessageType;
+import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.exceptions.NoBlockSpaceException;
+import me.egg82.tcpp.exceptions.PlayerImmuneException;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.events.CommandEvent;
+import ninja.egg82.events.CompleteEventArgs;
+import ninja.egg82.events.ExceptionEventArgs;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.SpigotCommandErrorType;
-import ninja.egg82.plugin.enums.SpigotMessageType;
+import ninja.egg82.plugin.enums.SpigotLanguageType;
+import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
+import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
+import ninja.egg82.plugin.exceptions.PlayerNotFoundException;
 import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.utils.LanguageUtil;
 import ninja.egg82.utils.MathUtil;
 
 public class BanishCommand extends PluginCommand {
@@ -58,16 +63,16 @@ public class BanishCommand extends PluginCommand {
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
 		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_BANISH)) {
-			sender.sendMessage(SpigotMessageType.NO_PERMISSIONS);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.NO_PERMISSIONS);
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
+			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_BANISH)));
 			return;
 		}
 		if (!CommandUtil.isArrayOfAllowedLength(args, 1, 2)) {
-			sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
 			sender.getServer().dispatchCommand(sender, "troll help " + name);
-			dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
 			return;
 		}
 		
@@ -76,11 +81,11 @@ public class BanishCommand extends PluginCommand {
 			try {
 				banishMax = Double.parseDouble(args[1]);
 			} catch (Exception ex) {
-				sender.sendMessage(SpigotMessageType.INCORRECT_USAGE);
+				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
 				String name = getClass().getSimpleName();
 				name = name.substring(0, name.length() - 7).toLowerCase();
 				sender.getServer().dispatchCommand(sender, "troll help " + name);
-				dispatch(CommandEvent.ERROR, SpigotCommandErrorType.INCORRECT_USAGE);
+				onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
 				return;
 			}
 		}
@@ -92,31 +97,29 @@ public class BanishCommand extends PluginCommand {
 					continue;
 				}
 				
-				e(player.getUniqueId().toString(), player, banishMax);
+				e(player, banishMax);
 			}
-			dispatch(CommandEvent.COMPLETE, null);
+			onComplete().invoke(this, CompleteEventArgs.EMPTY);
 		} else {
 			Player player = CommandUtil.getPlayerByName(args[0]);
 			
 			if (player == null) {
-				sender.sendMessage(SpigotMessageType.PLAYER_NOT_FOUND);
-				dispatch(CommandEvent.ERROR, SpigotCommandErrorType.PLAYER_NOT_FOUND);
+				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.PLAYER_NOT_FOUND));
+				onError().invoke(this, new ExceptionEventArgs<PlayerNotFoundException>(new PlayerNotFoundException(args[0])));
 				return;
 			}
 			if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-				sender.sendMessage(MessageType.PLAYER_IMMUNE);
-				dispatch(CommandEvent.ERROR, CommandErrorType.PLAYER_IMMUNE);
+				sender.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
+				onError().invoke(this, new ExceptionEventArgs<PlayerImmuneException>(new PlayerImmuneException(player)));
 				return;
 			}
 			
-			if (e(player.getUniqueId().toString(), player, banishMax)) {
-				dispatch(CommandEvent.COMPLETE, null);
-			} else {
-				dispatch(CommandEvent.ERROR, CommandErrorType.NO_SPACE);
+			if (e(player, banishMax)) {
+				onComplete().invoke(this, CompleteEventArgs.EMPTY);
 			}
 		}
 	}
-	private boolean e(String uuid, Player player, double maxRadius) {
+	private boolean e(Player player, double maxRadius) {
 		double minRadius = maxRadius - (maxRadius / 3.0d);
 		Location currentLocation = player.getLocation();
 		double currentX = currentLocation.getX();
@@ -139,10 +142,11 @@ public class BanishCommand extends PluginCommand {
 			newLocation = BlockUtil.getTopWalkableBlock(new Location(currentLocation.getWorld(), newX, MathUtil.random(5.0d, currentLocation.getWorld().getMaxHeight()), newZ));
 			headBlock = newLocation.clone().add(0.0d, 1.0d, 0.0d).getBlock().getType();
 			retryCount++;
-		} while (headBlock != Material.AIR && retryCount < 100);
+		} while (headBlock != Material.AIR && retryCount <= 100);
 		
 		if (headBlock != Material.AIR) {
 			sender.sendMessage(player.getName() + " could not be banished because there was not enough space around them!");
+			onError().invoke(this, new ExceptionEventArgs<NoBlockSpaceException>(new NoBlockSpaceException(newLocation)));
 			return false;
 		}
 		

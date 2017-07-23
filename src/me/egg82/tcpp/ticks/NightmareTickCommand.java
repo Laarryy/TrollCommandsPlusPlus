@@ -1,6 +1,7 @@
 package me.egg82.tcpp.ticks;
 
-import java.util.ArrayDeque;
+import java.util.Collection;
+import java.util.UUID;
 
 import org.bukkit.entity.Player;
 
@@ -8,13 +9,14 @@ import me.egg82.tcpp.services.NightmareRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.plugin.reflection.protocol.IFakeLivingEntity;
+import ninja.egg82.plugin.core.protocol.IFakeLivingEntity;
+import ninja.egg82.plugin.reflection.exceptionHandlers.RollbarExceptionHandler;
 import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.CommandUtil;
 
 public class NightmareTickCommand extends TickCommand {
 	//vars
-	private IRegistry nightmareRegistry = ServiceLocator.getService(NightmareRegistry.class);
+	private IRegistry<UUID> nightmareRegistry = ServiceLocator.getService(NightmareRegistry.class);
 	
 	//constructor
 	public NightmareTickCommand() {
@@ -27,19 +29,17 @@ public class NightmareTickCommand extends TickCommand {
 	//private
 	@SuppressWarnings("unchecked")
 	protected void onExecute(long elapsedMilliseconds) {
-		String[] names = nightmareRegistry.getRegistryNames();
-		for (String name : names) {
-			e(name, nightmareRegistry.getRegister(name, ArrayDeque.class));
+		UUID[] keys = nightmareRegistry.getRegistryKeys();
+		for (UUID key : keys) {
+			e(key, CommandUtil.getPlayerByUuid(key), nightmareRegistry.getRegister(key, Collection.class));
 		}
 	}
-	private void e(String uuid, ArrayDeque<IFakeLivingEntity> entities) {
-		Player player = CommandUtil.getPlayerByUuid(uuid);
-		
-		if (!player.isOnline()) {
+	private void e(UUID uuid, Player player, Collection<IFakeLivingEntity> entities) {
+		if (player == null || !player.isOnline()) {
 			return;
 		}
 		
-		new Thread(new Runnable() {
+		Thread runner = new Thread(new Runnable() {
 			public void run() {
 				for (IFakeLivingEntity e : entities) {
 					if (e.getLocation().distanceSquared(player.getLocation()) <= 1.0d) {
@@ -47,10 +47,12 @@ public class NightmareTickCommand extends TickCommand {
 					}
 					
 					e.moveTo(BlockUtil.getTopWalkableBlock(e.getLocation().add(player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23))));
-					e.collide(entities);
+					e.collideF(entities);
 					e.lookTo(player.getEyeLocation());
 				}
 			}
-		}).start();
+		});
+		ServiceLocator.getService(RollbarExceptionHandler.class).addThread(runner);
+		runner.start();
 	}
 }

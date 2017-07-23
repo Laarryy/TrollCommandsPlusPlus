@@ -1,6 +1,7 @@
 package me.egg82.tcpp.events.block.blockBreak;
 
 import java.util.Collection;
+import java.util.UUID;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -20,7 +21,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class RandomBreakEventCommand extends EventCommand<BlockBreakEvent> {
 	//vars
-	private IRegistry randomBreakRegistry = ServiceLocator.getService(RandomBreakRegistry.class);
+	private IRegistry<UUID> randomBreakRegistry = ServiceLocator.getService(RandomBreakRegistry.class);
 	
 	private IPlayerHelper playerHelper = ServiceLocator.getService(IPlayerHelper.class);
 	private Material[] materials = null;
@@ -62,7 +63,7 @@ public class RandomBreakEventCommand extends EventCommand<BlockBreakEvent> {
 		}
 		
 		Player player = event.getPlayer();
-		String uuid = player.getUniqueId().toString();
+		UUID uuid = player.getUniqueId();
 		
 		if (randomBreakRegistry.hasRegister(uuid)) {
 			event.setCancelled(true);

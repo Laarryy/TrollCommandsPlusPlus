@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.player.asyncPlayerChat;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
@@ -17,11 +19,49 @@ import ninja.egg82.plugin.utils.TaskUtil;
 
 public class GrantWishesEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 	//vars
-	private IRegistry grantWishesRegistry = ServiceLocator.getService(GrantWishesRegistry.class);
+	private IRegistry<UUID> grantWishesRegistry = ServiceLocator.getService(GrantWishesRegistry.class);
+	
+	private EntityType shulker = null;
+	private EntityType husk = null;
+	private EntityType vindicator = null;
+	private EntityType evoker = null;
+	private EntityType vex = null;
+	private EntityType illusioner = null;
 	
 	//constructor
 	public GrantWishesEventCommand(AsyncPlayerChatEvent event) {
 		super(event);
+		
+		try {
+			shulker = EntityType.valueOf("SHULKER");
+		} catch (Exception ex) {
+			
+		}
+		try {
+			husk = EntityType.valueOf("HUSK");
+		} catch (Exception ex) {
+			
+		}
+		try {
+			vindicator = EntityType.valueOf("VINDICATOR");
+		} catch (Exception ex) {
+			
+		}
+		try {
+			evoker = EntityType.valueOf("EVOKER");
+		} catch (Exception ex) {
+			
+		}
+		try {
+			vex = EntityType.valueOf("VEX");
+		} catch (Exception ex) {
+			
+		}
+		try {
+			illusioner = EntityType.valueOf("ILLUSIONER");
+		} catch (Exception ex) {
+			
+		}
 	}
 	
 	//public
@@ -35,98 +75,112 @@ public class GrantWishesEventCommand extends EventCommand<AsyncPlayerChatEvent> 
 		Player player = event.getPlayer();
 		Location playerLoc = player.getLocation();
 		
-		if (grantWishesRegistry.hasRegister(player.getUniqueId().toString())) {
+		if (grantWishesRegistry.hasRegister(player.getUniqueId())) {
 			String search = event.getMessage().toLowerCase();
+			int frequency = 0;
 			
-			if (search.contains("blaze")) {
+			frequency = substringFrequency("blaze", search);
+			for (int i = 0; i < frequency; i++) {
 				spawn(EntityType.BLAZE, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
 			}
-			if (search.contains("creeper")) {
+			frequency = substringFrequency("creeper", search);
+			for (int i = 0; i < frequency; i++) {
 				spawn(EntityType.CREEPER, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
 			}
-			if (search.contains("enderman")) {
+			frequency = substringFrequency("enderman", search);
+			for (int i = 0; i < frequency; i++) {
 				spawn(EntityType.ENDERMAN, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
 			}
-			if (search.contains("endermite")) {
+			frequency = substringFrequency("endermite", search);
+			for (int i = 0; i < frequency; i++) {
 				spawn(EntityType.ENDERMITE, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
 			}
-			if (search.contains("ghast")) {
+			frequency = substringFrequency("ghast", search);
+			for (int i = 0; i < frequency; i++) {
 				spawn(EntityType.GHAST, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
 			}
-			if (search.contains("magma cube")) {
+			frequency = substringFrequency("magma cube", search);
+			for (int i = 0; i < frequency; i++) {
 				spawn(EntityType.MAGMA_CUBE, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
 			}
-			if (search.contains("silverfish")) {
+			frequency = substringFrequency("silverfish", search);
+			for (int i = 0; i < frequency; i++) {
 				spawn(EntityType.SILVERFISH, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
 			}
-			if (search.contains("skeleton") || search.contains("skellington")) {
+			frequency = substringFrequency("skeleton", search);
+			for (int i = 0; i < frequency; i++) {
 				spawn(EntityType.SKELETON, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
 			}
-			if (search.contains("slime")) {
+			frequency = substringFrequency("skellington", search);
+			for (int i = 0; i < frequency; i++) {
+				spawn(EntityType.SKELETON, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
+			}
+			frequency = substringFrequency("slime", search);
+			for (int i = 0; i < frequency; i++) {
 				spawn(EntityType.SLIME, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
 			}
-			if (search.contains("witch")) {
+			frequency = substringFrequency("witch", search);
+			for (int i = 0; i < frequency; i++) {
 				spawn(EntityType.WITCH, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
 			}
 			
-			if (search.contains("shulker")) {
-				try {
-					EntityType type = EntityType.valueOf("SHULKER");
-					spawn(type, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
-				} catch (Exception ex) {
-					
+			if (shulker != null) {
+				frequency = substringFrequency("shulker", search);
+				for (int i = 0; i < frequency; i++) {
+					spawn(shulker, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
 				}
 			}
-			if (search.contains("husk")) {
-				try {
-					EntityType type = EntityType.valueOf("HUSK");
-					spawn(type, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
-				} catch (Exception ex) {
-					
+			if (husk != null) {
+				frequency = substringFrequency("husk", search);
+				for (int i = 0; i < frequency; i++) {
+					spawn(husk, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
 				}
 			}
-			if (search.contains("vindicator")) {
-				try {
-					EntityType type = EntityType.valueOf("VINDICATOR");
-					spawn(type, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
-				} catch (Exception ex) {
-					
+			if (vindicator != null) {
+				frequency = substringFrequency("vindicator", search);
+				for (int i = 0; i < frequency; i++) {
+					spawn(vindicator, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
 				}
 			}
-			if (search.contains("evoker")) {
-				try {
-					EntityType type = EntityType.valueOf("EVOKER");
-					spawn(type, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
-				} catch (Exception ex) {
-					
+			if (evoker != null) {
+				frequency = substringFrequency("evoker", search);
+				for (int i = 0; i < frequency; i++) {
+					spawn(evoker, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
 				}
 			}
-			if (search.contains("vex")) {
-				try {
-					EntityType type = EntityType.valueOf("VEX");
-					spawn(type, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
-				} catch (Exception ex) {
-					
+			if (vex != null) {
+				frequency = substringFrequency("vex", search);
+				for (int i = 0; i < frequency; i++) {
+					spawn(vex, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
 				}
 			}
-			if (search.contains("illusioner")) {
-				try {
-					EntityType type = EntityType.valueOf("ILLUSIONER");
-					spawn(type, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
-				} catch (Exception ex) {
-					
+			if (illusioner != null) {
+				frequency = substringFrequency("illusioner", search);
+				for (int i = 0; i < frequency; i++) {
+					spawn(illusioner, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
 				}
 			}
 			
-			if (search.contains("cave spider")) {
+			frequency = substringFrequency("cave spider", search);
+			for (int i = 0; i < frequency; i++) {
 				spawn(EntityType.CAVE_SPIDER, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
-			} else if (search.contains("spider")) {
-				spawn(EntityType.SPIDER, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
 			}
-			if (search.contains("pig zombie")) {
+			if (frequency == 0) {
+				frequency = substringFrequency("spider", search);
+				for (int i = 0; i < frequency; i++) {
+					spawn(EntityType.SPIDER, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
+				}
+			}
+			
+			frequency = substringFrequency("pig zombie", search);
+			for (int i = 0; i < frequency; i++) {
 				spawn(EntityType.PIG_ZOMBIE, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
-			} else if (search.contains("zombie")) {
-				spawn(EntityType.ZOMBIE, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
+			}
+			if (frequency == 0) {
+				frequency = substringFrequency("zombie", search);
+				for (int i = 0; i < frequency; i++) {
+					spawn(EntityType.ZOMBIE, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
+				}
 			}
 		}
 	}
@@ -148,5 +202,19 @@ public class GrantWishesEventCommand extends EventCommand<AsyncPlayerChatEvent> 
 				}
 			}
 		}, 1L);
+	}
+	
+	private int substringFrequency(String needle, String haystack) {
+		int frequency = 0;
+		int last = -1;
+		
+		do {
+			last = haystack.indexOf(needle, last + 1);
+			if (last > -1) {
+				frequency++;
+			}
+		} while (last > -1);
+		
+		return frequency;
 	}
 }

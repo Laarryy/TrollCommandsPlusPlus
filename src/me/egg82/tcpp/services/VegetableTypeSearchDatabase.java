@@ -11,7 +11,7 @@ import ninja.egg82.sql.LanguageDatabase;
 
 public class VegetableTypeSearchDatabase extends LanguageDatabase {
 	//vars
-	private IRegistry vegetableNameRegistry = ServiceLocator.getService(VegetableNameRegistry.class);
+	private IRegistry<String> vegetableNameRegistry = ServiceLocator.getService(VegetableNameRegistry.class);
 	
 	//constructor
 	public VegetableTypeSearchDatabase() {

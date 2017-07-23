@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.inventory.inventoryDrag;
 
+import java.util.UUID;
+
 import org.bukkit.event.inventory.InventoryDragEvent;
 
 import me.egg82.tcpp.services.FreezeRegistry;
@@ -9,7 +11,7 @@ import ninja.egg82.plugin.commands.EventCommand;
 
 public class FreezeEventCommand extends EventCommand<InventoryDragEvent> {
 	//vars
-	private IRegistry freezeRegistry = ServiceLocator.getService(FreezeRegistry.class);
+	private IRegistry<UUID> freezeRegistry = ServiceLocator.getService(FreezeRegistry.class);
 	
 	//constructor
 	public FreezeEventCommand(InventoryDragEvent event) {
@@ -24,7 +26,7 @@ public class FreezeEventCommand extends EventCommand<InventoryDragEvent> {
 			return;
 		}
 		
-		if (freezeRegistry.hasRegister(event.getWhoClicked().getUniqueId().toString())) {
+		if (freezeRegistry.hasRegister(event.getWhoClicked().getUniqueId())) {
 			event.setCancelled(true);
 		}
 	}

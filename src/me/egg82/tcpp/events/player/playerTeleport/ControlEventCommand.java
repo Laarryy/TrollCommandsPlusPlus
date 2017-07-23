@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.player.playerTeleport;
 
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
@@ -13,7 +15,7 @@ import ninja.egg82.plugin.utils.LocationUtil;
 
 public class ControlEventCommand extends EventCommand<PlayerTeleportEvent> {
 	//vars
-	private IRegistry controlRegistry = ServiceLocator.getService(ControlRegistry.class);
+	private IRegistry<UUID> controlRegistry = ServiceLocator.getService(ControlRegistry.class);
 	
 	//constructor
 	public ControlEventCommand(PlayerTeleportEvent event) {
@@ -29,22 +31,29 @@ public class ControlEventCommand extends EventCommand<PlayerTeleportEvent> {
 		}
 		
 		Player player = event.getPlayer();
-		Player controlledPlayer = controlRegistry.getRegister(player.getUniqueId().toString(), Player.class);
+		UUID playerUuid = player.getUniqueId();
 		
-		if (controlledPlayer != null) {
+		if (controlRegistry.hasRegister(playerUuid)) {
 			// Player is controlling someone
-			if (!CommandUtil.hasPermission(controlledPlayer, PermissionsType.FREECAM_WHILE_CONTROLLED)) {
-				controlledPlayer.teleport(LocationUtil.makeEqualXYZ(LocationUtil.getLocationBehind(player.getLocation(), 1.5d).subtract(0.0d, 1.0d, 0.0d), controlledPlayer.getLocation()));
+			Player controlledPlayer = CommandUtil.getPlayerByUuid(controlRegistry.getRegister(playerUuid, UUID.class));
+			
+			if (controlledPlayer != null) {
+				if (!CommandUtil.hasPermission(controlledPlayer, PermissionsType.FREECAM_WHILE_CONTROLLED)) {
+					controlledPlayer.teleport(LocationUtil.makeEqualXYZ(LocationUtil.getLocationBehind(player.getLocation(), 1.5d).subtract(0.0d, 1.0d, 0.0d), controlledPlayer.getLocation()));
+				}
 			}
 		}
 		
-		String controllerUuid = controlRegistry.getName(player);
-		Player controller = CommandUtil.getPlayerByUuid(controllerUuid);
+		UUID controllerUuid = controlRegistry.getKey(player.getUniqueId());
 		
-		if (controller != null) {
+		if (controllerUuid != null) {
 			// Player is being controlled by someone
-			if (!CommandUtil.hasPermission(player, PermissionsType.FREECAM_WHILE_CONTROLLED)) {
-				event.setTo(LocationUtil.makeEqualXYZ(LocationUtil.getLocationBehind(controller.getLocation(), 1.5d).subtract(0.0d, 1.0d, 0.0d), event.getTo()));
+			Player controller = CommandUtil.getPlayerByUuid(controllerUuid);
+			
+			if (controller != null) {
+				if (!CommandUtil.hasPermission(player, PermissionsType.FREECAM_WHILE_CONTROLLED)) {
+					event.setTo(LocationUtil.makeEqualXYZ(LocationUtil.getLocationBehind(controller.getLocation(), 1.5d).subtract(0.0d, 1.0d, 0.0d), event.getTo()));
+				}
 			}
 		}
 	}

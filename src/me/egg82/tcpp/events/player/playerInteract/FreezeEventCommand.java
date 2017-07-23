@@ -1,5 +1,7 @@
 package me.egg82.tcpp.events.player.playerInteract;
 
+import java.util.UUID;
+
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.egg82.tcpp.services.FreezeRegistry;
@@ -9,7 +11,7 @@ import ninja.egg82.plugin.commands.EventCommand;
 
 public class FreezeEventCommand extends EventCommand<PlayerInteractEvent> {
 	//vars
-	private IRegistry freezeRegistry = ServiceLocator.getService(FreezeRegistry.class);
+	private IRegistry<UUID> freezeRegistry = ServiceLocator.getService(FreezeRegistry.class);
 	
 	//constructor
 	public FreezeEventCommand(PlayerInteractEvent event) {
@@ -24,7 +26,7 @@ public class FreezeEventCommand extends EventCommand<PlayerInteractEvent> {
 			return;
 		}
 		
-		if (freezeRegistry.hasRegister(event.getPlayer().getUniqueId().toString())) {
+		if (freezeRegistry.hasRegister(event.getPlayer().getUniqueId())) {
 			event.setCancelled(true);
 		}
 	}

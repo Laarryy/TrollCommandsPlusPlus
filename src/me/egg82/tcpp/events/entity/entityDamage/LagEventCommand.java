@@ -1,6 +1,7 @@
 package me.egg82.tcpp.events.entity.entityDamage;
 
-import org.bukkit.entity.Entity;
+import java.util.UUID;
+
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -18,8 +19,8 @@ public class LagEventCommand extends EventCommand<EntityDamageEvent> {
 	//vars
 	private IEntityHelper entityUtil = ServiceLocator.getService(IEntityHelper.class);
 	
-	private IRegistry lagRegistry = ServiceLocator.getService(LagRegistry.class);
-	private IRegistry lagEntityRegistry = ServiceLocator.getService(LagEntityRegistry.class);
+	private IRegistry<UUID> lagRegistry = ServiceLocator.getService(LagRegistry.class);
+	private IRegistry<UUID> lagEntityRegistry = ServiceLocator.getService(LagEntityRegistry.class);
 	
 	//constructor
 	public LagEventCommand(EntityDamageEvent event) {
@@ -39,7 +40,7 @@ public class LagEventCommand extends EventCommand<EntityDamageEvent> {
 		}
 		
 		Player player = (Player) event.getEntity();
-		String uuid = player.getUniqueId().toString();
+		UUID uuid = player.getUniqueId();
 		
 		if (lagEntityRegistry.hasRegister(uuid)) {
 			return;
@@ -48,7 +49,7 @@ public class LagEventCommand extends EventCommand<EntityDamageEvent> {
 			return;
 		}
 		
-		lagEntityRegistry.setRegister(uuid, Entity.class, player);
+		lagEntityRegistry.setRegister(uuid, null);
 		
 		event.setCancelled(true);
 		
@@ -57,7 +58,7 @@ public class LagEventCommand extends EventCommand<EntityDamageEvent> {
 			public void run() {
 				// Cause the player damage
 				entityUtil.damage(player, event.getCause(), event.getDamage());
-				lagEntityRegistry.setRegister(uuid, Entity.class, null);
+				lagEntityRegistry.removeRegister(uuid);
 			}
 		}, MathUtil.fairRoundedRandom(30, 50));
 	}
