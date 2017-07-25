@@ -33,8 +33,7 @@ public class AloneEventCommand extends EventCommand<PlayerJoinEvent> {
 				player.hidePlayer(p);
 			}
 		} else {
-			UUID[] keys = aloneRegistry.getRegistryKeys();
-			for (UUID key : keys) {
+			for (UUID key : aloneRegistry.getKeys()) {
 				Player p = CommandUtil.getPlayerByUuid(key);
 				if (p != null) {
 					p.hidePlayer(player);

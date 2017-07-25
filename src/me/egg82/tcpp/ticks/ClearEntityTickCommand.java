@@ -25,13 +25,11 @@ public class ClearEntityTickCommand extends TickCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		UUID[] keys = squidDeathRegistry.getRegistryKeys();
-		for (UUID key : keys) {
+		for (UUID key : squidDeathRegistry.getKeys()) {
 			e(squidDeathRegistry, key, squidDeathRegistry.getRegister(key, Entity.class));
 		}
 		
-		keys = spartaArrowRegistry.getRegistryKeys();
-		for (UUID key : keys) {
+		for (UUID key : spartaArrowRegistry.getKeys()) {
 			e(spartaArrowRegistry, key, spartaArrowRegistry.getRegister(key, Entity.class));
 		}
 	}

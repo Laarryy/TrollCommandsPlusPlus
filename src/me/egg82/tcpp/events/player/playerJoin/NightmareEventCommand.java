@@ -1,4 +1,4 @@
-package me.egg82.tcpp.events.player.playerQuit;
+package me.egg82.tcpp.events.player.playerJoin;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -32,7 +32,7 @@ public class NightmareEventCommand extends EventCommand<PlayerJoinEvent> {
 		if (nightmareRegistry.hasRegister(uuid)) {
 			Collection<IFakeLivingEntity> entities = nightmareRegistry.getRegister(uuid, Collection.class);
 			for (IFakeLivingEntity e : entities) {
-				e.removePlayer(player);
+				e.addPlayer(player);
 			}
 		}
 	}

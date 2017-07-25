@@ -96,8 +96,7 @@ public class ControlHelper {
 	}
 	
 	public void uncontrolAll() {
-		UUID[] keys = controlRegistry.getRegistryKeys();
-		for (UUID key : keys) {
+		for (UUID key : controlRegistry.getKeys()) {
 			uncontrol(key, CommandUtil.getPlayerByUuid(key), false);
 		}
 	}

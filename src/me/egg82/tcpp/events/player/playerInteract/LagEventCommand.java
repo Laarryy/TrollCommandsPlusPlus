@@ -3,6 +3,7 @@ package me.egg82.tcpp.events.player.playerInteract;
 import java.util.UUID;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
@@ -39,6 +40,11 @@ public class LagEventCommand extends EventCommand<PlayerInteractEvent> {
 		Player player = event.getPlayer();
 		
 		Block block = event.getClickedBlock();
+		// Are we clicking on air?
+		if (block == null || block.getType() == Material.AIR) {
+			return;
+		}
+		
 		Location blockLocation = block.getLocation();
 		
 		// Block is currently being lagged. Nobody should interact with it.

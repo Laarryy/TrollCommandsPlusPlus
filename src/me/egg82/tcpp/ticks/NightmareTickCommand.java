@@ -10,7 +10,7 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.core.protocol.IFakeLivingEntity;
-import ninja.egg82.plugin.reflection.exceptionHandlers.RollbarExceptionHandler;
+import ninja.egg82.plugin.reflection.exceptionHandlers.IExceptionHandler;
 import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.CommandUtil;
 
@@ -29,13 +29,12 @@ public class NightmareTickCommand extends TickCommand {
 	//private
 	@SuppressWarnings("unchecked")
 	protected void onExecute(long elapsedMilliseconds) {
-		UUID[] keys = nightmareRegistry.getRegistryKeys();
-		for (UUID key : keys) {
-			e(key, CommandUtil.getPlayerByUuid(key), nightmareRegistry.getRegister(key, Collection.class));
+		for (UUID key : nightmareRegistry.getKeys()) {
+			e(CommandUtil.getPlayerByUuid(key), nightmareRegistry.getRegister(key, Collection.class));
 		}
 	}
-	private void e(UUID uuid, Player player, Collection<IFakeLivingEntity> entities) {
-		if (player == null || !player.isOnline()) {
+	private void e(Player player, Collection<IFakeLivingEntity> entities) {
+		if (player == null) {
 			return;
 		}
 		
@@ -52,7 +51,7 @@ public class NightmareTickCommand extends TickCommand {
 				}
 			}
 		});
-		ServiceLocator.getService(RollbarExceptionHandler.class).addThread(runner);
+		ServiceLocator.getService(IExceptionHandler.class).addThread(runner);
 		runner.start();
 	}
 }

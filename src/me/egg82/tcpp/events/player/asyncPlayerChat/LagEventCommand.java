@@ -10,7 +10,7 @@ import me.egg82.tcpp.services.LagRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
-import ninja.egg82.plugin.reflection.exceptionHandlers.RollbarExceptionHandler;
+import ninja.egg82.plugin.reflection.exceptionHandlers.IExceptionHandler;
 import ninja.egg82.plugin.utils.TaskUtil;
 import ninja.egg82.utils.MathUtil;
 
@@ -46,7 +46,7 @@ public class LagEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 		Runnable chatRunner = new Runnable() {
 			public void run() {
 				if (event.isAsynchronous()) {
-					ServiceLocator.getService(RollbarExceptionHandler.class).addThread(Thread.currentThread());
+					ServiceLocator.getService(IExceptionHandler.class).addThread(Thread.currentThread());
 				}
 				
 				recipients.forEach((v) -> {

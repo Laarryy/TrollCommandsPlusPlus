@@ -33,8 +33,7 @@ public class DisplayEventCommand extends EventCommand<EntityExplodeEvent> {
 		
 		List<Block> blocks = event.blockList();
 		
-		UUID[] keys = displayRegistry.getRegistryKeys();
-		for (UUID key : keys) {
+		for (UUID key : displayRegistry.getKeys()) {
 			for (Location loc : (Set<Location>) displayRegistry.getRegister(key)) {
 				blocks.remove(loc.getBlock());
 			}

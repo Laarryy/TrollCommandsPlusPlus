@@ -31,7 +31,7 @@ import ninja.egg82.plugin.enums.SpigotLanguageType;
 import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
 import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
 import ninja.egg82.plugin.exceptions.PlayerNotFoundException;
-import ninja.egg82.plugin.reflection.exceptionHandlers.RollbarExceptionHandler;
+import ninja.egg82.plugin.reflection.exceptionHandlers.IExceptionHandler;
 import ninja.egg82.plugin.reflection.protocol.IFakeEntityHelper;
 import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.CommandUtil;
@@ -178,7 +178,7 @@ public class NightmareCommand extends PluginCommand {
 				}
 			}
 		});
-		ServiceLocator.getService(RollbarExceptionHandler.class).addThread(runner);
+		ServiceLocator.getService(IExceptionHandler.class).addThread(runner);
 		runner.start();
 		
 		nightmareRegistry.setRegister(uuid, entities);
@@ -190,10 +190,17 @@ public class NightmareCommand extends PluginCommand {
 	
 	protected void onUndo() {
 		Player player = CommandUtil.getPlayerByName(args[0]);
-		UUID uuid = player.getUniqueId();
-		
-		if (nightmareRegistry.hasRegister(uuid)) {
-			eUndo(uuid, player);
+		if (player != null) {
+			UUID uuid = player.getUniqueId();
+			if (nightmareRegistry.hasRegister(uuid)) {
+				eUndo(uuid, player);
+			}
+		} else {
+			OfflinePlayer offlinePlayer = CommandUtil.getOfflinePlayerByName(args[0]);
+			UUID uuid = offlinePlayer.getUniqueId();
+			if (nightmareRegistry.hasRegister(uuid)) {
+				eUndo(uuid, offlinePlayer);
+			}
 		}
 		
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);
@@ -209,7 +216,7 @@ public class NightmareCommand extends PluginCommand {
 				}
 			}
 		});
-		ServiceLocator.getService(RollbarExceptionHandler.class).addThread(runner);
+		ServiceLocator.getService(IExceptionHandler.class).addThread(runner);
 		runner.start();
 		
 		nightmareRegistry.removeRegister(uuid);
@@ -227,7 +234,7 @@ public class NightmareCommand extends PluginCommand {
 				}
 			}
 		});
-		ServiceLocator.getService(RollbarExceptionHandler.class).addThread(runner);
+		ServiceLocator.getService(IExceptionHandler.class).addThread(runner);
 		runner.start();
 		
 		nightmareRegistry.removeRegister(uuid);

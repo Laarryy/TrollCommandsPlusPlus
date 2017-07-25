@@ -67,9 +67,8 @@ public class VegetableHelper {
 	}
 	
 	public void unvegetableAll() {
-		UUID[] keys = vegetableRegistry.getRegistryKeys();
-		for (int i = 0; i < keys.length; i++) {
-			unvegetable(keys[i], CommandUtil.getPlayerByUuid(keys[i]));
+		for (UUID key : vegetableRegistry.getKeys()) {
+			unvegetable(key, CommandUtil.getPlayerByUuid(key));
 		}
 	}
 	

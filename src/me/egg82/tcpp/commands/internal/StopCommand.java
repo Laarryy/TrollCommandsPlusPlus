@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -82,16 +83,23 @@ public class StopCommand extends PluginCommand {
 				sender.sendMessage("All active trolls against " + player.getName() + " have been stopped.");
 			}
 		} else {
-			Player player = Bukkit.getPlayer(args[0]);
+			Player player = CommandUtil.getPlayerByName(args[0]);
 			
 			if (player == null) {
+				OfflinePlayer offlinePlayer = CommandUtil.getOfflinePlayerByName(args[0]);
+				if (offlinePlayer != null) {
+					commandHandler.undoInitializedCommands(sender, args);
+					metricsHelper.commandWasRun(this);
+					onComplete().invoke(this, CompleteEventArgs.EMPTY);
+					return;
+				}
+				
 				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.PLAYER_NOT_FOUND));
 				onError().invoke(this, new ExceptionEventArgs<PlayerNotFoundException>(new PlayerNotFoundException(args[0])));
 				return;
 			}
 			
 			commandHandler.undoInitializedCommands(sender, args);
-			
 			metricsHelper.commandWasRun(this);
 			
 			sender.sendMessage("All active trolls against " + player.getName() + " have been stopped.");

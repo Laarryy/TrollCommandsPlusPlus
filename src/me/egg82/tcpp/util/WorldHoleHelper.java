@@ -126,22 +126,19 @@ public class WorldHoleHelper {
 	
 	@SuppressWarnings("unchecked")
 	public void undoAll() {
-		UUID[] portalKeys = portalRegistry.getRegistryKeys();
-		for (int i = 0; i < portalKeys.length; i++) {
-			BlockUtil.setBlocks(holeBlockRegistry.getRegister(portalKeys[i], List.class), portalRegistry.getRegister(portalKeys[i], Location.class), 1, 2, 1, false);
+		for (UUID key : portalRegistry.getKeys()) {
+			BlockUtil.setBlocks(holeBlockRegistry.getRegister(key, List.class), portalRegistry.getRegister(key, Location.class), 1, 2, 1, false);
 		}
 		portalRegistry.clear();
 		
-		UUID[] voidKeys = voidRegistry.getRegistryKeys();
-		for (int i = 0; i < voidKeys.length; i++) {
-			BlockUtil.setBlocks(holeBlockRegistry.getRegister(voidKeys[i], List.class), voidRegistry.getRegister(voidKeys[i], Location.class), 1, voidRadiusRegistry.getRegister(voidKeys[i], Integer.class), 1, false);
+		for (UUID key : voidRegistry.getKeys()) {
+			BlockUtil.setBlocks(holeBlockRegistry.getRegister(key, List.class), voidRegistry.getRegister(key, Location.class), 1, voidRadiusRegistry.getRegister(key, Integer.class), 1, false);
 		}
 		voidRegistry.clear();
 		voidRadiusRegistry.clear();
 		
-		UUID[] hotTubKeys = hotTubRegistry.getRegistryKeys();
-		for (int i = 0; i < hotTubKeys.length; i++) {
-			BlockUtil.setBlocks(holeBlockRegistry.getRegister(hotTubKeys[i], List.class), hotTubRegistry.getRegister(hotTubKeys[i], Location.class), 1, 1, 1, false);
+		for (UUID key : hotTubRegistry.getKeys()) {
+			BlockUtil.setBlocks(holeBlockRegistry.getRegister(key, List.class), hotTubRegistry.getRegister(key, Location.class), 1, 1, 1, false);
 		}
 		hotTubRegistry.clear();
 		

@@ -171,9 +171,10 @@ public class TimeCommand extends PluginCommand {
 	
 	protected void onUndo() {
 		Player player = CommandUtil.getPlayerByName(args[0]);
-		
-		if (!player.isPlayerTimeRelative()) {
-			eUndo(player);
+		if (player != null) {
+			if (!player.isPlayerTimeRelative()) {
+				eUndo(player);
+			}
 		}
 		
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);

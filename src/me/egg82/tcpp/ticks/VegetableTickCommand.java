@@ -32,21 +32,17 @@ public class VegetableTickCommand extends TickCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		UUID[] keys = vegetableRegistry.getRegistryKeys();
-		for (UUID key : keys) {
-			e(key, CommandUtil.getPlayerByUuid(key));
+		for (UUID key : vegetableRegistry.getKeys()) {
+			e(key, CommandUtil.getPlayerByUuid(key), vegetableItemRegistry.getRegister(key, Item.class), vegetableLocationRegistry.getRegister(key, Location.class));
 		}
 	}
-	private void e(UUID uuid, Player player) {
-		if (player == null || !player.isOnline()) {
+	private void e(UUID uuid, Player player, Item groundItem, Location oldItemLocation) {
+		if (player == null) {
 			return;
 		}
 		if (CommandUtil.hasPermission(player, PermissionsType.FREECAM_WHILE_VEGETABLE)) {
 			return;
 		}
-		
-		Item groundItem = vegetableItemRegistry.getRegister(uuid, Item.class);
-		Location oldItemLocation = vegetableLocationRegistry.getRegister(uuid, Location.class);
 		
 		Location playerLocation = player.getEyeLocation();
 		Location newItemLocation = groundItem.getLocation();

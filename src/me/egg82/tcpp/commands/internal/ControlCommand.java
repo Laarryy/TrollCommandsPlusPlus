@@ -150,19 +150,12 @@ public class ControlCommand extends PluginCommand {
 		Player player = CommandUtil.getPlayerByName(args[0]);
 		
 		if (player == null) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.PLAYER_NOT_FOUND));
-			onError().invoke(this, new ExceptionEventArgs<PlayerNotFoundException>(new PlayerNotFoundException(args[0])));
-			return;
-		}
-		if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-			sender.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
-			onError().invoke(this, new ExceptionEventArgs<PlayerImmuneException>(new PlayerImmuneException(player)));
 			return;
 		}
 		
 		UUID playerUuid = player.getUniqueId();
 		
-		for (UUID controllerUuid : controlRegistry.getRegistryKeys()) {
+		for (UUID controllerUuid : controlRegistry.getKeys()) {
 			Player controlledPlayer = CommandUtil.getPlayerByUuid(controlRegistry.getRegister(controllerUuid, UUID.class));
 			
 			if (controlledPlayer != null && controlledPlayer.getUniqueId().equals(playerUuid)) {

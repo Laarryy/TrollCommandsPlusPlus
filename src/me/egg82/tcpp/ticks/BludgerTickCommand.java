@@ -25,17 +25,15 @@ public class BludgerTickCommand extends TickCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		UUID[] keys = bludgerRegistry.getRegistryKeys();
-		for (UUID key : keys) {
-			e(key, CommandUtil.getPlayerByUuid(key));
+		for (UUID key : bludgerRegistry.getKeys()) {
+			e(CommandUtil.getPlayerByUuid(key), bludgerRegistry.getRegister(key, Fireball.class));
 		}
 	}
-	private void e(UUID uuid, Player player) {
-		if (player == null || !player.isOnline()) {
+	private void e(Player player, Fireball fireball) {
+		if (player == null) {
 			return;
 		}
 		
-		Fireball fireball = bludgerRegistry.getRegister(uuid, Fireball.class);
 		fireball.setVelocity(player.getLocation().toVector().subtract(fireball.getLocation().toVector()).normalize().multiply(0.35d));
 	}
 }

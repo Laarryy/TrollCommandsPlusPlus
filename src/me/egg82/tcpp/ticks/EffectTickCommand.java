@@ -28,13 +28,12 @@ public class EffectTickCommand extends TickCommand {
 	//private
 	@SuppressWarnings("unchecked")
 	protected void onExecute(long elapsedMilliseconds) {
-		UUID[] keys = effectRegistry.getRegistryKeys();
-		for (UUID key : keys) {
-			e(key, CommandUtil.getPlayerByUuid(key), effectRegistry.getRegister(key, List.class));
+		for (UUID key : effectRegistry.getKeys()) {
+			e(CommandUtil.getPlayerByUuid(key), effectRegistry.getRegister(key, List.class));
 		}
 	}
-	private void e(UUID uuid, Player player, List<PotionEffectType> effects) {
-		if (player == null || !player.isOnline()) {
+	private void e(Player player, List<PotionEffectType> effects) {
+		if (player == null) {
 			return;
 		}
 		

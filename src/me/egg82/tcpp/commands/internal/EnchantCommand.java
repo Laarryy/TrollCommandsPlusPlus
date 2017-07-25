@@ -55,11 +55,11 @@ public class EnchantCommand extends PluginCommand {
 			ArrayList<String> retVal = new ArrayList<String>();
 			
 			if (args[0].isEmpty()) {
-				for (String key : enchantNameRegistry.getRegistryKeys()) {
+				for (String key : enchantNameRegistry.getKeys()) {
 					retVal.add(enchantNameRegistry.getRegister(key, String.class));
 				}
 			} else {
-				for (String key : enchantNameRegistry.getRegistryKeys()) {
+				for (String key : enchantNameRegistry.getKeys()) {
 					String value = enchantNameRegistry.getRegister(key, String.class);
 					if (value.toLowerCase().startsWith(args[0].toLowerCase())) {
 						retVal.add(value);

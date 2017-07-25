@@ -32,13 +32,12 @@ public class HauntTickCommand extends TickCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		UUID[] keys = hauntRegistry.getRegistryKeys();
-		for (UUID key : keys) {
-			e(key, CommandUtil.getPlayerByUuid(key));
+		for (UUID key : hauntRegistry.getKeys()) {
+			e(CommandUtil.getPlayerByUuid(key));
 		}
 	}
-	private void e(UUID uuid, Player player) {
-		if (player == null || !player.isOnline()) {
+	private void e(Player player) {
+		if (player == null) {
 			return;
 		}
 		

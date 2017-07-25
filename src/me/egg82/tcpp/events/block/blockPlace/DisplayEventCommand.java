@@ -31,8 +31,7 @@ public class DisplayEventCommand extends EventCommand<BlockPlaceEvent> {
 		
 		Location loc = event.getBlock().getLocation();
 		
-		UUID[] keys = displayRegistry.getRegistryKeys();
-		for (UUID key : keys) {
+		for (UUID key : displayRegistry.getKeys()) {
 			Set<Location> blockedLocs = displayRegistry.getRegister(key, Set.class);
 			
 			if (blockedLocs.contains(loc)) {

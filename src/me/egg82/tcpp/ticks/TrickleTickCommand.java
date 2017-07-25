@@ -28,34 +28,36 @@ public class TrickleTickCommand extends TickCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		UUID[] keys = trickleRegistry.getRegistryKeys();
-		for (UUID key : keys) {
-			e(key, CommandUtil.getPlayerByUuid(key));
+		for (UUID key : trickleRegistry.getKeys()) {
+			e(CommandUtil.getPlayerByUuid(key));
 		}
 	}
-	private void e(UUID uuid, Player player) {
-		if (player == null || !player.isOnline()) {
+	private void e(Player player) {
+		if (player == null) {
 			return;
 		}
 		
-		int currentExp = (int) (player.getExpToLevel() * player.getExp());
+		double expToLevel = player.getExpToLevel();
+		double currentExp = expToLevel * player.getExp();
 		int currentLevel = player.getLevel();
 		
-		if (currentExp == 0 && currentLevel > 0) {
+		if (currentExp == 0.0d && currentLevel > 0) {
 			player.setLevel(currentLevel - 1);
 			player.setExp(1);
 			currentExp = player.getExpToLevel();
 		}
 		
-		if (Math.random() <= 0.1 && currentExp > 0) {
+		if (Math.random() <= 0.1d && currentExp > 0.0d) {
 			int droppedExp = 0;
-			if (currentExp > 10) {
+			if (currentExp > 10.0d) {
 				droppedExp = MathUtil.fairRoundedRandom(1, 10);
-				player.setExp((((float) currentExp) - ((float) droppedExp)) / ((float) player.getExpToLevel()));
+				double newExp = (currentExp - droppedExp) / expToLevel; // Floating-point math sucks.
+				player.setExp((float) newExp);
 			} else {
-				droppedExp = currentExp + 1;
+				droppedExp = (int) Math.floor(currentExp + 1.0d);
 				player.setLevel(currentLevel - 1);
-				player.setExp(1.0f - ((((float) currentExp) - ((float) droppedExp)) / ((float) player.getExpToLevel())));
+				double newExp = 1.0d - ((currentExp - droppedExp) / expToLevel); // Floating-point math sucks.
+				player.setExp((float) newExp);
 			}
 			
 			player.getWorld().spawn(BlockUtil.getTopWalkableBlock(LocationUtil.getLocationBehind(player.getLocation(), MathUtil.random(3.0d, 5.0d))), ExperienceOrb.class).setExperience(droppedExp);

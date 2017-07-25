@@ -118,14 +118,14 @@ public class SearchCommand extends PluginCommand {
 			search = search.trim();
 		}
 		
-		e(player.getUniqueId(), ((Player) sender).getUniqueId(), (Player) sender, search);
+		e(player.getUniqueId(), player, ((Player) sender).getUniqueId(), (Player) sender, search);
 		
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
-	private void e(UUID uuid, UUID senderUuid, Player senderPlayer, String search) {
+	private void e(UUID uuid, Player player, UUID senderUuid, Player senderPlayer, String search) {
 		Inventory inv = GuiUtil.createInventory(senderPlayer, search, 0);
 		trollInventoryRegistry.setRegister(senderUuid, inv);
-		trollPlayerRegistry.setRegister(senderUuid, uuid);
+		trollPlayerRegistry.setRegister(senderUuid, player.getName());
 		trollPageRegistry.setRegister(senderUuid, 0);
 		trollSearchRegistry.setRegister(senderUuid, search);
 		

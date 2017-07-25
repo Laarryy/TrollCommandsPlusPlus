@@ -129,10 +129,11 @@ public class InvertCommand extends PluginCommand {
 	
 	protected void onUndo() {
 		Player player = CommandUtil.getPlayerByName(args[0]);
-		UUID uuid = player.getUniqueId();
-		
-		if (invertRegistry.hasRegister(uuid)) {
-			eUndo(uuid, player);
+		if (player != null) {
+			UUID uuid = player.getUniqueId();
+			if (invertRegistry.hasRegister(uuid)) {
+				eUndo(uuid, player);
+			}
 		}
 		
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);

@@ -137,10 +137,17 @@ public class RewindCommand extends PluginCommand {
 	
 	protected void onUndo() {
 		Player player = CommandUtil.getPlayerByName(args[0]);
-		UUID uuid = player.getUniqueId();
-		
-		if (rewindRegistry.hasRegister(uuid)) {
-			eUndo(uuid, player);
+		if (player != null) {
+			UUID uuid = player.getUniqueId();
+			if (rewindRegistry.hasRegister(uuid)) {
+				eUndo(uuid, player);
+			}
+		} else {
+			OfflinePlayer offlinePlayer = CommandUtil.getOfflinePlayerByName(args[0]);
+			UUID uuid = offlinePlayer.getUniqueId();
+			if (rewindRegistry.hasRegister(uuid)) {
+				eUndo(uuid, offlinePlayer);
+			}
 		}
 		
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);

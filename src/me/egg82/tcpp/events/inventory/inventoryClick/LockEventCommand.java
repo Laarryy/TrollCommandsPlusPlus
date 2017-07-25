@@ -30,10 +30,12 @@ public class LockEventCommand extends EventCommand<InventoryClickEvent> {
 		Player player = (Player) event.getWhoClicked();
 		
 		if (lockRegistry.hasRegister(player.getUniqueId())) {
-			if (event.getClickedInventory().getHolder() instanceof Player) {
+			if (event.getClickedInventory() != null && (event.getClickedInventory().getHolder() instanceof Player)) {
 				if (((Player) event.getClickedInventory().getHolder()).getUniqueId().equals(player.getUniqueId())) {
 					event.setCancelled(true);
 				}
+			} else if (event.getClickedInventory() == null) {
+				event.setCancelled(true);
 			}
 		}
 	}

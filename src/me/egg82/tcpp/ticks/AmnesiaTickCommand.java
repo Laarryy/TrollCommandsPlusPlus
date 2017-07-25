@@ -25,19 +25,16 @@ public class AmnesiaTickCommand extends TickCommand {
 	//public
 	
 	//private
+	@SuppressWarnings("unchecked")
 	protected void onExecute(long elapsedMilliseconds) {
-		UUID[] keys = amnesiaRegistry.getRegistryKeys();
-		for (UUID key : keys) {
-			e(key, CommandUtil.getPlayerByUuid(key));
+		for (UUID key : amnesiaRegistry.getKeys()) {
+			e(key, CommandUtil.getPlayerByUuid(key), amnesiaRegistry.getRegister(key, List.class));
 		}
 	}
-	@SuppressWarnings("unchecked")
-	private void e(UUID uuid, Player player) {
-		if(player == null) {
+	private void e(UUID uuid, Player player, List<String> messages) {
+		if (player == null) {
 			return;
 		}
-		
-		List<String> messages = amnesiaRegistry.getRegister(uuid, List.class);
 		
 		synchronized(messages) {
 			Iterator<String> i = messages.iterator();

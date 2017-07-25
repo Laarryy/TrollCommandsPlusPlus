@@ -26,7 +26,6 @@ public class WhoAmIHelper {
 		ArrayList<String> names = new ArrayList<String>();
 		names.add(player.getDisplayName());
 		names.add(player.getPlayerListName());
-		names.add(player.getCustomName());
 		
 		whoAmIRegistry.setRegister(uuid, names);
 	}
@@ -35,7 +34,6 @@ public class WhoAmIHelper {
 		List<String> names = whoAmIRegistry.getRegister(uuid, List.class);
 		player.setDisplayName(names.get(0));
 		player.setPlayerListName(names.get(1));
-		player.setCustomName(names.get(2));
 		
 		whoAmIRegistry.removeRegister(uuid);
 	}
@@ -44,9 +42,8 @@ public class WhoAmIHelper {
 	}
 	
 	public void stopAll() {
-		UUID[] keys = whoAmIRegistry.getRegistryKeys();
-		for (int i = 0; i < keys.length; i++) {
-			stop(keys[i], CommandUtil.getPlayerByUuid(keys[i]));
+		for (UUID key : whoAmIRegistry.getKeys()) {
+			stop(key, CommandUtil.getPlayerByUuid(key));
 		}
 	}
 	

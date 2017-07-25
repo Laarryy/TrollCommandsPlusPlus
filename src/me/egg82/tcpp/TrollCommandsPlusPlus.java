@@ -36,7 +36,11 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.BasePlugin;
 import ninja.egg82.plugin.commands.PluginCommand;
+import ninja.egg82.plugin.reflection.exceptionHandlers.GameAnalyticsExceptionHandler;
 import ninja.egg82.plugin.reflection.exceptionHandlers.IExceptionHandler;
+import ninja.egg82.plugin.reflection.exceptionHandlers.RollbarExceptionHandler;
+import ninja.egg82.plugin.reflection.exceptionHandlers.builders.GameAnalyticsBuilder;
+import ninja.egg82.plugin.reflection.exceptionHandlers.builders.RollbarBuilder;
 import ninja.egg82.plugin.services.LanguageRegistry;
 import ninja.egg82.plugin.utils.SpigotReflectUtil;
 import ninja.egg82.plugin.utils.VersionUtil;
@@ -50,6 +54,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	private Metrics metrics = null;
 	
 	private Timer updateTimer = null;
+	private Timer exceptionHandlerTimer = null;
 	
 	private int numCommands = 0;
 	private int numEvents = 0;
@@ -63,8 +68,14 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		super();
 		
 		getLogger().setLevel(Level.WARNING);
+		IExceptionHandler oldExceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
+		ServiceLocator.removeServices(IExceptionHandler.class);
+		
+		ServiceLocator.provideService(RollbarExceptionHandler.class, false);
 		exceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
-		exceptionHandler.connect("872a465ad3ed465a94136d1978e28ec0", "production");
+		exceptionHandler.connect(new RollbarBuilder("872a465ad3ed465a94136d1978e28ec0", "production"));
+		exceptionHandler.setUnsentExceptions(oldExceptionHandler.getUnsentExceptions());
+		exceptionHandler.setUnsentLogs(oldExceptionHandler.getUnsentLogs());
 	}
 	
 	//public
@@ -123,6 +134,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		populateLanguage();
 		
 		updateTimer = new Timer(24 * 60 * 60 * 1000, onUpdateTimer);
+		exceptionHandlerTimer = new Timer(60 * 60 * 1000, onExceptionHandlerTimer);
 	}
 	
 	public void onEnable() {
@@ -138,8 +150,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 			metrics.addCustomChart(new Metrics.AdvancedPie("commands", () -> {
 				IRegistry<String> commandRegistry = ServiceLocator.getService(CommandRegistry.class);
 				HashMap<String, Integer> values = new HashMap<String, Integer>();
-				String[] keys = commandRegistry.getRegistryKeys();
-				for (String key : keys) {
+				for (String key : commandRegistry.getKeys()) {
 					values.put(key, commandRegistry.getRegister(key, Integer.class));
 				}
 				return values;
@@ -169,6 +180,9 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		checkUpdate();
 		updateTimer.setRepeats(true);
 		updateTimer.start();
+		checkExceptionLimitReached();
+		exceptionHandlerTimer.setRepeats(true);
+		exceptionHandlerTimer.start();
 	}
 	public void onDisable() {
 		super.onDisable();
@@ -216,6 +230,24 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 			}
 			
 			warning(ChatColor.GREEN + "--== " + ChatColor.YELLOW + "TrollCommands++ UPDATE AVAILABLE (Latest: " + latestVersion + " Current: " + currentVersion + ") " + ChatColor.GREEN + " ==--");
+		}
+	}
+	
+	private ActionListener onExceptionHandlerTimer = new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			checkExceptionLimitReached();
+		}
+	};
+	private void checkExceptionLimitReached() {
+		if (exceptionHandler.isLimitReached()) {
+			IExceptionHandler oldExceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
+			ServiceLocator.removeServices(IExceptionHandler.class);
+			
+			ServiceLocator.provideService(GameAnalyticsExceptionHandler.class, false);
+			exceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
+			exceptionHandler.connect(new GameAnalyticsBuilder("250e5c508c3dd844ed1f8bd2a449d1a6", "dfb50b06e598e7a7ad9b3c84f7b118c12800ffce"));
+			exceptionHandler.setUnsentExceptions(oldExceptionHandler.getUnsentExceptions());
+			exceptionHandler.setUnsentLogs(oldExceptionHandler.getUnsentLogs());
 		}
 	}
 	

@@ -25,18 +25,17 @@ public class SpinTickCommand extends TickCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		UUID[] keys = spinRegistry.getRegistryKeys();
-		for (UUID key : keys) {
-			e(key, CommandUtil.getPlayerByUuid(key));
+		for (UUID key : spinRegistry.getKeys()) {
+			e(CommandUtil.getPlayerByUuid(key), spinRegistry.getRegister(key, Float.class));
 		}
 	}
-	private void e(UUID uuid, Player player) {
-		if (player == null || !player.isOnline()) {
+	private void e(Player player, float speed) {
+		if (player == null) {
 			return;
 		}
 		
 		Location newLocation = player.getLocation().clone();
-		float newYaw = newLocation.getYaw() + spinRegistry.getRegister(uuid, Float.class);
+		float newYaw = newLocation.getYaw() + speed;
 		
 		while (newYaw < 0.0f) {
 			newYaw += 360.0f;

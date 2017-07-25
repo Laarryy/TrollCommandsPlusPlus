@@ -2,6 +2,7 @@ package me.egg82.tcpp.commands;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -9,31 +10,50 @@ import java.util.Map.Entry;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.exceptions.InvalidCommandException;
 import me.egg82.tcpp.services.CommandSearchDatabase;
+import ninja.egg82.events.CompleteEventArgs;
 import ninja.egg82.events.ExceptionEventArgs;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotLanguageType;
-import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
 import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.LanguageUtil;
 import ninja.egg82.sql.LanguageDatabase;
+import ninja.egg82.startup.InitRegistry;
 import ninja.egg82.utils.ReflectUtil;
 
 public class TrollCommand extends PluginCommand {
 	//vars
 	private LanguageDatabase commandDatabase = ServiceLocator.getService(CommandSearchDatabase.class);
 	private ArrayList<String> commandNames = new ArrayList<String>();
+	private HashMap<String, String> commandDescriptions = new HashMap<String, String>();
 	private HashMap<String, PluginCommand> commands = new HashMap<String, PluginCommand>();
+	
+	int totalPages = -1;
 	
 	//constructor
 	public TrollCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
+		
+		String[] list = ((String) ((PluginDescriptionFile) ServiceLocator.getService(InitRegistry.class).getRegister("plugin", JavaPlugin.class).getDescription()).getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
+		for (String entry : list) {
+			if (entry.contains("-= Available Commands =-")) {
+				continue;
+			}
+			
+			String usage = entry.substring(0, entry.indexOf(':')).trim();
+			String c = usage.split(" ")[1];
+			String description = entry.substring(entry.indexOf(':') + 1).trim();
+			
+			commandDescriptions.put(c.toLowerCase(), description);
+		}
 		
 		// List all classes in the command package
 		List<Class<? extends PluginCommand>> temp = ReflectUtil.getClasses(PluginCommand.class, "me.egg82.tcpp.commands.internal");
@@ -52,6 +72,9 @@ public class TrollCommand extends PluginCommand {
 			commandNames.add(name);
 			commands.put(name, run);
 		}
+		
+		Collections.sort(commandNames);
+		totalPages = (int) Math.ceil(((double) commandNames.size()) / 9.0d);
 	}
 	
 	//public
@@ -85,10 +108,35 @@ public class TrollCommand extends PluginCommand {
 			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_TROLL)));
 			return;
 		}
-		if (args.length == 0) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
-			sender.getServer().dispatchCommand(sender, "help " + command.getName());
-			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
+		
+		// Is /help requested?
+		int page = 1;
+		if (args.length == 1) {
+			page = -1;
+			try {
+				page = Integer.parseInt(args[0]);
+			} catch (Exception ex) {
+				
+			}
+			if (page < 1) {
+				page = 1;
+			}
+		}
+		
+		if (args.length == 0 || (args.length == 1 && page != -1)) {
+			// Act like /help
+			page -= 1;
+			sender.sendMessage(ChatColor.YELLOW + "---- " + ChatColor.GOLD + "Help: troll" + ChatColor.YELLOW + " -- " + ChatColor.GOLD + "Page " + ChatColor.RED + (page + 1) + ChatColor.GOLD + "/" + ChatColor.RED + totalPages + ChatColor.YELLOW + " ----");
+			sender.sendMessage(ChatColor.GOLD + "Commands from TrollCommands++:");
+			if (page * 9 < commandNames.size()) {
+				for (int i = page * 9; i < Math.min((page * 9) + 9, commandNames.size()); i++) {
+					sender.sendMessage(ChatColor.GOLD + "/" + commandNames.get(i) + ChatColor.WHITE + ": " + commandDescriptions.get(commandNames.get(i)));
+				}
+				if (page + 1 < totalPages) {
+					sender.sendMessage(ChatColor.GOLD + "Type " + ChatColor.RED + "/troll " + (page + 2) + ChatColor.GOLD + " to read the next page.");
+				}
+			}
+			onComplete().invoke(this, CompleteEventArgs.EMPTY);
 			return;
 		}
 		

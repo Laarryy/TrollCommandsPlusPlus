@@ -16,7 +16,7 @@ import me.egg82.tcpp.services.FoolsGoldRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.tuples.Pair;
-import ninja.egg82.plugin.reflection.exceptionHandlers.RollbarExceptionHandler;
+import ninja.egg82.plugin.reflection.exceptionHandlers.IExceptionHandler;
 import ninja.egg82.plugin.reflection.protocol.IFakeBlockHelper;
 import ninja.egg82.utils.MathUtil;
 
@@ -67,7 +67,7 @@ public class FoolsGoldHelper {
 				}
 			}
 		});
-		ServiceLocator.getService(RollbarExceptionHandler.class).addThread(runner);
+		ServiceLocator.getService(IExceptionHandler.class).addThread(runner);
 		runner.start();
 		
 		foolsGoldRegistry.setRegister(uuid, blocks);
@@ -85,7 +85,7 @@ public class FoolsGoldHelper {
 					}
 				}
 			});
-			ServiceLocator.getService(RollbarExceptionHandler.class).addThread(runner);
+			ServiceLocator.getService(IExceptionHandler.class).addThread(runner);
 			runner.start();
 		}
 		
@@ -160,7 +160,7 @@ public class FoolsGoldHelper {
 				}
 			}
 		});
-		ServiceLocator.getService(RollbarExceptionHandler.class).addThread(runner);
+		ServiceLocator.getService(IExceptionHandler.class).addThread(runner);
 		runner.start();
 	}
 	
@@ -225,7 +225,7 @@ public class FoolsGoldHelper {
 				}
 			}
 		});
-		ServiceLocator.getService(RollbarExceptionHandler.class).addThread(runner);
+		ServiceLocator.getService(IExceptionHandler.class).addThread(runner);
 		runner.start();
 	}
 	

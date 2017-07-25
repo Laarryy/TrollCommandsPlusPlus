@@ -132,7 +132,13 @@ public class SurroundCommand extends PluginCommand {
 		}
 		search = search.trim();
 		
-		EntityType type = EntityType.valueOf(search.toUpperCase().replaceAll(" ", "_"));
+		EntityType type = null;
+		
+		try {
+			type = EntityType.valueOf(search.toUpperCase().replaceAll(" ", "_"));
+		} catch (Exception ex) {
+			
+		}
 		
 		if (type == null || !ReflectUtil.doesExtend(Monster.class, type.getEntityClass())) {
 			// Not found or not a monster. Try to search the database.
@@ -144,7 +150,11 @@ public class SurroundCommand extends PluginCommand {
 				return;
 			}
 			
-			type = EntityType.valueOf(types[0].toUpperCase());
+			try {
+				type = EntityType.valueOf(types[0].toUpperCase());
+			} catch (Exception ex) {
+				
+			}
 			if (type == null) {
 				sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_TYPE));
 				onError().invoke(this, new ExceptionEventArgs<InvalidTypeException>(new InvalidTypeException(search)));

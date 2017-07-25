@@ -29,13 +29,12 @@ public class LureTickCommand extends TickCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		UUID[] keys = lureRegistry.getRegistryKeys();
-		for (UUID key : keys) {
-			e(key, CommandUtil.getPlayerByUuid(key));
+		for (UUID key : lureRegistry.getKeys()) {
+			e(CommandUtil.getPlayerByUuid(key));
 		}
 	}
-	private void e(UUID uuid, Player player) {
-		if (player == null || !player.isOnline()) {
+	private void e(Player player) {
+		if (player == null) {
 			return;
 		}
 		

@@ -46,7 +46,7 @@ public class VegetableCommand extends PluginCommand {
 	public VegetableCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
 		
-		for (String key : vegetableNameRegistry.getRegistryKeys()) {
+		for (String key : vegetableNameRegistry.getKeys()) {
 			vegetableNames.add(vegetableNameRegistry.getRegister(key, String.class));
 		}
 	}
@@ -184,10 +184,11 @@ public class VegetableCommand extends PluginCommand {
 	
 	protected void onUndo() {
 		Player player = CommandUtil.getPlayerByName(args[0]);
-		UUID uuid = player.getUniqueId();
-		
-		if (vegetableRegistry.hasRegister(uuid)) {
-			eUndo(uuid, player);
+		if (player != null) {
+			UUID uuid = player.getUniqueId();
+			if (vegetableRegistry.hasRegister(uuid)) {
+				eUndo(uuid, player);
+			}
 		}
 		
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);

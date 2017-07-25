@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -34,6 +35,7 @@ import ninja.egg82.plugin.utils.LanguageUtil;
 public class ConvertCommand extends PluginCommand {
 	//vars
 	private IRegistry<UUID> convertRegistry = ServiceLocator.getService(ConvertRegistry.class);
+	private ArrayList<String> materialNames = new ArrayList<String>();
 	private IRegistry<String> materialNameRegistry = ServiceLocator.getService(MaterialNameRegistry.class);
 	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
@@ -41,6 +43,10 @@ public class ConvertCommand extends PluginCommand {
 	//constructor
 	public ConvertCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
+		
+		for (String key : materialNameRegistry.getKeys()) {
+			materialNames.add(WordUtils.capitalize(key.toLowerCase().replace('_', ' ')));
+		}
 	}
 	
 	//public
@@ -62,22 +68,19 @@ public class ConvertCommand extends PluginCommand {
 			
 			return retVal;
 		} else if(args.length == 2) {
-			ArrayList<String> retVal = new ArrayList<String>();
-			
 			if (args[1].isEmpty()) {
-				for (String key : materialNameRegistry.getRegistryKeys()) {
-					retVal.add(materialNameRegistry.getRegister(key, String.class));
-				}
+				return materialNames;
 			} else {
-				for (String key : materialNameRegistry.getRegistryKeys()) {
-					String value = materialNameRegistry.getRegister(key, String.class);
-					if (value.toLowerCase().startsWith(args[1].toLowerCase())) {
-						retVal.add(value);
+				ArrayList<String> retVal = new ArrayList<String>();
+				
+				for (String name : materialNames) {
+					if (name.toLowerCase().startsWith(args[1].toLowerCase())) {
+						retVal.add(name);
 					}
 				}
+				
+				return retVal;
 			}
-			
-			return retVal;
 		}
 		
 		return null;
@@ -176,7 +179,7 @@ public class ConvertCommand extends PluginCommand {
 		metricsHelper.commandWasRun(this);
 		
 		String name = type.name().toLowerCase();
-		if (name.substring(name.length() - 5) == "_item") {
+		if (name.length() > 5 && name.substring(name.length() - 5).equals("_item")) {
 			name = name.substring(0, name.length() - 5);
 		}
 		name.replace('_', ' ');
@@ -186,10 +189,11 @@ public class ConvertCommand extends PluginCommand {
 	
 	protected void onUndo() {
 		Player player = CommandUtil.getPlayerByName(args[0]);
-		UUID uuid = player.getUniqueId();
-		
-		if (convertRegistry.hasRegister(uuid)) {
-			eUndo(uuid, player);
+		if (player != null) {
+			UUID uuid = player.getUniqueId();
+			if (convertRegistry.hasRegister(uuid)) {
+				eUndo(uuid, player);
+			}
 		}
 		
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);
