@@ -35,6 +35,10 @@ public class BrittleEventCommand extends EventCommand<PlayerMoveEvent> {
 		Player player = event.getPlayer();
 		
 		if (brittleRegistry.hasRegister(player.getUniqueId())) {
+			if (!event.getTo().getWorld().equals(event.getFrom().getWorld())) {
+				return;
+			}
+			
 			Location to = event.getTo();
 			double toY = to.getY();
 			double blockY = (double) to.getBlockY();

@@ -156,11 +156,10 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 				return values;
 			}));
 			/*metrics.addCustomChart(new Metrics.MultiLineChart("commands-ml", () -> {
-				IRegistry commandRegistry = (IRegistry) ServiceLocator.getService(CommandRegistry.class);
+				IRegistry<String> commandRegistry = ServiceLocator.getService(CommandRegistry.class);
 				HashMap<String, Integer> values = new HashMap<String, Integer>();
-				String[] names = commandRegistry.getRegistryNames();
-				for (String name : names) {
-					values.put(name, (Integer) commandRegistry.getRegister(name));
+				for (String key : commandRegistry.getKeys()) {
+					values.put(key, commandRegistry.getRegister(key, Integer.class));
 				}
 				commandRegistry.clear();
 				return values;

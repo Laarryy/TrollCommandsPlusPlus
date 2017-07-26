@@ -38,7 +38,12 @@ public class VegetableEventCommand extends EventCommand<PlayerMoveEvent> {
 		
 		if (vegetableRegistry.hasRegister(uuid)) {
 			if (!CommandUtil.hasPermission(player, PermissionsType.FREECAM_WHILE_VEGETABLE)) {
-				event.setTo(LocationUtil.makeEqualXYZ(vegetableLocationRegistry.getRegister(uuid, Location.class).clone().add(0.0d, -1.0d, 0.0d), event.getTo()));
+				if (!event.getTo().getWorld().equals(event.getFrom().getWorld())) {
+					event.setCancelled(true);
+					player.teleport(vegetableLocationRegistry.getRegister(uuid, Location.class).clone().add(0.0d, -1.0d, 0.0d));
+				} else {
+					event.setTo(LocationUtil.makeEqualXYZ(vegetableLocationRegistry.getRegister(uuid, Location.class).clone().add(0.0d, -1.0d, 0.0d), event.getTo()));
+				}
 			}
 		}
 	}

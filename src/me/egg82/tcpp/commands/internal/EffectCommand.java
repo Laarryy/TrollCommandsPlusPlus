@@ -261,12 +261,13 @@ public class EffectCommand extends PluginCommand {
 	}
 	@SuppressWarnings("unchecked")
 	private void eUndo(UUID uuid, Player player) {
-		List<PotionEffectType> effects = effectRegistry.getRegister(uuid, List.class);
-		for (PotionEffectType potionType : effects) {
-			player.removePotionEffect(potionType);
+		if (effectRegistry.hasRegister(uuid)) {
+			List<PotionEffectType> effects = effectRegistry.getRegister(uuid, List.class);
+			for (PotionEffectType potionType : effects) {
+				player.removePotionEffect(potionType);
+			}
+			effectRegistry.removeRegister(uuid);
 		}
-		
-		effectRegistry.removeRegister(uuid);
 		
 		sender.sendMessage(player.getName() + " no longer has any permanent potion effects.");
 	}

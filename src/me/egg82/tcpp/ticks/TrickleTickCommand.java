@@ -37,26 +37,32 @@ public class TrickleTickCommand extends TickCommand {
 			return;
 		}
 		
-		double expToLevel = player.getExpToLevel();
-		double currentExp = expToLevel * player.getExp();
-		int currentLevel = player.getLevel();
-		
-		if (currentExp == 0.0d && currentLevel > 0) {
-			player.setLevel(currentLevel - 1);
-			player.setExp(1);
-			currentExp = player.getExpToLevel();
-		}
-		
-		if (Math.random() <= 0.1d && currentExp > 0.0d) {
-			int droppedExp = 0;
-			if (currentExp > 10.0d) {
-				droppedExp = MathUtil.fairRoundedRandom(1, 10);
-				double newExp = (currentExp - droppedExp) / expToLevel; // Floating-point math sucks.
-				player.setExp((float) newExp);
+		if (Math.random() <= 0.1d) {
+			int currentExp = (int) Math.floor(player.getExpToLevel() * player.getExp());
+			int currentLevel = player.getLevel();
+			
+			if (currentLevel == 0 && currentExp == 0) {
+				return;
+			}
+			
+			int droppedExp = MathUtil.fairRoundedRandom(1, 10);
+			
+			if (droppedExp > currentExp) {
+				if (currentLevel > 0) {
+					player.setLevel(currentLevel - 1);
+					
+					droppedExp -= currentExp;
+					currentExp = player.getExpToLevel();
+					double newExp = ((double) currentExp - (double) droppedExp) / (double) player.getExpToLevel();
+					player.setExp((float) newExp);
+				} else {
+					droppedExp = currentExp;
+					player.setExp(0.0f);
+				}
+			} else if (droppedExp == currentExp) {
+				player.setExp(0.0f);
 			} else {
-				droppedExp = (int) Math.floor(currentExp + 1.0d);
-				player.setLevel(currentLevel - 1);
-				double newExp = 1.0d - ((currentExp - droppedExp) / expToLevel); // Floating-point math sucks.
+				double newExp = ((double) currentExp - (double) droppedExp) / (double) player.getExpToLevel();
 				player.setExp((float) newExp);
 			}
 			

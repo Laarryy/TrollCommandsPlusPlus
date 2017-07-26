@@ -45,6 +45,10 @@ public class LagEventCommand extends EventCommand<PlayerTeleportEvent> {
 		
 		// 15% chance that we lag the player
 		if (Math.random() <= 0.15d) {
+			if (!event.getTo().getWorld().equals(event.getFrom().getWorld())) {
+				return;
+			}
+			
 			Location from = event.getFrom();
 			lagLocationRegistry.setRegister(uuid, from);
 			

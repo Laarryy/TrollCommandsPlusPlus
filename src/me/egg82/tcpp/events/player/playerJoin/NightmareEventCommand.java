@@ -11,6 +11,7 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.core.protocol.IFakeLivingEntity;
+import ninja.egg82.plugin.utils.TaskUtil;
 
 public class NightmareEventCommand extends EventCommand<PlayerJoinEvent> {
 	//vars
@@ -30,10 +31,14 @@ public class NightmareEventCommand extends EventCommand<PlayerJoinEvent> {
 		UUID uuid = player.getUniqueId();
 		
 		if (nightmareRegistry.hasRegister(uuid)) {
-			Collection<IFakeLivingEntity> entities = nightmareRegistry.getRegister(uuid, Collection.class);
-			for (IFakeLivingEntity e : entities) {
-				e.addPlayer(player);
-			}
+			TaskUtil.runAsync(new Runnable() {
+				public void run() {
+					Collection<IFakeLivingEntity> entities = nightmareRegistry.getRegister(uuid, Collection.class);
+					for (IFakeLivingEntity e : entities) {
+						e.addPlayer(player);
+					}
+				}
+			}, 80L);
 		}
 	}
 }

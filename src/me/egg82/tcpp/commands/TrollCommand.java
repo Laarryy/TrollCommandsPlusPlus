@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -37,6 +39,7 @@ public class TrollCommand extends PluginCommand {
 	private HashMap<String, PluginCommand> commands = new HashMap<String, PluginCommand>();
 	
 	int totalPages = -1;
+	private Pattern pagePattern = Pattern.compile("\\d+");
 	
 	//constructor
 	public TrollCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -113,12 +116,17 @@ public class TrollCommand extends PluginCommand {
 		int page = 1;
 		if (args.length == 1) {
 			page = -1;
-			try {
-				page = Integer.parseInt(args[0]);
-			} catch (Exception ex) {
-				
+			
+			Matcher m = pagePattern.matcher(args[0]);
+			if (m.find()) {
+				try {
+					page = Integer.parseInt(m.group());
+				} catch (Exception ex) {
+					
+				}
 			}
-			if (page < 1) {
+			
+			if (page != -1 && page < 1) {
 				page = 1;
 			}
 		}
