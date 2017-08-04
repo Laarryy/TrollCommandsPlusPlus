@@ -110,6 +110,9 @@ public class SpoilTickCommand extends TickCommand {
 		if (slot == -1) {
 			slot = inventory.firstEmpty();
 		}
+		if (slot == -1) {
+			return false;
+		}
 		
 		inventory.setItem(slot, item);
 		return true;

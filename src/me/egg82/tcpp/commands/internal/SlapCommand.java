@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,16 +22,24 @@ import ninja.egg82.plugin.enums.SpigotLanguageType;
 import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
 import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
 import ninja.egg82.plugin.exceptions.PlayerNotFoundException;
+import ninja.egg82.plugin.reflection.type.TypeFilterHelper;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.LanguageUtil;
+import ninja.egg82.utils.MathUtil;
 
 public class SlapCommand extends PluginCommand {
 	//vars
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
+	private Sound[] sounds = null;
 	
 	//constructor
 	public SlapCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
+		
+		TypeFilterHelper<Sound> soundFilterHelper = new TypeFilterHelper<Sound>(Sound.class);
+		sounds = soundFilterHelper.filter(
+				soundFilterHelper.getAllTypes(),
+			"anvil", true);
 	}
 	
 	//public
@@ -117,7 +125,7 @@ public class SlapCommand extends PluginCommand {
 	}
 	private void e(Player player, double force) {
 		Location playerLocation = player.getLocation().clone();
-		player.getWorld().playEffect(playerLocation, Effect.ANVIL_LAND, 0);
+		player.getWorld().playSound(playerLocation, sounds[MathUtil.fairRoundedRandom(0,  sounds.length - 1)], 1.0f, 1.0f);
 		player.setVelocity(playerLocation.getDirection().multiply(-1.0d * force));
 		
 		metricsHelper.commandWasRun(this);

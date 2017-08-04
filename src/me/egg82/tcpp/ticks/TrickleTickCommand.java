@@ -47,19 +47,18 @@ public class TrickleTickCommand extends TickCommand {
 			
 			int droppedExp = MathUtil.fairRoundedRandom(1, 10);
 			
-			if (droppedExp > currentExp) {
+			while (droppedExp > currentExp) {
 				if (currentLevel > 0) {
 					player.setLevel(currentLevel - 1);
 					
 					droppedExp -= currentExp;
 					currentExp = player.getExpToLevel();
-					double newExp = ((double) currentExp - (double) droppedExp) / (double) player.getExpToLevel();
-					player.setExp((float) newExp);
 				} else {
 					droppedExp = currentExp;
-					player.setExp(0.0f);
 				}
-			} else if (droppedExp == currentExp) {
+			}
+			
+			if (droppedExp == currentExp) {
 				player.setExp(0.0f);
 			} else {
 				double newExp = ((double) currentExp - (double) droppedExp) / (double) player.getExpToLevel();

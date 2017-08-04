@@ -138,7 +138,7 @@ public class TrollCommand extends PluginCommand {
 			sender.sendMessage(ChatColor.GOLD + "Commands from TrollCommands++:");
 			if (page * 9 < commandNames.size()) {
 				for (int i = page * 9; i < Math.min((page * 9) + 9, commandNames.size()); i++) {
-					sender.sendMessage(ChatColor.GOLD + "/" + commandNames.get(i) + ChatColor.WHITE + ": " + commandDescriptions.get(commandNames.get(i)));
+					sender.sendMessage(ChatColor.GOLD + "/troll " + commandNames.get(i) + ChatColor.WHITE + ": " + commandDescriptions.get(commandNames.get(i)));
 				}
 				if (page + 1 < totalPages) {
 					sender.sendMessage(ChatColor.GOLD + "Type " + ChatColor.RED + "/troll " + (page + 2) + ChatColor.GOLD + " to read the next page.");

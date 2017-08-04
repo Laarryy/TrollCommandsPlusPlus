@@ -73,6 +73,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		
 		ServiceLocator.provideService(RollbarExceptionHandler.class, false);
 		exceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
+		oldExceptionHandler.disconnect();
 		exceptionHandler.connect(new RollbarBuilder("872a465ad3ed465a94136d1978e28ec0", "production"));
 		exceptionHandler.setUnsentExceptions(oldExceptionHandler.getUnsentExceptions());
 		exceptionHandler.setUnsentLogs(oldExceptionHandler.getUnsentLogs());
@@ -244,6 +245,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 			
 			ServiceLocator.provideService(GameAnalyticsExceptionHandler.class, false);
 			exceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
+			oldExceptionHandler.disconnect();
 			exceptionHandler.connect(new GameAnalyticsBuilder("250e5c508c3dd844ed1f8bd2a449d1a6", "dfb50b06e598e7a7ad9b3c84f7b118c12800ffce"));
 			exceptionHandler.setUnsentExceptions(oldExceptionHandler.getUnsentExceptions());
 			exceptionHandler.setUnsentLogs(oldExceptionHandler.getUnsentLogs());

@@ -42,7 +42,7 @@ public class LureTickCommand extends TickCommand {
 		for (Entity e : entities) {
 			EntityType type = e.getType();
 			
-			if (e instanceof Monster) {
+			if (e instanceof Monster && e.getWorld().equals(player.getWorld())) {
 				if (type == EntityType.PIG_ZOMBIE) {
 					PigZombie pig = (PigZombie) e;
 					pig.setAngry(true);

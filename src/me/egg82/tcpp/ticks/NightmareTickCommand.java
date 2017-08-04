@@ -13,6 +13,7 @@ import ninja.egg82.plugin.core.protocol.IFakeLivingEntity;
 import ninja.egg82.plugin.reflection.exceptionHandlers.IExceptionHandler;
 import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.utils.TaskUtil;
 
 public class NightmareTickCommand extends TickCommand {
 	//vars
@@ -41,8 +42,16 @@ public class NightmareTickCommand extends TickCommand {
 		Thread runner = new Thread(new Runnable() {
 			public void run() {
 				for (IFakeLivingEntity e : entities) {
+					if (!e.getLocation().getWorld().equals(player.getWorld())) {
+						continue;
+					}
+					
 					if (e.getLocation().distanceSquared(player.getLocation()) <= 1.0d) {
-						e.attack(player, 1.0d);
+						TaskUtil.runSync(new Runnable() {
+							public void run() {
+								e.attack(player, 1.0d);
+							}
+						});
 					}
 					
 					e.moveTo(BlockUtil.getTopWalkableBlock(e.getLocation().add(player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23))));

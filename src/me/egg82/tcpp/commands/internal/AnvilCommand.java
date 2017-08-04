@@ -1,6 +1,7 @@
 package me.egg82.tcpp.commands.internal;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,6 +11,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 
@@ -29,12 +32,16 @@ import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
 import ninja.egg82.plugin.exceptions.PlayerNotFoundException;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.LanguageUtil;
+import ninja.egg82.plugin.utils.TaskUtil;
+import ninja.egg82.startup.InitRegistry;
 
 public class AnvilCommand extends PluginCommand {
 	//vars
 	private IRegistry<UUID> anvilRegistry = ServiceLocator.getService(AnvilRegistry.class);
 	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
+	
+	private String gameVersion = ServiceLocator.getService(InitRegistry.class).getRegister("game.version", String.class);
 	
 	//constructor
 	public AnvilCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -115,11 +122,40 @@ public class AnvilCommand extends PluginCommand {
 			loc.getBlock().setType(Material.AIR);
 		}
 		loc.add(0.0d, 1.0d, 0.0d);
-		anvilRegistry.setRegister(loc.getWorld().spawnFallingBlock(loc, new MaterialData(Material.ANVIL)).getUniqueId(), null);
+		
+		if (gameVersion.equals("1.8") || gameVersion.equals("1.8.1") || gameVersion.equals("1.8.3") || gameVersion.equals("1.8.8")) {
+			loc.getBlock().setType(Material.ANVIL);
+			TaskUtil.runSync(new Runnable() {
+				public void run() {
+					tryGetAnvil(loc, 1);
+				}
+			}, 1L);
+		} else {
+			anvilRegistry.setRegister(loc.getWorld().spawnFallingBlock(loc, new MaterialData(Material.ANVIL)).getUniqueId(), null);
+		}
 		
 		metricsHelper.commandWasRun(this);
 		
 		sender.sendMessage("The " + ChatColor.STRIKETHROUGH + ChatColor.ITALIC + "base" + ChatColor.RESET + " anvil has been dropped on " + player.getName() + ".");
+	}
+	private void tryGetAnvil(Location loc, int tries) {
+		Collection<Entity> entities = loc.getWorld().getNearbyEntities(loc, 2.0d, 2.0d, 2.0d);
+		for (Entity e : entities) {
+			if (e instanceof FallingBlock) {
+				if (((FallingBlock) e).getMaterial() == Material.ANVIL) {
+					anvilRegistry.setRegister(e.getUniqueId(), null);
+					return;
+				}
+			}
+		}
+		
+		if (tries < 40) {
+			TaskUtil.runSync(new Runnable() {
+				public void run() {
+					tryGetAnvil(loc, tries + 1);
+				}
+			}, 1L);
+		}
 	}
 	
 	protected void onUndo() {
