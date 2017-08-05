@@ -193,7 +193,7 @@ public class TrollCommand extends PluginCommand {
 				onError().invoke(this, new ExceptionEventArgs<InvalidCommandException>(new InvalidCommandException(commandName)));
 				return;
 			} else {
-				sender.sendMessage(ChatColor.YELLOW + "Running \"" + search[0].toLowerCase() + "\" as a \"best guess\" since the command \"" + commandName.toLowerCase() + "\" doesn't exist.");
+				sender.sendMessage(ChatColor.YELLOW + "Running \"" + search[0].toLowerCase() + "\" in lieu of \"" + commandName.toLowerCase() + "\".");
 			}
 		}
 		

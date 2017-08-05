@@ -23,8 +23,14 @@ public class DisguiseHelper implements IDisguiseHelper {
 	public void disguiseAsPlayer(Player player, Player disguise) {
 		api.disguise(player, new PlayerDisguise(disguise.getName(), disguise.getDisplayName()));
 	}
+	public void disguiseAsPlayer(Player player, Player disguise, boolean canSeeOwnDisguise) {
+		api.disguise(player, new PlayerDisguise(disguise.getName(), disguise.getDisplayName()), canSeeOwnDisguise);
+	}
 	public void disguiseAsEntity(Player player, EntityType disguise) {
 		api.disguise(player, new MobDisguise(DisguiseType.valueOf(disguise.toString())));
+	}
+	public void disguiseAsEntity(Player player, EntityType disguise, boolean canSeeOwnDisguise) {
+		api.disguise(player, new MobDisguise(DisguiseType.valueOf(disguise.toString())), canSeeOwnDisguise);
 	}
 	public void undisguise(Player player) {
 		api.undisguise(player);

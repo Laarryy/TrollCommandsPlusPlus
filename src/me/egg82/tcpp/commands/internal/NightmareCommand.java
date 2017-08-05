@@ -3,6 +3,7 @@ package me.egg82.tcpp.commands.internal;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -155,7 +156,7 @@ public class NightmareCommand extends PluginCommand {
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	private void e(UUID uuid, Player player) {
-		ArrayDeque<IFakeLivingEntity> entities = new ArrayDeque<IFakeLivingEntity>();
+		Collection<IFakeLivingEntity> entities = Collections.synchronizedCollection(new ArrayDeque<IFakeLivingEntity>());
 		
 		Thread runner = new Thread(new Runnable() {
 			public void run() {

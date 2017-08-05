@@ -5,18 +5,17 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Cow;
-import org.bukkit.entity.Creature;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.exceptions.InvalidLibraryException;
 import me.egg82.tcpp.exceptions.PlayerImmuneException;
-import me.egg82.tcpp.services.StampedeRegistry;
+import me.egg82.tcpp.reflection.disguise.IDisguiseHelper;
+import me.egg82.tcpp.services.DuckRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CompleteEventArgs;
 import ninja.egg82.events.ExceptionEventArgs;
@@ -27,19 +26,18 @@ import ninja.egg82.plugin.enums.SpigotLanguageType;
 import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
 import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
 import ninja.egg82.plugin.exceptions.PlayerNotFoundException;
-import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.LanguageUtil;
-import ninja.egg82.utils.MathUtil;
 
-public class StampedeCommand extends PluginCommand {
+public class DuckCommand extends PluginCommand {
 	//vars
-	private IRegistry<UUID> stampedeRegistry = ServiceLocator.getService(StampedeRegistry.class);
+	private IRegistry<UUID> duckRegistry = ServiceLocator.getService(DuckRegistry.class);
 	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
+	private IDisguiseHelper disguiseHelper = ServiceLocator.getService(IDisguiseHelper.class);
 	
 	//constructor
-	public StampedeCommand(CommandSender sender, Command command, String label, String[] args) {
+	public DuckCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
 	}
 	
@@ -68,9 +66,14 @@ public class StampedeCommand extends PluginCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_STAMPEDE)) {
+		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_DUCK)) {
 			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
-			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_STAMPEDE)));
+			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_DUCK)));
+			return;
+		}
+		if (!disguiseHelper.isValidLibrary()) {
+			sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_LIBRARY));
+			onError().invoke(this, new ExceptionEventArgs<InvalidLibraryException>(new InvalidLibraryException(disguiseHelper)));
 			return;
 		}
 		if (!CommandUtil.isArrayOfAllowedLength(args, 1)) {
@@ -87,7 +90,7 @@ public class StampedeCommand extends PluginCommand {
 			for (Player player : players) {
 				UUID uuid = player.getUniqueId();
 				
-				if (!stampedeRegistry.hasRegister(uuid)) {
+				if (!duckRegistry.hasRegister(uuid)) {
 					if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
 						continue;
 					}
@@ -101,16 +104,6 @@ public class StampedeCommand extends PluginCommand {
 			Player player = CommandUtil.getPlayerByName(args[0]);
 			
 			if (player == null) {
-				OfflinePlayer offlinePlayer = CommandUtil.getOfflinePlayerByName(args[0]);
-				if (offlinePlayer != null) {
-					UUID uuid = offlinePlayer.getUniqueId();
-					if (stampedeRegistry.hasRegister(uuid)) {
-						eUndo(uuid, offlinePlayer);
-						onComplete().invoke(this, CompleteEventArgs.EMPTY);
-						return;
-					}
-				}
-				
 				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.PLAYER_NOT_FOUND));
 				onError().invoke(this, new ExceptionEventArgs<PlayerNotFoundException>(new PlayerNotFoundException(args[0])));
 				return;
@@ -118,7 +111,7 @@ public class StampedeCommand extends PluginCommand {
 			
 			UUID uuid = player.getUniqueId();
 			
-			if (!stampedeRegistry.hasRegister(uuid)) {
+			if (!duckRegistry.hasRegister(uuid)) {
 				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
 					sender.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
 					onError().invoke(this, new ExceptionEventArgs<PlayerImmuneException>(new PlayerImmuneException(player)));
@@ -134,65 +127,28 @@ public class StampedeCommand extends PluginCommand {
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	private void e(UUID uuid, Player player) {
-		ArrayList<Creature> entities = new ArrayList<Creature>();
-		
-		int numCows = MathUtil.fairRoundedRandom(10, 20);
-		Location playerLocation = player.getLocation();
-		Location herdLocation = BlockUtil.getTopWalkableBlock(new Location(playerLocation.getWorld(), MathUtil.random(playerLocation.getX() - 5.0d, playerLocation.getX() + 5.0d), playerLocation.getY(), MathUtil.random(playerLocation.getZ() - 5.0d, playerLocation.getZ() + 5.0d)));
-		
-		for (int i = 0; i < numCows; i++) {
-			Cow c = player.getWorld().spawn(herdLocation, Cow.class);
-			c.setTarget(player);
-			c.setVelocity(player.getLocation().toVector().subtract(herdLocation.toVector()).normalize().multiply(0.23d));
-			entities.add(c);
-		}
-		
-		stampedeRegistry.setRegister(uuid, entities);
-		
+		disguiseHelper.disguiseAsEntity(player, EntityType.CHICKEN, true);
+		duckRegistry.setRegister(uuid, null);
 		metricsHelper.commandWasRun(this);
 		
-		sender.sendMessage("The angry cows have been unleashed on " + player.getName() + ".");
+		sender.sendMessage(player.getName() + " is now a duckchicken.");
 	}
 	
 	protected void onUndo() {
 		Player player = CommandUtil.getPlayerByName(args[0]);
 		if (player != null) {
 			UUID uuid = player.getUniqueId();
-			if (stampedeRegistry.hasRegister(uuid)) {
+			if (duckRegistry.hasRegister(uuid)) {
 				eUndo(uuid, player);
-			}
-		} else {
-			OfflinePlayer offlinePlayer = CommandUtil.getOfflinePlayerByName(args[0]);
-			UUID uuid = offlinePlayer.getUniqueId();
-			if (stampedeRegistry.hasRegister(uuid)) {
-				eUndo(uuid, offlinePlayer);
 			}
 		}
 		
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
-	@SuppressWarnings("unchecked")
 	private void eUndo(UUID uuid, Player player) {
-		List<Creature> entities = stampedeRegistry.getRegister(uuid, List.class);
+		disguiseHelper.undisguise(player);
+		duckRegistry.removeRegister(uuid);
 		
-		for (Creature e : entities) {
-			e.remove();
-		}
-		
-		stampedeRegistry.removeRegister(uuid);
-		
-		sender.sendMessage("The angry cows have subsided for " + player.getName() + ".");
-	}
-	@SuppressWarnings("unchecked")
-	private void eUndo(UUID uuid, OfflinePlayer player) {
-		List<Creature> entities = stampedeRegistry.getRegister(uuid, List.class);
-		
-		for (Creature e : entities) {
-			e.remove();
-		}
-		
-		stampedeRegistry.removeRegister(uuid);
-		
-		sender.sendMessage("The angry cows have subsided for " + player.getName() + ".");
+		sender.sendMessage(player.getName() + " is no longer a duckchicken.");
 	}
 }

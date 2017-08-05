@@ -238,6 +238,14 @@ public class KeywordRegistry extends Registry<String> {
 			"present",
 			"expose"
 		});
+		setRegister("duck", new String[] {
+			"egg",
+			"chicken",
+			"goose",
+			"doni",
+			"bobes",
+			"donibobes"
+		});
 		setRegister("effect", new String[] {
 			"book",
 			"quill",
@@ -425,6 +433,13 @@ public class KeywordRegistry extends Registry<String> {
 			"suffering",
 			"wound",
 			"harm"
+		});
+		setRegister("hydra", new String[] {
+			"multiply",
+			"split",
+			"heads",
+			"kraken",
+			"leviathan"
 		});
 		setRegister("infinity", new String[] {
 			"water",
@@ -679,6 +694,16 @@ public class KeywordRegistry extends Registry<String> {
 			"odd",
 			"unplanned"
 		});
+		setRegister("randommenu", new String[] {
+			"brewing",
+			"stand",
+			"accident",
+			"accidental",
+			"arbitrary",
+			"irregular",
+			"odd",
+			"unplanned"
+		});
 		setRegister("randompotion", new String[] {
 			"potion",
 			"drink",
@@ -714,6 +739,11 @@ public class KeywordRegistry extends Registry<String> {
 			"reverse",
 			"undo",
 			"invert"
+		});
+		setRegister("search", new String[] {
+			"find",
+			"menu",
+			"gui"
 		});
 		setRegister("slap", new String[] {
 			"piston",

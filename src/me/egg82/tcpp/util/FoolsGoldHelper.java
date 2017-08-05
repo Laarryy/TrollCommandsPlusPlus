@@ -3,6 +3,7 @@ package me.egg82.tcpp.util;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,8 +38,8 @@ public class FoolsGoldHelper {
 	
 	//public
 	public void addPlayer(UUID uuid, Player player) {
-		ArrayDeque<Location> blocks = new ArrayDeque<Location>();
-		ArrayDeque<Pair<Integer, Integer>> chunks = new ArrayDeque<Pair<Integer, Integer>>();
+		Collection<Location> blocks = Collections.synchronizedCollection(new ArrayDeque<Location>());
+		Collection<Pair<Integer, Integer>> chunks = Collections.synchronizedCollection(new ArrayDeque<Pair<Integer, Integer>>());
 		
 		Thread runner = new Thread(new Runnable() {
 			public void run() {
@@ -158,7 +159,7 @@ public class FoolsGoldHelper {
 		}
 	}
 	private void updateFakeBlocks(Player player, Location from, Location to, Collection<Location> blocks, Collection<Pair<Integer, Integer>> chunks, int tries) {
-		if (!player.getWorld().isChunkLoaded(player.getLocation().getBlockX() >> 4, player.getLocation().getBlockZ() >> 4)) {
+		if (!from.getWorld().isChunkLoaded(from.getBlockX() >> 4, from.getBlockZ() >> 4) || !to.getWorld().isChunkLoaded(to.getBlockX() >> 4, to.getBlockZ() >> 4)) {
 			if (tries < 10) {
 				TaskUtil.runAsync(new Runnable() {
 					public void run() {
@@ -184,11 +185,16 @@ public class FoolsGoldHelper {
 			
 			ArrayList<Location> removedBlocks = new ArrayList<Location>();
 			blocks.forEach((loc) -> {
-				Pair<Integer, Integer> chunk = new Pair<Integer, Integer>(loc.getChunk().getX(), loc.getChunk().getZ());
-				if (!currentChunks.contains(chunk)) {
-					fakeBlockHelper.updateBlock(player, loc, loc.getBlock().getType());
+				if (from.getWorld().isChunkLoaded(loc.getBlockX() >> 4, loc.getBlockZ() >> 4)) {
+					Pair<Integer, Integer> chunk = new Pair<Integer, Integer>(loc.getChunk().getX(), loc.getChunk().getZ());
+					if (!currentChunks.contains(chunk)) {
+						fakeBlockHelper.updateBlock(player, loc, loc.getBlock().getType());
+						removedBlocks.add(loc);
+						chunks.remove(chunk);
+					}
+				} else {
 					removedBlocks.add(loc);
-					chunks.remove(chunk);
+					chunks.remove(new Pair<Integer, Integer>(loc.getBlockX() >> 4, loc.getBlockZ() >> 4));
 				}
 			});
 			

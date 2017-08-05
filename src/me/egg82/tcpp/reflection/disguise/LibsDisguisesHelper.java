@@ -20,8 +20,14 @@ public class LibsDisguisesHelper implements IDisguiseHelper {
 	public void disguiseAsPlayer(Player player, Player disguise) {
 		DisguiseAPI.disguiseToAll(player, new PlayerDisguise(disguise).setViewSelfDisguise(false));
 	}
+	public void disguiseAsPlayer(Player player, Player disguise, boolean canSeeOwnDisguise) {
+		DisguiseAPI.disguiseToAll(player, new PlayerDisguise(disguise).setViewSelfDisguise(canSeeOwnDisguise));
+	}
 	public void disguiseAsEntity(Player player, EntityType disguise) {
 		DisguiseAPI.disguiseToAll(player, new MobDisguise(DisguiseType.getType(disguise)).setViewSelfDisguise(false));
+	}
+	public void disguiseAsEntity(Player player, EntityType disguise, boolean canSeeOwnDisguise) {
+		DisguiseAPI.disguiseToAll(player, new MobDisguise(DisguiseType.getType(disguise)).setViewSelfDisguise(canSeeOwnDisguise));
 	}
 	public void undisguise(Player player) {
 		DisguiseAPI.undisguiseToAll(player);

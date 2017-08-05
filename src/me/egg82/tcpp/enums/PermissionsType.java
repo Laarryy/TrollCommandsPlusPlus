@@ -92,6 +92,9 @@ public class PermissionsType {
 	public static final String COMMAND_EFFECT = "tcpp.command.effect";
 	public static final String COMMAND_ENCHANT = "tcpp.command.enchant";
 	public static final String COMMAND_FILL = "tcpp.command.fill";
+	public static final String COMMAND_DUCK = "tcpp.command.duck";
+	public static final String COMMAND_RANDOM_MENU = "tcpp.command.randomMenu";
+	public static final String COMMAND_HYDRA = "tcpp.command.hydra";
 	
 	//constructor
 	public PermissionsType() {

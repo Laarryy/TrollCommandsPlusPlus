@@ -92,7 +92,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 				info(ChatColor.GREEN + "[TrollCommands++] Enabling support for LibsDisguises.");
 				ServiceLocator.provideService(LibsDisguisesHelper.class);
 			} else {
-				warning(ChatColor.RED + "[TrollCommands++] LibsDisguises requires ProtocolLib to function, which was not found. The /control and /scare commands have been disabled.");
+				warning(ChatColor.RED + "[TrollCommands++] LibsDisguises requires ProtocolLib to function, which was not found. The /troll control and /troll duck commands have been disabled.");
 				ServiceLocator.provideService(NullDisguiseHelper.class);
 			}
 		} else if (manager.getPlugin("iDisguise") != null) {
@@ -100,18 +100,18 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 				info(ChatColor.GREEN + "[TrollCommands++] Enabling support for iDisguise.");
 				ServiceLocator.provideService(DisguiseHelper.class);
 			} else {
-				warning(ChatColor.RED + "[TrollCommands++] iDisguise requires ProtocolLib to function, which was not found. The /control and /scare commands have been disabled.");
+				warning(ChatColor.RED + "[TrollCommands++] iDisguise requires ProtocolLib to function, which was not found. The /troll control and /troll duck commands have been disabled.");
 				ServiceLocator.provideService(NullDisguiseHelper.class);
 			}
 		} else {
-			warning(ChatColor.RED + "[TrollCommands++] Neither LibsDisguises nor iDisguise was found. The /control and /scare commands have been disabled.");
+			warning(ChatColor.RED + "[TrollCommands++] Neither LibsDisguises nor iDisguise was found. The /troll control and /troll duck commands have been disabled.");
 			ServiceLocator.provideService(NullDisguiseHelper.class);
 		}
 		
 		if (manager.getPlugin("ProtocolLib") != null) {
 			info(ChatColor.GREEN + "[TrollCommands++] Enabling support for ProtocolLib.");
 		} else {
-			warning(ChatColor.RED + "[TrollCommands++] ProtocolLib was not found. The /foolsgold, /nightmare, and /rewind commands have been disabled.");
+			warning(ChatColor.RED + "[TrollCommands++] ProtocolLib was not found. The /troll foolsgold, /troll nightmare, and /troll rewind commands have been disabled.");
 		}
 		
 		if (manager.getPlugin("PowerNBT") != null) {
@@ -119,7 +119,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		} else if (manager.getPlugin("ItemNBTAPI") != null) {
 			info(ChatColor.GREEN + "[TrollCommands++] Enabling support for ItemNBTAPI.");
 		} else {
-			warning(ChatColor.RED + "[TrollCommands++] Neither PowerNBT nor NBTAPI were found. The /attachcommand command has been disabled.");
+			warning(ChatColor.RED + "[TrollCommands++] Neither PowerNBT nor NBTAPI were found. The /troll attachcommand command has been disabled.");
 		}
 		
 		ServiceLocator.provideService(ControlHelper.class);
@@ -167,10 +167,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 			}));*/
 		}
 		
-		HashMap<String, String[]> aliasMap = new HashMap<String, String[]>();
-		aliasMap.put("TrollCommand", new String[] {"t"});
-		
-		SpigotReflectUtil.addCommandsFromPackage("me.egg82.tcpp.commands", aliasMap);
+		SpigotReflectUtil.addCommandsFromPackage("me.egg82.tcpp.commands");
 		numCommands = ReflectUtil.getClasses(PluginCommand.class, "me.egg82.tcpp.commands.internal").size();
 		numEvents = SpigotReflectUtil.addEventsFromPackage("me.egg82.tcpp.events");
 		numPermissions = SpigotReflectUtil.addPermissionsFromClass(PermissionsType.class);
@@ -281,10 +278,6 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 			String command = entry.substring(0, entry.indexOf(':')).trim().split(" ")[1];
 			String description = entry.substring(entry.indexOf(':') + 1).trim();
 			
-			if (command.equals("search") || command.equals("help")) {
-				continue;
-			}
-			
 			ArrayList<String> row = new ArrayList<String>();
 			row.add(command);
 			if (keywordRegistry.hasRegister(command)) {
@@ -309,8 +302,11 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		languageRegistry.setRegister(LanguageType.NO_CHAT_CONTROL, ChatColor.RED + "You do not have permissions to chat while being controlled!");
 		languageRegistry.setRegister(LanguageType.NO_CHAT_FROZEN, ChatColor.RED + "You do not have permissions to chat while frozen!");
 		languageRegistry.setRegister(LanguageType.NOT_LIVING, ChatColor.RED + "The entity you have selected is neither a player nor a mob!");
+		languageRegistry.setRegister(LanguageType.NOT_MOB, ChatColor.RED + "The entity you have selected is not a mob!");
 		languageRegistry.setRegister(LanguageType.EMPOWERED, "The entity you have selected is now empowered!");
 		languageRegistry.setRegister(LanguageType.DISEMPOWERED, "The entity you have selected is now disempowered!");
+		languageRegistry.setRegister(LanguageType.HYDRA_ENABLED, "The entity you have selected is now hydra-powered!");
+		languageRegistry.setRegister(LanguageType.HYDRA_DISABLED, "The entity you have selected (and its related entities) are no longer hydra-powered!");
 		languageRegistry.setRegister(LanguageType.INVALID_VERSION, ChatColor.RED + "This command has been disabled because this version of Minecraft doesn't support it.");
 		languageRegistry.setRegister(LanguageType.INVALID_TYPE, ChatColor.RED + "Searched type is invalid or was not found.");
 		languageRegistry.setRegister(LanguageType.INVALID_COMMAND, ChatColor.RED + "Command is invalid.");

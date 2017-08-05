@@ -30,6 +30,7 @@ public class GuiRegistry extends Registry<String> {
 		setRegister("creep", Material.MONSTER_EGG);
 		setRegister("creep_data", (short) 50);
 		setRegister("display", Material.THIN_GLASS);
+		setRegister("duck", Material.EGG);
 		setRegister("effect", Material.BOOK_AND_QUILL);
 		setRegister("electrify", Material.DAYLIGHT_DETECTOR);
 		setRegister("empower", Material.DRAGON_EGG);
@@ -49,6 +50,8 @@ public class GuiRegistry extends Registry<String> {
 		setRegister("haunt_data", (short) 2);
 		setRegister("hottub", Material.TORCH);
 		setRegister("hurt", Material.DIAMOND_SWORD);
+		setRegister("hydra", Material.SAPLING);
+		setRegister("hydra_data", (short) 1);
 		setRegister("infinity", Material.WATER_BUCKET);
 		setRegister("inspect", Material.HOPPER);
 		setRegister("invert", Material.REDSTONE_COMPARATOR);
@@ -71,6 +74,7 @@ public class GuiRegistry extends Registry<String> {
 		setRegister("randombreak", Material.IRON_PICKAXE);
 		setRegister("randombuild", Material.MAP);
 		setRegister("randomdrop", Material.COOKIE);
+		setRegister("randommenu", Material.BREWING_STAND_ITEM);
 		setRegister("randompotion", Material.POTION);
 		setRegister("randomspeed", Material.SOUL_SAND);
 		setRegister("rewind", Material.ENCHANTMENT_TABLE);

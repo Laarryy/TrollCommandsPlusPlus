@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
@@ -88,18 +89,30 @@ public class SwapCommand extends PluginCommand {
 			return;
 		}
 		
-		Player player1 = CommandUtil.getPlayerByName(args[0]);
-		Player player2 = CommandUtil.getPlayerByName(args[1]);
+		List<Player> players1 = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
+		List<Player> players2 = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[1], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
+		Player player1 = null;
+		Player player2 = null;
 		
-		if (player1 == null) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.PLAYER_NOT_FOUND));
-			onError().invoke(this, new ExceptionEventArgs<PlayerNotFoundException>(new PlayerNotFoundException(args[0])));
-			return;
+		if (players1.size() == 0) {
+			player1 = CommandUtil.getPlayerByName(args[0]);
+			if (player1 == null) {
+				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.PLAYER_NOT_FOUND));
+				onError().invoke(this, new ExceptionEventArgs<PlayerNotFoundException>(new PlayerNotFoundException(args[0])));
+				return;
+			}
+		} else {
+			player1 = players1.get(0);
 		}
-		if (player2 == null) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.PLAYER_NOT_FOUND));
-			onError().invoke(this, new ExceptionEventArgs<PlayerNotFoundException>(new PlayerNotFoundException(args[0])));
-			return;
+		if (players2.size() == 0) {
+			player2 = CommandUtil.getPlayerByName(args[1]);
+			if (player2 == null) {
+				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.PLAYER_NOT_FOUND));
+				onError().invoke(this, new ExceptionEventArgs<PlayerNotFoundException>(new PlayerNotFoundException(args[0])));
+				return;
+			}
+		} else {
+			player2 = players2.get(0);
 		}
 		if (CommandUtil.hasPermission(player1, PermissionsType.IMMUNE)) {
 			sender.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
@@ -112,16 +125,20 @@ public class SwapCommand extends PluginCommand {
 			return;
 		}
 		
-		e(player1.getUniqueId().toString(), player1, player2.getUniqueId().toString(), player2);
+		e(player1, player2);
 		
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
-	private void e(String player1Uuid, Player player1, String player2Uuid, Player player2) {
+	private void e(Player player1, Player player2) {
 		Location player1Location = player1.getLocation().clone();
+		Vector player1Velocity = player1.getVelocity();
 		Location player2Location = player2.getLocation().clone();
+		Vector player2Velocity = player2.getVelocity();
 		
 		player1.teleport(player2Location);
+		player1.setVelocity(player2Velocity);
 		player2.teleport(player1Location);
+		player2.setVelocity(player1Velocity);
 		
 		metricsHelper.commandWasRun(this);
 		

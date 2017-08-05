@@ -15,7 +15,13 @@ public class NullDisguiseHelper implements IDisguiseHelper {
 	public void disguiseAsPlayer(Player player, Player disguise) {
 		
 	}
+	public void disguiseAsPlayer(Player player, Player disguise, boolean canSeeOwnDisguise) {
+		
+	}
 	public void disguiseAsEntity(Player player, EntityType disguise) {
+		
+	}
+	public void disguiseAsEntity(Player player, EntityType disguise, boolean canSeeOwnDisguise) {
 		
 	}
 	public void undisguise(Player player) {

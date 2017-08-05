@@ -32,7 +32,7 @@ public class GarbleEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 		
 		if (garbleRegistry.hasRegister(player.getUniqueId())) {
 			String oldMessage = String.format(event.getFormat(), player.getDisplayName(), event.getMessage());
-			event.setMessage(StringUtil.randomString(event.getMessage().length()));
+			event.setMessage(StringUtil.shuffle(event.getMessage()));
 			event.getRecipients().remove(player);
 			player.sendMessage(oldMessage);
 		}
