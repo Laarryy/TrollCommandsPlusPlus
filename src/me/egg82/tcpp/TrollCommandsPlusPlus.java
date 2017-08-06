@@ -2,6 +2,7 @@ package me.egg82.tcpp;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -48,6 +49,8 @@ import ninja.egg82.sql.LanguageDatabase;
 import ninja.egg82.startup.InitRegistry;
 import ninja.egg82.utils.ReflectUtil;
 import ninja.egg82.utils.StringUtil;
+import opennlp.tools.postag.POSModel;
+import opennlp.tools.postag.POSTaggerME;
 
 public class TrollCommandsPlusPlus extends BasePlugin {
 	//vars
@@ -133,6 +136,12 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		
 		populateCommandDatabase();
 		populateLanguage();
+		
+		new Thread(new Runnable() {
+			public void run() {
+				getTagger();
+			}
+		}).start();
 		
 		updateTimer = new Timer(24 * 60 * 60 * 1000, onUpdateTimer);
 		exceptionHandlerTimer = new Timer(60 * 60 * 1000, onExceptionHandlerTimer);
@@ -311,5 +320,25 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		languageRegistry.setRegister(LanguageType.INVALID_TYPE, ChatColor.RED + "Searched type is invalid or was not found.");
 		languageRegistry.setRegister(LanguageType.INVALID_COMMAND, ChatColor.RED + "Command is invalid.");
 		languageRegistry.setRegister(LanguageType.INVALID_ITEM, ChatColor.RED + "Item is invalid.");
+	}
+	
+	private void getTagger() {
+		exceptionHandler.addThread(Thread.currentThread());
+		
+		try {
+			POSModel model = new POSModel(new URL("http://opennlp.sourceforge.net/models-1.5/en-pos-maxent.bin"));
+			ServiceLocator.provideService(new POSTaggerME(model));
+		} catch (Exception ex) {
+			try {
+				POSModel model = new POSModel(new URL("http://opennlp.sourceforge.net/models-1.5/en-pos-perceptron.bin"));
+				ServiceLocator.provideService(new POSTaggerME(model));
+			} catch (Exception ex2) {
+				new java.util.Timer().schedule(new java.util.TimerTask() {
+					public void run() {
+						getTagger();
+					}
+				}, 10000);
+			}
+		}
 	}
 }

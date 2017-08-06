@@ -45,7 +45,9 @@ public class ConvertCommand extends PluginCommand {
 		super(sender, command, label, args);
 		
 		for (String key : materialNameRegistry.getKeys()) {
-			materialNames.add(WordUtils.capitalize(key.toLowerCase().replace('_', ' ')));
+			if (!materialNameRegistry.hasRegister(key + "_ITEM")) {
+				materialNames.add(WordUtils.capitalize(key.toLowerCase().replace('_', ' ')));
+			}
 		}
 	}
 	
@@ -104,9 +106,9 @@ public class ConvertCommand extends PluginCommand {
 		
 		Material type = null;
 		if (args.length == 2) {
-			type = Material.getMaterial(args[1].replaceAll(" ", "_").toUpperCase());
+			type = Material.getMaterial(args[1].replaceAll(" ", "_").toUpperCase() + "_ITEM");
 			if (type == null) {
-				type = Material.getMaterial(args[1].replaceAll(" ", "_").toUpperCase() + "_ITEM");
+				type = Material.getMaterial(args[1].replaceAll(" ", "_").toUpperCase());
 				if (type == null) {
 					sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_TYPE));
 					onError().invoke(this, new ExceptionEventArgs<InvalidTypeException>(new InvalidTypeException(args[1])));

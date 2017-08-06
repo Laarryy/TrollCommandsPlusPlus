@@ -490,8 +490,7 @@ public class KeywordRegistry extends Registry<String> {
 			"finish"
 		});
 		setRegister("lag", new String[] {
-			"gold",
-			"block",
+			"emerald",
 			"fail",
 			"slow",
 			"drag",
@@ -591,12 +590,28 @@ public class KeywordRegistry extends Registry<String> {
 			"hook",
 			"pull"
 		});
-		setRegister("nausea", new String[] {
+		setRegister("midastouch", new String[] {
+			"gold",
+			"midas",
+			"touch",
+			"king"
+		});
+		setRegister("moist", new String[] {
+			"glass",
+			"stained",
+			"blue",
+			"wet",
+			"apex",
+			"squid",
+			"apexsquid"
+		});
+		setRegister("necro", new String[] {
+			"skull",
+			"skeleton",
 			"spider",
-			"eye",
-			"vomit",
-			"revulsion",
-			"spinning"
+			"jockey",
+			"ride",
+			"bow"
 		});
 		setRegister("nightmare", new String[] {
 			"obsidian",

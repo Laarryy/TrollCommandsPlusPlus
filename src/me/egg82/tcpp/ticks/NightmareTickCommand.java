@@ -41,22 +41,24 @@ public class NightmareTickCommand extends TickCommand {
 		
 		Thread runner = new Thread(new Runnable() {
 			public void run() {
-				for (IFakeLivingEntity e : entities) {
-					if (!e.getLocation().getWorld().equals(player.getWorld())) {
-						continue;
+				synchronized (entities) {
+					for (IFakeLivingEntity e : entities) {
+						if (!e.getLocation().getWorld().equals(player.getWorld())) {
+							continue;
+						}
+						
+						if (e.getLocation().distanceSquared(player.getLocation()) <= 1.0d) {
+							TaskUtil.runSync(new Runnable() {
+								public void run() {
+									e.attack(player, 1.0d);
+								}
+							});
+						}
+						
+						e.moveTo(BlockUtil.getTopWalkableBlock(e.getLocation().add(player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23))));
+						e.collideF(entities);
+						e.lookTo(player.getEyeLocation());
 					}
-					
-					if (e.getLocation().distanceSquared(player.getLocation()) <= 1.0d) {
-						TaskUtil.runSync(new Runnable() {
-							public void run() {
-								e.attack(player, 1.0d);
-							}
-						});
-					}
-					
-					e.moveTo(BlockUtil.getTopWalkableBlock(e.getLocation().add(player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23))));
-					e.collideF(entities);
-					e.lookTo(player.getEyeLocation());
 				}
 			}
 		});

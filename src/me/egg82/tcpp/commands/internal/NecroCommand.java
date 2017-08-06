@@ -4,21 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Spider;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
 import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.exceptions.InvalidTypeException;
+import me.egg82.tcpp.exceptions.InvalidLibraryException;
 import me.egg82.tcpp.exceptions.PlayerImmuneException;
-import me.egg82.tcpp.services.FillRegistry;
-import me.egg82.tcpp.services.MaterialNameRegistry;
+import me.egg82.tcpp.reflection.disguise.IDisguiseHelper;
+import me.egg82.tcpp.services.NecroRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CompleteEventArgs;
 import ninja.egg82.events.ExceptionEventArgs;
@@ -29,26 +30,23 @@ import ninja.egg82.plugin.enums.SpigotLanguageType;
 import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
 import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
 import ninja.egg82.plugin.exceptions.PlayerNotFoundException;
+import ninja.egg82.plugin.reflection.entity.IEntityHelper;
+import ninja.egg82.plugin.reflection.player.IPlayerHelper;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.LanguageUtil;
 
-public class FillCommand extends PluginCommand {
+public class NecroCommand extends PluginCommand {
 	//vars
-	private IRegistry<UUID> fillRegistry = ServiceLocator.getService(FillRegistry.class);
-	private ArrayList<String> materialNames = new ArrayList<String>();
-	private IRegistry<String> materialNameRegistry = ServiceLocator.getService(MaterialNameRegistry.class);
+	private IRegistry<UUID> necroRegistry = ServiceLocator.getService(NecroRegistry.class);
 	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
+	private IDisguiseHelper disguiseHelper = ServiceLocator.getService(IDisguiseHelper.class);
+	private IPlayerHelper playerHelper = ServiceLocator.getService(IPlayerHelper.class);
+	private IEntityHelper entityHelper = ServiceLocator.getService(IEntityHelper.class);
 	
 	//constructor
-	public FillCommand(CommandSender sender, Command command, String label, String[] args) {
+	public NecroCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
-		
-		for (String key : materialNameRegistry.getKeys()) {
-			if (!materialNameRegistry.hasRegister(key + "_ITEM")) {
-				materialNames.add(WordUtils.capitalize(key.toLowerCase().replace('_', ' ')));
-			}
-		}
 	}
 	
 	//public
@@ -69,20 +67,6 @@ public class FillCommand extends PluginCommand {
 			}
 			
 			return retVal;
-		} else if (args.length == 2) {
-			if (args[1].isEmpty()) {
-				return materialNames;
-			} else {
-				ArrayList<String> retVal = new ArrayList<String>();
-				
-				for (String name : materialNames) {
-					if (name.toLowerCase().startsWith(args[1].toLowerCase())) {
-						retVal.add(name);
-					}
-				}
-				
-				return retVal;
-			}
 		}
 		
 		return null;
@@ -90,12 +74,17 @@ public class FillCommand extends PluginCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_FILL)) {
+		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_NECRO)) {
 			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
-			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_FILL)));
+			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_NECRO)));
 			return;
 		}
-		if (!CommandUtil.isArrayOfAllowedLength(args, 1, 2)) {
+		if (!disguiseHelper.isValidLibrary()) {
+			sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_LIBRARY));
+			onError().invoke(this, new ExceptionEventArgs<InvalidLibraryException>(new InvalidLibraryException(disguiseHelper)));
+			return;
+		}
+		if (!CommandUtil.isArrayOfAllowedLength(args, 1)) {
 			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
@@ -104,30 +93,19 @@ public class FillCommand extends PluginCommand {
 			return;
 		}
 		
-		Material type = null;
-		if (args.length == 2) {
-			type = Material.getMaterial(args[1].replaceAll(" ", "_").toUpperCase() + "_ITEM");
-			if (type == null) {
-				type = Material.getMaterial(args[1].replaceAll(" ", "_").toUpperCase());
-				if (type == null) {
-					sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_TYPE));
-					onError().invoke(this, new ExceptionEventArgs<InvalidTypeException>(new InvalidTypeException(args[1])));
-					return;
-				}
-			}
-		}
-		
 		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
 		if (players.size() > 0) {
 			for (Player player : players) {
-				if (type != null) {
+				UUID uuid = player.getUniqueId();
+				
+				if (!necroRegistry.hasRegister(uuid)) {
 					if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
 						continue;
 					}
 					
-					e(player.getUniqueId(), player, type);
+					e(uuid, player);
 				} else {
-					eUndo(player.getUniqueId(), player);
+					eUndo(uuid, player);
 				}
 			}
 		} else {
@@ -139,81 +117,70 @@ public class FillCommand extends PluginCommand {
 				return;
 			}
 			
-			if (type != null) {
+			UUID uuid = player.getUniqueId();
+			
+			if (!necroRegistry.hasRegister(uuid)) {
 				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
 					sender.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
 					onError().invoke(this, new ExceptionEventArgs<PlayerImmuneException>(new PlayerImmuneException(player)));
 					return;
 				}
 				
-				e(player.getUniqueId(), player, type);
+				e(uuid, player);
 			} else {
-				eUndo(player.getUniqueId(), player);
-			}
-		}
-		
-		onComplete().invoke(this, CompleteEventArgs.EMPTY);
-	}
-	@SuppressWarnings("unchecked")
-	private void e(UUID uuid, Player player, Material type) {
-		PlayerInventory inv = player.getInventory();
-		ItemStack[] items = inv.getContents();
-		List<ItemStack[]> fills = null;
-		
-		if (fillRegistry.hasRegister(uuid)) {
-			fills = fillRegistry.getRegister(uuid, List.class);
-		} else {
-			fills = new ArrayList<ItemStack[]>();
-			fillRegistry.setRegister(uuid, fills);
-		}
-		
-		fills.add(items.clone());
-		
-		for (int i = 0; i < items.length; i++) {
-			if (items[i] == null || items[i].getType() == Material.AIR) {
-				items[i] = new ItemStack(type, type.getMaxStackSize());
-			}
-		}
-		
-		inv.setContents(items);
-		player.updateInventory();
-		
-		metricsHelper.commandWasRun(this);
-		
-		String name = type.name().toLowerCase();
-		if (name.length() > 5 && name.substring(name.length() - 5).equals("_item")) {
-			name = name.substring(0, name.length() - 5);
-		}
-		name.replace('_', ' ');
-		
-		sender.sendMessage(player.getName() + "'s inventory is now filled with " + name + "s!");
-	}
-	
-	protected void onUndo() {
-		Player player = CommandUtil.getPlayerByName(args[0]);
-		if (player != null) {
-			UUID uuid = player.getUniqueId();
-			if (fillRegistry.hasRegister(uuid)) {
 				eUndo(uuid, player);
 			}
 		}
 		
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
-	@SuppressWarnings("unchecked")
+	private void e(UUID uuid, Player player) {
+		disguiseHelper.disguiseAsEntity(player, EntityType.SKELETON);
+		
+		ItemStack[] inventory = player.getInventory().getContents();
+		player.getInventory().clear();
+		playerHelper.setItemInMainHand(player, getInfinityBow());
+		player.getInventory().addItem(new ItemStack(Material.ARROW, 1));
+		
+		if (Math.random() <= 0.01) {
+			Spider spider = player.getWorld().spawn(player.getLocation(), Spider.class);
+			entityHelper.addPassenger(spider, player);
+		}
+		
+		necroRegistry.setRegister(uuid, inventory);
+		metricsHelper.commandWasRun(this);
+		
+		sender.sendMessage(player.getName() + " has been necro'd.");
+	}
+	
+	protected void onUndo() {
+		Player player = CommandUtil.getPlayerByName(args[0]);
+		if (player != null) {
+			UUID uuid = player.getUniqueId();
+			if (necroRegistry.hasRegister(uuid)) {
+				eUndo(uuid, player);
+			}
+		}
+		
+		onComplete().invoke(this, CompleteEventArgs.EMPTY);
+	}
 	private void eUndo(UUID uuid, Player player) {
-		if (!fillRegistry.hasRegister(uuid)) {
-			sender.sendMessage("No fills left to undo for " + player.getName() + ".");
-			return;
+		if (player.isInsideVehicle()) {
+			if (player.getVehicle() instanceof Spider) {
+				entityHelper.removePassenger(player.getVehicle(), player);
+			}
 		}
+		disguiseHelper.undisguise(player);
+		ItemStack[] inv = necroRegistry.removeRegister(uuid, ItemStack[].class);
+		player.getInventory().setContents(inv);
 		
-		List<ItemStack[]> fills = fillRegistry.getRegister(uuid, List.class);
-		player.getInventory().setContents(fills.remove(fills.size() - 1));
-		player.updateInventory();
-		if (fills.size() == 0) {
-			fillRegistry.removeRegister(uuid);
-		}
-		
-		sender.sendMessage("Undid one fill for " + player.getName() + ".");
+		sender.sendMessage(player.getName() + " is no longer necro'd.");
+	}
+	
+	private ItemStack getInfinityBow() {
+		ItemStack retVal = new ItemStack(Material.BOW, 1);
+		retVal.addEnchantment(Enchantment.ARROW_INFINITE, 1);
+		retVal.addEnchantment(Enchantment.DURABILITY, 3);
+		return retVal;
 	}
 }

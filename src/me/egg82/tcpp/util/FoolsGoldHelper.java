@@ -120,24 +120,28 @@ public class FoolsGoldHelper {
 		World world = player.getLocation().getWorld();
 		
 		if (world.getEnvironment() == Environment.NORMAL) {
-			for (int x = -1; x <= 1; x++) {
-				for (int z = -1; z <= 1; z++) {
-					chunks.add(new Pair<Integer, Integer>(chunkX + x, chunkZ + z));
-					blocks.addAll(spawn(Material.COAL_ORE, 5, 52, player, world, chunkX + x, chunkZ + z));
-					blocks.addAll(spawn(Material.IRON_ORE, 5, 54, player, world, chunkX + x, chunkZ + z));
-					blocks.addAll(spawn(Material.LAPIS_ORE, 14, 16, player, world, chunkX + x, chunkZ + z));
-					blocks.addAll(spawn(Material.GOLD_ORE, 5, 29, player, world, chunkX + x, chunkZ + z));
-					blocks.addAll(spawn(Material.GOLD_ORE, 32, 63, player, world, chunkX + x, chunkZ + z));
-					blocks.addAll(spawn(Material.DIAMOND_ORE, 5, 12, player, world, chunkX + x, chunkZ + z));
-					blocks.addAll(spawn(Material.REDSTONE_ORE, 5, 12, player, world, chunkX + x, chunkZ + z));
-					blocks.addAll(spawn(Material.EMERALD_ORE, 5, 29, player, world, chunkX + x, chunkZ + z));
+			synchronized (player) {
+				for (int x = -1; x <= 1; x++) {
+					for (int z = -1; z <= 1; z++) {
+						chunks.add(new Pair<Integer, Integer>(chunkX + x, chunkZ + z));
+						blocks.addAll(spawn(Material.COAL_ORE, 5, 52, player, world, chunkX + x, chunkZ + z));
+						blocks.addAll(spawn(Material.IRON_ORE, 5, 54, player, world, chunkX + x, chunkZ + z));
+						blocks.addAll(spawn(Material.LAPIS_ORE, 14, 16, player, world, chunkX + x, chunkZ + z));
+						blocks.addAll(spawn(Material.GOLD_ORE, 5, 29, player, world, chunkX + x, chunkZ + z));
+						blocks.addAll(spawn(Material.GOLD_ORE, 32, 63, player, world, chunkX + x, chunkZ + z));
+						blocks.addAll(spawn(Material.DIAMOND_ORE, 5, 12, player, world, chunkX + x, chunkZ + z));
+						blocks.addAll(spawn(Material.REDSTONE_ORE, 5, 12, player, world, chunkX + x, chunkZ + z));
+						blocks.addAll(spawn(Material.EMERALD_ORE, 5, 29, player, world, chunkX + x, chunkZ + z));
+					}
 				}
 			}
 		} else if (world.getEnvironment() == Environment.NETHER) {
-			for (int x = -1; x <= 1; x++) {
-				for (int z = -1; z <= 1; z++) {
-					chunks.add(new Pair<Integer, Integer>(chunkX + x, chunkZ + z));
-					blocks.addAll(spawn(Material.QUARTZ_ORE, 15, 120, player, world, chunkX + x, chunkZ + z));
+			synchronized (player) {
+				for (int x = -1; x <= 1; x++) {
+					for (int z = -1; z <= 1; z++) {
+						chunks.add(new Pair<Integer, Integer>(chunkX + x, chunkZ + z));
+						blocks.addAll(spawn(Material.QUARTZ_ORE, 15, 120, player, world, chunkX + x, chunkZ + z));
+					}
 				}
 			}
 		}
@@ -154,8 +158,10 @@ public class FoolsGoldHelper {
 			return;
 		}
 		
-		for (Location b : blocks) {
-			fakeBlockHelper.updateBlock(player, b, b.getBlock().getType());
+		synchronized (player) {
+			for (Location b : blocks) {
+				fakeBlockHelper.updateBlock(player, b, b.getBlock().getType());
+			}
 		}
 	}
 	private void updateFakeBlocks(Player player, Location from, Location to, Collection<Location> blocks, Collection<Pair<Integer, Integer>> chunks, int tries) {
@@ -183,49 +189,55 @@ public class FoolsGoldHelper {
 				}
 			}
 			
-			ArrayList<Location> removedBlocks = new ArrayList<Location>();
-			blocks.forEach((loc) -> {
-				if (from.getWorld().isChunkLoaded(loc.getBlockX() >> 4, loc.getBlockZ() >> 4)) {
-					Pair<Integer, Integer> chunk = new Pair<Integer, Integer>(loc.getChunk().getX(), loc.getChunk().getZ());
-					if (!currentChunks.contains(chunk)) {
-						fakeBlockHelper.updateBlock(player, loc, loc.getBlock().getType());
+			synchronized (player) {
+				ArrayList<Location> removedBlocks = new ArrayList<Location>();
+				blocks.forEach((loc) -> {
+					if (from.getWorld().isChunkLoaded(loc.getBlockX() >> 4, loc.getBlockZ() >> 4)) {
+						Pair<Integer, Integer> chunk = new Pair<Integer, Integer>(loc.getChunk().getX(), loc.getChunk().getZ());
+						if (!currentChunks.contains(chunk)) {
+							fakeBlockHelper.updateBlock(player, loc, loc.getBlock().getType());
+							removedBlocks.add(loc);
+							chunks.remove(chunk);
+						}
+					} else {
 						removedBlocks.add(loc);
-						chunks.remove(chunk);
+						chunks.remove(new Pair<Integer, Integer>(loc.getBlockX() >> 4, loc.getBlockZ() >> 4));
 					}
-				} else {
-					removedBlocks.add(loc);
-					chunks.remove(new Pair<Integer, Integer>(loc.getBlockX() >> 4, loc.getBlockZ() >> 4));
-				}
-			});
-			
-			blocks.removeAll(removedBlocks);
+				});
+				
+				blocks.removeAll(removedBlocks);
+			}
 			
 			if (world.getEnvironment() == Environment.NORMAL) {
-				for (int i = 0; i < currentChunks.size(); i++) {
-					Pair<Integer, Integer> chunk = currentChunks.get(i);
-					if (chunks.contains(chunk)) {
-						continue;
+				synchronized (player) {
+					for (int i = 0; i < currentChunks.size(); i++) {
+						Pair<Integer, Integer> chunk = currentChunks.get(i);
+						if (chunks.contains(chunk)) {
+							continue;
+						}
+						
+						chunks.add(chunk);
+						blocks.addAll(spawn(Material.COAL_ORE, 5, 52, player, world, chunk.getLeft(), chunk.getRight()));
+						blocks.addAll(spawn(Material.IRON_ORE, 5, 54, player, world, chunk.getLeft(), chunk.getRight()));
+						blocks.addAll(spawn(Material.LAPIS_ORE, 14, 16, player, world, chunk.getLeft(), chunk.getRight()));
+						blocks.addAll(spawn(Material.GOLD_ORE, 5, 29, player, world, chunk.getLeft(), chunk.getRight()));
+						blocks.addAll(spawn(Material.GOLD_ORE, 32, 63, player, world, chunk.getLeft(), chunk.getRight()));
+						blocks.addAll(spawn(Material.DIAMOND_ORE, 5, 12, player, world, chunk.getLeft(), chunk.getRight()));
+						blocks.addAll(spawn(Material.REDSTONE_ORE, 5, 12, player, world, chunk.getLeft(), chunk.getRight()));
+						blocks.addAll(spawn(Material.EMERALD_ORE, 5, 29, player, world, chunk.getLeft(), chunk.getRight()));
 					}
-					
-					chunks.add(chunk);
-					blocks.addAll(spawn(Material.COAL_ORE, 5, 52, player, world, chunk.getLeft(), chunk.getRight()));
-					blocks.addAll(spawn(Material.IRON_ORE, 5, 54, player, world, chunk.getLeft(), chunk.getRight()));
-					blocks.addAll(spawn(Material.LAPIS_ORE, 14, 16, player, world, chunk.getLeft(), chunk.getRight()));
-					blocks.addAll(spawn(Material.GOLD_ORE, 5, 29, player, world, chunk.getLeft(), chunk.getRight()));
-					blocks.addAll(spawn(Material.GOLD_ORE, 32, 63, player, world, chunk.getLeft(), chunk.getRight()));
-					blocks.addAll(spawn(Material.DIAMOND_ORE, 5, 12, player, world, chunk.getLeft(), chunk.getRight()));
-					blocks.addAll(spawn(Material.REDSTONE_ORE, 5, 12, player, world, chunk.getLeft(), chunk.getRight()));
-					blocks.addAll(spawn(Material.EMERALD_ORE, 5, 29, player, world, chunk.getLeft(), chunk.getRight()));
 				}
 			} else if (world.getEnvironment() == Environment.NETHER) {
-				for (int i = 0; i < currentChunks.size(); i++) {
-					Pair<Integer, Integer> chunk = currentChunks.get(i);
-					if (chunks.contains(chunk)) {
-						continue;
+				synchronized (player) {
+					for (int i = 0; i < currentChunks.size(); i++) {
+						Pair<Integer, Integer> chunk = currentChunks.get(i);
+						if (chunks.contains(chunk)) {
+							continue;
+						}
+						
+						chunks.add(chunk);
+						blocks.addAll(spawn(Material.QUARTZ_ORE, 15, 120, player, world, chunk.getLeft(), chunk.getRight()));
 					}
-					
-					chunks.add(chunk);
-					blocks.addAll(spawn(Material.QUARTZ_ORE, 15, 120, player, world, chunk.getLeft(), chunk.getRight()));
 				}
 			}
 		}

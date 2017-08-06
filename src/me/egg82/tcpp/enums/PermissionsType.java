@@ -95,6 +95,9 @@ public class PermissionsType {
 	public static final String COMMAND_DUCK = "tcpp.command.duck";
 	public static final String COMMAND_RANDOM_MENU = "tcpp.command.randomMenu";
 	public static final String COMMAND_HYDRA = "tcpp.command.hydra";
+	public static final String COMMAND_NECRO = "tcpp.command.necro";
+	public static final String COMMAND_MOIST = "tcpp.command.moist";
+	public static final String COMMAND_MIDAS_TOUCH = "tcpp.command.midasTouch";
 	
 	//constructor
 	public PermissionsType() {

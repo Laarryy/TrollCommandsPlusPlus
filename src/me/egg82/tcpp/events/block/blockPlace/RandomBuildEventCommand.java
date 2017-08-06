@@ -36,6 +36,7 @@ public class RandomBuildEventCommand extends EventCommand<BlockPlaceEvent> {
 			materialFilterHelper.filter(
 			materialFilterHelper.filter(
 			materialFilterHelper.filter(
+			materialFilterHelper.filter(
 				materialFilterHelper.getAllTypes(),
 			"_item", false),
 			"barrier", false),
@@ -46,7 +47,8 @@ public class RandomBuildEventCommand extends EventCommand<BlockPlaceEvent> {
 			"torch_on", false),
 			"command_", false),
 			"sponge", false),
-			"bedrock", false);
+			"bedrock", false),
+			"sign", false);
 	}
 	
 	//public

@@ -1,6 +1,6 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 4.20.42
+version: 4.21.43
 softdepend: [LibsDisguises,iDisguise,ProtocolLib]
 commands:
   troll:
@@ -18,7 +18,7 @@ commands:
       /troll brittle <player>: (Toggleable) They're made of glass! (Removed on death)
       /troll burn <player>: (Toggleable) AHH! FIRE! FIRE! FIIREE!! (Removed on death)
       /troll cannon [speed] [power]: Shoots a primed TNT wherever you're looking of adjustable speed and power.
-      /troll duck <player>: (Toggleable) Turns that player into a duckchicken. (Removed on quit)
+      /troll duck <player>: (Toggleable) Turns the player into a duckchicken. (Removed on quit)
       /troll clumsy <player>: (Toggleable) Careful, or you'll end up dropping all of your stuff!
       /troll comet [speed] [power]: Shoots a fireball of adjustable speed and power.
       /troll control <player>: (Toggleable) Allows you to take control of a player. Oooh, spoooky! (Removed on quit)
@@ -56,6 +56,9 @@ commands:
       /troll lift <player>: (Toggleable) It's like flying, but only in one direction. And probably without a soft landing.
       /troll lock <player>: (Toggleable) Prevents the player from interacting with their inventory or hotbar. They didn't REALLY need their sword, did they?
       /troll lure <player>: (Toggleable) Continuously attracts nearby monsters to the player.
+      /troll midastouch <player> [type]: (Toggleable) Any blocks the player touches turns to GOLD (or whatever you specify).
+      /troll moist <player>: (Toggleable) Would you moist my moistness, please? (Requires internet connection)
+      /troll necro <player>: (Toggleable) Let's play "pretend you're a skeleton"! (Removed on quit)
       /troll nightmare <player>: (Toggleable) Summons a waking nightmare for the player.
       /troll nopickup <player>: (Toggleable) Stops the player from picking up items.
       /troll popup <player>: (Toggleable) Randomly opens and closes the player's inventory.

@@ -43,6 +43,8 @@ public class SquidTickCommand extends TickCommand {
 		
 		for (int i = 0; i < numSquids; i++) {
 			Squid s = player.getWorld().spawn(playerLocation.clone().add(MathUtil.random(-10.0d, 10.0d), MathUtil.random(5.0d, 10.0d), MathUtil.random(-10.0d, 10.0d)), Squid.class);
+			s.setCustomName("Moist");
+			s.setCustomNameVisible(true);
 			squidDeathRegistry.setRegister(s.getUniqueId(), s);
 		}
 	}

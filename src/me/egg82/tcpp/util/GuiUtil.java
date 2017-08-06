@@ -56,10 +56,6 @@ public class GuiUtil {
 				String command = usage.split(" ")[1];
 				String description = entry.substring(entry.indexOf(':') + 1).trim();
 				
-				if (command.equals("search") || command.equals("help")) {
-					continue;
-				}
-				
 				commands.put(command, new Pair<String, String>(usage, description));
 			}
 		}

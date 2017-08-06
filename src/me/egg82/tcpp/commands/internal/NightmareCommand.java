@@ -163,19 +163,21 @@ public class NightmareCommand extends PluginCommand {
 				Location[] zombieLocs = LocationUtil.getCircleAround(player.getLocation(), 3, MathUtil.fairRoundedRandom(6, 9));
 				Location[] zombie2Locs = LocationUtil.getCircleAround(player.getLocation(), 5, MathUtil.fairRoundedRandom(8, 12));
 				
-				for (int i = 0; i < zombieLocs.length; i++) {
-					IFakeLivingEntity e = fakeEntityHelper.createEntity(zombieLocs[i], EntityType.ZOMBIE);
-					e.addPlayer(player);
-					e.moveTo(BlockUtil.getTopWalkableBlock(e.getLocation().add(player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23))));
-					e.lookTo(player.getEyeLocation());
-					entities.add(e);
-				}
-				for (int i = 0; i < zombie2Locs.length; i++) {
-					IFakeLivingEntity e = fakeEntityHelper.createEntity(zombie2Locs[i], EntityType.ZOMBIE);
-					e.addPlayer(player);
-					e.moveTo(BlockUtil.getTopWalkableBlock(e.getLocation().add(player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23))));
-					e.lookTo(player.getEyeLocation());
-					entities.add(e);
+				synchronized (entities) {
+					for (int i = 0; i < zombieLocs.length; i++) {
+						IFakeLivingEntity e = fakeEntityHelper.createEntity(zombieLocs[i], EntityType.ZOMBIE);
+						e.addPlayer(player);
+						e.moveTo(BlockUtil.getTopWalkableBlock(e.getLocation().add(player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23))));
+						e.lookTo(player.getEyeLocation());
+						entities.add(e);
+					}
+					for (int i = 0; i < zombie2Locs.length; i++) {
+						IFakeLivingEntity e = fakeEntityHelper.createEntity(zombie2Locs[i], EntityType.ZOMBIE);
+						e.addPlayer(player);
+						e.moveTo(BlockUtil.getTopWalkableBlock(e.getLocation().add(player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23))));
+						e.lookTo(player.getEyeLocation());
+						entities.add(e);
+					}
 				}
 			}
 		});
@@ -212,8 +214,10 @@ public class NightmareCommand extends PluginCommand {
 		
 		Thread runner = new Thread(new Runnable() {
 			public void run() {
-				for (IFakeLivingEntity e : entities) {
-					e.destroy();
+				synchronized (entities) {
+					for (IFakeLivingEntity e : entities) {
+						e.destroy();
+					}
 				}
 			}
 		});
@@ -230,8 +234,10 @@ public class NightmareCommand extends PluginCommand {
 		
 		Thread runner = new Thread(new Runnable() {
 			public void run() {
-				for (IFakeLivingEntity e : entities) {
-					e.destroy();
+				synchronized (entities) {
+					for (IFakeLivingEntity e : entities) {
+						e.destroy();
+					}
 				}
 			}
 		});
