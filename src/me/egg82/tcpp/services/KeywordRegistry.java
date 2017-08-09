@@ -228,6 +228,13 @@ public class KeywordRegistry extends Registry<String> {
 			"hatch",
 			"make"
 		});
+		setRegister("deathtag", new String[] {
+			"name",
+			"tag",
+			"player",
+			"kill",
+			"death"
+		});
 		setRegister("display", new String[] {
 			"thin",
 			"glass",

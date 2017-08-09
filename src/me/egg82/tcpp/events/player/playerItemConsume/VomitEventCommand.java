@@ -2,6 +2,7 @@ package me.egg82.tcpp.events.player.playerItemConsume;
 
 import java.util.UUID;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
@@ -38,6 +39,10 @@ public class VomitEventCommand extends EventCommand<PlayerItemConsumeEvent> {
 		
 		if (vomitRegistry.hasRegister(player.getUniqueId())) {
 			ItemStack items = playerUtil.getItemInMainHand(player);
+			
+			if (items == null || items.getType() == Material.AIR) {
+				items = event.getItem();
+			}
 			
 			ItemStack droppedItem = new ItemStack(items);
 			droppedItem.setAmount(1);

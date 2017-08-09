@@ -2,6 +2,8 @@ package me.egg82.tcpp.events.player.asyncPlayerChat;
 
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -20,6 +22,8 @@ public class MoistEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 	
 	private POSTagger tagger = ServiceLocator.getService(POSTagger.class);
 	private WhitespaceTokenizer tokenizer = WhitespaceTokenizer.INSTANCE;
+	
+	private Pattern p = Pattern.compile("[^a-zA-Z0-9']");
 	
 	//constructor
 	public MoistEventCommand(AsyncPlayerChatEvent event) {
@@ -51,43 +55,108 @@ public class MoistEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 		int startPosition = 0;
 		int endPosition = 0;
 		String rebuiltMessage = "";
-		String[] tokens = tokenizer.tokenize(message.replaceAll("[^a-zA-Z0-9\\s']", " "));
+		String[] tokens = replaceSpecialChars(p, tokenizer.tokenize(message));
 		String[] tags = tagger.tag(tokens);
 		
-		for (int i = 0; i < tags.length; i++) {
+		for (int i = 0; i < tokens.length; i++) {
 			if (tokens[i].equals(" ")) {
+				rebuiltMessage += message.charAt(startPosition);
+				startPosition++;
 				continue;
 			}
 			
-			endPosition = message.indexOf(' ', startPosition + 1);
+			endPosition = patternIndexOf(p, message, startPosition + 1);
 			if (endPosition == -1) {
 				endPosition = message.length();
 			}
 			
 			String oldToken = tokens[i];
 			
-			if (tags[i].equals("JJ")) {
-				tokens[i] = "moist";
+			if (tags[i].equals("JJ") || tags[i].equals("RB")) {
+				tokens[i] = (i == 0 || (!tokens[i - 1].equals("moist") && !tokens[i - 2].equals("moist"))) ? "moist" : "moister";
 			} else if (tags[i].equals("NNP")) {
 				tokens[i] = "Moist";
 			} else if (tags[i].equals("NN")) {
 				tokens[i] = (i == 0 || !tokens[i - 1].equals("moistness")) ? "moistness" : "";
 			}
 			if (CommandUtil.getPlayerByName(tags[i]) != null) {
-				tokens[i] = "moist";
+				tokens[i] = "Moist";
 			}
+			tokens[i] = tryMoistPun(tokens[i]);
 			
-			if (tokens[i] != "") {
+			if (!tokens[i].isEmpty()) {
 				String trueToken = message.substring(startPosition, endPosition);
 				int index = trueToken.indexOf(oldToken);
 				
-				rebuiltMessage += (index == 0) ? tokens[i] + trueToken.substring(oldToken.length()) + " " : trueToken.substring(0, index) + tokens[i] + trueToken.substring(index + oldToken.length()) + " ";
+				rebuiltMessage += (index == 0) ? tokens[i] + trueToken.substring(oldToken.length()) : trueToken.substring(0, index) + tokens[i] + trueToken.substring(index + oldToken.length());
 			}
 			
-			startPosition = endPosition + 1;
+			startPosition = endPosition;
+		}
+		
+		if (endPosition < message.length()) {
+			rebuiltMessage += message.substring(startPosition, message.length());
 		}
 		
 		event.setMessage(rebuiltMessage.trim());
+	}
+	
+	private String[] replaceSpecialChars(Pattern p, String[] input) {
+		ArrayList<String> retVal = new ArrayList<String>();
+		
+		for (int i = 0; i < input.length; i++) {
+			String replaced = input[i].replaceAll(p.pattern(), " ");
+			String buffer = "";
+			for (int j = 0; j < replaced.length(); j++) {
+				if (replaced.charAt(j) == ' ') {
+					if (!buffer.isEmpty()) {
+						retVal.add(buffer);
+						buffer = "";
+					}
+					retVal.add(" ");
+				} else {
+					buffer += replaced.charAt(j);
+				}
+			}
+			if (!buffer.isEmpty()) {
+				retVal.add(buffer);
+			}
+		}
+		
+		return retVal.toArray(new String[0]);
+	}
+	
+	private int patternIndexOf(Pattern p, String message, int index) {
+		Matcher m = p.matcher(message.substring(index));
+		if (m.find()) {
+			return index + m.start();
+		}
+		return -1;
+	}
+	
+	private String tryMoistPun(String input) {
+		input = input.replace("mist", "moist")
+				.replace("mace", "moisk")
+				.replace("masc", "mois")
+				.replace("mash", "moist")
+				.replace("mask", "moist")
+				.replace("mass", "moist")
+				.replace("mast", "moist")
+				.replace("maze", "moizt")
+				.replace("mess", "moist")
+				.replace("miss", "moist")
+				.replace("misc", "moist")
+				.replace("moss", "moist")
+				.replace("most", "moist")
+				.replace("mous", "moist")
+				.replace("muck", "moist")
+				.replace("mugg", "moist")
+				.replace("muse", "moist")
+				.replace("mush", "moist")
+				.replace("must", "moist")
+				.replace("hoist", "moist");
+		
+		return input;
 	}
 	
 	private String[] lengthen(String[] input) {

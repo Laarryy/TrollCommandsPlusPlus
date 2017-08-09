@@ -1,6 +1,6 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 4.21.43
+version: 4.22.44
 softdepend: [LibsDisguises,iDisguise,ProtocolLib]
 commands:
   troll:
@@ -24,6 +24,7 @@ commands:
       /troll control <player>: (Toggleable) Allows you to take control of a player. Oooh, spoooky! (Removed on quit)
       /troll convert <player> <type>: (Undoable) I hope they REALLY like potatoes. Or whatever you want, really.
       /troll creep <player>: Spawns a few charged creepers at the player's location.
+      /troll deathtag <player>: (Toggleable) The next player the selected player says dies, and then the death tag transfers to them.
       /troll display <player>: (Toggleable) Put your friends and enemies on display! (Removed on quit)
       /troll effect <player> [effect]: (Undoable) Applies the specified effect to the player indefinitely, or removes it if it has already been applied. Optionally removes all applied effects.
       /troll electrify <player>: (Toggleable) Thine enemy shalt feel the wrath of many angry gods. (Removed on death)

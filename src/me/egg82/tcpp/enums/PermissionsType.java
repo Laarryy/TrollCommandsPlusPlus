@@ -98,6 +98,7 @@ public class PermissionsType {
 	public static final String COMMAND_NECRO = "tcpp.command.necro";
 	public static final String COMMAND_MOIST = "tcpp.command.moist";
 	public static final String COMMAND_MIDAS_TOUCH = "tcpp.command.midasTouch";
+	public static final String COMMAND_DEATH_TAG = "tcpp.command.deathTag";
 	
 	//constructor
 	public PermissionsType() {

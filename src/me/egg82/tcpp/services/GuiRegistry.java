@@ -29,6 +29,7 @@ public class GuiRegistry extends Registry<String> {
 		setRegister("convert", Material.POTATO_ITEM);
 		setRegister("creep", Material.MONSTER_EGG);
 		setRegister("creep_data", (short) 50);
+		setRegister("deathtag", Material.NAME_TAG);
 		setRegister("display", Material.THIN_GLASS);
 		setRegister("duck", Material.EGG);
 		setRegister("effect", Material.BOOK_AND_QUILL);
