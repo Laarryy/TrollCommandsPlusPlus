@@ -26,9 +26,9 @@ import ninja.egg82.plugin.enums.SpigotLanguageType;
 import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
 import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
 import ninja.egg82.plugin.exceptions.PlayerNotFoundException;
-import ninja.egg82.plugin.reflection.protocol.IFakeBlockHelper;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.LanguageUtil;
+import ninja.egg82.protocol.reflection.IFakeBlockHelper;
 
 public class FoolsGoldCommand extends PluginCommand {
 	//vars

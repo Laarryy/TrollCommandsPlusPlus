@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.services.DeathTagRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
@@ -41,13 +42,17 @@ public class DeathTagEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 			for (String s : split) {
 				Player p = CommandUtil.getPlayerByName(s, false);
 				if (p != null) {
+					if (CommandUtil.hasPermission(p, PermissionsType.IMMUNE)) {
+						continue;
+					}
+					
 					deathTagRegistry.removeRegister(uuid);
 					deathTagRegistry.setRegister(p.getUniqueId(), null);
 					
 					TaskUtil.runSync(new Runnable() {
 						public void run() {
 							p.setHealth(0.0d);
-							entityUtil.damage(player, p, EntityDamageEvent.DamageCause.ENTITY_ATTACK, Double.MAX_VALUE);
+							entityUtil.damage(p, EntityDamageEvent.DamageCause.SUICIDE, Double.MAX_VALUE);
 						}
 					}, 1L);
 					return;

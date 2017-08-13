@@ -9,7 +9,7 @@ import me.egg82.tcpp.services.NightmareRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
-import ninja.egg82.plugin.core.protocol.IFakeLivingEntity;
+import ninja.egg82.protocol.core.IFakeLivingEntity;
 
 public class NightmareEventCommand extends EventCommand<PlayerRespawnEvent> {
 	//vars

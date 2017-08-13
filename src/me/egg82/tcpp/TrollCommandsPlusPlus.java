@@ -2,24 +2,25 @@ package me.egg82.tcpp;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import javax.swing.Timer;
 
 import org.bstats.bukkit.Metrics;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 
 import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.reflection.disguise.DisguiseHelper;
-import me.egg82.tcpp.reflection.disguise.LibsDisguisesHelper;
-import me.egg82.tcpp.reflection.disguise.NullDisguiseHelper;
 import me.egg82.tcpp.services.CommandRegistry;
 import me.egg82.tcpp.services.CommandSearchDatabase;
 import me.egg82.tcpp.services.KeywordRegistry;
@@ -33,20 +34,31 @@ import me.egg82.tcpp.util.WorldHoleHelper;
 import net.gravitydevelopment.updater.Updater;
 import net.gravitydevelopment.updater.Updater.UpdateResult;
 import net.gravitydevelopment.updater.Updater.UpdateType;
+import ninja.egg82.disguise.reflection.DisguiseHelper;
+import ninja.egg82.disguise.reflection.LibsDisguisesHelper;
+import ninja.egg82.disguise.reflection.NullDisguiseHelper;
+import ninja.egg82.exceptionHandlers.GameAnalyticsExceptionHandler;
+import ninja.egg82.exceptionHandlers.IExceptionHandler;
+import ninja.egg82.exceptionHandlers.RollbarExceptionHandler;
+import ninja.egg82.exceptionHandlers.builders.GameAnalyticsBuilder;
+import ninja.egg82.exceptionHandlers.builders.RollbarBuilder;
+import ninja.egg82.nbt.reflection.NBTAPIHelper;
+import ninja.egg82.nbt.reflection.NullNBTHelper;
+import ninja.egg82.nbt.reflection.PowerNBTHelper;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.BasePlugin;
 import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.reflection.exceptionHandlers.GameAnalyticsExceptionHandler;
-import ninja.egg82.plugin.reflection.exceptionHandlers.IExceptionHandler;
-import ninja.egg82.plugin.reflection.exceptionHandlers.RollbarExceptionHandler;
-import ninja.egg82.plugin.reflection.exceptionHandlers.builders.GameAnalyticsBuilder;
-import ninja.egg82.plugin.reflection.exceptionHandlers.builders.RollbarBuilder;
 import ninja.egg82.plugin.services.LanguageRegistry;
 import ninja.egg82.plugin.utils.SpigotReflectUtil;
 import ninja.egg82.plugin.utils.VersionUtil;
+import ninja.egg82.protocol.reflection.NullFakeBlockHelper;
+import ninja.egg82.protocol.reflection.NullFakeEntityHelper;
+import ninja.egg82.protocol.reflection.ProtocolLibFakeBlockHelper;
+import ninja.egg82.protocol.reflection.ProtocolLibFakeEntityHelper;
 import ninja.egg82.sql.LanguageDatabase;
 import ninja.egg82.startup.InitRegistry;
+import ninja.egg82.utils.FileUtil;
 import ninja.egg82.utils.ReflectUtil;
 import ninja.egg82.utils.StringUtil;
 import opennlp.tools.postag.POSModel;
@@ -65,10 +77,17 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	private int numTicks = 0;
 	
 	private IExceptionHandler exceptionHandler = null;
+	private String version = getDescription().getVersion();
+	private String userId = Bukkit.getServerId().trim();
 	
 	//constructor
 	public TrollCommandsPlusPlus() {
 		super();
+		
+		if (userId.isEmpty() || userId.equalsIgnoreCase("unnamed") || userId.equalsIgnoreCase("unknown") || userId.equalsIgnoreCase("default")) {
+			userId = UUID.randomUUID().toString();
+			writeProperties();
+		}
 		
 		getLogger().setLevel(Level.WARNING);
 		IExceptionHandler oldExceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
@@ -77,7 +96,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		ServiceLocator.provideService(RollbarExceptionHandler.class, false);
 		exceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
 		oldExceptionHandler.disconnect();
-		exceptionHandler.connect(new RollbarBuilder("872a465ad3ed465a94136d1978e28ec0", "production"));
+		exceptionHandler.connect(new RollbarBuilder("872a465ad3ed465a94136d1978e28ec0", "production", version, userId));
 		exceptionHandler.setUnsentExceptions(oldExceptionHandler.getUnsentExceptions());
 		exceptionHandler.setUnsentLogs(oldExceptionHandler.getUnsentLogs());
 	}
@@ -113,16 +132,23 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		
 		if (manager.getPlugin("ProtocolLib") != null) {
 			info(ChatColor.GREEN + "[TrollCommands++] Enabling support for ProtocolLib.");
+			ServiceLocator.provideService(ProtocolLibFakeEntityHelper.class);
+			ServiceLocator.provideService(ProtocolLibFakeBlockHelper.class);
 		} else {
 			warning(ChatColor.RED + "[TrollCommands++] ProtocolLib was not found. The /troll foolsgold, /troll nightmare, and /troll rewind commands have been disabled.");
+			ServiceLocator.provideService(NullFakeEntityHelper.class);
+			ServiceLocator.provideService(NullFakeBlockHelper.class);
 		}
 		
 		if (manager.getPlugin("PowerNBT") != null) {
 			info(ChatColor.GREEN + "[TrollCommands++] Enabling support for PowerNBT.");
+			ServiceLocator.provideService(PowerNBTHelper.class);
 		} else if (manager.getPlugin("ItemNBTAPI") != null) {
 			info(ChatColor.GREEN + "[TrollCommands++] Enabling support for ItemNBTAPI.");
+			ServiceLocator.provideService(NBTAPIHelper.class);
 		} else {
 			warning(ChatColor.RED + "[TrollCommands++] Neither PowerNBT nor NBTAPI were found. The /troll attachcommand command has been disabled.");
+			ServiceLocator.provideService(NullNBTHelper.class);
 		}
 		
 		ServiceLocator.provideService(ControlHelper.class);
@@ -252,7 +278,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 			ServiceLocator.provideService(GameAnalyticsExceptionHandler.class, false);
 			exceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
 			oldExceptionHandler.disconnect();
-			exceptionHandler.connect(new GameAnalyticsBuilder("250e5c508c3dd844ed1f8bd2a449d1a6", "dfb50b06e598e7a7ad9b3c84f7b118c12800ffce"));
+			exceptionHandler.connect(new GameAnalyticsBuilder("250e5c508c3dd844ed1f8bd2a449d1a6", "dfb50b06e598e7a7ad9b3c84f7b118c12800ffce", version, userId));
 			exceptionHandler.setUnsentExceptions(oldExceptionHandler.getUnsentExceptions());
 			exceptionHandler.setUnsentLogs(oldExceptionHandler.getUnsentLogs());
 		}
@@ -328,10 +354,12 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		try {
 			POSModel model = new POSModel(new URL("http://opennlp.sourceforge.net/models-1.5/en-pos-maxent.bin"));
 			ServiceLocator.provideService(new POSTaggerME(model));
+			System.gc();
 		} catch (Exception ex) {
 			try {
 				POSModel model = new POSModel(new URL("http://opennlp.sourceforge.net/models-1.5/en-pos-perceptron.bin"));
 				ServiceLocator.provideService(new POSTaggerME(model));
+				System.gc();
 			} catch (Exception ex2) {
 				new java.util.Timer().schedule(new java.util.TimerTask() {
 					public void run() {
@@ -340,5 +368,45 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 				}, 10000);
 			}
 		}
+	}
+	
+	private void writeProperties() {
+		File propertiesFile = new File(Bukkit.getWorldContainer(), "server.properties");
+		String path = propertiesFile.getAbsolutePath();
+		
+		if (!FileUtil.pathExists(path) || !FileUtil.pathIsFile(path)) {
+			return;
+		}
+		
+		try {
+			FileUtil.open(path);
+			
+			String[] lines = toString(FileUtil.read(path, 0L), Charset.forName("UTF-8")).replaceAll("\r", "").split("\n");
+			boolean found = false;
+			for (int i = 0; i < lines.length; i++) {
+				if (lines[i].trim().startsWith("server-id=")) {
+					found = true;
+					lines[i] = "server-id=" + userId;
+				}
+			}
+			if (!found) {
+				ArrayList<String> temp = new ArrayList<String>(Arrays.asList(lines));
+				temp.add("server-id=" + userId);
+				lines = temp.toArray(new String[0]);
+			}
+			
+			FileUtil.erase(path);
+			FileUtil.write(path, toBytes(String.join(FileUtil.LINE_SEPARATOR, lines), Charset.forName("UTF-8")), 0L);
+			FileUtil.close(path);
+		} catch (Exception ex) {
+			
+		}
+	}
+	
+	private byte[] toBytes(String input, Charset enc) {
+		return input.getBytes(enc);
+	}
+	private String toString(byte[] input, Charset enc) {
+		return new String(input, enc);
 	}
 }

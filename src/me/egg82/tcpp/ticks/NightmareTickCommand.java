@@ -6,14 +6,14 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.services.NightmareRegistry;
+import ninja.egg82.exceptionHandlers.IExceptionHandler;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.plugin.core.protocol.IFakeLivingEntity;
-import ninja.egg82.plugin.reflection.exceptionHandlers.IExceptionHandler;
 import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.TaskUtil;
+import ninja.egg82.protocol.core.IFakeLivingEntity;
 
 public class NightmareTickCommand extends TickCommand {
 	//vars

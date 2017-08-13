@@ -3,10 +3,10 @@ package me.egg82.tcpp.events.block.blockPlace;
 import org.bukkit.ChatColor;
 import org.bukkit.event.block.BlockPlaceEvent;
 
+import ninja.egg82.nbt.core.INBTCompound;
+import ninja.egg82.nbt.reflection.INBTHelper;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
-import ninja.egg82.plugin.core.nbt.INBTCompound;
-import ninja.egg82.plugin.reflection.nbt.INBTHelper;
 
 public class AttachCommandEventCommand extends EventCommand<BlockPlaceEvent> {
 	//vars

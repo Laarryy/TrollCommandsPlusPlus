@@ -9,6 +9,8 @@ import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import com.google.common.collect.ImmutableCollection;
+
 import me.egg82.tcpp.services.RandomPotionRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
@@ -44,6 +46,10 @@ public class RandomPotionEventCommand extends EventCommand<PotionSplashEvent> {
 		
 		if (randomPotionRegistry.hasRegister(((Player) event.getPotion().getShooter()).getUniqueId())) {
 			Collection<PotionEffect> potionEffects = event.getPotion().getEffects();
+			
+			if (potionEffects instanceof ImmutableCollection) {
+				return;
+			}
 			
 			int numEffects = potionEffects.size();
 			potionEffects.clear();

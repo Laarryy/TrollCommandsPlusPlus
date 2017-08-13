@@ -3,7 +3,7 @@ package me.egg82.tcpp.services;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 

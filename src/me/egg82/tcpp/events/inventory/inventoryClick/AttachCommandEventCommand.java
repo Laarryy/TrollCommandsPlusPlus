@@ -11,10 +11,11 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import me.egg82.tcpp.util.InventoryUtil;
+import ninja.egg82.nbt.core.INBTCompound;
+import ninja.egg82.nbt.reflection.INBTHelper;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
-import ninja.egg82.plugin.core.nbt.INBTCompound;
-import ninja.egg82.plugin.reflection.nbt.INBTHelper;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.TaskUtil;
 
@@ -41,7 +42,7 @@ public class AttachCommandEventCommand extends EventCommand<InventoryClickEvent>
 		
 		Inventory bottom = event.getView().getBottomInventory();
 		Inventory top = event.getView().getTopInventory();
-		Inventory clicked = event.getClickedInventory();
+		Inventory clicked = InventoryUtil.getClickedInventory(event);
 		
 		if (action == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
 			item = event.getCurrentItem();
@@ -179,6 +180,7 @@ public class AttachCommandEventCommand extends EventCommand<InventoryClickEvent>
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void update(Player player) {
 		TaskUtil.runSync(new Runnable() {
 			public void run() {

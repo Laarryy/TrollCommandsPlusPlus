@@ -16,12 +16,12 @@ import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.services.FoolsGoldChunkRegistry;
 import me.egg82.tcpp.services.FoolsGoldRegistry;
+import ninja.egg82.exceptionHandlers.IExceptionHandler;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.tuples.Pair;
-import ninja.egg82.plugin.reflection.exceptionHandlers.IExceptionHandler;
-import ninja.egg82.plugin.reflection.protocol.IFakeBlockHelper;
 import ninja.egg82.plugin.utils.TaskUtil;
+import ninja.egg82.protocol.reflection.IFakeBlockHelper;
 import ninja.egg82.utils.MathUtil;
 
 public class FoolsGoldHelper {
@@ -212,7 +212,7 @@ public class FoolsGoldHelper {
 				synchronized (player) {
 					for (int i = 0; i < currentChunks.size(); i++) {
 						Pair<Integer, Integer> chunk = currentChunks.get(i);
-						if (chunks.contains(chunk)) {
+						if (chunks.contains(chunk) || !world.isChunkLoaded(chunk.getLeft(), chunk.getRight())) {
 							continue;
 						}
 						
@@ -231,7 +231,7 @@ public class FoolsGoldHelper {
 				synchronized (player) {
 					for (int i = 0; i < currentChunks.size(); i++) {
 						Pair<Integer, Integer> chunk = currentChunks.get(i);
-						if (chunks.contains(chunk)) {
+						if (chunks.contains(chunk) || !world.isChunkLoaded(chunk.getLeft(), chunk.getRight())) {
 							continue;
 						}
 						
@@ -256,9 +256,9 @@ public class FoolsGoldHelper {
 				loc = new Location(world, chunkX * 16 + MathUtil.fairRoundedRandom(0, 15), MathUtil.fairRoundedRandom(minLevel, maxLevel), chunkZ * 16 + MathUtil.fairRoundedRandom(0, 15));
 				mat = loc.getBlock().getType();
 				tries++;
-			} while (mat != Material.STONE && mat != Material.SANDSTONE && tries <= 100);
+			} while (mat != Material.STONE && mat != Material.SANDSTONE && mat != Material.NETHERRACK && tries <= 100);
 			
-			if (mat != Material.STONE && mat != Material.SANDSTONE) {
+			if (mat != Material.STONE && mat != Material.SANDSTONE && mat != Material.NETHERRACK) {
 				continue;
 			}
 			

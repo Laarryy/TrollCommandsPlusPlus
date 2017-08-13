@@ -4,8 +4,10 @@ import java.util.UUID;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 
 import me.egg82.tcpp.services.LockRegistry;
+import me.egg82.tcpp.util.InventoryUtil;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
@@ -30,11 +32,13 @@ public class LockEventCommand extends EventCommand<InventoryClickEvent> {
 		Player player = (Player) event.getWhoClicked();
 		
 		if (lockRegistry.hasRegister(player.getUniqueId())) {
-			if (event.getClickedInventory() != null && (event.getClickedInventory().getHolder() instanceof Player)) {
-				if (((Player) event.getClickedInventory().getHolder()).getUniqueId().equals(player.getUniqueId())) {
+			Inventory clicked = InventoryUtil.getClickedInventory(event);
+			
+			if (clicked != null && (clicked.getHolder() instanceof Player)) {
+				if (((Player) clicked.getHolder()).getUniqueId().equals(player.getUniqueId())) {
 					event.setCancelled(true);
 				}
-			} else if (event.getClickedInventory() == null) {
+			} else if (clicked == null) {
 				event.setCancelled(true);
 			}
 		}

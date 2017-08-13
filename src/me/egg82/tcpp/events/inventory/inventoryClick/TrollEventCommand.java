@@ -13,6 +13,7 @@ import me.egg82.tcpp.services.TrollPageRegistry;
 import me.egg82.tcpp.services.TrollPlayerRegistry;
 import me.egg82.tcpp.services.TrollSearchRegistry;
 import me.egg82.tcpp.util.GuiUtil;
+import me.egg82.tcpp.util.InventoryUtil;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
@@ -44,7 +45,9 @@ public class TrollEventCommand extends EventCommand<InventoryClickEvent> {
 			return;
 		}
 		
-		if (event.getClickedInventory() == null || event.getClickedInventory() != event.getInventory()) {
+		Inventory clicked = InventoryUtil.getClickedInventory(event);
+		
+		if (clicked == null || clicked != event.getInventory()) {
 			event.setCancelled(true);
 			return;
 		}

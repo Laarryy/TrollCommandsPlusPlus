@@ -4,10 +4,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
+import ninja.egg82.nbt.core.INBTCompound;
+import ninja.egg82.nbt.reflection.INBTHelper;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
-import ninja.egg82.plugin.core.nbt.INBTCompound;
-import ninja.egg82.plugin.reflection.nbt.INBTHelper;
 import ninja.egg82.plugin.utils.CommandUtil;
 
 public class AttachCommandEventCommand extends EventCommand<PlayerPickupItemEvent> {

@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>TrollCommandsPlusPlus</artifactId>
-  <version>4.22.44</version>
+  <version>4.22.45</version>
   <name>TrollCommandsPlusPlus</name>
   <description>TCPP for Spigot/Bukkit</description>
   <build>
@@ -43,15 +43,33 @@
                   </excludes>
                 </filter>
                 <filter>
-                  <artifact>ninja.egg82.lib:spigot-lib</artifact>
+                  <artifact>ninja.egg82.lib:exception-lib</artifact>
                   <includes>
                     <include>ninja/egg82/**</include>
                   </includes>
                 </filter>
                 <filter>
-                  <artifact>ninja.egg82.lib:egg82-lib</artifact>
+                  <artifact>ninja.egg82.lib:plugin-lib</artifact>
                   <includes>
                     <include>ninja/egg82/**</include>
+                  </includes>
+                </filter>
+                <filter>
+                  <artifact>ninja.egg82.lib:disguise-lib</artifact>
+                  <includes>
+                    <include>ninja/egg82/disguise/**</include>
+                  </includes>
+                </filter>
+                <filter>
+                  <artifact>ninja.egg82.lib:nbt-lib</artifact>
+                  <includes>
+                    <include>ninja/egg82/nbt/**</include>
+                  </includes>
+                </filter>
+                <filter>
+                  <artifact>ninja.egg82.lib:protocol-lib</artifact>
+                  <includes>
+                    <include>ninja/egg82/protocol/**</include>
                   </includes>
                 </filter>
               </filters>
@@ -69,11 +87,46 @@
                   <pattern>net.gravitydevelopment</pattern>
                   <shadedPattern>me.egg82.tcpp.lib.net.gravitydevelopment</shadedPattern>
                 </relocation>
+                <relocation>
+                  <pattern>opennlp</pattern>
+                  <shadedPattern>me.egg82.tcpp.lib.opennlp</shadedPattern>
+                </relocation>
               </relocations>
             </configuration>
           </execution>
         </executions>
       </plugin>
+      <!-- <plugin>
+        <groupId>com.github.wvengen</groupId>
+        <artifactId>proguard-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>proguard</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <options>
+            <option>-dontobfuscate</option>
+            <option>-dontoptimize</option>
+            <option>-dontskipnonpubliclibraryclasses</option>
+            <option>-dontskipnonpubliclibraryclassmembers</option>
+            <option>-keepattributes *Annotation*</option>
+            <option>-keepattributes Signature</option>
+            <option>-keepattributes InnerClasses</option>
+            <option>-keep public class me.egg82.tcpp.TrollCommandsPlusPlus { *; }</option>
+            <option>-keepclassmembers class ** { @org.bukkit.event.EventHandler *; }</option>
+            <option>-dontnote</option>
+            <option>-dontwarn</option>
+          </options>
+          <libs>
+            <lib>${java.home}/lib/rt.jar</lib>
+            <lib>${java.home}/lib/jsse.jar</lib>
+          </libs>
+        </configuration>
+      </plugin> -->
     </plugins>
   </build>
   <repositories>
@@ -93,14 +146,6 @@
       <id>egg82-ninja</id>
       <url>https://www.myget.org/F/egg82-java/maven/</url>
     </repository>
-    <repository>
-      <id>md_5-public</id>
-      <url>http://repo.md-5.net/content/groups/public/</url>
-    </repository>
-    <repository>
-      <id>robingrether-repo</id>
-      <url>http://repo.robingrether.de/</url>
-    </repository>
     <!-- Uncomment if you're having problems with ProtocolLib-4.2.0-SNAPSHOT jar not being found -->
     <!-- Eclipse doesn't like this repo for some reason, so comment it again after it's done downloading the jar -->
     <!-- <repository>
@@ -114,44 +159,46 @@
       <artifactId>bstats-bukkit</artifactId>
       <version>1.2</version>
     </dependency>
-  	<dependency>
-      <groupId>org.spigotmc</groupId>
-      <artifactId>spigot-api</artifactId>
-      <version>1.12-R0.1-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.12-R0.1-SNAPSHOT</version>
+      <version>1.12.1-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>egg82-lib</artifactId>
-      <version>1.5.18</version>
+      <version>[0.0.0,)</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
-      <artifactId>spigot-lib</artifactId>
-      <version>1.7.34</version>
+      <artifactId>plugin-lib</artifactId>
+      <version>[0.0.0,)</version>
+    </dependency>
+    <dependency>
+      <groupId>ninja.egg82.lib</groupId>
+      <artifactId>nbt-lib</artifactId>
+      <version>[0.0.0,)</version>
+    </dependency>
+    <dependency>
+      <groupId>ninja.egg82.lib</groupId>
+      <artifactId>protocol-lib</artifactId>
+      <version>[0.0.0,)</version>
+    </dependency>
+    <dependency>
+      <groupId>ninja.egg82.lib</groupId>
+      <artifactId>disguise-lib</artifactId>
+      <version>[0.0.0,)</version>
+    </dependency>
+    <dependency>
+      <groupId>ninja.egg82.lib</groupId>
+      <artifactId>exception-lib</artifactId>
+      <version>[0.0.0,)</version>
     </dependency>
     <dependency>
       <groupId>net.gravitydevelopment.updater</groupId>
       <artifactId>updater</artifactId>
       <version>2.4</version>
-    </dependency>
-    <dependency>
-       <groupId>LibsDisguises</groupId>
-       <artifactId>LibsDisguises</artifactId>
-       <version>9.4.0</version>
-       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>de.robingrether.idisguise</groupId>
-      <artifactId>idisguise-core</artifactId>
-      <version>5.6.3</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.opennlp</groupId>
