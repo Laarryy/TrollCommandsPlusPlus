@@ -1,0 +1,26 @@
+package me.egg82.tcpp.commands.unlucky;
+
+import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+
+import me.egg82.tcpp.core.LuckyCommand;
+import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.plugin.reflection.entity.IEntityHelper;
+
+public class KillCommand extends LuckyCommand {
+	//vars
+	private IEntityHelper entityHelper = ServiceLocator.getService(IEntityHelper.class);
+	
+	//constructor
+	public KillCommand(Player player) {
+		super(player);
+	}
+	
+	//public
+	
+	//private
+	protected void onExecute(long elapsedMilliseconds) {
+		player.setHealth(0.0d);
+		entityHelper.damage(player, DamageCause.SUICIDE, Double.MAX_VALUE);
+	}
+}

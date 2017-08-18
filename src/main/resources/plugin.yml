@@ -1,6 +1,6 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 4.22.45
+version: 4.23.45
 softdepend: [LibsDisguises,iDisguise,ProtocolLib]
 commands:
   troll:
@@ -11,13 +11,14 @@ commands:
       /troll amnesia <player>: (Toggleable) Screws with the player's chat in weird ways.
       /troll annoy <player>: (Toggleable) Hrmm. Hmm.. Hrrm.. Hrm. Hm. Hmm..
       /troll anvil <player>: Now who could have put that up there?
-      /troll attachcommand <topic>: (Undoable) The specified command (topic) will be attached to an item. The next time this item is picked up, it will run the command as the payer that picked the item up..
+      /troll attach <topic>: (Undoable) The specified command (topic) will be attached to an item. The next time this item is picked up, it will run the command as the payer that picked the item up..
       /troll banish <player> [range]: Teleports the player to a random location.
       /troll bludger <player>: (Toggleable) Nasty little buggers. (Removed on quit, explode)
       /troll bomb <player>: (Toggleable) May balls of fire rain down upon thine enemy. (Removed on death)
       /troll brittle <player>: (Toggleable) They're made of glass! (Removed on death)
       /troll burn <player>: (Toggleable) AHH! FIRE! FIRE! FIIREE!! (Removed on death)
       /troll cannon [speed] [power]: Shoots a primed TNT wherever you're looking of adjustable speed and power.
+      /troll chat <player> <message>: Chat or run a command as a player using their own permissions.
       /troll duck <player>: (Toggleable) Turns the player into a duckchicken. (Removed on quit)
       /troll clumsy <player>: (Toggleable) Careful, or you'll end up dropping all of your stuff!
       /troll comet [speed] [power]: Shoots a fireball of adjustable speed and power.
@@ -56,6 +57,7 @@ commands:
       /troll levitate <player>: (Toggleable) Ascends the player to the heavens forever. Drops them like a rock when removed.
       /troll lift <player>: (Toggleable) It's like flying, but only in one direction. And probably without a soft landing.
       /troll lock <player>: (Toggleable) Prevents the player from interacting with their inventory or hotbar. They didn't REALLY need their sword, did they?
+      /troll luckyblock [luck]: (Undoable) Turns the block in your hand into a lucky/unlucky block. You may optionally provide a "luck chance" defining how high the "luck" value vs "unluck" is.
       /troll lure <player>: (Toggleable) Continuously attracts nearby monsters to the player.
       /troll midastouch <player> [type]: (Toggleable) Any blocks the player touches turns to GOLD (or whatever you specify).
       /troll moist <player>: (Toggleable) Would you moist my moistness, please? (Requires internet connection)
@@ -73,6 +75,7 @@ commands:
       /troll randompotion <player>: (Toggleable) Wait, what did I drink again?
       /troll randomspeed <player>: (Toggleable) My legs just take me wherever they want! (Removed on quit)
       /troll rewind <player>: (Toggleable) Makes the player's time run backwards at speed. Does not affect the server.
+      /troll run <player> <topic>: Run a command (topic) as a player using your permissions.
       /troll search <player> [search]: Opens a GUI with available commands for trolling the specified player. Optionally takes a search argument.
       /troll slap <player>: Slaps the player. Yep. Slaps them.
       /troll slender <player>: Blinds and slows the player, then sends an enderman after them.

@@ -13,10 +13,8 @@ import me.egg82.tcpp.services.RandomBreakRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
-import ninja.egg82.plugin.core.BlockData;
 import ninja.egg82.plugin.reflection.player.IPlayerHelper;
 import ninja.egg82.plugin.reflection.type.TypeFilterHelper;
-import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.utils.MathUtil;
 
 public class RandomBreakEventCommand extends EventCommand<BlockBreakEvent> {
@@ -75,7 +73,7 @@ public class RandomBreakEventCommand extends EventCommand<BlockBreakEvent> {
 				}
 			}
 			
-			BlockUtil.setBlock(event.getBlock(), new BlockData(null, null, Material.AIR), true);
+			event.getBlock().setType(Material.AIR);
 		}
 	}
 }

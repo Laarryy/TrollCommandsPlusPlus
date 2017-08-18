@@ -33,7 +33,7 @@ import ninja.egg82.plugin.reflection.player.IPlayerHelper;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.LanguageUtil;
 
-public class AttachCommandCommand extends PluginCommand {
+public class AttachCommand extends PluginCommand {
 	//vars
 	private IPlayerHelper playerHelper = ServiceLocator.getService(IPlayerHelper.class);
 	private INBTHelper nbtHelper = ServiceLocator.getService(INBTHelper.class);
@@ -42,7 +42,7 @@ public class AttachCommandCommand extends PluginCommand {
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
-	public AttachCommandCommand(CommandSender sender, Command command, String label, String[] args) {
+	public AttachCommand(CommandSender sender, Command command, String label, String[] args) {
 		super(sender, command, label, args);
 		
 		for (HelpTopic topic : Bukkit.getServer().getHelpMap().getHelpTopics()) {
@@ -86,9 +86,9 @@ public class AttachCommandCommand extends PluginCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_ATTACH_COMMAND)) {
+		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_ATTACH)) {
 			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
-			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_ATTACH_COMMAND)));
+			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_ATTACH)));
 			return;
 		}
 		if (!nbtHelper.isValidLibrary()) {

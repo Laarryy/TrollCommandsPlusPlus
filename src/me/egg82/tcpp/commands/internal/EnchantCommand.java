@@ -196,16 +196,22 @@ public class EnchantCommand extends PluginCommand {
 		
 		ArrayList<Enchantment> loreEnchants = new ArrayList<Enchantment>();
 		List<String> lore = new ArrayList<String>();
-		if (meta.hasLore()) {
+		if (meta != null && meta.hasLore()) {
 			// Remove any lines that are enchantments but aren't in the enchant list
 			for (String line : meta.getLore()) {
-				int lastSpace = line.lastIndexOf(' ');
+				String tempLine = line;
+				
+				for (ChatColor color : ChatColor.values()) {
+					tempLine = tempLine.replace(color.toString(), "");
+				}
+				
+				int lastSpace = tempLine.lastIndexOf(' ');
 				
 				if (lastSpace == -1) {
 					lore.add(line);
 					continue;
 				}
-				String enchantName = line.substring(0, lastSpace).replaceAll("[^a-zA-Z ]", "");
+				String enchantName = tempLine.substring(0, lastSpace);
 				if (!enchantNameRegistry.hasValue(enchantName)) {
 					lore.add(line);
 					continue;

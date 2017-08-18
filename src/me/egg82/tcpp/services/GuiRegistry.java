@@ -16,13 +16,14 @@ public class GuiRegistry extends Registry<String> {
 		setRegister("annoy", Material.MONSTER_EGG);
 		setRegister("annoy_data", (short) 120);
 		setRegister("anvil", Material.ANVIL);
-		setRegister("attachcommand", Material.EXP_BOTTLE);
+		setRegister("attach", Material.EXP_BOTTLE);
 		setRegister("banish", Material.WOOD_DOOR);
 		setRegister("bludger", Material.MAGMA_CREAM);
 		setRegister("bomb", Material.FIREWORK);
 		setRegister("brittle", Material.GLASS);
 		setRegister("burn", Material.BLAZE_POWDER);
 		setRegister("cannon", Material.TNT);
+		setRegister("chat", Material.LAPIS_BLOCK);
 		setRegister("clumsy", Material.SAND);
 		setRegister("comet", Material.FIREBALL);
 		setRegister("control", Material.IRON_FENCE);
@@ -64,6 +65,7 @@ public class GuiRegistry extends Registry<String> {
 		setRegister("levitate", Material.FEATHER);
 		setRegister("lift", Material.SLIME_BLOCK);
 		setRegister("lock", Material.LEVER);
+		setRegister("luckyblock", Material.GOLD_PICKAXE);
 		setRegister("lure", Material.BEACON);
 		setRegister("midastouch", Material.GOLD_BLOCK);
 		setRegister("moist", Material.STAINED_GLASS);
@@ -84,6 +86,7 @@ public class GuiRegistry extends Registry<String> {
 		setRegister("randompotion", Material.POTION);
 		setRegister("randomspeed", Material.SOUL_SAND);
 		setRegister("rewind", Material.ENCHANTMENT_TABLE);
+		setRegister("run", Material.LAPIS_ORE);
 		setRegister("slap", Material.PISTON_BASE);
 		setRegister("slender", Material.MONSTER_EGG);
 		setRegister("slender_data", (short) 58);

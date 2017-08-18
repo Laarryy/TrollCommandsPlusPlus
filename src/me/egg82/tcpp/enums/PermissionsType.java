@@ -82,7 +82,7 @@ public class PermissionsType {
 	public static final String COMMAND_INVERT = "tcpp.command.invert";
 	public static final String COMMAND_GRANT_WISHES = "tcpp.command.grantWishes";
 	public static final String COMMAND_FOOLS_GOLD = "tcpp.command.foolsGold";
-	public static final String COMMAND_ATTACH_COMMAND = "tcpp.command.attachCommand";
+	public static final String COMMAND_ATTACH = "tcpp.command.attach";
 	public static final String COMMAND_BLUDGER = "tcpp.command.bludger";
 	public static final String COMMAND_RANDOM_SPEED = "tcpp.command.randomSpeed";
 	public static final String COMMAND_LAVA_BUILD = "tcpp.command.lavaBuild";
@@ -99,6 +99,9 @@ public class PermissionsType {
 	public static final String COMMAND_MOIST = "tcpp.command.moist";
 	public static final String COMMAND_MIDAS_TOUCH = "tcpp.command.midasTouch";
 	public static final String COMMAND_DEATH_TAG = "tcpp.command.deathTag";
+	public static final String COMMAND_LUCKY_BLOCK = "tcpp.command.luckyBlock";
+	public static final String COMMAND_CHAT = "tcpp.command.chat";
+	public static final String COMMAND_RUN = "tcpp.command.run";
 	
 	//constructor
 	public PermissionsType() {

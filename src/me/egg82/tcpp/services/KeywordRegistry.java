@@ -53,7 +53,7 @@ public class KeywordRegistry extends Registry<String> {
 			"armor",
 			"sword"
 		});
-		setRegister("attachcommand", new String[] {
+		setRegister("attach", new String[] {
 			"exp",
 			"xp",
 			"experience",
@@ -161,6 +161,18 @@ public class KeywordRegistry extends Registry<String> {
 			"blast",
 			"erupt",
 			"detonate"
+		});
+		setRegister("chat", new String[] {
+			"lapis",
+			"say",
+			"declare",
+			"announce",
+			"voice",
+			"communicate",
+			"relate",
+			"disclose",
+			"reply",
+			"remark"
 		});
 		setRegister("clumsy", new String[] {
 			"sand",
@@ -589,6 +601,17 @@ public class KeywordRegistry extends Registry<String> {
 			"link",
 			"bond"
 		});
+		setRegister("luckyblock", new String[] {
+			"golden",
+			"gold",
+			"pickaxe",
+			"fortune",
+			"successful",
+			"favored",
+			"prmising",
+			"fate",
+			"furtity"
+		});
 		setRegister("lure", new String[] {
 			"beacon",
 			"bait",
@@ -761,6 +784,16 @@ public class KeywordRegistry extends Registry<String> {
 			"reverse",
 			"undo",
 			"invert"
+		});
+		setRegister("run", new String[] {
+			"lapis",
+			"control",
+			"go",
+			"perform",
+			"use",
+			"act",
+			"handle",
+			"manage"
 		});
 		setRegister("search", new String[] {
 			"find",

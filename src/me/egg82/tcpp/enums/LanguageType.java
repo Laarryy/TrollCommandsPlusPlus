@@ -5,6 +5,7 @@ public class LanguageType {
 	public static final String PLAYER_IMMUNE = "player-immune";
 	public static final String INVALID_TARGET = "invalid-target";
 	public static final String INVALID_LIBRARY = "invalid-library";
+	public static final String LIBRARY_FEATURE_NOT_SUPPORTED = "library-feature-not-supported";
 	public static final String COMMAND_IN_USE = "command-in-use";
 	public static final String NO_CHAT_CONTROL = "no-chat-control";
 	public static final String NO_CHAT_FROZEN = "no-chat-frozen";
