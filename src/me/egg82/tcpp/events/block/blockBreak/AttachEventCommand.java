@@ -19,13 +19,13 @@ import ninja.egg82.plugin.reflection.player.IPlayerHelper;
 import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.CommandUtil;
 
-public class AttachCommandEventCommand extends EventCommand<BlockBreakEvent> {
+public class AttachEventCommand extends EventCommand<BlockBreakEvent> {
 	//vars
 	private INBTHelper nbtHelper = ServiceLocator.getService(INBTHelper.class);
 	private IPlayerHelper playerHelper = ServiceLocator.getService(IPlayerHelper.class);
 	
 	//constructor
-	public AttachCommandEventCommand(BlockBreakEvent event) {
+	public AttachEventCommand(BlockBreakEvent event) {
 		super(event);
 	}
 	

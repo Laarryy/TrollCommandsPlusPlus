@@ -19,12 +19,12 @@ import ninja.egg82.plugin.commands.EventCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.TaskUtil;
 
-public class AttachCommandEventCommand extends EventCommand<InventoryClickEvent> {
+public class AttachEventCommand extends EventCommand<InventoryClickEvent> {
 	//vars
 	private INBTHelper nbtHelper = ServiceLocator.getService(INBTHelper.class);
 	
 	//constructor
-	public AttachCommandEventCommand(InventoryClickEvent event) {
+	public AttachEventCommand(InventoryClickEvent event) {
 		super(event);
 	}
 	

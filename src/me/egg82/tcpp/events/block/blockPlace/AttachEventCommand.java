@@ -8,12 +8,12 @@ import ninja.egg82.nbt.reflection.INBTHelper;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 
-public class AttachCommandEventCommand extends EventCommand<BlockPlaceEvent> {
+public class AttachEventCommand extends EventCommand<BlockPlaceEvent> {
 	//vars
 	private INBTHelper nbtHelper = ServiceLocator.getService(INBTHelper.class);
 	
 	//constructor
-	public AttachCommandEventCommand(BlockPlaceEvent event) {
+	public AttachEventCommand(BlockPlaceEvent event) {
 		super(event);
 	}
 	

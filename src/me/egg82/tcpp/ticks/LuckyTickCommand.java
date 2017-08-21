@@ -37,11 +37,19 @@ public class LuckyTickCommand extends TickCommand {
 		}
 	}
 	private void e(Chicken chicken) {
+		if (chicken == null) {
+			return;
+		}
+		
 		if (Math.random() <= 0.55) {
 			chicken.getWorld().dropItemNaturally(chicken.getLocation(), new ItemStack(Material.GOLD_INGOT, MathUtil.fairRoundedRandom(1, 3)));
 		}
 	}
 	private void e(Villager villager) {
+		if (villager == null) {
+			return;
+		}
+		
 		if (Math.random() <= 0.55) {
 			villager.getWorld().dropItemNaturally(villager.getLocation(), new ItemStack(Material.EMERALD, MathUtil.fairRoundedRandom(1, 3)));
 		}
