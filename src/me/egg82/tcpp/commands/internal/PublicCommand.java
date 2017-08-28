@@ -100,7 +100,7 @@ public class PublicCommand extends PluginCommand {
 		PlayerInventory inv = player.getInventory();
 		
 		for (Player p : Bukkit.getOnlinePlayers()) {
-			if (!p.getUniqueId().toString().equals(uuid)) {
+			if (!p.getUniqueId().equals(uuid)) {
 				p.closeInventory();
 				p.openInventory(inv);
 			}

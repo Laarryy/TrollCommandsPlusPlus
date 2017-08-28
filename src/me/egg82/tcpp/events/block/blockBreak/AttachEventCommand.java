@@ -14,9 +14,7 @@ import ninja.egg82.nbt.core.INBTCompound;
 import ninja.egg82.nbt.reflection.INBTHelper;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
-import ninja.egg82.plugin.core.BlockData;
 import ninja.egg82.plugin.reflection.player.IPlayerHelper;
-import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.CommandUtil;
 
 public class AttachEventCommand extends EventCommand<BlockBreakEvent> {
@@ -73,6 +71,6 @@ public class AttachEventCommand extends EventCommand<BlockBreakEvent> {
 		
 		blockCompound.removeTag("tcppSender");
 		blockCompound.removeTag("tcppCommand");
-		BlockUtil.setBlock(block, new BlockData(null, null, Material.AIR), true);
+		block.setType(Material.AIR);
 	}
 }

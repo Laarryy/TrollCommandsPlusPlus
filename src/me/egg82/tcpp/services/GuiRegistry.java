@@ -65,6 +65,8 @@ public class GuiRegistry extends Registry<String> {
 		setRegister("levitate", Material.FEATHER);
 		setRegister("lift", Material.SLIME_BLOCK);
 		setRegister("lock", Material.LEVER);
+		setRegister("lsd", Material.WOOL);
+		setRegister("lsd_data", (short) 2);
 		setRegister("luckyblock", Material.GOLD_PICKAXE);
 		setRegister("lure", Material.BEACON);
 		setRegister("midastouch", Material.GOLD_BLOCK);

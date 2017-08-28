@@ -1,6 +1,6 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 4.23.46
+version: 4.24.47
 softdepend: [LibsDisguises,iDisguise,ProtocolLib]
 commands:
   troll:
@@ -57,6 +57,7 @@ commands:
       /troll levitate <player>: (Toggleable) Ascends the player to the heavens forever. Drops them like a rock when removed.
       /troll lift <player>: (Toggleable) It's like flying, but only in one direction. And probably without a soft landing.
       /troll lock <player>: (Toggleable) Prevents the player from interacting with their inventory or hotbar. They didn't REALLY need their sword, did they?
+      /troll lsd <player>: (Toggleable) RAAAAIIINNNNBOOOOWWWW! Does not affect the server.
       /troll luckyblock [luck]: (Undoable) Turns the block in your hand into a lucky/unlucky block. You may optionally provide a "luck chance" defining how high the "luck" value vs "unluck" is.
       /troll lure <player>: (Toggleable) Continuously attracts nearby monsters to the player.
       /troll midastouch <player> [type]: (Toggleable) Any blocks the player touches turns to GOLD (or whatever you specify).

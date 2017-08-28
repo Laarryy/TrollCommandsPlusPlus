@@ -601,6 +601,11 @@ public class KeywordRegistry extends Registry<String> {
 			"link",
 			"bond"
 		});
+		setRegister("lsd", new String[] {
+			"magenta",
+			"trippy",
+			"drugs"
+		});
 		setRegister("luckyblock", new String[] {
 			"golden",
 			"gold",

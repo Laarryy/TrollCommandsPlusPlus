@@ -41,7 +41,7 @@ public class SlowUndoEventCommand extends EventCommand<BlockPlaceEvent> {
 		
 		// Save block state
 		Location blockLocation = event.getBlock().getLocation();
-		BlockData blockData = new BlockData(null, event.getBlockReplacedState(), Material.AIR);
+		BlockData blockData = new BlockData(null, event.getBlockReplacedState(), Material.AIR, null);
 		
 		// Wait 4-6 seconds
 		TaskUtil.runSync(new Runnable() {

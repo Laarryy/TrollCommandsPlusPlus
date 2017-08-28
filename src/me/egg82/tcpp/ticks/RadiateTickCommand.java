@@ -58,75 +58,75 @@ public class RadiateTickCommand extends TickCommand {
 				Location loc = blocks.get(i).getState().getLocation();
 				
 				if (mat == Material.GRASS) {
-					BlockUtil.setBlock(loc, new BlockData(null, null, Material.DIRT), true);
+					loc.getBlock().setType(Material.DIRT);
 					break;
 				} else if (mat == Material.SAPLING) {
-					BlockUtil.setBlock(loc, new BlockData(null, null, Material.DEAD_BUSH), true);
+					loc.getBlock().setType(Material.DEAD_BUSH);
 					break;
 				} else if (matString.contains("leaves")) {
-					BlockUtil.setBlock(loc, new BlockData(null, null, Material.AIR), true);
+					loc.getBlock().setType(Material.AIR);
 					break;
 				} else if (matString.contains("grass")) {
-					BlockUtil.setBlock(loc, new BlockData(null, null, Material.AIR), true);
+					loc.getBlock().setType(Material.AIR);
 					break;
 				} else if (matString.contains("flower") && !matString.contains("pot")) {
-					BlockUtil.setBlock(loc, new BlockData(null, null, Material.DEAD_BUSH), true);
+					loc.getBlock().setType(Material.DEAD_BUSH);
 					break;
 				} else if (mat == Material.FLOWER_POT) {
 					FlowerPot pot = (FlowerPot) blocks.get(i).getState();
 					pot.setContents(new MaterialData(Material.DEAD_BUSH));
-					BlockUtil.setBlock(loc, new BlockData(null, pot, Material.FLOWER_POT), true);
+					BlockUtil.setBlock(loc, new BlockData(null, pot, Material.FLOWER_POT, null), true);
 					break;
 				} else if (matString.contains("mushroom")) {
-					BlockUtil.setBlock(loc, new BlockData(null, null, Material.AIR), true);
+					loc.getBlock().setType(Material.AIR);
 					break;
 				} else if (mat == Material.WHEAT) {
-					BlockUtil.setBlock(loc, new BlockData(null, null, Material.DEAD_BUSH), true);
+					loc.getBlock().setType(Material.DEAD_BUSH);
 					break;
 				} else if (mat == Material.CACTUS) {
-					BlockUtil.setBlock(loc, new BlockData(null, null, Material.AIR), true);
+					loc.getBlock().setType(Material.AIR);
 					break;
 				} else if (mat == Material.SUGAR_CANE_BLOCK) {
-					BlockUtil.setBlock(loc, new BlockData(null, null, Material.DEAD_BUSH), true);
+					loc.getBlock().setType(Material.DEAD_BUSH);
 					break;
 				} else if (mat == Material.PUMPKIN) {
-					BlockUtil.setBlock(loc, new BlockData(null, null, Material.AIR), true);
+					loc.getBlock().setType(Material.AIR);
 					break;
 				} else if (mat == Material.MELON_BLOCK) {
-					BlockUtil.setBlock(loc, new BlockData(null, null, Material.AIR), true);
+					loc.getBlock().setType(Material.AIR);
 					break;
 				} else if (mat == Material.PUMPKIN_STEM) {
-					BlockUtil.setBlock(loc, new BlockData(null, null, Material.DEAD_BUSH), true);
+					loc.getBlock().setType(Material.DEAD_BUSH);
 					break;
 				} else if (mat == Material.MELON_STEM) {
-					BlockUtil.setBlock(loc, new BlockData(null, null, Material.DEAD_BUSH), true);
+					loc.getBlock().setType(Material.DEAD_BUSH);
 					break;
 				} else if (mat == Material.VINE) {
-					BlockUtil.setBlock(loc, new BlockData(null, null, Material.AIR), true);
+					loc.getBlock().setType(Material.AIR);
 					break;
 				} else if (mat == Material.MYCEL) {
-					BlockUtil.setBlock(loc, new BlockData(null, null, Material.DIRT), true);
+					loc.getBlock().setType(Material.DIRT);
 					break;
 				} else if (mat == Material.WATER_LILY) {
-					BlockUtil.setBlock(loc, new BlockData(null, null, Material.AIR), true);
+					loc.getBlock().setType(Material.AIR);
 					break;
-				} else if (mat.equals("nether_wart_block")) {
-					BlockUtil.setBlock(loc, new BlockData(null, null, Material.AIR), true);
+				} else if (matString.equals("nether_wart_block")) {
+					loc.getBlock().setType(Material.AIR);
 					break;
 				} else if (mat == Material.COCOA) {
-					BlockUtil.setBlock(loc, new BlockData(null, null, Material.AIR), true);
+					loc.getBlock().setType(Material.AIR);
 					break;
 				} else if (mat == Material.CARROT) {
-					BlockUtil.setBlock(loc, new BlockData(null, null, Material.AIR), true);
+					loc.getBlock().setType(Material.AIR);
 					break;
 				} else if (mat == Material.POTATO) {
-					BlockUtil.setBlock(loc, new BlockData(null, null, Material.AIR), true);
+					loc.getBlock().setType(Material.AIR);
 					break;
 				} else if (matString.contains("plant")) {
-					BlockUtil.setBlock(loc, new BlockData(null, null, Material.AIR), true);
+					loc.getBlock().setType(Material.AIR);
 					break;
 				} else if (matString.equals("beetroot_block")) {
-					BlockUtil.setBlock(loc, new BlockData(null, null, Material.AIR), true);
+					loc.getBlock().setType(Material.AIR);
 					break;
 				}
 			}
@@ -147,10 +147,10 @@ public class RadiateTickCommand extends TickCommand {
 				if (type == EntityType.BAT
 					|| type == EntityType.CHICKEN
 					|| typeString.contains("cow")
-					|| type.equals("donkey")
+					|| typeString.equals("donkey")
 					|| type == EntityType.HORSE
 					|| typeString.contains("llama")
-					|| type.equals("mule")
+					|| typeString.equals("mule")
 					|| type == EntityType.OCELOT
 					|| typeString.equals("parrot")
 					|| type == EntityType.PIG

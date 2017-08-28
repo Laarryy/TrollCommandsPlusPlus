@@ -102,6 +102,7 @@ public class PermissionsType {
 	public static final String COMMAND_LUCKY_BLOCK = "tcpp.command.luckyBlock";
 	public static final String COMMAND_CHAT = "tcpp.command.chat";
 	public static final String COMMAND_RUN = "tcpp.command.run";
+	public static final String COMMAND_LSD = "tcpp.command.lsd";
 	
 	//constructor
 	public PermissionsType() {
