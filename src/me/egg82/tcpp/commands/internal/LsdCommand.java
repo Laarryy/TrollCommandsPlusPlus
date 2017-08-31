@@ -1,6 +1,9 @@
 package me.egg82.tcpp.commands.internal;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,6 +23,7 @@ import ninja.egg82.events.CompleteEventArgs;
 import ninja.egg82.events.ExceptionEventArgs;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.tuples.Triplet;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotLanguageType;
 import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
@@ -137,7 +141,7 @@ public class LsdCommand extends PluginCommand {
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	private void e(UUID uuid, Player player) {
-		lsdRegistry.setRegister(uuid, null);
+		lsdRegistry.setRegister(uuid, Collections.synchronizedCollection(new HashSet<Triplet<String, Integer, Integer>>()));
 		metricsHelper.commandWasRun(this);
 		
 		sender.sendMessage(player.getName() + " is now on LSD.");
@@ -160,7 +164,16 @@ public class LsdCommand extends PluginCommand {
 		
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
+	@SuppressWarnings({ "unchecked", "deprecation" })
 	private void eUndo(UUID uuid, Player player) {
+		Collection<Triplet<String, Integer, Integer>> bLocs = lsdRegistry.getRegister(uuid, Collection.class);
+		
+		synchronized (bLocs) {
+			for (Triplet<String, Integer, Integer> chunk : bLocs) {
+				Bukkit.getWorld(chunk.getLeft()).refreshChunk(chunk.getCenter(), chunk.getRight());
+			}
+		}
+		
 		lsdRegistry.removeRegister(uuid);
 		
 		sender.sendMessage(player.getName() + " is no longer on LSD.");

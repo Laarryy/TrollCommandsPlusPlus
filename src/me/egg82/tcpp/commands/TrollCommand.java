@@ -114,10 +114,13 @@ public class TrollCommand extends PluginCommand {
 		if (args.length == 1) {
 			page = -1;
 			
-			try {
-				page = Integer.parseInt(args[0]);
-			} catch (Exception ex) {
-				
+			// Is the argument a player, or are we trying to parse a number?
+			if (CommandUtil.getPlayerByName(args[0]) == null) {
+				try {
+					page = Integer.parseInt(args[0]);
+				} catch (Exception ex) {
+					
+				}
 			}
 			
 			if (page != -1 && page < 1) {
@@ -125,6 +128,7 @@ public class TrollCommand extends PluginCommand {
 			}
 		}
 		
+		// Only run if the command is /troll or /troll <number>
 		if (args.length == 0 || (args.length == 1 && page != -1)) {
 			// Act like /help
 			page -= 1;
@@ -141,6 +145,8 @@ public class TrollCommand extends PluginCommand {
 			onComplete().invoke(this, CompleteEventArgs.EMPTY);
 			return;
 		}
+		
+		// Help wasn't requested. Try running commands as per usual
 		
 		String troll = args[0];
 		if (args.length > 1) {
