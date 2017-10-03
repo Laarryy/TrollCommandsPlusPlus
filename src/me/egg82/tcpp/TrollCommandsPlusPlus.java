@@ -21,9 +21,9 @@ import org.bukkit.plugin.PluginManager;
 
 import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.services.CommandRegistry;
-import me.egg82.tcpp.services.CommandSearchDatabase;
-import me.egg82.tcpp.services.KeywordRegistry;
+import me.egg82.tcpp.services.databases.CommandSearchDatabase;
+import me.egg82.tcpp.services.registries.CommandRegistry;
+import me.egg82.tcpp.services.registries.KeywordRegistry;
 import me.egg82.tcpp.util.ControlHelper;
 import me.egg82.tcpp.util.DisplayHelper;
 import me.egg82.tcpp.util.FoolsGoldHelper;
@@ -105,7 +105,8 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	public void onLoad() {
 		super.onLoad();
 		
-		SpigotReflectUtil.addServicesFromPackage("me.egg82.tcpp.services");
+		SpigotReflectUtil.addServicesFromPackage("me.egg82.tcpp.services.registries");
+		SpigotReflectUtil.addServicesFromPackage("me.egg82.tcpp.services.databases");
 		
 		PluginManager manager = getServer().getPluginManager();
 		

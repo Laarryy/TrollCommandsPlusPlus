@@ -18,7 +18,7 @@ import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.exceptions.InvalidLibraryException;
 import me.egg82.tcpp.exceptions.PlayerImmuneException;
-import me.egg82.tcpp.services.NecroRegistry;
+import me.egg82.tcpp.services.registries.NecroRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.disguise.reflection.IDisguiseHelper;
 import ninja.egg82.events.CompleteEventArgs;

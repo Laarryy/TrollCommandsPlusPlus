@@ -13,7 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.exceptions.InvalidCommandException;
-import me.egg82.tcpp.services.CommandSearchDatabase;
+import me.egg82.tcpp.services.databases.CommandSearchDatabase;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CompleteEventArgs;
 import ninja.egg82.events.ExceptionEventArgs;

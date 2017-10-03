@@ -6,8 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffectType;
 
-import me.egg82.tcpp.services.EmpowerEntityRegistry;
-import me.egg82.tcpp.services.EmpowerRegistry;
+import me.egg82.tcpp.services.registries.EmpowerEntityRegistry;
+import me.egg82.tcpp.services.registries.EmpowerRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;

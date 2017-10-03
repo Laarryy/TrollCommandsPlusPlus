@@ -6,8 +6,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import me.egg82.tcpp.services.LagRegistry;
-import me.egg82.tcpp.services.LagLocationRegistry;
+import me.egg82.tcpp.services.registries.LagLocationRegistry;
+import me.egg82.tcpp.services.registries.LagRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;

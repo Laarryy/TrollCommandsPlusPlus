@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.services.VegetableLocationRegistry;
-import me.egg82.tcpp.services.VegetableRegistry;
+import me.egg82.tcpp.services.registries.VegetableLocationRegistry;
+import me.egg82.tcpp.services.registries.VegetableRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;

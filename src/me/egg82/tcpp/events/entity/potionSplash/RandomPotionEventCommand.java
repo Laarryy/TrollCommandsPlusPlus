@@ -11,7 +11,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.google.common.collect.ImmutableCollection;
 
-import me.egg82.tcpp.services.RandomPotionRegistry;
+import me.egg82.tcpp.services.registries.RandomPotionRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;

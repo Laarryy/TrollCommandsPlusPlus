@@ -18,7 +18,7 @@ import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.exceptions.InvalidTypeException;
 import me.egg82.tcpp.exceptions.PlayerImmuneException;
-import me.egg82.tcpp.services.MobTypeSearchDatabase;
+import me.egg82.tcpp.services.databases.MonsterTypeSearchDatabase;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CompleteEventArgs;
 import ninja.egg82.events.ExceptionEventArgs;
@@ -39,7 +39,7 @@ import ninja.egg82.utils.ReflectUtil;
 public class SurroundCommand extends PluginCommand {
 	//vars
 	private ArrayList<String> mobNames = new ArrayList<String>();
-	private LanguageDatabase mobTypeDatabase = ServiceLocator.getService(MobTypeSearchDatabase.class);
+	private LanguageDatabase monsterTypeDatabase = ServiceLocator.getService(MonsterTypeSearchDatabase.class);
 	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
@@ -142,7 +142,7 @@ public class SurroundCommand extends PluginCommand {
 		
 		if (type == null || !ReflectUtil.doesExtend(Monster.class, type.getEntityClass())) {
 			// Not found or not a monster. Try to search the database.
-			String[] types = mobTypeDatabase.getValues(mobTypeDatabase.naturalLanguage(search, false), 0);
+			String[] types = monsterTypeDatabase.getValues(monsterTypeDatabase.naturalLanguage(search, false), 0);
 			
 			if (types == null || types.length == 0) {
 				sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_TYPE));

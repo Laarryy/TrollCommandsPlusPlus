@@ -14,7 +14,7 @@ import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.exceptions.InvalidTargetException;
 import me.egg82.tcpp.exceptions.InvalidLibraryException;
 import me.egg82.tcpp.exceptions.PlayerImmuneException;
-import me.egg82.tcpp.services.ControlRegistry;
+import me.egg82.tcpp.services.registries.ControlRegistry;
 import me.egg82.tcpp.util.ControlHelper;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.disguise.reflection.IDisguiseHelper;
@@ -125,7 +125,7 @@ public class ControlCommand extends PluginCommand {
 			Player controlledPlayer = CommandUtil.getPlayerByUuid(controlRegistry.getRegister(controllerUuid, UUID.class));
 			if (controlledPlayer != null) {
 				controlHelper.uncontrol(controllerUuid, controller);
-				if (controlledPlayer.getUniqueId().toString().equals(playerUuid)) {
+				if (controlledPlayer.getUniqueId().equals(playerUuid)) {
 					metricsHelper.commandWasRun(this);
 					onComplete().invoke(this, CompleteEventArgs.EMPTY);
 					return;

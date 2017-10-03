@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import me.egg82.tcpp.services.DisplayLocationRegistry;
+import me.egg82.tcpp.services.registries.DisplayLocationRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;

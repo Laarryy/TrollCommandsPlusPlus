@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.entity.EntityShootBowEvent;
 
-import me.egg82.tcpp.services.SnowballFightRegistry;
+import me.egg82.tcpp.services.registries.SnowballFightRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;

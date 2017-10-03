@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import me.egg82.tcpp.services.FoolsGoldRegistry;
+import me.egg82.tcpp.services.registries.FoolsGoldRegistry;
 import me.egg82.tcpp.util.FoolsGoldHelper;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;

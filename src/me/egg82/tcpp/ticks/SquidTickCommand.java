@@ -6,8 +6,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Squid;
 
-import me.egg82.tcpp.services.SquidDeathRegistry;
-import me.egg82.tcpp.services.SquidRegistry;
+import me.egg82.tcpp.services.registries.SquidDeathRegistry;
+import me.egg82.tcpp.services.registries.SquidRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;

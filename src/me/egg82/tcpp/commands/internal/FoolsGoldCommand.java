@@ -14,7 +14,7 @@ import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.exceptions.InvalidLibraryException;
 import me.egg82.tcpp.exceptions.PlayerImmuneException;
-import me.egg82.tcpp.services.FoolsGoldRegistry;
+import me.egg82.tcpp.services.registries.FoolsGoldRegistry;
 import me.egg82.tcpp.util.FoolsGoldHelper;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CompleteEventArgs;

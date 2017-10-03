@@ -8,8 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 import me.egg82.tcpp.enums.LanguageType;
-import me.egg82.tcpp.services.HydraMobRegistry;
-import me.egg82.tcpp.services.HydraRegistry;
+import me.egg82.tcpp.services.registries.HydraMobRegistry;
+import me.egg82.tcpp.services.registries.HydraRegistry;
 import ninja.egg82.events.ExpireEventArgs;
 import ninja.egg82.patterns.IExpiringRegistry;
 import ninja.egg82.patterns.IRegistry;

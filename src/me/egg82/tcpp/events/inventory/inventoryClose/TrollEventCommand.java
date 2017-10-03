@@ -4,10 +4,10 @@ import java.util.UUID;
 
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
-import me.egg82.tcpp.services.TrollInventoryRegistry;
-import me.egg82.tcpp.services.TrollPageRegistry;
-import me.egg82.tcpp.services.TrollPlayerRegistry;
-import me.egg82.tcpp.services.TrollSearchRegistry;
+import me.egg82.tcpp.services.registries.TrollInventoryRegistry;
+import me.egg82.tcpp.services.registries.TrollPageRegistry;
+import me.egg82.tcpp.services.registries.TrollPlayerRegistry;
+import me.egg82.tcpp.services.registries.TrollSearchRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;

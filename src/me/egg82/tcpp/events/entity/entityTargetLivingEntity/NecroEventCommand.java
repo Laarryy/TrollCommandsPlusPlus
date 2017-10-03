@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 
-import me.egg82.tcpp.services.NecroRegistry;
+import me.egg82.tcpp.services.registries.NecroRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;

@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import me.egg82.tcpp.services.LagRegistry;
+import me.egg82.tcpp.services.registries.LagRegistry;
 import ninja.egg82.exceptionHandlers.IExceptionHandler;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;

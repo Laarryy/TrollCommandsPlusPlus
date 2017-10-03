@@ -8,8 +8,8 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
-import me.egg82.tcpp.services.RandomMenuMenuRegistry;
-import me.egg82.tcpp.services.RandomMenuRegistry;
+import me.egg82.tcpp.services.registries.RandomMenuMenuRegistry;
+import me.egg82.tcpp.services.registries.RandomMenuRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;

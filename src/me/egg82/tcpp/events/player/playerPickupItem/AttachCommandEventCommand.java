@@ -34,10 +34,10 @@ public class AttachCommandEventCommand extends EventCommand<PlayerPickupItemEven
 		
 		Player sender = CommandUtil.getPlayerByUuid(itemCompound.getString("tcppSender"));
 		if (sender != null) {
-			CommandUtil.dispatchCommandAtPlayerLocation(sender, event.getPlayer(), itemCompound.getString("tcppCommand"));
+			CommandUtil.dispatchCommandAtSenderLocation(sender, event.getPlayer(), itemCompound.getString("tcppCommand"));
 		} else {
 			if (CommandUtil.getOfflinePlayerByUuid(itemCompound.getString("tcppSender")).isOp()) {
-				CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), event.getPlayer(), itemCompound.getString("tcppCommand"));
+				CommandUtil.dispatchCommandAtSenderLocation(Bukkit.getConsoleSender(), event.getPlayer(), itemCompound.getString("tcppCommand"));
 			} else {
 				Bukkit.dispatchCommand(event.getPlayer(), itemCompound.getString("tcppCommand"));
 			}

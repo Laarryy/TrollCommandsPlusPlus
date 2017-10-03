@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.services.VegetableItemRegistry;
+import me.egg82.tcpp.services.registries.VegetableItemRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;

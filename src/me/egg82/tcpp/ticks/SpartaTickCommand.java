@@ -7,8 +7,8 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import me.egg82.tcpp.services.SpartaArrowRegistry;
-import me.egg82.tcpp.services.SpartaRegistry;
+import me.egg82.tcpp.services.registries.SpartaArrowRegistry;
+import me.egg82.tcpp.services.registries.SpartaRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;

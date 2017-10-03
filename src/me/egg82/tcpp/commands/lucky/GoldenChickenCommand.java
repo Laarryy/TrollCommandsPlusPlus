@@ -7,7 +7,7 @@ import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.core.LuckyCommand;
-import me.egg82.tcpp.services.LuckyChickenRegistry;
+import me.egg82.tcpp.services.registries.LuckyChickenRegistry;
 import ninja.egg82.events.ExpireEventArgs;
 import ninja.egg82.patterns.IExpiringRegistry;
 import ninja.egg82.patterns.ServiceLocator;

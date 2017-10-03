@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import org.bukkit.event.player.PlayerPickupArrowEvent;
 
-import me.egg82.tcpp.services.SpartaArrowRegistry;
+import me.egg82.tcpp.services.registries.SpartaArrowRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;

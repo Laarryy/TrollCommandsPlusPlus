@@ -6,7 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 
-import me.egg82.tcpp.services.RandomDropRegistry;
+import me.egg82.tcpp.services.registries.RandomDropRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;

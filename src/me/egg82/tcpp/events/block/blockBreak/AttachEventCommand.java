@@ -59,10 +59,10 @@ public class AttachEventCommand extends EventCommand<BlockBreakEvent> {
 		} else {
 			Player sender = CommandUtil.getPlayerByUuid(blockCompound.getString("tcppSender"));
 			if (sender != null) {
-				CommandUtil.dispatchCommandAtPlayerLocation(sender, player, blockCompound.getString("tcppCommand"));
+				CommandUtil.dispatchCommandAtSenderLocation(sender, player, blockCompound.getString("tcppCommand"));
 			} else {
 				if (CommandUtil.getOfflinePlayerByUuid(blockCompound.getString("tcppSender")).isOp()) {
-					CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), player, blockCompound.getString("tcppCommand"));
+					CommandUtil.dispatchCommandAtSenderLocation(Bukkit.getConsoleSender(), player, blockCompound.getString("tcppCommand"));
 				} else {
 					Bukkit.dispatchCommand(player, blockCompound.getString("tcppCommand"));
 				}

@@ -11,7 +11,7 @@ import org.bukkit.entity.PigZombie;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.potion.PotionEffect;
 
-import me.egg82.tcpp.services.HydraMobRegistry;
+import me.egg82.tcpp.services.registries.HydraMobRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;

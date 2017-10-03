@@ -8,7 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import me.egg82.tcpp.services.MidasTouchRegistry;
+import me.egg82.tcpp.services.registries.MidasTouchRegistry;
 import me.egg82.tcpp.util.DisplayHelper;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;

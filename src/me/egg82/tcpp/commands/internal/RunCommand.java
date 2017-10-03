@@ -148,7 +148,7 @@ public class RunCommand extends PluginCommand {
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	private void e(UUID uuid, Player player, String command) {
-		CommandUtil.dispatchCommandAtPlayerLocation(sender, player, command);
+		CommandUtil.dispatchCommandAtSenderLocation(sender, player, command);
 		metricsHelper.commandWasRun(this);
 	}
 	

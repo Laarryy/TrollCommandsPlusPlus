@@ -4,7 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-import me.egg82.tcpp.services.LuckyBlockRegistry;
+import me.egg82.tcpp.services.registries.LuckyBlockRegistry;
 import ninja.egg82.nbt.core.INBTCompound;
 import ninja.egg82.nbt.reflection.INBTHelper;
 import ninja.egg82.patterns.IRegistry;

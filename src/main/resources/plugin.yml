@@ -1,6 +1,6 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 4.24.48
+version: 4.25.49
 softdepend: [LibsDisguises,iDisguise,ProtocolLib]
 commands:
   troll:
@@ -84,6 +84,7 @@ commands:
       /troll snowballfight <player>: (Toggleable) The player will fire snowballs instead of arrows. Good hunting, Will!
       /troll spam <player>: (Toggleable) Spams the player's chat with useless junk.
       /troll sparta <player>: (Toggleable) Our arrows will blot out the sun! .. Pincushion-y! (Removed on death)
+      /troll spawnbreak <player> <type>: (Toggleable) Whenever the player breaks a block it will spawn a mob that targets the player.
       /troll spin <player> [speed]: (Toggleable) This might make them a bit dizzy. Optionally allows you to adjust how fast they spin!
       /troll spoil <player>: (Toggleable) Ensures they quickly run out of food.
       /troll squid <player>: (Toggleable) .. Why is it raining squids?
@@ -94,6 +95,7 @@ commands:
       /troll swap <player> <player>: Swaps two players' locations, Freaky Friday style.
       /troll time <player> <time>: (Undoable) Sets the player's time to the time specified permanently. Does not affect the server.
       /troll trickle <player>: (Toggleable) They're leaking XP all over the place!
+      /troll trip <player> [clone]: Trips the player, making them drop their entire inventory. Optional true/false argument for cloning the inventory instead of removing it. Default is false.
       /troll useless <player>: Renames all of the player's items to Useless.
       /troll vaporize <player>: Explodes the player with a specified power. To disable block damage, use a negative value.
       /troll vegetable <player> [type]: (Toggleable) Turns the player into a vegetable. Potato by default, but you may optionally provide the vegetable type. Potato simulator 20XX! (Removed on quit)

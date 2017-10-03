@@ -4,8 +4,8 @@ import java.util.UUID;
 
 import org.bukkit.event.entity.EntityDeathEvent;
 
-import me.egg82.tcpp.services.LuckyChickenRegistry;
-import me.egg82.tcpp.services.LuckyVillagerRegistry;
+import me.egg82.tcpp.services.registries.LuckyChickenRegistry;
+import me.egg82.tcpp.services.registries.LuckyVillagerRegistry;
 import ninja.egg82.patterns.IExpiringRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;

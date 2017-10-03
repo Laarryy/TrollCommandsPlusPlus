@@ -13,7 +13,7 @@ import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.exceptions.CommandInUseException;
 import me.egg82.tcpp.exceptions.PlayerImmuneException;
-import me.egg82.tcpp.services.HoleRegistry;
+import me.egg82.tcpp.services.registries.HoleRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
 import me.egg82.tcpp.util.WorldHoleHelper;
 import ninja.egg82.events.CompleteEventArgs;

@@ -7,7 +7,7 @@ import org.bukkit.entity.Spider;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
-import me.egg82.tcpp.services.NecroRegistry;
+import me.egg82.tcpp.services.registries.NecroRegistry;
 import ninja.egg82.disguise.reflection.IDisguiseHelper;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;

@@ -14,8 +14,8 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.services.FoolsGoldChunkRegistry;
-import me.egg82.tcpp.services.FoolsGoldRegistry;
+import me.egg82.tcpp.services.registries.FoolsGoldChunkRegistry;
+import me.egg82.tcpp.services.registries.FoolsGoldRegistry;
 import ninja.egg82.exceptionHandlers.IExceptionHandler;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;

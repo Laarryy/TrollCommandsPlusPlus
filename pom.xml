@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>ninja.egg82.plugins</groupId>
   <artifactId>TrollCommandsPlusPlus</artifactId>
-  <version>4.24.48</version>
+  <version>4.25.49</version>
   <name>TrollCommandsPlusPlus</name>
   <build>
     <sourceDirectory>src</sourceDirectory>

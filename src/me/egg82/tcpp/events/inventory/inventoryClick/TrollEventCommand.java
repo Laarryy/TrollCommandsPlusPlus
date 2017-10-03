@@ -8,10 +8,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import me.egg82.tcpp.services.TrollInventoryRegistry;
-import me.egg82.tcpp.services.TrollPageRegistry;
-import me.egg82.tcpp.services.TrollPlayerRegistry;
-import me.egg82.tcpp.services.TrollSearchRegistry;
+import me.egg82.tcpp.services.registries.TrollInventoryRegistry;
+import me.egg82.tcpp.services.registries.TrollPageRegistry;
+import me.egg82.tcpp.services.registries.TrollPlayerRegistry;
+import me.egg82.tcpp.services.registries.TrollSearchRegistry;
 import me.egg82.tcpp.util.GuiUtil;
 import me.egg82.tcpp.util.InventoryUtil;
 import ninja.egg82.patterns.IRegistry;

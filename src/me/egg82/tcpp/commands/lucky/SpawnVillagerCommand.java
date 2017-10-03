@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 
 import me.egg82.tcpp.core.LuckyCommand;
-import me.egg82.tcpp.services.LuckyVillagerRegistry;
+import me.egg82.tcpp.services.registries.LuckyVillagerRegistry;
 import ninja.egg82.events.ExpireEventArgs;
 import ninja.egg82.patterns.IExpiringRegistry;
 import ninja.egg82.patterns.ServiceLocator;

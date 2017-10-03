@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.exceptions.PlayerImmuneException;
-import me.egg82.tcpp.services.WhoAmIRegistry;
+import me.egg82.tcpp.services.registries.WhoAmIRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
 import me.egg82.tcpp.util.WhoAmIHelper;
 import ninja.egg82.events.CompleteEventArgs;

@@ -8,7 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
-import me.egg82.tcpp.services.DisplayRegistry;
+import me.egg82.tcpp.services.registries.DisplayRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;

@@ -57,10 +57,10 @@ public class AttachEventCommand extends EventCommand<InventoryClickEvent> {
 				if (holder instanceof Player) {
 					Player sender = CommandUtil.getPlayerByUuid(itemCompound.getString("tcppSender"));
 					if (sender != null) {
-						CommandUtil.dispatchCommandAtPlayerLocation(sender, (Player) holder, itemCompound.getString("tcppCommand"));
+						CommandUtil.dispatchCommandAtSenderLocation(sender, (Player) holder, itemCompound.getString("tcppCommand"));
 					} else {
 						if (CommandUtil.getOfflinePlayerByUuid(itemCompound.getString("tcppSender")).isOp()) {
-							CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), (Player) holder, itemCompound.getString("tcppCommand"));
+							CommandUtil.dispatchCommandAtSenderLocation(Bukkit.getConsoleSender(), (Player) holder, itemCompound.getString("tcppCommand"));
 						} else {
 							Bukkit.dispatchCommand((Player) holder, itemCompound.getString("tcppCommand"));
 						}
@@ -92,10 +92,10 @@ public class AttachEventCommand extends EventCommand<InventoryClickEvent> {
 				if (holder instanceof Player) {
 					Player sender = CommandUtil.getPlayerByUuid(itemCompound.getString("tcppSender"));
 					if (sender != null) {
-						CommandUtil.dispatchCommandAtPlayerLocation(sender, (Player) holder, itemCompound.getString("tcppCommand"));
+						CommandUtil.dispatchCommandAtSenderLocation(sender, (Player) holder, itemCompound.getString("tcppCommand"));
 					} else {
 						if (CommandUtil.getOfflinePlayerByUuid(itemCompound.getString("tcppSender")).isOp()) {
-							CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), (Player) holder, itemCompound.getString("tcppCommand"));
+							CommandUtil.dispatchCommandAtSenderLocation(Bukkit.getConsoleSender(), (Player) holder, itemCompound.getString("tcppCommand"));
 						} else {
 							Bukkit.dispatchCommand((Player) holder, itemCompound.getString("tcppCommand"));
 						}
@@ -143,10 +143,10 @@ public class AttachEventCommand extends EventCommand<InventoryClickEvent> {
 				if (holder instanceof Player) {
 					Player sender = CommandUtil.getPlayerByUuid(itemCompound.getString("tcppSender"));
 					if (sender != null) {
-						CommandUtil.dispatchCommandAtPlayerLocation(sender, (Player) holder, itemCompound.getString("tcppCommand"));
+						CommandUtil.dispatchCommandAtSenderLocation(sender, (Player) holder, itemCompound.getString("tcppCommand"));
 					} else {
 						if (CommandUtil.getOfflinePlayerByUuid(itemCompound.getString("tcppSender")).isOp()) {
-							CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), (Player) holder, itemCompound.getString("tcppCommand"));
+							CommandUtil.dispatchCommandAtSenderLocation(Bukkit.getConsoleSender(), (Player) holder, itemCompound.getString("tcppCommand"));
 						} else {
 							Bukkit.dispatchCommand((Player) holder, itemCompound.getString("tcppCommand"));
 						}
@@ -161,10 +161,10 @@ public class AttachEventCommand extends EventCommand<InventoryClickEvent> {
 					if (holder instanceof Player) {
 						Player sender = CommandUtil.getPlayerByUuid(itemCompound.getString("tcppSender"));
 						if (sender != null) {
-							CommandUtil.dispatchCommandAtPlayerLocation(sender, (Player) holder, itemCompound.getString("tcppCommand"));
+							CommandUtil.dispatchCommandAtSenderLocation(sender, (Player) holder, itemCompound.getString("tcppCommand"));
 						} else {
 							if (CommandUtil.getOfflinePlayerByUuid(itemCompound.getString("tcppSender")).isOp()) {
-								CommandUtil.dispatchCommandAtPlayerLocation(Bukkit.getConsoleSender(), (Player) holder, itemCompound.getString("tcppCommand"));
+								CommandUtil.dispatchCommandAtSenderLocation(Bukkit.getConsoleSender(), (Player) holder, itemCompound.getString("tcppCommand"));
 							} else {
 								Bukkit.dispatchCommand((Player) holder, itemCompound.getString("tcppCommand"));
 							}

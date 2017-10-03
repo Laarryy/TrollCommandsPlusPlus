@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
-import me.egg82.tcpp.services.LockRegistry;
+import me.egg82.tcpp.services.registries.LockRegistry;
 import me.egg82.tcpp.util.InventoryUtil;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;

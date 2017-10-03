@@ -7,12 +7,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.services.HoleBlockRegistry;
-import me.egg82.tcpp.services.HotTubRegistry;
-import me.egg82.tcpp.services.PortalRegistry;
-import me.egg82.tcpp.services.HoleRegistry;
-import me.egg82.tcpp.services.VoidRadiusRegistry;
-import me.egg82.tcpp.services.VoidRegistry;
+import me.egg82.tcpp.services.registries.HoleBlockRegistry;
+import me.egg82.tcpp.services.registries.HoleRegistry;
+import me.egg82.tcpp.services.registries.HotTubRegistry;
+import me.egg82.tcpp.services.registries.PortalRegistry;
+import me.egg82.tcpp.services.registries.VoidRadiusRegistry;
+import me.egg82.tcpp.services.registries.VoidRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.core.BlockData;

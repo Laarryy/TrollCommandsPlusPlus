@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.exceptions.PlayerImmuneException;
-import me.egg82.tcpp.services.BludgerRegistry;
+import me.egg82.tcpp.services.registries.BludgerRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CompleteEventArgs;
 import ninja.egg82.events.ExceptionEventArgs;
@@ -126,7 +126,7 @@ public class BludgerCommand extends PluginCommand {
 		
 		Location location = null;
 		if (sender instanceof Player) {
-			if (!((Player) sender).getUniqueId().toString().equals(uuid)) {
+			if (!((Player) sender).getUniqueId().equals(uuid)) {
 				Location senderLocation = ((Player) sender).getLocation();
 				if (senderLocation.getWorld().getName().equals(playerLocation.getWorld().getName())) {
 					if (senderLocation.distanceSquared(playerLocation) <= 900.0d) { // 30

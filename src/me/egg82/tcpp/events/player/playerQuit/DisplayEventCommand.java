@@ -6,8 +6,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import me.egg82.tcpp.services.DisplayLocationRegistry;
-import me.egg82.tcpp.services.DisplayRegistry;
+import me.egg82.tcpp.services.registries.DisplayLocationRegistry;
+import me.egg82.tcpp.services.registries.DisplayRegistry;
 import me.egg82.tcpp.util.DisplayHelper;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
