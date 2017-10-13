@@ -123,6 +123,7 @@ public class HotTubCommand extends PluginCommand {
 	}
 	private void e(UUID uuid, Player player) {
 		worldHoleHelper.hotTubHole(uuid, player);
+		player.setFlying(false);
 		metricsHelper.commandWasRun(this);
 		
 		sender.sendMessage(player.getName() + " is now taking a hot bath.");

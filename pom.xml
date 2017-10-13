@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>ninja.egg82.plugins</groupId>
   <artifactId>TrollCommandsPlusPlus</artifactId>
-  <version>4.25.49</version>
+  <version>4.26.50</version>
   <name>TrollCommandsPlusPlus</name>
   <build>
     <sourceDirectory>src</sourceDirectory>
@@ -168,32 +168,32 @@
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>egg82-lib</artifactId>
-      <version>[0.0.0,)</version>
+      <version>[1.5.24,)</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>plugin-lib</artifactId>
-      <version>[0.0.0,)</version>
+      <version>[1.1.6,)</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>nbt-lib</artifactId>
-      <version>[0.0.0,)</version>
+      <version>[1.0.4,)</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>protocol-lib</artifactId>
-      <version>[0.0.0,)</version>
+      <version>[1.1.3,)</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>disguise-lib</artifactId>
-      <version>[0.0.0,)</version>
+      <version>[1.0.2,)</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>exception-lib</artifactId>
-      <version>[0.0.0,)</version>
+      <version>[1.0.4,)</version>
     </dependency>
     <dependency>
       <groupId>net.gravitydevelopment.updater</groupId>
@@ -203,7 +203,7 @@
     <dependency>
       <groupId>org.apache.opennlp</groupId>
       <artifactId>opennlp-tools</artifactId>
-      <version>1.8.1</version>
+      <version>1.8.2</version>
     </dependency>
   </dependencies>
   <description>TC++ for Bukkit/Spigot</description>

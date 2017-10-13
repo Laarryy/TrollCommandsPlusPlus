@@ -122,6 +122,7 @@ public class PortalCommand extends PluginCommand {
 	}
 	private void e(UUID uuid, Player player) {
 		worldHoleHelper.portalHole(uuid, player);
+		player.setFlying(false);
 		metricsHelper.commandWasRun(this);
 		
 		sender.sendMessage(player.getName() + " is now falling to The(ir) End.");

@@ -10,6 +10,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
@@ -141,7 +142,10 @@ public class BludgerCommand extends PluginCommand {
 		}
 		
 		Fireball fireball = player.getWorld().spawn(location, Fireball.class);
-		fireball.setVelocity(playerLocation.toVector().subtract(location.toVector()).normalize().multiply(0.35d));
+		Vector v = playerLocation.toVector().subtract(location.toVector()).normalize().multiply(0.35d);
+		if (LocationUtil.isFinite(v)) {
+			fireball.setVelocity(v);
+		}
 		bludgerRegistry.setRegister(uuid, fireball);
 		
 		metricsHelper.commandWasRun(this);

@@ -30,10 +30,10 @@ public class NightmareEventCommand extends EventCommand<PlayerJoinEvent> {
 		Player player = event.getPlayer();
 		UUID uuid = player.getUniqueId();
 		
-		if (nightmareRegistry.hasRegister(uuid)) {
+		Collection<IFakeLivingEntity> entities = nightmareRegistry.getRegister(uuid, Collection.class);
+		if (entities != null) {
 			TaskUtil.runAsync(new Runnable() {
 				public void run() {
-					Collection<IFakeLivingEntity> entities = nightmareRegistry.getRegister(uuid, Collection.class);
 					for (IFakeLivingEntity e : entities) {
 						e.addPlayer(player);
 					}

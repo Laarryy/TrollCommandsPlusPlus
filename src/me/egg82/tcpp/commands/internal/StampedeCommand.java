@@ -12,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Cow;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
@@ -30,6 +31,7 @@ import ninja.egg82.plugin.exceptions.PlayerNotFoundException;
 import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.LanguageUtil;
+import ninja.egg82.plugin.utils.LocationUtil;
 import ninja.egg82.utils.MathUtil;
 
 public class StampedeCommand extends PluginCommand {
@@ -143,7 +145,10 @@ public class StampedeCommand extends PluginCommand {
 		for (int i = 0; i < numCows; i++) {
 			Cow c = player.getWorld().spawn(herdLocation, Cow.class);
 			c.setTarget(player);
-			c.setVelocity(player.getLocation().toVector().subtract(herdLocation.toVector()).normalize().multiply(0.23d));
+			Vector v = player.getLocation().toVector().subtract(herdLocation.toVector()).normalize().multiply(0.23d);
+			if (LocationUtil.isFinite(v)) {
+				c.setVelocity(v);
+			}
 			entities.add(c);
 		}
 		

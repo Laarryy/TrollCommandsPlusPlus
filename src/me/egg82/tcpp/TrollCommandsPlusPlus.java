@@ -49,6 +49,7 @@ import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.BasePlugin;
 import ninja.egg82.plugin.commands.PluginCommand;
+import ninja.egg82.plugin.handlers.MessageHandler;
 import ninja.egg82.plugin.services.LanguageRegistry;
 import ninja.egg82.plugin.utils.SpigotReflectUtil;
 import ninja.egg82.plugin.utils.VersionUtil;
@@ -71,6 +72,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	private Timer updateTimer = null;
 	private Timer exceptionHandlerTimer = null;
 	
+	private int numMessages = 0;
 	private int numCommands = 0;
 	private int numEvents = 0;
 	private int numPermissions = 0;
@@ -203,6 +205,10 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 			}));*/
 		}
 		
+		MessageHandler messageHandler = ServiceLocator.getService(MessageHandler.class);
+		messageHandler.addChannel("tcpp_command");
+		
+		numMessages = SpigotReflectUtil.addMessagesFromPackage("me.egg82.tcpp.messages");
 		SpigotReflectUtil.addCommandsFromPackage("me.egg82.tcpp.commands");
 		numCommands = ReflectUtil.getClasses(PluginCommand.class, "me.egg82.tcpp.commands.internal").size();
 		numEvents = SpigotReflectUtil.addEventsFromPackage("me.egg82.tcpp.events");
@@ -244,6 +250,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		public void actionPerformed(ActionEvent e) {
 			exceptionHandler.addThread(Thread.currentThread());
 			checkUpdate();
+			exceptionHandler.removeThread(Thread.currentThread());
 		}
 	};
 	private void checkUpdate() {
@@ -292,7 +299,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		info(ChatColor.AQUA + "    | | '__/ _ \\| | | |    / _ \\| '_ ` _ \\| '_ ` _ \\ / _` | '_ \\ / _` / __|_   _|_   _|");
 		info(ChatColor.AQUA + "    | | | | (_) | | | |___| (_) | | | | | | | | | | | (_| | | | | (_| \\__ \\ |_|   |_|  ");
 		info(ChatColor.AQUA + "    |_|_|  \\___/|_|_|\\_____\\___/|_| |_| |_|_| |_| |_|\\__,_|_| |_|\\__,_|___/            ");
-		info(ChatColor.GREEN + "[Version " + getDescription().getVersion() + "] " + ChatColor.RED + numCommands + " commands " + ChatColor.LIGHT_PURPLE + numEvents + " events " + ChatColor.WHITE + numPermissions + " permissions " + ChatColor.YELLOW + numTicks + " tick handlers");
+		info(ChatColor.GREEN + "[Version " + getDescription().getVersion() + "] " + ChatColor.RED + numCommands + " commands " + ChatColor.LIGHT_PURPLE + numEvents + " events " + ChatColor.WHITE + numPermissions + " permissions " + ChatColor.YELLOW + numTicks + " tick handlers " + ChatColor.BLUE + numMessages + " message handlers");
 		info(ChatColor.WHITE + "[TrollCommands++] " + ChatColor.GRAY + "Attempting to load compatibility with Bukkit version " + ((InitRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister("game.version"));
 	}
 	private void disableMessage() {
@@ -369,6 +376,8 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 				}, 10000);
 			}
 		}
+		
+		exceptionHandler.removeThread(Thread.currentThread());
 	}
 	
 	private void writeProperties() {

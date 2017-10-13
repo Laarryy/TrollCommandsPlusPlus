@@ -7,6 +7,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.core.LuckyCommand;
 import ninja.egg82.plugin.utils.BlockUtil;
@@ -52,7 +53,11 @@ public class SpawnBehindCommand extends LuckyCommand {
 				((PigZombie) m).setAngry(true);
 			}
 			m.setTarget(player);
-			m.setVelocity(player.getLocation().toVector().subtract(spawnLocation.toVector()).normalize().multiply(0.23d));
+			
+			Vector v = player.getLocation().toVector().subtract(spawnLocation.toVector()).normalize().multiply(0.23d);
+			if (LocationUtil.isFinite(v)) {
+				m.setVelocity(v);
+			}
 		}
 	}
 }

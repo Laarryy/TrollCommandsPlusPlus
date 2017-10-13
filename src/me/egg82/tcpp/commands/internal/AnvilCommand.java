@@ -33,15 +33,12 @@ import ninja.egg82.plugin.exceptions.PlayerNotFoundException;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.LanguageUtil;
 import ninja.egg82.plugin.utils.TaskUtil;
-import ninja.egg82.startup.InitRegistry;
 
 public class AnvilCommand extends PluginCommand {
 	//vars
 	private IRegistry<UUID> anvilRegistry = ServiceLocator.getService(AnvilRegistry.class);
 	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
-	
-	private String gameVersion = ServiceLocator.getService(InitRegistry.class).getRegister("game.version", String.class);
 	
 	//constructor
 	public AnvilCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -123,15 +120,15 @@ public class AnvilCommand extends PluginCommand {
 		}
 		loc.add(0.0d, 1.0d, 0.0d);
 		
-		if (gameVersion.equals("1.8") || gameVersion.equals("1.8.1") || gameVersion.equals("1.8.3") || gameVersion.equals("1.8.8")) {
+		try {
+			anvilRegistry.setRegister(loc.getWorld().spawnFallingBlock(loc, new MaterialData(Material.ANVIL)).getUniqueId(), null);
+		} catch (Exception ex) {
 			loc.getBlock().setType(Material.ANVIL);
 			TaskUtil.runSync(new Runnable() {
 				public void run() {
 					tryGetAnvil(loc, 1);
 				}
 			}, 1L);
-		} else {
-			anvilRegistry.setRegister(loc.getWorld().spawnFallingBlock(loc, new MaterialData(Material.ANVIL)).getUniqueId(), null);
 		}
 		
 		metricsHelper.commandWasRun(this);

@@ -8,12 +8,14 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.services.registries.LureRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.utils.LocationUtil;
 
 public class LureTickCommand extends TickCommand {
 	//vars
@@ -49,7 +51,10 @@ public class LureTickCommand extends TickCommand {
 				}
 				
 				((Monster) e).setTarget(player);
-				e.setVelocity(player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23d));
+				Vector v = player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23d);
+				if (LocationUtil.isFinite(v)) {
+					e.setVelocity(v);
+				}
 			}
 		}
 	}

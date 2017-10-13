@@ -87,7 +87,7 @@ public class LuckyBlockCommand extends PluginCommand {
 		
 		if (args.length == 1) {
 			try {
-				luckyChance = Double.parseDouble(args[1]) / 100.0d;
+				luckyChance = Double.parseDouble(args[0]) / 100.0d;
 			} catch (Exception ex) {
 				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
 				String name = getClass().getSimpleName();

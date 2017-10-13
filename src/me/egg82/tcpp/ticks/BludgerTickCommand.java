@@ -4,12 +4,14 @@ import java.util.UUID;
 
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.services.registries.BludgerRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.utils.LocationUtil;
 
 public class BludgerTickCommand extends TickCommand {
 	//vars
@@ -34,6 +36,9 @@ public class BludgerTickCommand extends TickCommand {
 			return;
 		}
 		
-		fireball.setVelocity(player.getLocation().toVector().subtract(fireball.getLocation().toVector()).normalize().multiply(0.35d));
+		Vector v = player.getLocation().toVector().subtract(fireball.getLocation().toVector()).normalize().multiply(0.35d);
+		if (LocationUtil.isFinite(v)) {
+			fireball.setVelocity(v);
+		}
 	}
 }

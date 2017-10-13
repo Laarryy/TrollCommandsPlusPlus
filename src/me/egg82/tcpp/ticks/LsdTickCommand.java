@@ -75,6 +75,8 @@ public class LsdTickCommand extends TickCommand {
 				for (Player p : players) {
 					fakeBlockHelper.updateBlocks(p, locations.toArray(new Location[0]), materials, data);
 				}
+				
+				ServiceLocator.getService(IExceptionHandler.class).removeThread(Thread.currentThread());
 			}
 		});
 		ServiceLocator.getService(IExceptionHandler.class).addThread(runner);
@@ -88,9 +90,11 @@ public class LsdTickCommand extends TickCommand {
 			l = BlockUtil.getTopWalkableBlock(l).subtract(0.0d, 1.0d, 0.0d);
 			retVal.add(l);
 		} else {
-			l = LocationUtil.toBlockLocation(l);
-			if (l.getBlock().getType().isSolid()) {
-				retVal.add(l);
+			if (Bukkit.isPrimaryThread() || l.getWorld().isChunkLoaded(l.getBlockX() >> 4, l.getBlockZ() >> 4)) {
+				l = LocationUtil.toBlockLocation(l);
+				if (l.getBlock().getType().isSolid()) {
+					retVal.add(l);
+				}
 			}
 		}
 		
@@ -99,8 +103,10 @@ public class LsdTickCommand extends TickCommand {
 			for (int j = 0; j < locs.length; j++) {
 				for (int k = -radius; k < radius; k++) {
 					Location t = locs[j].clone().add(0.0d, k, 0.0d);
-					if (t.getBlock().getType().isSolid()) {
-						retVal.add(t);
+					if (Bukkit.isPrimaryThread() || t.getWorld().isChunkLoaded(t.getBlockX() >> 4, t.getBlockZ() >> 4)) {
+						if (t.getBlock().getType().isSolid()) {
+							retVal.add(t);
+						}
 					}
 				}
 			}

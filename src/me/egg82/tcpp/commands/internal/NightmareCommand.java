@@ -14,6 +14,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
@@ -167,18 +168,26 @@ public class NightmareCommand extends PluginCommand {
 					for (int i = 0; i < zombieLocs.length; i++) {
 						IFakeLivingEntity e = fakeEntityHelper.createEntity(zombieLocs[i], EntityType.ZOMBIE);
 						e.addPlayer(player);
-						e.moveTo(BlockUtil.getTopWalkableBlock(e.getLocation().add(player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23))));
+						Vector v = player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23);
+						if (LocationUtil.isFinite(v)) {
+							e.moveTo(BlockUtil.getTopWalkableBlock(e.getLocation().add(v)));
+						}
 						e.lookTo(player.getEyeLocation());
 						entities.add(e);
 					}
 					for (int i = 0; i < zombie2Locs.length; i++) {
 						IFakeLivingEntity e = fakeEntityHelper.createEntity(zombie2Locs[i], EntityType.ZOMBIE);
 						e.addPlayer(player);
-						e.moveTo(BlockUtil.getTopWalkableBlock(e.getLocation().add(player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23))));
+						Vector v = player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23);
+						if (LocationUtil.isFinite(v)) {
+							e.moveTo(BlockUtil.getTopWalkableBlock(e.getLocation().add(v)));
+						}
 						e.lookTo(player.getEyeLocation());
 						entities.add(e);
 					}
 				}
+				
+				ServiceLocator.getService(IExceptionHandler.class).removeThread(Thread.currentThread());
 			}
 		});
 		ServiceLocator.getService(IExceptionHandler.class).addThread(runner);
@@ -219,6 +228,7 @@ public class NightmareCommand extends PluginCommand {
 						e.destroy();
 					}
 				}
+				ServiceLocator.getService(IExceptionHandler.class).removeThread(Thread.currentThread());
 			}
 		});
 		ServiceLocator.getService(IExceptionHandler.class).addThread(runner);
@@ -239,6 +249,7 @@ public class NightmareCommand extends PluginCommand {
 						e.destroy();
 					}
 				}
+				ServiceLocator.getService(IExceptionHandler.class).removeThread(Thread.currentThread());
 			}
 		});
 		ServiceLocator.getService(IExceptionHandler.class).addThread(runner);

@@ -123,6 +123,7 @@ public class VoidCommand extends PluginCommand {
 	}
 	private void e(UUID uuid, Player player) {
 		worldHoleHelper.voidHole(uuid, player);
+		player.setFlying(false);
 		metricsHelper.commandWasRun(this);
 		
 		sender.sendMessage(player.getName() + " is now very confused as to why they are suddenly falling through the world.");

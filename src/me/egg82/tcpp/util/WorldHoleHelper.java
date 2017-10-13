@@ -67,6 +67,11 @@ public class WorldHoleHelper {
 		// Center should be halfway between player and zero
 		Location centerLocation = player.getLocation().clone();
 		int yRadius = (int) Math.floor(centerLocation.getY() / 2.0d);
+		
+		if (yRadius <= 0) {
+			return;
+		}
+		
 		centerLocation.subtract(0.0d, centerLocation.getY() / 2.0d, 0.0d);
 		
 		holeRegistry.setRegister(uuid, null);

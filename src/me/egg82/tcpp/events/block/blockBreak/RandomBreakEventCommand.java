@@ -39,6 +39,7 @@ public class RandomBreakEventCommand extends EventCommand<BlockBreakEvent> {
 			materialFilterHelper.filter(
 			materialFilterHelper.filter(
 			materialFilterHelper.filter(
+			materialFilterHelper.filter(
 				materialFilterHelper.getAllTypes(),
 			"_block", false),
 			"barrier", false),
@@ -49,6 +50,7 @@ public class RandomBreakEventCommand extends EventCommand<BlockBreakEvent> {
 			"torch_on", false),
 			"command_", false),
 			"sponge", false),
+			"_portal", false),
 			"bedrock", false);
 	}
 	

@@ -13,6 +13,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
@@ -201,7 +202,10 @@ public class SurroundCommand extends PluginCommand {
 				((PigZombie) m).setAngry(true);
 			}
 			m.setTarget(player);
-			m.setVelocity(player.getLocation().toVector().subtract(creatureLocation.toVector()).normalize().multiply(0.23d));
+			Vector v = player.getLocation().toVector().subtract(creatureLocation.toVector()).normalize().multiply(0.23d);
+			if (LocationUtil.isFinite(v)) {
+				m.setVelocity(v);
+			}
 		}
 		
 		metricsHelper.commandWasRun(this);

@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.services.registries.StampedeRegistry;
 import ninja.egg82.patterns.IRegistry;
@@ -14,6 +15,7 @@ import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.reflection.entity.IEntityHelper;
 import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.utils.LocationUtil;
 
 public class StampedeTickCommand extends TickCommand {
 	//vars
@@ -52,7 +54,11 @@ public class StampedeTickCommand extends TickCommand {
 			
 			e.setTarget(player);
 			e.teleport(lookTo(e.getLocation(), player.getEyeLocation()));
-			e.setVelocity(player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23d));
+			
+			Vector v = player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23d);
+			if (LocationUtil.isFinite(v)) {
+				e.setVelocity(v);
+			}
 		}
 	}
 	

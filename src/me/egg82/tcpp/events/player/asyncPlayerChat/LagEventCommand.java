@@ -52,6 +52,10 @@ public class LagEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 				recipients.forEach((v) -> {
 					v.sendMessage(String.format(format, playerName, message));
 				});
+				
+				if (event.isAsynchronous()) {
+					ServiceLocator.getService(IExceptionHandler.class).removeThread(Thread.currentThread());
+				}
 			}
 		};
 		

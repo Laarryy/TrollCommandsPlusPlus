@@ -37,7 +37,7 @@ public class LagEventCommand extends EventCommand<EntityDamageByEntityEvent> {
 			return;
 		}
 		
-		if (event.getDamager().getType() != EntityType.PLAYER) {
+		if (event.getDamager() == null || event.getDamager().getType() != EntityType.PLAYER) {
 			return;
 		}
 		

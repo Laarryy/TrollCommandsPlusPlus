@@ -38,17 +38,17 @@ public class MoistEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 			return;
 		}
 		
+		Player player = event.getPlayer();
+		
+		if (!moistRegistry.hasRegister(player.getUniqueId())) {
+			return;
+		}
+		
 		if (tagger == null) {
 			tagger = ServiceLocator.getService(POSTagger.class);
 			if (tagger == null) {
 				return;
 			}
-		}
-		
-		Player player = event.getPlayer();
-		
-		if (!moistRegistry.hasRegister(player.getUniqueId())) {
-			return;
 		}
 		
 		String message = String.join(" ", lengthen(event.getMessage().split("\\s")));
@@ -72,12 +72,20 @@ public class MoistEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 			
 			String oldToken = tokens[i];
 			
-			if (tags[i].equals("JJ") || tags[i].equals("RB")) {
-				tokens[i] = (i == 0 || (!tokens[i - 1].equals("moist") && !tokens[i - 2].equals("moist"))) ? "moist" : "moister";
+			if (tags[i].equals("JJ") || tags[i].equals("RB") || tags[i].equals("RBR") || tags[i].equals("RBS")) {
+				tokens[i] = (i <= 1 || (!tokens[i - 1].equals("moist") && !tokens[i - 2].equals("moist"))) ? "moist" : "moister";
+			} else if (tags[i].equals("VB")) {
+				tokens[i] = "moist";
+			} else if (tags[i].equals("VBD")) {
+				tokens[i] = "moisted";
 			} else if (tags[i].equals("NNP")) {
 				tokens[i] = "Moist";
+			} else if (tags[i].equals("NNPS")) {
+				tokens[i] = "Moists";
 			} else if (tags[i].equals("NN")) {
 				tokens[i] = (i == 0 || !tokens[i - 1].equals("moistness")) ? "moistness" : "";
+			} else if (tags[i].equals("NNS")) {
+				tokens[i] = (i == 0 || !tokens[i - 1].equals("moistnesses")) ? "moistnesses" : "";
 			}
 			if (CommandUtil.getPlayerByName(tags[i]) != null) {
 				tokens[i] = "Moist";
@@ -136,6 +144,8 @@ public class MoistEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 	
 	private String tryMoistPun(String input) {
 		input = input.replace("mist", "moist")
+				.replace("myst", "moist")
+				.replace("max", "moist")
 				.replace("mace", "moisk")
 				.replace("masc", "mois")
 				.replace("mash", "moist")

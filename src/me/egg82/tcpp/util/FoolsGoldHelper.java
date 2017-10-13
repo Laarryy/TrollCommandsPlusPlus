@@ -44,6 +44,7 @@ public class FoolsGoldHelper {
 		Thread runner = new Thread(new Runnable() {
 			public void run() {
 				addFakeBlocks(player, blocks, chunks, 1);
+				ServiceLocator.getService(IExceptionHandler.class).removeThread(Thread.currentThread());
 			}
 		});
 		ServiceLocator.getService(IExceptionHandler.class).addThread(runner);
@@ -60,6 +61,7 @@ public class FoolsGoldHelper {
 			Thread runner = new Thread(new Runnable() {
 				public void run() {
 					removeFakeBlocks(player, blocks, 1);
+					ServiceLocator.getService(IExceptionHandler.class).removeThread(Thread.currentThread());
 				}
 			});
 			ServiceLocator.getService(IExceptionHandler.class).addThread(runner);
@@ -82,6 +84,7 @@ public class FoolsGoldHelper {
 		Thread runner = new Thread(new Runnable() {
 			public void run() {
 				updateFakeBlocks(player, from, to, blocks, chunks, 1);
+				ServiceLocator.getService(IExceptionHandler.class).removeThread(Thread.currentThread());
 			}
 		});
 		ServiceLocator.getService(IExceptionHandler.class).addThread(runner);
@@ -96,6 +99,7 @@ public class FoolsGoldHelper {
 		Thread runner = new Thread(new Runnable() {
 			public void run() {
 				updateFakeBlocks(player, player.getLocation(), newLocation, blocks, chunks, 1);
+				ServiceLocator.getService(IExceptionHandler.class).removeThread(Thread.currentThread());
 			}
 		});
 		ServiceLocator.getService(IExceptionHandler.class).addThread(runner);

@@ -9,7 +9,7 @@ public class HydraMobRegistry extends ExpiringRegistry<UUID> {
 	
 	//constructor
 	public HydraMobRegistry() {
-		super(UUID.class, 5L * 60L * 1000L);
+		super(UUID.class, 300000L);
 	}
 	
 	//public
