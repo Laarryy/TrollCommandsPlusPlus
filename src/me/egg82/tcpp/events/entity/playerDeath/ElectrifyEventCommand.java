@@ -14,8 +14,8 @@ public class ElectrifyEventCommand extends EventCommand<PlayerDeathEvent> {
 	private IRegistry<UUID> electrifyRegistry = ServiceLocator.getService(ElectrifyRegistry.class);
 	
 	//constructor
-	public ElectrifyEventCommand(PlayerDeathEvent event) {
-		super(event);
+	public ElectrifyEventCommand() {
+		super();
 	}
 	
 	//public

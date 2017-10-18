@@ -5,13 +5,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
@@ -19,14 +17,16 @@ import me.egg82.tcpp.exceptions.InvalidCommandException;
 import me.egg82.tcpp.services.databases.CommandSearchDatabase;
 import ninja.egg82.events.CompleteEventArgs;
 import ninja.egg82.events.ExceptionEventArgs;
+import ninja.egg82.exceptionHandlers.IExceptionHandler;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.plugin.BasePlugin;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotLanguageType;
 import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
+import ninja.egg82.plugin.utils.BukkitReflectUtil;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.LanguageUtil;
 import ninja.egg82.sql.LanguageDatabase;
-import ninja.egg82.startup.InitRegistry;
 import ninja.egg82.utils.ReflectUtil;
 
 public class TrollCommand extends PluginCommand {
@@ -34,15 +34,19 @@ public class TrollCommand extends PluginCommand {
 	private LanguageDatabase commandDatabase = ServiceLocator.getService(CommandSearchDatabase.class);
 	private ArrayList<String> commandNames = new ArrayList<String>();
 	private HashMap<String, String> commandDescriptions = new HashMap<String, String>();
-	private HashMap<String, PluginCommand> commands = new HashMap<String, PluginCommand>();
+	
+	private HashMap<String, Class<PluginCommand>> commands = new HashMap<String, Class<PluginCommand>>();
+	private HashMap<String, PluginCommand> initializedCommands = new HashMap<String, PluginCommand>();
+	
+	private BasePlugin plugin = ServiceLocator.getService(BasePlugin.class);
 	
 	int totalPages = -1;
 	
 	//constructor
-	public TrollCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public TrollCommand() {
+		super();
 		
-		String[] list = ((String) ((PluginDescriptionFile) ServiceLocator.getService(InitRegistry.class).getRegister("plugin", JavaPlugin.class).getDescription()).getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
+		String[] list = ((String) ((PluginDescriptionFile) plugin.getDescription()).getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
 		for (String entry : list) {
 			if (entry.contains("-= Available Commands =-")) {
 				continue;
@@ -55,30 +59,33 @@ public class TrollCommand extends PluginCommand {
 			commandDescriptions.put(c.toLowerCase(), description);
 		}
 		
-		// List all classes in the command package
-		List<Class<? extends PluginCommand>> temp = ReflectUtil.getClasses(PluginCommand.class, "me.egg82.tcpp.commands.internal");
-		for (int i = 0; i < temp.size(); i++) {
-			// Attempt to instantiate the command
-			PluginCommand run = null;
-			try {
-				run = temp.get(i).getDeclaredConstructor(CommandSender.class, Command.class, String.class, String[].class).newInstance(sender, command, label, args);
-			} catch (Exception ex) {
+		// Collect all internal commands and names, then map the commands
+		List<Class<PluginCommand>> classes = ReflectUtil.getClasses(PluginCommand.class, "me.egg82.tcpp.commands.internal", true, false, false);
+		Map<String, String> names = BukkitReflectUtil.getCommandMapFromPackage("me.egg82.tcpp.commands.internal", null, "Command");
+		for (Class<PluginCommand> c : classes) {
+			String name = c.getName().toLowerCase();
+			String command = names.remove(name);
+			
+			if (command == null) {
+				plugin.printWarning("Internal \"" + name + "\" not found in command map!");
 				continue;
 			}
 			
-			// Put the command in a map for fast lookup/retrieval
-			String name = temp.get(i).getSimpleName();
-			name = name.substring(0, name.length() - 7).toLowerCase();
-			commandNames.add(name);
-			commands.put(name, run);
+			commandNames.add(command);
+			commands.put(command, c);
+		}
+		if (!names.isEmpty()) {
+			plugin.printWarning("Internal command map contains unused values! " + Arrays.toString(names.keySet().toArray()));
 		}
 		
+		// Sort command names because it looks pretty on the client side
 		Collections.sort(commandNames);
+		// Get the total pages for /help
 		totalPages = (int) Math.ceil(((double) commandNames.size()) / 9.0d);
 	}
 	
 	//public
-	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+	public List<String> tabComplete() {
 		if (args.length == 0 || args[0].isEmpty()) {
 			// We want command names
 			return commandNames;
@@ -95,10 +102,12 @@ public class TrollCommand extends PluginCommand {
 		
 		// Pass it along to the command to handle
 		String commandName = args[0].toLowerCase();
-		ArrayList<String> newArgs = new ArrayList<String>(Arrays.asList(args));
-		newArgs.remove(0);
 		
-		return (commands.containsKey(commandName)) ? commands.get(commandName).tabComplete(sender, command, label, newArgs.toArray(new String[0])) : null;
+		PluginCommand c = getCommand(commandName, true);
+		if (c == null) {
+			return null;
+		}
+		return c.tabComplete();
 	}
 	
 	//private
@@ -168,50 +177,89 @@ public class TrollCommand extends PluginCommand {
 			}
 		}
 		
-		// Chop off the command name from the argument list
-		ArrayList<String> newArgs = new ArrayList<String>(Arrays.asList(args));
-		newArgs.remove(0);
-		
-		e(troll.toLowerCase(), newArgs.toArray(new String[0]));
-	}
-	private void e(String commandName, String[] args) {
-		PluginCommand run = commands.get(commandName);
-		
+		PluginCommand run = getCommand(troll, false);
 		if (run == null) {
-			// Possible misspelling. Try searching instead.
-			String[] search = commandDatabase.getValues(commandDatabase.naturalLanguage(commandName, false), 0);
-			
-			if (search == null || search.length == 0) {
-				sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_COMMAND));
-				onError().invoke(this, new ExceptionEventArgs<InvalidCommandException>(new InvalidCommandException(commandName)));
-				return;
-			}
-			
-			run = commands.get(search[0].toLowerCase());
-			if (run == null) {
-				sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_COMMAND));
-				onError().invoke(this, new ExceptionEventArgs<InvalidCommandException>(new InvalidCommandException(commandName)));
-				return;
-			} else {
-				sender.sendMessage(ChatColor.YELLOW + "Running \"" + search[0].toLowerCase() + "\" in lieu of \"" + commandName.toLowerCase() + "\".");
-			}
+			sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_COMMAND));
+			onError().invoke(this, new ExceptionEventArgs<InvalidCommandException>(new InvalidCommandException(commandName)));
+			return;
 		}
-		
-		// Set and run new command
-		run.setSender(sender);
-		run.setCommand(command);
-		run.setLabel(label);
-		run.setArgs(args);
 		run.start();
 	}
 	
 	protected void onUndo() {
-		for (Entry<String, PluginCommand> kvp : commands.entrySet()) {
+		for (Entry<String, PluginCommand> kvp : initializedCommands.entrySet()) {
 			PluginCommand run = kvp.getValue();
 			
 			run.setSender(sender);
+			run.setCommand(command);
+			run.setCommandName(command.getName());
+			run.setLabel(label);
 			run.setArgs(args);
 			run.undo();
 		}
+	}
+	
+	private PluginCommand getCommand(String command, boolean exact) {
+		String key = getRealCommandName(command, exact);
+		
+		if (key == null) {
+			return null;
+		}
+		if (!key.equalsIgnoreCase(command)) {
+			sender.sendMessage(ChatColor.YELLOW + "Running \"" + key + "\" in lieu of \"" + command + "\".");
+		}
+		
+		PluginCommand run = initializedCommands.get(key);
+		Class<PluginCommand> c = commands.get(key);
+		
+		// run might be null, but c will never be as long as the command actually exists
+		if (c == null) {
+			return null;
+		}
+		
+		// Lazy initialize. No need to create a command until it's actually going to be used
+		if (run == null) {
+			// Create a new command and store it
+			try {
+				run = c.newInstance();
+			} catch (Exception ex) {
+				ServiceLocator.getService(IExceptionHandler.class).silentException(ex);
+				return null;
+			}
+			
+			initializedCommands.put(key, run);
+		}
+		
+		ArrayList<String> newArgs = new ArrayList<String>(Arrays.asList(args));
+		newArgs.remove(0);
+		
+		run.setSender(sender);
+		run.setCommand(this.command);
+		run.setCommandName(key);
+		run.setLabel(label);
+		run.setArgs(newArgs.toArray(new String[0]));
+		
+		return run;
+	}
+	private String getRealCommandName(String commandName, boolean exact) {
+		commandName = commandName.toLowerCase();
+		if (commandNames.contains(commandName)) {
+			// Found an exact match
+			return commandName;
+		}
+		
+		if (exact) {
+			// Exact match was requested, but nothing found.
+			return null;
+		}
+		
+		// Possible misspelling. Try searching instead.
+		String[] search = commandDatabase.getValues(commandDatabase.naturalLanguage(commandName, false), 0);
+		
+		if (search == null || search.length == 0) {
+			return null;
+		}
+		
+		return search[0].toLowerCase();
 	}
 }

@@ -14,8 +14,8 @@ public class SpartaEventCommand extends EventCommand<PlayerPickupArrowEvent> {
 	private IRegistry<UUID> spartaArrowRegistry = ServiceLocator.getService(SpartaArrowRegistry.class);
 	
 	//constructor
-	public SpartaEventCommand(PlayerPickupArrowEvent event) {
-		super(event);
+	public SpartaEventCommand() {
+		super();
 	}
 	
 	//public

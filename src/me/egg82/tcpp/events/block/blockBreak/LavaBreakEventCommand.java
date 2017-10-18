@@ -16,8 +16,8 @@ public class LavaBreakEventCommand extends EventCommand<BlockBreakEvent> {
 	private IRegistry<UUID> lavaBreakRegistry = ServiceLocator.getService(LavaBreakRegistry.class);
 	
 	//constructor
-	public LavaBreakEventCommand(BlockBreakEvent event) {
-		super(event);
+	public LavaBreakEventCommand() {
+		super();
 	}
 	
 	//public

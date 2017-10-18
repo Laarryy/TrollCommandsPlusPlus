@@ -20,8 +20,8 @@ public class RandomDropEventCommand extends EventCommand<PlayerDropItemEvent> {
 	private Material[] materials = null;
 	
 	//constructor
-	public RandomDropEventCommand(PlayerDropItemEvent event) {
-		super(event);
+	public RandomDropEventCommand() {
+		super();
 		
 		TypeFilterHelper<Material> materialFilterHelper = new TypeFilterHelper<Material>(Material.class);
 		materials = materialFilterHelper.filter(

@@ -15,8 +15,8 @@ public class NecroEventCommand extends EventCommand<EntityTargetEvent> {
 	private IRegistry<UUID> necroRegistry = ServiceLocator.getService(NecroRegistry.class);
 	
 	//constructor
-	public NecroEventCommand(EntityTargetEvent event) {
-		super(event);
+	public NecroEventCommand() {
+		super();
 	}
 	
 	//public

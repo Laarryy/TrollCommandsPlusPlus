@@ -14,8 +14,8 @@ public class FreezeEventCommand extends EventCommand<InventoryDragEvent> {
 	private IRegistry<UUID> freezeRegistry = ServiceLocator.getService(FreezeRegistry.class);
 	
 	//constructor
-	public FreezeEventCommand(InventoryDragEvent event) {
-		super(event);
+	public FreezeEventCommand() {
+		super();
 	}
 	
 	//public

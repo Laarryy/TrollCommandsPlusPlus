@@ -7,8 +7,6 @@ import java.util.List;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.PigZombie;
@@ -45,8 +43,8 @@ public class SurroundCommand extends PluginCommand {
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
-	public SurroundCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public SurroundCommand() {
+		super();
 		
 		EntityType[] types = EntityType.values();
 		
@@ -77,7 +75,7 @@ public class SurroundCommand extends PluginCommand {
 	}
 	
 	//public
-	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+	public List<String> tabComplete() {
 		if (args.length == 1) {
 			ArrayList<String> retVal = new ArrayList<String>();
 			

@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Chicken;
-import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.core.LuckyCommand;
 import me.egg82.tcpp.services.registries.LuckyChickenRegistry;
@@ -19,8 +18,8 @@ public class GoldenChickenCommand extends LuckyCommand {
 	private IExpiringRegistry<UUID> luckyChickenRegistry = ServiceLocator.getService(LuckyChickenRegistry.class);
 	
 	//constructor
-	public GoldenChickenCommand(Player player) {
-		super(player);
+	public GoldenChickenCommand() {
+		super();
 		
 		luckyChickenRegistry.onExpire().attach((s, e) -> onExpire(s, e));
 	}

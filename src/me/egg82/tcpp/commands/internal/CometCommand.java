@@ -2,8 +2,6 @@ package me.egg82.tcpp.commands.internal;
 
 import java.util.List;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -26,12 +24,12 @@ public class CometCommand extends PluginCommand {
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
-	public CometCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public CometCommand() {
+		super();
 	}
 	
 	//public
-	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+	public List<String> tabComplete() {
 		return null;
 	}
 	

@@ -14,8 +14,8 @@ public class ConvertEventCommand extends EventCommand<PlayerQuitEvent> {
 	private IRegistry<UUID> convertRegistry = ServiceLocator.getService(ConvertRegistry.class);
 	
 	//constructor
-	public ConvertEventCommand(PlayerQuitEvent event) {
-		super(event);
+	public ConvertEventCommand() {
+		super();
 	}
 	
 	//public

@@ -16,8 +16,8 @@ public class AnvilEventCommand extends EventCommand<EntityChangeBlockEvent> {
 	private IRegistry<UUID> anvilRegistry = ServiceLocator.getService(AnvilRegistry.class);
 	
 	//constructor
-	public AnvilEventCommand(EntityChangeBlockEvent event) {
-		super(event);
+	public AnvilEventCommand() {
+		super();
 	}
 	
 	//public

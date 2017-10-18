@@ -1,12 +1,12 @@
 package me.egg82.tcpp.events.player.playerRespawn;
 
-import java.util.Collection;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import me.egg82.tcpp.services.registries.LsdRegistry;
+import ninja.egg82.patterns.IObjectPool;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.tuples.Triplet;
@@ -17,8 +17,8 @@ public class LsdEventCommand extends EventCommand<PlayerRespawnEvent> {
 	private IRegistry<UUID> lsdRegistry = ServiceLocator.getService(LsdRegistry.class);
 	
 	//constructor
-	public LsdEventCommand(PlayerRespawnEvent event) {
-		super(event);
+	public LsdEventCommand() {
+		super();
 	}
 	
 	//public
@@ -30,10 +30,8 @@ public class LsdEventCommand extends EventCommand<PlayerRespawnEvent> {
 		UUID uuid = player.getUniqueId();
 		
 		if (lsdRegistry.hasRegister(uuid)) {
-			Collection<Triplet<String, Integer, Integer>> bLocs = lsdRegistry.getRegister(uuid, Collection.class);
-			synchronized (bLocs) {
-				bLocs.clear();
-			}
+			IObjectPool<Triplet<String, Integer, Integer>> bLocs = lsdRegistry.getRegister(uuid, IObjectPool.class);
+			bLocs.clear();
 		}
 	}
 }

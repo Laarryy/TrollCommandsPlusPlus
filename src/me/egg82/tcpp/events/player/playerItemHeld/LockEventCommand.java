@@ -14,8 +14,8 @@ public class LockEventCommand extends EventCommand<PlayerItemHeldEvent> {
 	private IRegistry<UUID> lockRegistry = ServiceLocator.getService(LockRegistry.class);
 	
 	//constructor
-	public LockEventCommand(PlayerItemHeldEvent event) {
-		super(event);
+	public LockEventCommand() {
+		super();
 	}
 	
 	//public

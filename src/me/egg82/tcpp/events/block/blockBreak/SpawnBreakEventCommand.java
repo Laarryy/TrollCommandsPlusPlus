@@ -21,8 +21,8 @@ public class SpawnBreakEventCommand extends EventCommand<BlockBreakEvent> {
 	private IRegistry<UUID> spawnBreakRegistry = ServiceLocator.getService(SpawnBreakRegistry.class);
 	
 	//constructor
-	public SpawnBreakEventCommand(BlockBreakEvent event) {
-		super(event);
+	public SpawnBreakEventCommand() {
+		super();
 	}
 	
 	//public

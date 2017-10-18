@@ -14,8 +14,8 @@ public class RandomMenuEventCommand extends EventCommand<InventoryCloseEvent> {
 	private IRegistry<UUID> randomMenuMenuRegistry = ServiceLocator.getService(RandomMenuMenuRegistry.class);
 	
 	//constructor
-	public RandomMenuEventCommand(InventoryCloseEvent event) {
-		super(event);
+	public RandomMenuEventCommand() {
+		super();
 	}
 	
 	//public

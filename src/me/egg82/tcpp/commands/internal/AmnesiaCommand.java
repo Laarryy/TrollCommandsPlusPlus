@@ -1,14 +1,11 @@
 package me.egg82.tcpp.commands.internal;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.enums.LanguageType;
@@ -18,6 +15,7 @@ import me.egg82.tcpp.services.registries.AmnesiaRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CompleteEventArgs;
 import ninja.egg82.events.ExceptionEventArgs;
+import ninja.egg82.patterns.DynamicObjectPool;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.PluginCommand;
@@ -35,12 +33,12 @@ public class AmnesiaCommand extends PluginCommand {
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
-	public AmnesiaCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public AmnesiaCommand() {
+		super();
 	}
 	
 	//public
-	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+	public List<String> tabComplete() {
 		if (args.length == 1) {
 			ArrayList<String> retVal = new ArrayList<String>();
 			
@@ -130,7 +128,7 @@ public class AmnesiaCommand extends PluginCommand {
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	private void e(UUID uuid, Player player) {
-		amnesiaRegistry.setRegister(uuid, Collections.synchronizedList(new ArrayList<String>()));
+		amnesiaRegistry.setRegister(uuid, new DynamicObjectPool<String>());
 		metricsHelper.commandWasRun(this);
 		
 		sender.sendMessage(player.getName() + " is now an amnesiac.");

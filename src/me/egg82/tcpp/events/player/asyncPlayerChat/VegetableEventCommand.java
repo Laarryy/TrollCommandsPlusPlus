@@ -18,8 +18,8 @@ public class VegetableEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 	private IRegistry<UUID> vegetableItemRegistry = ServiceLocator.getService(VegetableItemRegistry.class);
 	
 	//constructor
-	public VegetableEventCommand(AsyncPlayerChatEvent event) {
-		super(event);
+	public VegetableEventCommand() {
+		super();
 	}
 	
 	//public

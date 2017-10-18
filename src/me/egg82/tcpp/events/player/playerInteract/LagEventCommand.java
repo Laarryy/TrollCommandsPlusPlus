@@ -25,8 +25,8 @@ public class LagEventCommand extends EventCommand<PlayerInteractEvent> {
 	private IRegistry<Location> lagBlockRegistry = ServiceLocator.getService(LagBlockRegistry.class);
 	
 	//constauctor
-	public LagEventCommand(PlayerInteractEvent event) {
-		super(event);
+	public LagEventCommand() {
+		super();
 	}
 	
 	//public

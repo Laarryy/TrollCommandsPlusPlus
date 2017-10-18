@@ -1,7 +1,5 @@
 package me.egg82.tcpp.commands.unlucky;
 
-import org.bukkit.entity.Player;
-
 import me.egg82.tcpp.core.LuckyCommand;
 import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.LocationUtil;
@@ -11,8 +9,8 @@ public class TeleportCommand extends LuckyCommand {
 	//vars
 	
 	//constructor
-	public TeleportCommand(Player player) {
-		super(player);
+	public TeleportCommand() {
+		super();
 	}
 	
 	//public

@@ -16,8 +16,8 @@ public class DisplayEventCommand extends EventCommand<BlockBreakEvent> {
 	private IRegistry<UUID> displayRegistry = ServiceLocator.getService(DisplayRegistry.class);
 	
 	//constructor
-	public DisplayEventCommand(BlockBreakEvent event) {
-		super(event);
+	public DisplayEventCommand() {
+		super();
 	}
 	
 	//public

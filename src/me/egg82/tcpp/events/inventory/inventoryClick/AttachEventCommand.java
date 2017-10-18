@@ -24,8 +24,8 @@ public class AttachEventCommand extends EventCommand<InventoryClickEvent> {
 	private INBTHelper nbtHelper = ServiceLocator.getService(INBTHelper.class);
 	
 	//constructor
-	public AttachEventCommand(InventoryClickEvent event) {
-		super(event);
+	public AttachEventCommand() {
+		super();
 	}
 	
 	//public

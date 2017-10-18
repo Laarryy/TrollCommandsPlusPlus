@@ -18,8 +18,8 @@ public class FoolsGoldEventCommand extends EventCommand<PlayerTeleportEvent> {
 	private FoolsGoldHelper foolsGoldHelper = ServiceLocator.getService(FoolsGoldHelper.class);
 	
 	//constructor
-	public FoolsGoldEventCommand(PlayerTeleportEvent event) {
-		super(event);
+	public FoolsGoldEventCommand() {
+		super();
 	}
 	
 	//public

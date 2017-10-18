@@ -1,6 +1,5 @@
 package me.egg82.tcpp.commands.unlucky;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import me.egg82.tcpp.core.LuckyCommand;
@@ -12,8 +11,8 @@ public class KillCommand extends LuckyCommand {
 	private IEntityHelper entityHelper = ServiceLocator.getService(IEntityHelper.class);
 	
 	//constructor
-	public KillCommand(Player player) {
-		super(player);
+	public KillCommand() {
+		super();
 	}
 	
 	//public

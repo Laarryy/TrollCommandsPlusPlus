@@ -24,8 +24,8 @@ public class EmpowerEventCommand extends EventCommand<PlayerInteractEntityEvent>
 	private IRegistry<UUID> empowerEntityRegistry = ServiceLocator.getService(EmpowerEntityRegistry.class);
 	
 	//constructor
-	public EmpowerEventCommand(PlayerInteractEntityEvent event) {
-		super(event);
+	public EmpowerEventCommand() {
+		super();
 	}
 	
 	//public

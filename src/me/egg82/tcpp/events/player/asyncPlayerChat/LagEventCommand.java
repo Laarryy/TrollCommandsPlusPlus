@@ -19,8 +19,8 @@ public class LagEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 	private IRegistry<UUID> lagRegistry = ServiceLocator.getService(LagRegistry.class);
 	
 	//constructor
-	public LagEventCommand(AsyncPlayerChatEvent event) {
-		super(event);
+	public LagEventCommand() {
+		super();
 	}
 	
 	//public

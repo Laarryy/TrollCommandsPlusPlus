@@ -2,8 +2,6 @@ package me.egg82.tcpp.messages;
 
 import java.nio.charset.Charset;
 
-import org.bukkit.entity.Player;
-
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.MessageCommand;
 import ninja.egg82.plugin.handlers.CommandHandler;
@@ -15,8 +13,8 @@ public class CommandMessageCommand extends MessageCommand {
 	private CommandHandler commandHandler = ServiceLocator.getService(CommandHandler.class);
 	
 	//constructor
-	public CommandMessageCommand(String channelName, Player player, byte[] data) {
-		super(channelName, player, data);
+	public CommandMessageCommand() {
+		super();
 	}
 	
 	//public

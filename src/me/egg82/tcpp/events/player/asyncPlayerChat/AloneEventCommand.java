@@ -17,8 +17,8 @@ public class AloneEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 	private IRegistry<UUID> aloneRegistry = ServiceLocator.getService(AloneRegistry.class);
 	
 	//constructor
-	public AloneEventCommand(AsyncPlayerChatEvent event) {
-		super(event);
+	public AloneEventCommand() {
+		super();
 	}
 	
 	//public

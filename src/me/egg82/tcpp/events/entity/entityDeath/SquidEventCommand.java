@@ -14,8 +14,8 @@ public class SquidEventCommand extends EventCommand<EntityDeathEvent> {
 	private IRegistry<UUID> squidDeathRegistry = ServiceLocator.getService(SquidDeathRegistry.class);
 	
 	//constructor
-	public SquidEventCommand(EntityDeathEvent event) {
-		super(event);
+	public SquidEventCommand() {
+		super();
 	}
 	
 	//public

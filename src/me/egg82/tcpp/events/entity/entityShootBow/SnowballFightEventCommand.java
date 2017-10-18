@@ -18,8 +18,8 @@ public class SnowballFightEventCommand extends EventCommand<EntityShootBowEvent>
 	private IRegistry<UUID> snowballFightRegistry = ServiceLocator.getService(SnowballFightRegistry.class);
 	
 	//constructor
-	public SnowballFightEventCommand(EntityShootBowEvent event) {
-		super(event);
+	public SnowballFightEventCommand() {
+		super();
 	}
 	
 	//public

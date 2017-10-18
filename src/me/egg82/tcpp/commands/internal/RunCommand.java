@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.help.HelpTopic;
 
@@ -33,8 +31,8 @@ public class RunCommand extends PluginCommand {
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
-	public RunCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public RunCommand() {
+		super();
 		
 		for (HelpTopic topic : Bukkit.getServer().getHelpMap().getHelpTopics()) {
 			String name = topic.getName();
@@ -47,7 +45,7 @@ public class RunCommand extends PluginCommand {
 	}
 	
 	//public
-	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+	public List<String> tabComplete() {
 		if (args.length == 1) {
 			ArrayList<String> retVal = new ArrayList<String>();
 			

@@ -17,8 +17,8 @@ public class LagEventCommand extends EventCommand<PlayerPickupArrowEvent> {
 	private IRegistry<UUID> lagItemRegistry = ServiceLocator.getService(LagItemRegistry.class);
 	
 	//constructor
-	public LagEventCommand(PlayerPickupArrowEvent event) {
-		super(event);
+	public LagEventCommand() {
+		super();
 	}
 	
 	//public

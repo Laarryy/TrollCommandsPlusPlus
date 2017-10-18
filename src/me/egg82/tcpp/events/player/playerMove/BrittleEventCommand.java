@@ -20,8 +20,8 @@ public class BrittleEventCommand extends EventCommand<PlayerMoveEvent> {
 	private IRegistry<UUID> brittleRegistry = ServiceLocator.getService(BrittleRegistry.class);
 	
 	//constructor
-	public BrittleEventCommand(PlayerMoveEvent event) {
-		super(event);
+	public BrittleEventCommand() {
+		super();
 	}
 	
 	//public

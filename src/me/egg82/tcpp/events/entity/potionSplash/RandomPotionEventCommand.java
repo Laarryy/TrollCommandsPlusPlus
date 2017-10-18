@@ -25,8 +25,8 @@ public class RandomPotionEventCommand extends EventCommand<PotionSplashEvent> {
 	private PotionEffectType[] effects = null;
 	
 	//constructor
-	public RandomPotionEventCommand(PotionSplashEvent event) {
-		super(event);
+	public RandomPotionEventCommand() {
+		super();
 		
 		TypeFilterHelper<PotionEffectType> potionEffectTypeFilterHelper = new TypeFilterHelper<PotionEffectType>(PotionEffectType.class);
 		effects = potionEffectTypeFilterHelper.getAllTypes();

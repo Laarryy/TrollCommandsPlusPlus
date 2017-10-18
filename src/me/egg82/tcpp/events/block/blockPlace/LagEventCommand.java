@@ -27,8 +27,8 @@ public class LagEventCommand extends EventCommand<BlockPlaceEvent> {
 	private IRegistry<Location> lagBlockRegistry = ServiceLocator.getService(LagBlockRegistry.class);
 	
 	//constructor
-	public LagEventCommand(BlockPlaceEvent event) {
-		super(event);
+	public LagEventCommand() {
+		super();
 	}
 	
 	//public

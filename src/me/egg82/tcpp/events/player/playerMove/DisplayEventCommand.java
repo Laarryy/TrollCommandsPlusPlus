@@ -16,8 +16,8 @@ public class DisplayEventCommand extends EventCommand<PlayerMoveEvent> {
 	private IRegistry<UUID> displayLocationRegistry = ServiceLocator.getService(DisplayLocationRegistry.class);
 	
 	//constructor
-	public DisplayEventCommand(PlayerMoveEvent event) {
-		super(event);
+	public DisplayEventCommand() {
+		super();
 	}
 	
 	//public

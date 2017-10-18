@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import me.egg82.tcpp.core.LuckyCommand;
@@ -23,25 +22,25 @@ public class LuckyBlockEventCommand extends EventCommand<BlockBreakEvent> {
 	private IRegistry<Location> luckyBlockRegistry = ServiceLocator.getService(LuckyBlockRegistry.class);
 	
 	//constructor
-	public LuckyBlockEventCommand(BlockBreakEvent event) {
-		super(event);
+	public LuckyBlockEventCommand() {
+		super();
 		
-		List<Class<? extends LuckyCommand>> commands = ReflectUtil.getClasses(LuckyCommand.class, "me.egg82.tcpp.commands.lucky");
+		List<Class<LuckyCommand>> commands = ReflectUtil.getClasses(LuckyCommand.class, "me.egg82.tcpp.commands.lucky", true, false, false);
 		for (int i = 0; i < commands.size(); i++) {
 			LuckyCommand run = null;
 			try {
-				run = commands.get(i).getDeclaredConstructor(Player.class).newInstance(event.getPlayer());
+				run = commands.get(i).newInstance();
 			} catch (Exception ex) {
 				continue;
 			}
 			luckyCommands.add(run);
 		}
 		
-		commands = ReflectUtil.getClasses(LuckyCommand.class, "me.egg82.tcpp.commands.unlucky");
+		commands = ReflectUtil.getClasses(LuckyCommand.class, "me.egg82.tcpp.commands.unlucky", true, false, false);
 		for (int i = 0; i < commands.size(); i++) {
 			LuckyCommand run = null;
 			try {
-				run = commands.get(i).getDeclaredConstructor(Player.class).newInstance(event.getPlayer());
+				run = commands.get(i).newInstance();
 			} catch (Exception ex) {
 				continue;
 			}

@@ -14,8 +14,8 @@ public class FreezeEventCommand extends EventCommand<PlayerTeleportEvent> {
 	private IRegistry<UUID> freezeRegistry = ServiceLocator.getService(FreezeRegistry.class);
 	
 	//constructor
-	public FreezeEventCommand(PlayerTeleportEvent event) {
-		super(event);
+	public FreezeEventCommand() {
+		super();
 	}
 	
 	//public

@@ -19,8 +19,8 @@ public class ControlEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 	private IRegistry<UUID> controlRegistry = ServiceLocator.getService(ControlRegistry.class);
 	
 	//constructor
-	public ControlEventCommand(AsyncPlayerChatEvent event) {
-		super(event);
+	public ControlEventCommand() {
+		super();
 	}
 	
 	//public

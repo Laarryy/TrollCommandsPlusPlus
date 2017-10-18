@@ -1,9 +1,6 @@
 package me.egg82.tcpp.util;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,6 +14,8 @@ import org.bukkit.entity.Player;
 import me.egg82.tcpp.services.registries.FoolsGoldChunkRegistry;
 import me.egg82.tcpp.services.registries.FoolsGoldRegistry;
 import ninja.egg82.exceptionHandlers.IExceptionHandler;
+import ninja.egg82.patterns.DynamicObjectPool;
+import ninja.egg82.patterns.IObjectPool;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.tuples.Pair;
@@ -38,8 +37,8 @@ public class FoolsGoldHelper {
 	
 	//public
 	public void addPlayer(UUID uuid, Player player) {
-		Collection<Location> blocks = Collections.synchronizedCollection(new ArrayDeque<Location>());
-		Collection<Pair<Integer, Integer>> chunks = Collections.synchronizedCollection(new ArrayDeque<Pair<Integer, Integer>>());
+		IObjectPool<Location> blocks = new DynamicObjectPool<Location>();
+		IObjectPool<Pair<Integer, Integer>> chunks = new DynamicObjectPool<Pair<Integer, Integer>>();
 		
 		Thread runner = new Thread(new Runnable() {
 			public void run() {
@@ -56,7 +55,7 @@ public class FoolsGoldHelper {
 	@SuppressWarnings("unchecked")
 	public void removePlayer(UUID uuid, Player player) {
 		if (foolsGoldRegistry.hasRegister(uuid)) {
-			Collection<Location> blocks = foolsGoldRegistry.getRegister(uuid, Collection.class);
+			IObjectPool<Location> blocks = foolsGoldRegistry.getRegister(uuid, IObjectPool.class);
 			
 			Thread runner = new Thread(new Runnable() {
 				public void run() {
@@ -78,8 +77,8 @@ public class FoolsGoldHelper {
 	
 	@SuppressWarnings("unchecked")
 	public void updatePlayer(UUID uuid, Player player, Location from, Location to) {
-		Collection<Location> blocks = foolsGoldRegistry.getRegister(uuid, Collection.class);
-		Collection<Pair<Integer, Integer>> chunks = foolsGoldChunkRegistry.getRegister(uuid, Collection.class);
+		IObjectPool<Location> blocks = foolsGoldRegistry.getRegister(uuid, IObjectPool.class);
+		IObjectPool<Pair<Integer, Integer>> chunks = foolsGoldChunkRegistry.getRegister(uuid, IObjectPool.class);
 		
 		Thread runner = new Thread(new Runnable() {
 			public void run() {
@@ -93,8 +92,8 @@ public class FoolsGoldHelper {
 	
 	@SuppressWarnings("unchecked")
 	public void updatePlayer(UUID uuid, Player player, Location newLocation) {
-		Collection<Location> blocks = foolsGoldRegistry.getRegister(uuid, Collection.class);
-		Collection<Pair<Integer, Integer>> chunks = foolsGoldChunkRegistry.getRegister(uuid, Collection.class);
+		IObjectPool<Location> blocks = foolsGoldRegistry.getRegister(uuid, IObjectPool.class);
+		IObjectPool<Pair<Integer, Integer>> chunks = foolsGoldChunkRegistry.getRegister(uuid, IObjectPool.class);
 		
 		Thread runner = new Thread(new Runnable() {
 			public void run() {
@@ -107,7 +106,7 @@ public class FoolsGoldHelper {
 	}
 	
 	//private
-	private void addFakeBlocks(Player player, Collection<Location> blocks, Collection<Pair<Integer, Integer>> chunks, int tries) {
+	private void addFakeBlocks(Player player, IObjectPool<Location> blocks, IObjectPool<Pair<Integer, Integer>> chunks, int tries) {
 		if (!player.getWorld().isChunkLoaded(player.getLocation().getBlockX() >> 4, player.getLocation().getBlockZ() >> 4)) {
 			if (tries < 10) {
 				TaskUtil.runAsync(new Runnable() {
@@ -124,33 +123,29 @@ public class FoolsGoldHelper {
 		World world = player.getLocation().getWorld();
 		
 		if (world.getEnvironment() == Environment.NORMAL) {
-			synchronized (player) {
-				for (int x = -1; x <= 1; x++) {
-					for (int z = -1; z <= 1; z++) {
-						chunks.add(new Pair<Integer, Integer>(chunkX + x, chunkZ + z));
-						blocks.addAll(spawn(Material.COAL_ORE, 5, 52, player, world, chunkX + x, chunkZ + z));
-						blocks.addAll(spawn(Material.IRON_ORE, 5, 54, player, world, chunkX + x, chunkZ + z));
-						blocks.addAll(spawn(Material.LAPIS_ORE, 14, 16, player, world, chunkX + x, chunkZ + z));
-						blocks.addAll(spawn(Material.GOLD_ORE, 5, 29, player, world, chunkX + x, chunkZ + z));
-						blocks.addAll(spawn(Material.GOLD_ORE, 32, 63, player, world, chunkX + x, chunkZ + z));
-						blocks.addAll(spawn(Material.DIAMOND_ORE, 5, 12, player, world, chunkX + x, chunkZ + z));
-						blocks.addAll(spawn(Material.REDSTONE_ORE, 5, 12, player, world, chunkX + x, chunkZ + z));
-						blocks.addAll(spawn(Material.EMERALD_ORE, 5, 29, player, world, chunkX + x, chunkZ + z));
-					}
+			for (int x = -1; x <= 1; x++) {
+				for (int z = -1; z <= 1; z++) {
+					chunks.add(new Pair<Integer, Integer>(chunkX + x, chunkZ + z));
+					blocks.addAll(spawn(Material.COAL_ORE, 5, 52, player, world, chunkX + x, chunkZ + z));
+					blocks.addAll(spawn(Material.IRON_ORE, 5, 54, player, world, chunkX + x, chunkZ + z));
+					blocks.addAll(spawn(Material.LAPIS_ORE, 14, 16, player, world, chunkX + x, chunkZ + z));
+					blocks.addAll(spawn(Material.GOLD_ORE, 5, 29, player, world, chunkX + x, chunkZ + z));
+					blocks.addAll(spawn(Material.GOLD_ORE, 32, 63, player, world, chunkX + x, chunkZ + z));
+					blocks.addAll(spawn(Material.DIAMOND_ORE, 5, 12, player, world, chunkX + x, chunkZ + z));
+					blocks.addAll(spawn(Material.REDSTONE_ORE, 5, 12, player, world, chunkX + x, chunkZ + z));
+					blocks.addAll(spawn(Material.EMERALD_ORE, 5, 29, player, world, chunkX + x, chunkZ + z));
 				}
 			}
 		} else if (world.getEnvironment() == Environment.NETHER) {
-			synchronized (player) {
-				for (int x = -1; x <= 1; x++) {
-					for (int z = -1; z <= 1; z++) {
-						chunks.add(new Pair<Integer, Integer>(chunkX + x, chunkZ + z));
-						blocks.addAll(spawn(Material.QUARTZ_ORE, 15, 120, player, world, chunkX + x, chunkZ + z));
-					}
+			for (int x = -1; x <= 1; x++) {
+				for (int z = -1; z <= 1; z++) {
+					chunks.add(new Pair<Integer, Integer>(chunkX + x, chunkZ + z));
+					blocks.addAll(spawn(Material.QUARTZ_ORE, 15, 120, player, world, chunkX + x, chunkZ + z));
 				}
 			}
 		}
 	}
-	private void removeFakeBlocks(Player player, Collection<Location> blocks, int tries) {
+	private void removeFakeBlocks(Player player, IObjectPool<Location> blocks, int tries) {
 		if (!player.getWorld().isChunkLoaded(player.getLocation().getBlockX() >> 4, player.getLocation().getBlockZ() >> 4)) {
 			if (tries < 10) {
 				TaskUtil.runAsync(new Runnable() {
@@ -162,13 +157,11 @@ public class FoolsGoldHelper {
 			return;
 		}
 		
-		synchronized (player) {
-			for (Location b : blocks) {
-				fakeBlockHelper.updateBlock(player, b, b.getBlock().getType());
-			}
+		for (Location b : blocks) {
+			fakeBlockHelper.updateBlock(player, b, b.getBlock().getType());
 		}
 	}
-	private void updateFakeBlocks(Player player, Location from, Location to, Collection<Location> blocks, Collection<Pair<Integer, Integer>> chunks, int tries) {
+	private void updateFakeBlocks(Player player, Location from, Location to, IObjectPool<Location> blocks, IObjectPool<Pair<Integer, Integer>> chunks, int tries) {
 		if (!from.getWorld().isChunkLoaded(from.getBlockX() >> 4, from.getBlockZ() >> 4) || !to.getWorld().isChunkLoaded(to.getBlockX() >> 4, to.getBlockZ() >> 4)) {
 			if (tries < 10) {
 				TaskUtil.runAsync(new Runnable() {
@@ -193,55 +186,49 @@ public class FoolsGoldHelper {
 				}
 			}
 			
-			synchronized (player) {
-				ArrayList<Location> removedBlocks = new ArrayList<Location>();
-				blocks.forEach((loc) -> {
-					if (from.getWorld().isChunkLoaded(loc.getBlockX() >> 4, loc.getBlockZ() >> 4)) {
-						Pair<Integer, Integer> chunk = new Pair<Integer, Integer>(loc.getChunk().getX(), loc.getChunk().getZ());
-						if (!currentChunks.contains(chunk)) {
-							fakeBlockHelper.updateBlock(player, loc, loc.getBlock().getType());
-							removedBlocks.add(loc);
-							chunks.remove(chunk);
-						}
-					} else {
+			ArrayList<Location> removedBlocks = new ArrayList<Location>();
+			blocks.forEach((loc) -> {
+				if (from.getWorld().isChunkLoaded(loc.getBlockX() >> 4, loc.getBlockZ() >> 4)) {
+					Pair<Integer, Integer> chunk = new Pair<Integer, Integer>(loc.getChunk().getX(), loc.getChunk().getZ());
+					if (!currentChunks.contains(chunk)) {
+						fakeBlockHelper.updateBlock(player, loc, loc.getBlock().getType());
 						removedBlocks.add(loc);
-						chunks.remove(new Pair<Integer, Integer>(loc.getBlockX() >> 4, loc.getBlockZ() >> 4));
+						chunks.remove(chunk);
 					}
-				});
-				
-				blocks.removeAll(removedBlocks);
-			}
+				} else {
+					removedBlocks.add(loc);
+					chunks.remove(new Pair<Integer, Integer>(loc.getBlockX() >> 4, loc.getBlockZ() >> 4));
+				}
+			});
+			
+			blocks.removeAll(removedBlocks);
 			
 			if (world.getEnvironment() == Environment.NORMAL) {
-				synchronized (player) {
-					for (int i = 0; i < currentChunks.size(); i++) {
-						Pair<Integer, Integer> chunk = currentChunks.get(i);
-						if (chunks.contains(chunk) || !world.isChunkLoaded(chunk.getLeft(), chunk.getRight())) {
-							continue;
-						}
-						
-						chunks.add(chunk);
-						blocks.addAll(spawn(Material.COAL_ORE, 5, 52, player, world, chunk.getLeft(), chunk.getRight()));
-						blocks.addAll(spawn(Material.IRON_ORE, 5, 54, player, world, chunk.getLeft(), chunk.getRight()));
-						blocks.addAll(spawn(Material.LAPIS_ORE, 14, 16, player, world, chunk.getLeft(), chunk.getRight()));
-						blocks.addAll(spawn(Material.GOLD_ORE, 5, 29, player, world, chunk.getLeft(), chunk.getRight()));
-						blocks.addAll(spawn(Material.GOLD_ORE, 32, 63, player, world, chunk.getLeft(), chunk.getRight()));
-						blocks.addAll(spawn(Material.DIAMOND_ORE, 5, 12, player, world, chunk.getLeft(), chunk.getRight()));
-						blocks.addAll(spawn(Material.REDSTONE_ORE, 5, 12, player, world, chunk.getLeft(), chunk.getRight()));
-						blocks.addAll(spawn(Material.EMERALD_ORE, 5, 29, player, world, chunk.getLeft(), chunk.getRight()));
+				for (int i = 0; i < currentChunks.size(); i++) {
+					Pair<Integer, Integer> chunk = currentChunks.get(i);
+					if (chunks.contains(chunk) || !world.isChunkLoaded(chunk.getLeft(), chunk.getRight())) {
+						continue;
 					}
+					
+					chunks.add(chunk);
+					blocks.addAll(spawn(Material.COAL_ORE, 5, 52, player, world, chunk.getLeft(), chunk.getRight()));
+					blocks.addAll(spawn(Material.IRON_ORE, 5, 54, player, world, chunk.getLeft(), chunk.getRight()));
+					blocks.addAll(spawn(Material.LAPIS_ORE, 14, 16, player, world, chunk.getLeft(), chunk.getRight()));
+					blocks.addAll(spawn(Material.GOLD_ORE, 5, 29, player, world, chunk.getLeft(), chunk.getRight()));
+					blocks.addAll(spawn(Material.GOLD_ORE, 32, 63, player, world, chunk.getLeft(), chunk.getRight()));
+					blocks.addAll(spawn(Material.DIAMOND_ORE, 5, 12, player, world, chunk.getLeft(), chunk.getRight()));
+					blocks.addAll(spawn(Material.REDSTONE_ORE, 5, 12, player, world, chunk.getLeft(), chunk.getRight()));
+					blocks.addAll(spawn(Material.EMERALD_ORE, 5, 29, player, world, chunk.getLeft(), chunk.getRight()));
 				}
 			} else if (world.getEnvironment() == Environment.NETHER) {
-				synchronized (player) {
-					for (int i = 0; i < currentChunks.size(); i++) {
-						Pair<Integer, Integer> chunk = currentChunks.get(i);
-						if (chunks.contains(chunk) || !world.isChunkLoaded(chunk.getLeft(), chunk.getRight())) {
-							continue;
-						}
-						
-						chunks.add(chunk);
-						blocks.addAll(spawn(Material.QUARTZ_ORE, 15, 120, player, world, chunk.getLeft(), chunk.getRight()));
+				for (int i = 0; i < currentChunks.size(); i++) {
+					Pair<Integer, Integer> chunk = currentChunks.get(i);
+					if (chunks.contains(chunk) || !world.isChunkLoaded(chunk.getLeft(), chunk.getRight())) {
+						continue;
 					}
+					
+					chunks.add(chunk);
+					blocks.addAll(spawn(Material.QUARTZ_ORE, 15, 120, player, world, chunk.getLeft(), chunk.getRight()));
 				}
 			}
 		}

@@ -3,7 +3,6 @@ package me.egg82.tcpp.commands.lucky;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 
 import me.egg82.tcpp.core.LuckyCommand;
@@ -19,8 +18,8 @@ public class SpawnVillagerCommand extends LuckyCommand {
 	private IExpiringRegistry<UUID> luckyVillagerRegistry = ServiceLocator.getService(LuckyVillagerRegistry.class);
 	
 	//constructor
-	public SpawnVillagerCommand(Player player) {
-		super(player);
+	public SpawnVillagerCommand() {
+		super();
 		
 		luckyVillagerRegistry.onExpire().attach((s, e) -> onExpire(s, e));
 	}

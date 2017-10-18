@@ -25,8 +25,8 @@ public class RandomBreakEventCommand extends EventCommand<BlockBreakEvent> {
 	private Material[] materials = null;
 	
 	//constructor
-	public RandomBreakEventCommand(BlockBreakEvent event) {
-		super(event);
+	public RandomBreakEventCommand() {
+		super();
 		
 		TypeFilterHelper<Material> materialFilterHelper = new TypeFilterHelper<Material>(Material.class);
 		materials = materialFilterHelper.filter(

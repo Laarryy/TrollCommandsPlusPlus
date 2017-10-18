@@ -21,8 +21,8 @@ public class VegetableEventCommand extends EventCommand<PlayerTeleportEvent> {
 	private IRegistry<UUID> vegetableLocationRegistry = ServiceLocator.getService(VegetableLocationRegistry.class);
 	
 	//constructor
-	public VegetableEventCommand(PlayerTeleportEvent event) {
-		super(event);
+	public VegetableEventCommand() {
+		super();
 	}
 	
 	//public

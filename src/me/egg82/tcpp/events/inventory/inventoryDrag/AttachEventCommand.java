@@ -26,8 +26,8 @@ public class AttachEventCommand extends EventCommand<InventoryDragEvent> {
 	private INBTHelper nbtHelper = ServiceLocator.getService(INBTHelper.class);
 	
 	//constructor
-	public AttachEventCommand(InventoryDragEvent event) {
-		super(event);
+	public AttachEventCommand() {
+		super();
 	}
 	
 	//public

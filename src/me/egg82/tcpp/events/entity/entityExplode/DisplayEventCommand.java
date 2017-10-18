@@ -18,8 +18,8 @@ public class DisplayEventCommand extends EventCommand<EntityExplodeEvent> {
 	private IRegistry<UUID> displayRegistry = ServiceLocator.getService(DisplayRegistry.class);
 	
 	//constructor
-	public DisplayEventCommand(EntityExplodeEvent event) {
-		super(event);
+	public DisplayEventCommand() {
+		super();
 	}
 	
 	//public

@@ -16,8 +16,8 @@ public class LavaBuildEventCommand extends EventCommand<BlockPlaceEvent> {
 	private IRegistry<UUID> lavaBuildRegistry = ServiceLocator.getService(LavaBuildRegistry.class);
 	
 	//constructor
-	public LavaBuildEventCommand(BlockPlaceEvent event) {
-		super(event);
+	public LavaBuildEventCommand() {
+		super();
 	}
 	
 	//public

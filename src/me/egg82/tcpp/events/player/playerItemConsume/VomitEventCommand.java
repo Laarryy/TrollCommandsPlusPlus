@@ -23,8 +23,8 @@ public class VomitEventCommand extends EventCommand<PlayerItemConsumeEvent> {
 	private IPlayerHelper playerUtil = ServiceLocator.getService(IPlayerHelper.class);
 	
 	//constructor
-	public VomitEventCommand(PlayerItemConsumeEvent event) {
-		super(event);
+	public VomitEventCommand() {
+		super();
 	}
 	
 	//public

@@ -18,8 +18,8 @@ public class LuckyBlockEventCommand extends EventCommand<BlockPlaceEvent> {
 	private INBTHelper nbtHelper = ServiceLocator.getService(INBTHelper.class);
 	
 	//constructor
-	public LuckyBlockEventCommand(BlockPlaceEvent event) {
-		super(event);
+	public LuckyBlockEventCommand() {
+		super();
 	}
 	
 	//public

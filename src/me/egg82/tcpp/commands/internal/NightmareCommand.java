@@ -1,17 +1,12 @@
 package me.egg82.tcpp.commands.internal;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -26,9 +21,12 @@ import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CompleteEventArgs;
 import ninja.egg82.events.ExceptionEventArgs;
 import ninja.egg82.exceptionHandlers.IExceptionHandler;
+import ninja.egg82.patterns.FixedObjectPool;
+import ninja.egg82.patterns.IObjectPool;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.PluginCommand;
+import ninja.egg82.plugin.enums.BukkitInitType;
 import ninja.egg82.plugin.enums.SpigotLanguageType;
 import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
 import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
@@ -49,15 +47,15 @@ public class NightmareCommand extends PluginCommand {
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	private IFakeEntityHelper fakeEntityHelper = ServiceLocator.getService(IFakeEntityHelper.class);
 	
-	private String gameVersion = ServiceLocator.getService(InitRegistry.class).getRegister("game.version", String.class);
+	private String gameVersion = ServiceLocator.getService(InitRegistry.class).getRegister(BukkitInitType.GAME_VERSION, String.class);
 	
 	//constructor
-	public NightmareCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public NightmareCommand() {
+		super();
 	}
 	
 	//public
-	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+	public List<String> tabComplete() {
 		if (args.length == 1) {
 			ArrayList<String> retVal = new ArrayList<String>();
 			
@@ -157,34 +155,32 @@ public class NightmareCommand extends PluginCommand {
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	private void e(UUID uuid, Player player) {
-		Collection<IFakeLivingEntity> entities = Collections.synchronizedCollection(new ArrayDeque<IFakeLivingEntity>());
+		Location[] zombieLocs = LocationUtil.getCircleAround(player.getLocation(), 3, MathUtil.fairRoundedRandom(6, 9));
+		Location[] zombie2Locs = LocationUtil.getCircleAround(player.getLocation(), 5, MathUtil.fairRoundedRandom(8, 12));
+		
+		IObjectPool<IFakeLivingEntity> entities = new FixedObjectPool<IFakeLivingEntity>(zombieLocs.length + zombie2Locs.length);
 		
 		Thread runner = new Thread(new Runnable() {
 			public void run() {
-				Location[] zombieLocs = LocationUtil.getCircleAround(player.getLocation(), 3, MathUtil.fairRoundedRandom(6, 9));
-				Location[] zombie2Locs = LocationUtil.getCircleAround(player.getLocation(), 5, MathUtil.fairRoundedRandom(8, 12));
-				
-				synchronized (entities) {
-					for (int i = 0; i < zombieLocs.length; i++) {
-						IFakeLivingEntity e = fakeEntityHelper.createEntity(zombieLocs[i], EntityType.ZOMBIE);
-						e.addPlayer(player);
-						Vector v = player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23);
-						if (LocationUtil.isFinite(v)) {
-							e.moveTo(BlockUtil.getTopWalkableBlock(e.getLocation().add(v)));
-						}
-						e.lookTo(player.getEyeLocation());
-						entities.add(e);
+				for (int i = 0; i < zombieLocs.length; i++) {
+					IFakeLivingEntity e = fakeEntityHelper.createEntity(zombieLocs[i], EntityType.ZOMBIE);
+					e.addPlayer(player);
+					Vector v = player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23);
+					if (LocationUtil.isFinite(v)) {
+						e.moveTo(BlockUtil.getTopWalkableBlock(e.getLocation().add(v)));
 					}
-					for (int i = 0; i < zombie2Locs.length; i++) {
-						IFakeLivingEntity e = fakeEntityHelper.createEntity(zombie2Locs[i], EntityType.ZOMBIE);
-						e.addPlayer(player);
-						Vector v = player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23);
-						if (LocationUtil.isFinite(v)) {
-							e.moveTo(BlockUtil.getTopWalkableBlock(e.getLocation().add(v)));
-						}
-						e.lookTo(player.getEyeLocation());
-						entities.add(e);
+					e.lookTo(player.getEyeLocation());
+					entities.add(e);
+				}
+				for (int i = 0; i < zombie2Locs.length; i++) {
+					IFakeLivingEntity e = fakeEntityHelper.createEntity(zombie2Locs[i], EntityType.ZOMBIE);
+					e.addPlayer(player);
+					Vector v = player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23);
+					if (LocationUtil.isFinite(v)) {
+						e.moveTo(BlockUtil.getTopWalkableBlock(e.getLocation().add(v)));
 					}
+					e.lookTo(player.getEyeLocation());
+					entities.add(e);
 				}
 				
 				ServiceLocator.getService(IExceptionHandler.class).removeThread(Thread.currentThread());
@@ -219,14 +215,12 @@ public class NightmareCommand extends PluginCommand {
 	}
 	@SuppressWarnings("unchecked")
 	private void eUndo(UUID uuid, Player player) {
-		Collection<IFakeLivingEntity> entities = nightmareRegistry.getRegister(uuid, Collection.class);
+		IObjectPool<IFakeLivingEntity> entities = nightmareRegistry.getRegister(uuid, IObjectPool.class);
 		
 		Thread runner = new Thread(new Runnable() {
 			public void run() {
-				synchronized (entities) {
-					for (IFakeLivingEntity e : entities) {
-						e.destroy();
-					}
+				for (IFakeLivingEntity e : entities) {
+					e.destroy();
 				}
 				ServiceLocator.getService(IExceptionHandler.class).removeThread(Thread.currentThread());
 			}
@@ -240,14 +234,12 @@ public class NightmareCommand extends PluginCommand {
 	}
 	@SuppressWarnings("unchecked")
 	private void eUndo(UUID uuid, OfflinePlayer player) {
-		Collection<IFakeLivingEntity> entities = nightmareRegistry.getRegister(uuid, Collection.class);
+		IObjectPool<IFakeLivingEntity> entities = nightmareRegistry.getRegister(uuid, IObjectPool.class);
 		
 		Thread runner = new Thread(new Runnable() {
 			public void run() {
-				synchronized (entities) {
-					for (IFakeLivingEntity e : entities) {
-						e.destroy();
-					}
+				for (IFakeLivingEntity e : entities) {
+					e.destroy();
 				}
 				ServiceLocator.getService(IExceptionHandler.class).removeThread(Thread.currentThread());
 			}

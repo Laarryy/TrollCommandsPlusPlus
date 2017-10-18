@@ -16,8 +16,8 @@ public class GarbleEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 	private IRegistry<UUID> garbleRegistry = ServiceLocator.getService(GarbleRegistry.class);
 	
 	//constructor
-	public GarbleEventCommand(AsyncPlayerChatEvent event) {
-		super(event);
+	public GarbleEventCommand() {
+		super();
 	}
 	
 	//public

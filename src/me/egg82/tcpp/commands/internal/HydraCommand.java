@@ -3,8 +3,6 @@ package me.egg82.tcpp.commands.internal;
 import java.util.List;
 import java.util.UUID;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.enums.PermissionsType;
@@ -29,12 +27,12 @@ public class HydraCommand extends PluginCommand {
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
-	public HydraCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public HydraCommand() {
+		super();
 	}
 	
 	//public
-	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+	public List<String> tabComplete() {
 		return null;
 	}
 	

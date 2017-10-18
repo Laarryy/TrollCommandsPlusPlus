@@ -18,8 +18,8 @@ public class DuckEventCommand extends EventCommand<PlayerQuitEvent> {
 	private IDisguiseHelper disguiseHelper = ServiceLocator.getService(IDisguiseHelper.class);
 	
 	//constructor
-	public DuckEventCommand(PlayerQuitEvent event) {
-		super(event);
+	public DuckEventCommand() {
+		super();
 	}
 	
 	//public

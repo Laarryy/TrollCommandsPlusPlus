@@ -14,8 +14,8 @@ public class StarveEventCommand extends EventCommand<PlayerDeathEvent> {
 	private IRegistry<UUID> starveRegistry = ServiceLocator.getService(StarveRegistry.class);
 	
 	//constructor
-	public StarveEventCommand(PlayerDeathEvent event) {
-		super(event);
+	public StarveEventCommand() {
+		super();
 	}
 	
 	//public

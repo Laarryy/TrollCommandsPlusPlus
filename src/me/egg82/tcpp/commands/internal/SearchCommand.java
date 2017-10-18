@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -32,7 +30,6 @@ import ninja.egg82.plugin.exceptions.PlayerNotFoundException;
 import ninja.egg82.plugin.exceptions.SenderNotAllowedException;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.LanguageUtil;
-import ninja.egg82.startup.InitRegistry;
 
 public class SearchCommand extends PluginCommand {
 	//vars
@@ -46,10 +43,10 @@ public class SearchCommand extends PluginCommand {
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
-	public SearchCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public SearchCommand() {
+		super();
 		
-		String[] list = ((String) ((PluginDescriptionFile) ServiceLocator.getService(InitRegistry.class).getRegister("plugin", JavaPlugin.class).getDescription()).getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
+		String[] list = ((String) ((PluginDescriptionFile) ServiceLocator.getService(JavaPlugin.class).getDescription()).getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
 		for (String entry : list) {
 			if (entry.contains("-= Available Commands =-")) {
 				continue;
@@ -60,7 +57,7 @@ public class SearchCommand extends PluginCommand {
 	}
 	
 	//public
-	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+	public List<String> tabComplete() {
 		if (args.length == 0 || args[0].isEmpty()) {
 			return commandNames;
 		} else if (args.length == 1) {

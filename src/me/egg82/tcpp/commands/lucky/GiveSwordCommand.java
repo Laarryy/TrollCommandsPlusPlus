@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -16,8 +15,8 @@ public class GiveSwordCommand extends LuckyCommand {
 	//vars
 	
 	//constructor
-	public GiveSwordCommand(Player player) {
-		super(player);
+	public GiveSwordCommand() {
+		super();
 	}
 	
 	//public

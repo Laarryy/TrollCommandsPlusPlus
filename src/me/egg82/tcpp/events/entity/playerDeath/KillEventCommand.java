@@ -14,8 +14,8 @@ public class KillEventCommand extends EventCommand<PlayerDeathEvent> {
 	private IRegistry<UUID> killRegistry = ServiceLocator.getService(KillRegistry.class);
 	
 	//constructor
-	public KillEventCommand(PlayerDeathEvent event) {
-		super(event);
+	public KillEventCommand() {
+		super();
 	}
 	
 	//public

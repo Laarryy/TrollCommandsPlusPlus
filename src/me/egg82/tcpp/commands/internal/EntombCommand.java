@@ -7,8 +7,6 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.enums.LanguageType;
@@ -32,12 +30,12 @@ public class EntombCommand extends PluginCommand {
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
-	public EntombCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public EntombCommand() {
+		super();
 	}
 	
 	//public
-	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+	public List<String> tabComplete() {
 		if (args.length == 1) {
 			ArrayList<String> retVal = new ArrayList<String>();
 			

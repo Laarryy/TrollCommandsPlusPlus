@@ -21,8 +21,8 @@ public class DisplayEventCommand extends EventCommand<PlayerQuitEvent> {
 	private DisplayHelper displayHelper = ServiceLocator.getService(DisplayHelper.class);
 	
 	//constructor
-	public DisplayEventCommand(PlayerQuitEvent event) {
-		super(event);
+	public DisplayEventCommand() {
+		super();
 	}
 	
 	//public

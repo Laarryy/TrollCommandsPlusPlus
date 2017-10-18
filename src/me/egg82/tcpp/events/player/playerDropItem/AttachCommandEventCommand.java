@@ -15,8 +15,8 @@ public class AttachCommandEventCommand extends EventCommand<PlayerDropItemEvent>
 	private INBTHelper nbtHelper = ServiceLocator.getService(INBTHelper.class);
 	
 	//constructor
-	public AttachCommandEventCommand(PlayerDropItemEvent event) {
-		super(event);
+	public AttachCommandEventCommand() {
+		super();
 	}
 	
 	//public

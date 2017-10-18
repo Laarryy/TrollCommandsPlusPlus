@@ -8,8 +8,6 @@ import java.util.UUID;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -45,8 +43,8 @@ public class SpawnBreakCommand extends PluginCommand {
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
-	public SpawnBreakCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public SpawnBreakCommand() {
+		super();
 		
 		EntityType[] types = EntityType.values();
 		
@@ -77,7 +75,7 @@ public class SpawnBreakCommand extends PluginCommand {
 	}
 	
 	//public
-	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+	public List<String> tabComplete() {
 		if (args.length == 1) {
 			ArrayList<String> retVal = new ArrayList<String>();
 			

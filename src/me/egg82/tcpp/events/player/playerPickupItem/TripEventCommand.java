@@ -14,8 +14,8 @@ public class TripEventCommand extends EventCommand<PlayerPickupItemEvent> {
 	private IRegistry<UUID> tripRegistry = ServiceLocator.getService(TripRegistry.class);
 	
 	//constructor
-	public TripEventCommand(PlayerPickupItemEvent event) {
-		super(event);
+	public TripEventCommand() {
+		super();
 	}
 	
 	//public

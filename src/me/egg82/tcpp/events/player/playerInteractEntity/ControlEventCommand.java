@@ -17,8 +17,8 @@ public class ControlEventCommand extends EventCommand<PlayerInteractEntityEvent>
 	private IRegistry<UUID> controlRegistry = ServiceLocator.getService(ControlRegistry.class);
 	
 	//constructor
-	public ControlEventCommand(PlayerInteractEntityEvent event) {
-		super(event);
+	public ControlEventCommand() {
+		super();
 	}
 	
 	//public

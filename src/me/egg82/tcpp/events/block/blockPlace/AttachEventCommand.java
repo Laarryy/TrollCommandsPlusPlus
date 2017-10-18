@@ -13,8 +13,8 @@ public class AttachEventCommand extends EventCommand<BlockPlaceEvent> {
 	private INBTHelper nbtHelper = ServiceLocator.getService(INBTHelper.class);
 	
 	//constructor
-	public AttachEventCommand(BlockPlaceEvent event) {
-		super(event);
+	public AttachEventCommand() {
+		super();
 	}
 	
 	//public

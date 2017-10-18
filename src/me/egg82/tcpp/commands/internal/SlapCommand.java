@@ -6,8 +6,6 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.enums.LanguageType;
@@ -33,8 +31,8 @@ public class SlapCommand extends PluginCommand {
 	private Sound[] sounds = null;
 	
 	//constructor
-	public SlapCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public SlapCommand() {
+		super();
 		
 		TypeFilterHelper<Sound> soundFilterHelper = new TypeFilterHelper<Sound>(Sound.class);
 		sounds = soundFilterHelper.filter(
@@ -43,7 +41,7 @@ public class SlapCommand extends PluginCommand {
 	}
 	
 	//public
-	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+	public List<String> tabComplete() {
 		if (args.length == 1) {
 			ArrayList<String> retVal = new ArrayList<String>();
 			

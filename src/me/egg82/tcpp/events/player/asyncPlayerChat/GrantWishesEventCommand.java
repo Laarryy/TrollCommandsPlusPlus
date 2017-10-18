@@ -29,8 +29,8 @@ public class GrantWishesEventCommand extends EventCommand<AsyncPlayerChatEvent> 
 	private EntityType illusioner = null;
 	
 	//constructor
-	public GrantWishesEventCommand(AsyncPlayerChatEvent event) {
-		super(event);
+	public GrantWishesEventCommand() {
+		super();
 		
 		try {
 			shulker = EntityType.valueOf("SHULKER");

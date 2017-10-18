@@ -15,8 +15,8 @@ public class BludgerEventCommand extends EventCommand<PlayerQuitEvent> {
 	private IRegistry<UUID> bludgerRegistry = ServiceLocator.getService(BludgerRegistry.class);
 	
 	//constructor
-	public BludgerEventCommand(PlayerQuitEvent event) {
-		super(event);
+	public BludgerEventCommand() {
+		super();
 	}
 	
 	//public

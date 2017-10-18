@@ -21,8 +21,8 @@ public class SlowUndoEventCommand extends EventCommand<BlockPlaceEvent> {
 	private IRegistry<UUID> slowUndoRegistry = ServiceLocator.getService(SlowUndoRegistry.class);
 	
 	//constructor
-	public SlowUndoEventCommand(BlockPlaceEvent event) {
-		super(event);
+	public SlowUndoEventCommand() {
+		super();
 	}
 	
 	//public

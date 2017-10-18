@@ -23,8 +23,8 @@ public class AttachEventCommand extends EventCommand<BlockBreakEvent> {
 	private IPlayerHelper playerHelper = ServiceLocator.getService(IPlayerHelper.class);
 	
 	//constructor
-	public AttachEventCommand(BlockBreakEvent event) {
-		super(event);
+	public AttachEventCommand() {
+		super();
 	}
 	
 	//public

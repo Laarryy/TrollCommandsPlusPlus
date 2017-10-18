@@ -16,8 +16,8 @@ public class LuckyEventCommand extends EventCommand<EntityDeathEvent> {
 	private IExpiringRegistry<UUID> luckyVillagerRegistry = ServiceLocator.getService(LuckyVillagerRegistry.class);
 	
 	//constructor
-	public LuckyEventCommand(EntityDeathEvent event) {
-		super(event);
+	public LuckyEventCommand() {
+		super();
 	}
 	
 	//public

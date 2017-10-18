@@ -1,11 +1,11 @@
 package me.egg82.tcpp.events.player.playerRespawn;
 
-import java.util.Collection;
 import java.util.UUID;
 
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import me.egg82.tcpp.services.registries.NightmareRegistry;
+import ninja.egg82.patterns.IObjectPool;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
@@ -16,8 +16,8 @@ public class NightmareEventCommand extends EventCommand<PlayerRespawnEvent> {
 	private IRegistry<UUID> nightmareRegistry = ServiceLocator.getService(NightmareRegistry.class);
 	
 	//constructor
-	public NightmareEventCommand(PlayerRespawnEvent event) {
-		super(event);
+	public NightmareEventCommand() {
+		super();
 	}
 	
 	//public
@@ -27,12 +27,12 @@ public class NightmareEventCommand extends EventCommand<PlayerRespawnEvent> {
 	protected void onExecute(long elapsedMilliseconds) {
 		UUID uuid = event.getPlayer().getUniqueId();
 		
-		if (!nightmareRegistry.hasRegister(uuid)) {
-			return;
-		}
+		IObjectPool<IFakeLivingEntity> entities = nightmareRegistry.getRegister(uuid, IObjectPool.class);
 		
-		for (IFakeLivingEntity entity : (Collection<IFakeLivingEntity>) nightmareRegistry.getRegister(uuid)) {
-			entity.teleportTo(event.getRespawnLocation());
+		if (entities != null) {
+			for (IFakeLivingEntity e : entities) {
+				e.teleportTo(event.getRespawnLocation());
+			}
 		}
 	}
 }

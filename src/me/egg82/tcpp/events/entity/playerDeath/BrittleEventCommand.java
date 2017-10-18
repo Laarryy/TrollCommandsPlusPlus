@@ -14,8 +14,8 @@ public class BrittleEventCommand extends EventCommand<PlayerDeathEvent> {
 	private IRegistry<UUID> brittleRegistry = ServiceLocator.getService(BrittleRegistry.class);
 	
 	//constructor
-	public BrittleEventCommand(PlayerDeathEvent event) {
-		super(event);
+	public BrittleEventCommand() {
+		super();
 	}
 	
 	//public

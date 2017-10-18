@@ -18,8 +18,8 @@ public class ControlEventCommand extends EventCommand<PlayerTeleportEvent> {
 	private IRegistry<UUID> controlRegistry = ServiceLocator.getService(ControlRegistry.class);
 	
 	//constructor
-	public ControlEventCommand(PlayerTeleportEvent event) {
-		super(event);
+	public ControlEventCommand() {
+		super();
 	}
 	
 	//public

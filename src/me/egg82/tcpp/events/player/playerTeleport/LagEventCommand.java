@@ -20,8 +20,8 @@ public class LagEventCommand extends EventCommand<PlayerTeleportEvent> {
 	private IRegistry<UUID> lagLocationRegistry = ServiceLocator.getService(LagLocationRegistry.class);
 	
 	//constructor
-	public LagEventCommand(PlayerTeleportEvent event) {
-		super(event);
+	public LagEventCommand() {
+		super();
 	}
 	
 	//public

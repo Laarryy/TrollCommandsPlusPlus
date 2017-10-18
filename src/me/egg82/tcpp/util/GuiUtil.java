@@ -23,7 +23,6 @@ import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.tuples.Pair;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.sql.LanguageDatabase;
-import ninja.egg82.startup.InitRegistry;
 
 public class GuiUtil {
 	//vars
@@ -45,7 +44,7 @@ public class GuiUtil {
 		}
 		if (commands == null) {
 			commands = new HashMap<String, Pair<String, String>>();
-			String[] list = ((String) ((PluginDescriptionFile) ServiceLocator.getService(InitRegistry.class).getRegister("plugin", JavaPlugin.class).getDescription()).getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
+			String[] list = ((String) ((PluginDescriptionFile) ServiceLocator.getService(JavaPlugin.class).getDescription()).getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
 			
 			for (String entry : list) {
 				if (entry.contains("-= Available Commands =-")) {

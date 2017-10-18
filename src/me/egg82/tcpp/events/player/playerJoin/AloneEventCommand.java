@@ -17,8 +17,8 @@ public class AloneEventCommand extends EventCommand<PlayerJoinEvent> {
 	private IRegistry<UUID> aloneRegistry = ServiceLocator.getService(AloneRegistry.class);
 	
 	//constructor
-	public AloneEventCommand(PlayerJoinEvent event) {
-		super(event);
+	public AloneEventCommand() {
+		super();
 	}
 	
 	//public

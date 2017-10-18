@@ -22,8 +22,8 @@ public class NecroEventCommand extends EventCommand<PlayerQuitEvent> {
 	private IEntityHelper entityHelper = ServiceLocator.getService(IEntityHelper.class);
 	
 	//constructor
-	public NecroEventCommand(PlayerQuitEvent event) {
-		super(event);
+	public NecroEventCommand() {
+		super();
 	}
 	
 	//public

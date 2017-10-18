@@ -24,8 +24,8 @@ public class HydraEventCommand extends EventCommand<EntityDeathEvent> {
 	private IRegistry<UUID> hydraMobRegistry = ServiceLocator.getService(HydraMobRegistry.class);
 	
 	//constructor
-	public HydraEventCommand(EntityDeathEvent event) {
-		super(event);
+	public HydraEventCommand() {
+		super();
 	}
 	
 	//public

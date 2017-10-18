@@ -24,8 +24,8 @@ public class RandomMenuEventCommand extends EventCommand<InventoryOpenEvent> {
 	private InventoryType[] types = null;
 	
 	//constructor
-	public RandomMenuEventCommand(InventoryOpenEvent event) {
-		super(event);
+	public RandomMenuEventCommand() {
+		super();
 		
 		TypeFilterHelper<InventoryType> typeFilterHelper = new TypeFilterHelper<InventoryType>(InventoryType.class);
 		types = typeFilterHelper.filter(

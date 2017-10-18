@@ -19,8 +19,8 @@ public class ControlEventCommand extends EventCommand<PlayerQuitEvent> {
 	private ControlHelper controlHelper = ServiceLocator.getService(ControlHelper.class);
 	
 	//constructor
-	public ControlEventCommand(PlayerQuitEvent event) {
-		super(event);
+	public ControlEventCommand() {
+		super();
 	}
 	
 	//public

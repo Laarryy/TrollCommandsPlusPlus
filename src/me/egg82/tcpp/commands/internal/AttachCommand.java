@@ -7,8 +7,6 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.help.HelpTopic;
 import org.bukkit.inventory.ItemStack;
@@ -42,8 +40,8 @@ public class AttachCommand extends PluginCommand {
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
-	public AttachCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public AttachCommand() {
+		super();
 		
 		for (HelpTopic topic : Bukkit.getServer().getHelpMap().getHelpTopics()) {
 			String name = topic.getName();
@@ -56,7 +54,7 @@ public class AttachCommand extends PluginCommand {
 	}
 	
 	//public
-	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+	public List<String> tabComplete() {
 		if (args.length == 1) {
 			if (args[0].isEmpty()) {
 				return commandNames;

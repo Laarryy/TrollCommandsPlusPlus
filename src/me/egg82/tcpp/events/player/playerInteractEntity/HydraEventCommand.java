@@ -23,8 +23,8 @@ public class HydraEventCommand extends EventCommand<PlayerInteractEntityEvent> {
 	private IExpiringRegistry<UUID> hydraMobRegistry = ServiceLocator.getService(HydraMobRegistry.class);
 	
 	//constructor
-	public HydraEventCommand(PlayerInteractEntityEvent event) {
-		super(event);
+	public HydraEventCommand() {
+		super();
 		
 		hydraMobRegistry.onExpire().attach((s, e) -> onMobExpire(s, e));
 	}

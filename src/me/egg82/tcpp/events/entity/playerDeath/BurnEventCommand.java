@@ -14,8 +14,8 @@ public class BurnEventCommand extends EventCommand<PlayerDeathEvent> {
 	private IRegistry<UUID> burnRegistry = ServiceLocator.getService(BurnRegistry.class);
 	
 	//constructor
-	public BurnEventCommand(PlayerDeathEvent event) {
-		super(event);
+	public BurnEventCommand() {
+		super();
 	}
 	
 	//public

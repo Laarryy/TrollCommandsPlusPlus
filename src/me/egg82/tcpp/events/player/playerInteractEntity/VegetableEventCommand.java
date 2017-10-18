@@ -17,8 +17,8 @@ public class VegetableEventCommand extends EventCommand<PlayerInteractEntityEven
 	private IRegistry<UUID> vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
 	
 	//constructor
-	public VegetableEventCommand(PlayerInteractEntityEvent event) {
-		super(event);
+	public VegetableEventCommand() {
+		super();
 	}
 	
 	//public

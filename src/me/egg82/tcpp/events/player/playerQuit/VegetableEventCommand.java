@@ -18,8 +18,8 @@ public class VegetableEventCommand extends EventCommand<PlayerQuitEvent> {
 	private VegetableHelper vegetableHelper = ServiceLocator.getService(VegetableHelper.class);
 	
 	//constructor
-	public VegetableEventCommand(PlayerQuitEvent event) {
-		super(event);
+	public VegetableEventCommand() {
+		super();
 	}
 	
 	//public

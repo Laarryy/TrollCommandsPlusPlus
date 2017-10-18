@@ -26,8 +26,8 @@ public class TrollEventCommand extends EventCommand<InventoryClickEvent> {
 	private IRegistry<UUID> trollSearchRegistry = ServiceLocator.getService(TrollSearchRegistry.class);
 	
 	//constructor
-	public TrollEventCommand(InventoryClickEvent event) {
-		super(event);
+	public TrollEventCommand() {
+		super();
 	}
 	
 	//public

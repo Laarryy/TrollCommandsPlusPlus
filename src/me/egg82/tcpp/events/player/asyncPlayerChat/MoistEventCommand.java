@@ -26,8 +26,8 @@ public class MoistEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 	private Pattern p = Pattern.compile("[^a-zA-Z0-9']");
 	
 	//constructor
-	public MoistEventCommand(AsyncPlayerChatEvent event) {
-		super(event);
+	public MoistEventCommand() {
+		super();
 	}
 	
 	//public

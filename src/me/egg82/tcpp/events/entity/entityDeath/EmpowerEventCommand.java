@@ -16,8 +16,8 @@ public class EmpowerEventCommand extends EventCommand<EntityDeathEvent> {
 	private IRegistry<UUID> empowerEntityRegistry = ServiceLocator.getService(EmpowerEntityRegistry.class);
 	
 	//constructor
-	public EmpowerEventCommand(EntityDeathEvent event) {
-		super(event);
+	public EmpowerEventCommand() {
+		super();
 	}
 	
 	//public

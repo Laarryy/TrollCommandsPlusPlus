@@ -21,8 +21,8 @@ public class MidasTouchEventCommand extends EventCommand<PlayerMoveEvent> {
 	private DisplayHelper displayHelper = ServiceLocator.getService(DisplayHelper.class);
 	
 	//constructor
-	public MidasTouchEventCommand(PlayerMoveEvent event) {
-		super(event);
+	public MidasTouchEventCommand() {
+		super();
 	}
 	
 	//public

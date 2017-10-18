@@ -18,8 +18,8 @@ public class EmpowerEventCommand extends EventCommand<PlayerQuitEvent> {
 	private IRegistry<UUID> empowerEntityRegistry = ServiceLocator.getService(EmpowerEntityRegistry.class);
 	
 	//constructor
-	public EmpowerEventCommand(PlayerQuitEvent event) {
-		super(event);
+	public EmpowerEventCommand() {
+		super();
 	}
 	
 	//public

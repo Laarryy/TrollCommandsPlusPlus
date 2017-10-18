@@ -14,8 +14,8 @@ public class SpartaEventCommand extends EventCommand<PlayerDeathEvent> {
 	private IRegistry<UUID> spartaRegistry = ServiceLocator.getService(SpartaRegistry.class);
 	
 	//constructor
-	public SpartaEventCommand(PlayerDeathEvent event) {
-		super(event);
+	public SpartaEventCommand() {
+		super();
 	}
 	
 	//public

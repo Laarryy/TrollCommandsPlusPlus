@@ -14,8 +14,8 @@ public class BludgerEventCommand extends EventCommand<EntityExplodeEvent> {
 	private IRegistry<UUID> bludgerRegistry = ServiceLocator.getService(BludgerRegistry.class);
 	
 	//constructor
-	public BludgerEventCommand(EntityExplodeEvent event) {
-		super(event);
+	public BludgerEventCommand() {
+		super();
 	}
 	
 	//public

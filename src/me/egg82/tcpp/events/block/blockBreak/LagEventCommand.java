@@ -28,8 +28,8 @@ public class LagEventCommand extends EventCommand<BlockBreakEvent> {
 	private IPlayerHelper playerUtil = ServiceLocator.getService(IPlayerHelper.class);
 	
 	//constructor
-	public LagEventCommand(BlockBreakEvent event) {
-		super(event);
+	public LagEventCommand() {
+		super();
 	}
 	
 	//public

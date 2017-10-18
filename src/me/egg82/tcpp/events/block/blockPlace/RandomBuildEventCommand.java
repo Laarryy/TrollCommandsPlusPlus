@@ -20,8 +20,8 @@ public class RandomBuildEventCommand extends EventCommand<BlockPlaceEvent> {
 	private Material[] materials = null;
 
 	//constructor
-	public RandomBuildEventCommand(BlockPlaceEvent event) {
-		super(event);
+	public RandomBuildEventCommand() {
+		super();
 		
 		TypeFilterHelper<Material> materialFilterHelper = new TypeFilterHelper<Material>(Material.class);
 		materials = materialFilterHelper.filter(

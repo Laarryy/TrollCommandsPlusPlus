@@ -14,8 +14,8 @@ public class VegetableEventCommand extends EventCommand<ItemDespawnEvent> {
 	private IRegistry<UUID> vegetableItemRegistry = ServiceLocator.getService(VegetableItemRegistry.class);
 	
 	//constructor
-	public VegetableEventCommand(ItemDespawnEvent event) {
-		super(event);
+	public VegetableEventCommand() {
+		super();
 	}
 	
 	//public

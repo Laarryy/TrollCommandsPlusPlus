@@ -14,8 +14,8 @@ public class HurtEventCommand extends EventCommand<PlayerDeathEvent> {
 	private IRegistry<UUID> hurtRegistry = ServiceLocator.getService(HurtRegistry.class);
 	
 	//constructor
-	public HurtEventCommand(PlayerDeathEvent event) {
-		super(event);
+	public HurtEventCommand() {
+		super();
 	}
 	
 	//public

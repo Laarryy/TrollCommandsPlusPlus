@@ -15,8 +15,8 @@ public class InvertEventCommand extends EventCommand<PlayerQuitEvent> {
 	private IRegistry<UUID> invertRegistry = ServiceLocator.getService(InvertRegistry.class);
 	
 	//constructor
-	public InvertEventCommand(PlayerQuitEvent event) {
-		super(event);
+	public InvertEventCommand() {
+		super();
 	}
 	
 	//public

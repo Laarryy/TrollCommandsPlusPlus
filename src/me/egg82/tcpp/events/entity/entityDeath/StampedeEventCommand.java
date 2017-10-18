@@ -17,8 +17,8 @@ public class StampedeEventCommand extends EventCommand<EntityDeathEvent> {
 	private IRegistry<UUID> stampedeRegistry = ServiceLocator.getService(StampedeRegistry.class);
 	
 	//constructor
-	public StampedeEventCommand(EntityDeathEvent event) {
-		super(event);
+	public StampedeEventCommand() {
+		super();
 	}
 	
 	//public

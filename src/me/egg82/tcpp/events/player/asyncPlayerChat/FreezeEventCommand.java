@@ -19,8 +19,8 @@ public class FreezeEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 	private IRegistry<UUID> freezeRegistry = ServiceLocator.getService(FreezeRegistry.class);
 	
 	//constructor
-	public FreezeEventCommand(AsyncPlayerChatEvent event) {
-		super(event);
+	public FreezeEventCommand() {
+		super();
 	}
 	
 	//public

@@ -16,8 +16,8 @@ public class ExplodeBreakEventCommand extends EventCommand<BlockBreakEvent> {
 	private IRegistry<UUID> explodeBreakRegistry = ServiceLocator.getService(ExplodeBreakRegistry.class);
 	
 	//constructor
-	public ExplodeBreakEventCommand(BlockBreakEvent event) {
-		super(event);
+	public ExplodeBreakEventCommand() {
+		super();
 	}
 	
 	//public

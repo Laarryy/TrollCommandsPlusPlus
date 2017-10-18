@@ -25,8 +25,8 @@ public class LagEventCommand extends EventCommand<EntityDamageByEntityEvent> {
 	private IRegistry<UUID> lagEntityRegistry = ServiceLocator.getService(LagEntityRegistry.class);
 	
 	//constructor
-	public LagEventCommand(EntityDamageByEntityEvent event) {
-		super(event);
+	public LagEventCommand() {
+		super();
 	}
 	
 	//public

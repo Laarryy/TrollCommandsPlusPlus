@@ -1,15 +1,15 @@
-package me.egg82.tcpp.events.inventory.inventoryClick;
+package me.egg82.tcpp.events.player.playerDropItem;
 
 import java.util.UUID;
 
-import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 
 import me.egg82.tcpp.services.registries.FreezeRegistry;
 import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.commands.EventCommand;
 
-public class FreezeEventCommand extends EventCommand<InventoryClickEvent> {
+public class FreezeEventCommand extends EventCommand<PlayerItemHeldEvent> {
 	//vars
 	private IRegistry<UUID> freezeRegistry = ServiceLocator.getService(FreezeRegistry.class);
 	
@@ -26,7 +26,7 @@ public class FreezeEventCommand extends EventCommand<InventoryClickEvent> {
 			return;
 		}
 		
-		if (freezeRegistry.hasRegister(event.getWhoClicked().getUniqueId())) {
+		if (freezeRegistry.hasRegister(event.getPlayer().getUniqueId())) {
 			event.setCancelled(true);
 		}
 	}

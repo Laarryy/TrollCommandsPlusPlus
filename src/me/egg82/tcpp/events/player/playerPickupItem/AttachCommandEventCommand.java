@@ -15,8 +15,8 @@ public class AttachCommandEventCommand extends EventCommand<PlayerPickupItemEven
 	private INBTHelper nbtHelper = ServiceLocator.getService(INBTHelper.class);
 	
 	//constructor
-	public AttachCommandEventCommand(PlayerPickupItemEvent event) {
-		super(event);
+	public AttachCommandEventCommand() {
+		super();
 	}
 	
 	//public

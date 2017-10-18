@@ -9,9 +9,8 @@ public abstract class LuckyCommand extends SynchronousCommand {
 	protected Player player = null;
 	
 	//constructor
-	public LuckyCommand(Player player) {
+	public LuckyCommand() {
 		super();
-		this.player = player;
 	}
 	
 	//public

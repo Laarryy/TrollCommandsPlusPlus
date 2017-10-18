@@ -14,8 +14,8 @@ public class NoPickupEventCommand extends EventCommand<PlayerPickupItemEvent> {
 	private IRegistry<UUID> noPickupRegistry = ServiceLocator.getService(NoPickupRegistry.class);
 	
 	//constructor
-	public NoPickupEventCommand(PlayerPickupItemEvent event) {
-		super(event);
+	public NoPickupEventCommand() {
+		super();
 	}
 	
 	//public

@@ -18,8 +18,8 @@ public class InfinityEventCommand extends EventCommand<PlayerMoveEvent> {
 	private IRegistry<UUID> infinityRegistry = ServiceLocator.getService(InfinityRegistry.class);
 	
 	//constructor
-	public InfinityEventCommand(PlayerMoveEvent event) {
-		super(event);
+	public InfinityEventCommand() {
+		super();
 	}
 	
 	//public

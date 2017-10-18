@@ -22,8 +22,8 @@ public class DeathTagEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 	private IEntityHelper entityUtil = ServiceLocator.getService(IEntityHelper.class);
 	
 	//constructor
-	public DeathTagEventCommand(AsyncPlayerChatEvent event) {
-		super(event);
+	public DeathTagEventCommand() {
+		super();
 	}
 	
 	//public

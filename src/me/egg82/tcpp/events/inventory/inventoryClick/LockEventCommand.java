@@ -17,8 +17,8 @@ public class LockEventCommand extends EventCommand<InventoryClickEvent> {
 	private IRegistry<UUID> lockRegistry = ServiceLocator.getService(LockRegistry.class);
 	
 	//constructor
-	public LockEventCommand(InventoryClickEvent event) {
-		super(event);
+	public LockEventCommand() {
+		super();
 	}
 	
 	//public

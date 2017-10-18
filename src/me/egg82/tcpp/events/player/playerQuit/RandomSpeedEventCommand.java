@@ -16,8 +16,8 @@ public class RandomSpeedEventCommand extends EventCommand<PlayerQuitEvent> {
 	private IRegistry<UUID> randomSpeedRegistry = ServiceLocator.getService(RandomSpeedRegistry.class);
 	
 	//constructor
-	public RandomSpeedEventCommand(PlayerQuitEvent event) {
-		super(event);
+	public RandomSpeedEventCommand() {
+		super();
 	}
 	
 	//public

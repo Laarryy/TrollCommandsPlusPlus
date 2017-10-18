@@ -6,7 +6,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.PigZombie;
-import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.core.LuckyCommand;
@@ -20,8 +19,8 @@ public class SpawnBehindCommand extends LuckyCommand {
 	private EntityType[] mobTypes = null;
 	
 	//constructor
-	public SpawnBehindCommand(Player player) {
-		super(player);
+	public SpawnBehindCommand() {
+		super();
 		
 		EntityType[] types = EntityType.values();
 		ArrayList<EntityType> outTypes = new ArrayList<EntityType>();

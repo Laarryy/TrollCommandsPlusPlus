@@ -18,8 +18,8 @@ public class InfinityEventCommand extends EventCommand<PlayerTeleportEvent> {
 	private IRegistry<UUID> infinityRegistry = ServiceLocator.getService(InfinityRegistry.class);
 	
 	//constructor
-	public InfinityEventCommand(PlayerTeleportEvent event) {
-		super(event);
+	public InfinityEventCommand() {
+		super();
 	}
 	
 	//public

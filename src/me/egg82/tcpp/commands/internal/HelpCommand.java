@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -19,6 +17,7 @@ import ninja.egg82.events.CompleteEventArgs;
 import ninja.egg82.events.ExceptionEventArgs;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.tuples.Pair;
+import ninja.egg82.plugin.BasePlugin;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotLanguageType;
 import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
@@ -26,7 +25,6 @@ import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.LanguageUtil;
 import ninja.egg82.sql.LanguageDatabase;
-import ninja.egg82.startup.InitRegistry;
 import ninja.egg82.utils.StringUtil;
 
 public class HelpCommand extends PluginCommand {
@@ -35,13 +33,15 @@ public class HelpCommand extends PluginCommand {
 	private HashMap<String, Pair<String, String>> commands = new HashMap<String, Pair<String, String>>();
 	private LanguageDatabase commandDatabase = ServiceLocator.getService(CommandSearchDatabase.class);
 	
+	private BasePlugin plugin = ServiceLocator.getService(BasePlugin.class);
+	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
-	public HelpCommand(CommandSender sender, Command command, String label, String[] args) {
-		super(sender, command, label, args);
+	public HelpCommand() {
+		super();
 		
-		String[] list = ((String) ((PluginDescriptionFile) ServiceLocator.getService(InitRegistry.class).getRegister("plugin", JavaPlugin.class).getDescription()).getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
+		String[] list = ((String) ((PluginDescriptionFile) ServiceLocator.getService(JavaPlugin.class).getDescription()).getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
 		for (String entry : list) {
 			if (entry.contains("-= Available Commands =-")) {
 				continue;
@@ -57,7 +57,7 @@ public class HelpCommand extends PluginCommand {
 	}
 	
 	//public
-	public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+	public List<String> tabComplete() {
 		if (args.length == 0 || args[0].isEmpty()) {
 			return commandNames;
 		} else if (args.length == 1) {

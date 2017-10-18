@@ -14,8 +14,8 @@ public class BombEventCommand extends EventCommand<PlayerDeathEvent> {
 	private IRegistry<UUID> bombRegistry = ServiceLocator.getService(BombRegistry.class);
 	
 	//constructor
-	public BombEventCommand(PlayerDeathEvent event) {
-		super(event);
+	public BombEventCommand() {
+		super();
 	}
 	
 	//public
