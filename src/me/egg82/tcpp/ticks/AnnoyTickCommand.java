@@ -46,7 +46,7 @@ public class AnnoyTickCommand extends TickCommand {
 		}
 		
 		if (Math.random() <= 0.2d) {
-			player.getWorld().playSound(player.getLocation(), sounds[MathUtil.fairRoundedRandom(0, sounds.length - 1)], 1.0f, 1.0f);
+			player.playSound(player.getLocation(), sounds[MathUtil.fairRoundedRandom(0, sounds.length - 1)], 1.0f, (float) MathUtil.random(0.5d,  2.0d));
 		}
 	}
 }

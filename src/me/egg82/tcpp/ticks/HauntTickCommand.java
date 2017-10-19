@@ -42,7 +42,7 @@ public class HauntTickCommand extends TickCommand {
 		}
 		
 		if (Math.random() <= 0.1d) {
-			player.getWorld().playSound(player.getLocation(), sounds[MathUtil.fairRoundedRandom(0, sounds.length - 1)], 1.0f, (float) MathUtil.random(1.0d,  10.0d));
+			player.getWorld().playSound(player.getLocation(), sounds[MathUtil.fairRoundedRandom(0, sounds.length - 1)], 1.0f, (float) MathUtil.random(0.5d,  2.0d));
 		}
 	}
 }

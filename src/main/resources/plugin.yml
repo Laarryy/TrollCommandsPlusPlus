@@ -1,6 +1,6 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 5.27.51
+version: 5.27.52
 softdepend: [LibsDisguises,iDisguise,ProtocolLib]
 commands:
   troll:

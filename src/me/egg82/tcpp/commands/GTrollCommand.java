@@ -197,7 +197,7 @@ public class GTrollCommand extends PluginCommand {
 			
 			run.setSender(sender);
 			run.setCommand(command);
-			run.setCommandName(command.getName());
+			run.setCommandName((command != null) ? command.getName() : null);
 			run.setLabel(label);
 			run.setArgs(args);
 			run.undo();
