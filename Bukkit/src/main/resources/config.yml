@@ -1,0 +1,10 @@
+# Type of messaging queue to use. Options are "rabbit" or "bungee" ("default")
+queueType: 'default'
+# IP address of the RabbitMQ messaging queue server, if used
+rabbitIp: 'localhost'
+# Port of the RabbitMQ messaging queue server, if used
+rabbitPort: 5672
+# Username for the RabbitMQ messaging queue server, if used
+rabbitUser: 'guest'
+# Password for the RabbitMQ messaging queue server, if used
+rabbitPass: 'guest'

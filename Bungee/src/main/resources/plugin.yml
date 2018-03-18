@@ -1,0 +1,5 @@
+name: TrollCommandsPlusPlus
+main: me.egg82.tcpp.TrollCommandsPlusPlus
+version: 1.0.0
+author: egg82
+description: TC++ for BungeeCord
