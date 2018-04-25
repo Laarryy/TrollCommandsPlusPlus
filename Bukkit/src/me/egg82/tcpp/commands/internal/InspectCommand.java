@@ -99,11 +99,11 @@ public class InspectCommand extends PluginCommand {
 			return;
 		}
 		
-		e(uuid, player);
+		e(player);
 		
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
-	private void e(UUID uuid, Player player) {
+	private void e(Player player) {
 		PlayerInventory inv = player.getInventory();
 		((Player) sender).closeInventory();
 		((Player) sender).openInventory(inv);

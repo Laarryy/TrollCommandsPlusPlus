@@ -58,17 +58,17 @@ public class AttachCommand extends PluginCommand {
 		if (args.length == 1) {
 			if (args[0].isEmpty()) {
 				return commandNames;
-			} else {
-				ArrayList<String> retVal = new ArrayList<String>();
-				
-				for (int i = 0; i < commandNames.size(); i++) {
-					if (commandNames.get(i).toLowerCase().startsWith(args[0].toLowerCase())) {
-						retVal.add(commandNames.get(i));
-					}
-				}
-				
-				return retVal;
 			}
+			
+			ArrayList<String> retVal = new ArrayList<String>();
+			
+			for (int i = 0; i < commandNames.size(); i++) {
+				if (commandNames.get(i).toLowerCase().startsWith(args[0].toLowerCase())) {
+					retVal.add(commandNames.get(i));
+				}
+			}
+			
+			return retVal;
 		} else if (args.length > 1) {
 			org.bukkit.command.PluginCommand pluginCommand = Bukkit.getPluginCommand(args[0]);
 			
@@ -115,14 +115,14 @@ public class AttachCommand extends PluginCommand {
 				eUndo(item, compound);
 				onComplete().invoke(this, CompleteEventArgs.EMPTY);
 				return;
-			} else {
-				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
-				String name = getClass().getSimpleName();
-				name = name.substring(0, name.length() - 7).toLowerCase();
-				sender.getServer().dispatchCommand(sender, "troll help " + name);
-				onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
-				return;
 			}
+			
+			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
+			String name = getClass().getSimpleName();
+			name = name.substring(0, name.length() - 7).toLowerCase();
+			sender.getServer().dispatchCommand(sender, "troll help " + name);
+			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
+			return;
 		}
 		
 		String command = "";

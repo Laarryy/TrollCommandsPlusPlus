@@ -1,13 +1,13 @@
 package me.egg82.tcpp.util;
 
 import me.egg82.tcpp.services.registries.CommandRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.PluginCommand;
 
 public class MetricsHelper {
 	//vars
-	private IRegistry<String> commandRegistry = ServiceLocator.getService(CommandRegistry.class);
+	private IVariableRegistry<String> commandRegistry = ServiceLocator.getService(CommandRegistry.class);
 	
 	//constructor
 	public MetricsHelper() {

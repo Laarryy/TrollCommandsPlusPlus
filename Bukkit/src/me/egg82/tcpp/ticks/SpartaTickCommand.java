@@ -9,21 +9,20 @@ import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.services.registries.SpartaArrowRegistry;
 import me.egg82.tcpp.services.registries.SpartaRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.utils.MathUtil;
 
 public class SpartaTickCommand extends TickCommand {
 	//vars
-	private IRegistry<UUID> spartaRegistry = ServiceLocator.getService(SpartaRegistry.class);
-	private IRegistry<UUID> spartaArrowRegistry = ServiceLocator.getService(SpartaArrowRegistry.class);
+	private IVariableRegistry<UUID> spartaRegistry = ServiceLocator.getService(SpartaRegistry.class);
+	private IVariableRegistry<UUID> spartaArrowRegistry = ServiceLocator.getService(SpartaArrowRegistry.class);
 	
 	//constructor
 	public SpartaTickCommand() {
-		super();
-		ticks = 10L;
+		super(10L);
 	}
 	
 	//public

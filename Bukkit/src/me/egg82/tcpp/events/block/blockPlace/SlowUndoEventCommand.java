@@ -8,9 +8,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import me.egg82.tcpp.services.registries.SlowUndoRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.plugin.commands.events.EventCommand;
 import ninja.egg82.plugin.core.BlockData;
 import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.TaskUtil;
@@ -18,7 +18,7 @@ import ninja.egg82.utils.MathUtil;
 
 public class SlowUndoEventCommand extends EventCommand<BlockPlaceEvent> {
 	//vars
-	private IRegistry<UUID> slowUndoRegistry = ServiceLocator.getService(SlowUndoRegistry.class);
+	private IVariableRegistry<UUID> slowUndoRegistry = ServiceLocator.getService(SlowUndoRegistry.class);
 	
 	//constructor
 	public SlowUndoEventCommand() {

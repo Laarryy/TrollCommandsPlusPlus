@@ -1,8 +1,8 @@
 package me.egg82.tcpp.services.registries;
 
-import ninja.egg82.patterns.Registry;
+import ninja.egg82.patterns.registries.VariableRegistry;
 
-public class PotionNameRegistry extends Registry<String> {
+public class PotionNameRegistry extends VariableRegistry<String> {
 	//vars
 	
 	//constructor

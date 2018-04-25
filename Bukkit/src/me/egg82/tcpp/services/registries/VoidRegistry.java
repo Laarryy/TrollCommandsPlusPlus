@@ -2,9 +2,9 @@ package me.egg82.tcpp.services.registries;
 
 import java.util.UUID;
 
-import ninja.egg82.patterns.Registry;
+import ninja.egg82.patterns.registries.VariableRegistry;
 
-public class VoidRegistry extends Registry<UUID> {
+public class VoidRegistry extends VariableRegistry<UUID> {
 	//vars
 	
 	//constructor

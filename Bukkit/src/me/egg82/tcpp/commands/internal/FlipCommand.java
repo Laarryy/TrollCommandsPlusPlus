@@ -2,7 +2,6 @@ package me.egg82.tcpp.commands.internal;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -78,7 +77,7 @@ public class FlipCommand extends PluginCommand {
 					continue;
 				}
 				
-				e(player.getUniqueId(), player);
+				e(player);
 			}
 		} else {
 			Player player = CommandUtil.getPlayerByName(args[0]);
@@ -94,12 +93,12 @@ public class FlipCommand extends PluginCommand {
 				return;
 			}
 			
-			e(player.getUniqueId(), player);
+			e(player);
 		}
 		
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
-	private void e(UUID uuid, Player player) {
+	private void e(Player player) {
 		Location playerLocation = player.getLocation().clone();
 		
 		float newYaw = playerLocation.getYaw() + 180.0f;

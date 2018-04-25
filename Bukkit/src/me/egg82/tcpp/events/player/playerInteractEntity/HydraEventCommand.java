@@ -10,23 +10,23 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.services.registries.HydraMobRegistry;
 import me.egg82.tcpp.services.registries.HydraRegistry;
-import ninja.egg82.events.ExpireEventArgs;
-import ninja.egg82.patterns.IExpiringRegistry;
-import ninja.egg82.patterns.IRegistry;
+import ninja.egg82.events.VariableExpireEventArgs;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.patterns.registries.IVariableExpiringRegistry;
+import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.plugin.commands.events.EventCommand;
 import ninja.egg82.plugin.utils.LanguageUtil;
 
 public class HydraEventCommand extends EventCommand<PlayerInteractEntityEvent> {
 	//vars
-	private IRegistry<UUID> hydraRegistry = ServiceLocator.getService(HydraRegistry.class);
-	private IExpiringRegistry<UUID> hydraMobRegistry = ServiceLocator.getService(HydraMobRegistry.class);
+	private IVariableRegistry<UUID> hydraRegistry = ServiceLocator.getService(HydraRegistry.class);
+	private IVariableExpiringRegistry<UUID> hydraMobRegistry = ServiceLocator.getService(HydraMobRegistry.class);
 	
 	//constructor
 	public HydraEventCommand() {
 		super();
 		
-		hydraMobRegistry.onExpire().attach((s, e) -> onMobExpire(s, e));
+		hydraMobRegistry.onExpire().attach((s, e) -> onMobExpire(e));
 	}
 	
 	//public
@@ -83,7 +83,7 @@ public class HydraEventCommand extends EventCommand<PlayerInteractEntityEvent> {
 		return (parent != null) ? getRoot(parent) : entityUuid;
 	}
 	
-	private void onMobExpire(Object sender, ExpireEventArgs<UUID> e) {
+	private void onMobExpire(VariableExpireEventArgs<UUID> e) {
 		if (Bukkit.getEntity(e.getKey()) != null) {
 			hydraMobRegistry.setRegister(e.getKey(), e.getValue());
 		}

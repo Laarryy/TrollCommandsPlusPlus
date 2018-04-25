@@ -8,16 +8,16 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import me.egg82.tcpp.services.registries.BrittleRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.plugin.commands.events.EventCommand;
 import ninja.egg82.plugin.reflection.entity.IEntityHelper;
 
 public class BrittleEventCommand extends EventCommand<PlayerMoveEvent> {
 	//vars
 	private IEntityHelper entityUtil = ServiceLocator.getService(IEntityHelper.class);
 	
-	private IRegistry<UUID> brittleRegistry = ServiceLocator.getService(BrittleRegistry.class);
+	private IVariableRegistry<UUID> brittleRegistry = ServiceLocator.getService(BrittleRegistry.class);
 	
 	//constructor
 	public BrittleEventCommand() {
@@ -41,7 +41,7 @@ public class BrittleEventCommand extends EventCommand<PlayerMoveEvent> {
 			
 			Location to = event.getTo();
 			double toY = to.getY();
-			double blockY = (double) to.getBlockY();
+			double blockY = to.getBlockY();
 			
 			if (toY == blockY && toY < event.getFrom().getY()) {
 				player.setHealth(0.0d);

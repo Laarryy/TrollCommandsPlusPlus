@@ -6,19 +6,18 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.services.registries.SpinRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
 
 public class SpinTickCommand extends TickCommand {
 	//vars
-	private IRegistry<UUID> spinRegistry = ServiceLocator.getService(SpinRegistry.class);
+	private IVariableRegistry<UUID> spinRegistry = ServiceLocator.getService(SpinRegistry.class);
 	
 	//constructor
 	public SpinTickCommand() {
-		super();
-		ticks = 5L;
+		super(5L);
 	}
 	
 	//public

@@ -13,20 +13,20 @@ import me.egg82.tcpp.services.registries.HotTubRegistry;
 import me.egg82.tcpp.services.registries.PortalRegistry;
 import me.egg82.tcpp.services.registries.VoidRadiusRegistry;
 import me.egg82.tcpp.services.registries.VoidRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.core.BlockData;
 import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.TaskUtil;
 
 public class WorldHoleHelper {
 	//vars
-	private IRegistry<UUID> holeRegistry = ServiceLocator.getService(HoleRegistry.class);
-	private IRegistry<UUID> portalRegistry = ServiceLocator.getService(PortalRegistry.class);
-	private IRegistry<UUID> voidRegistry = ServiceLocator.getService(VoidRegistry.class);
-	private IRegistry<UUID> voidRadiusRegistry = ServiceLocator.getService(VoidRadiusRegistry.class);
-	private IRegistry<UUID> hotTubRegistry = ServiceLocator.getService(HotTubRegistry.class);
-	private IRegistry<UUID> holeBlockRegistry = ServiceLocator.getService(HoleBlockRegistry.class);
+	private IVariableRegistry<UUID> holeRegistry = ServiceLocator.getService(HoleRegistry.class);
+	private IVariableRegistry<UUID> portalRegistry = ServiceLocator.getService(PortalRegistry.class);
+	private IVariableRegistry<UUID> voidRegistry = ServiceLocator.getService(VoidRegistry.class);
+	private IVariableRegistry<UUID> voidRadiusRegistry = ServiceLocator.getService(VoidRadiusRegistry.class);
+	private IVariableRegistry<UUID> hotTubRegistry = ServiceLocator.getService(HotTubRegistry.class);
+	private IVariableRegistry<UUID> holeBlockRegistry = ServiceLocator.getService(HoleBlockRegistry.class);
 	
 	//constructor
 	public WorldHoleHelper() {

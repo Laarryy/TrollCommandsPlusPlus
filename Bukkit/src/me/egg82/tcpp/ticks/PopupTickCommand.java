@@ -5,19 +5,18 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.services.registries.PopupRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
 
 public class PopupTickCommand extends TickCommand {
 	//vars
-	private IRegistry<UUID> popupRegistry = ServiceLocator.getService(PopupRegistry.class);
+	private IVariableRegistry<UUID> popupRegistry = ServiceLocator.getService(PopupRegistry.class);
 	
 	//constructor
 	public PopupTickCommand() {
-		super();
-		ticks = 20L;
+		super(20L);
 	}
 	
 	//public

@@ -11,20 +11,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.services.registries.LureRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.LocationUtil;
 
 public class LureTickCommand extends TickCommand {
 	//vars
-	private IRegistry<UUID> lureRegistry = ServiceLocator.getService(LureRegistry.class);
+	private IVariableRegistry<UUID> lureRegistry = ServiceLocator.getService(LureRegistry.class);
 	
 	//constructor
 	public LureTickCommand() {
-		super();
-		ticks = 40L;
+		super(40L);
 	}
 	
 	//public

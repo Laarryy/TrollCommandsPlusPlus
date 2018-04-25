@@ -12,16 +12,16 @@ import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.services.registries.EmpowerEntityRegistry;
 import me.egg82.tcpp.services.registries.EmpowerRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.plugin.commands.events.EventCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.LanguageUtil;
 
 public class EmpowerEventCommand extends EventCommand<PlayerInteractEntityEvent> {
 	//vars
-	private IRegistry<UUID> empowerRegistry = ServiceLocator.getService(EmpowerRegistry.class);
-	private IRegistry<UUID> empowerEntityRegistry = ServiceLocator.getService(EmpowerEntityRegistry.class);
+	private IVariableRegistry<UUID> empowerRegistry = ServiceLocator.getService(EmpowerRegistry.class);
+	private IVariableRegistry<UUID> empowerEntityRegistry = ServiceLocator.getService(EmpowerEntityRegistry.class);
 	
 	//constructor
 	public EmpowerEventCommand() {
@@ -51,7 +51,7 @@ public class EmpowerEventCommand extends EventCommand<PlayerInteractEntityEvent>
 		LivingEntity entity = (LivingEntity) event.getRightClicked();
 		
 		if (entity instanceof Player) {
-			if (CommandUtil.hasPermission((Player) entity, PermissionsType.IMMUNE)) {
+			if (CommandUtil.hasPermission(entity, PermissionsType.IMMUNE)) {
 				player.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
 				return;
 			}

@@ -3,7 +3,6 @@ package me.egg82.tcpp.commands.internal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -65,17 +64,17 @@ public class RunCommand extends PluginCommand {
 		} else if (args.length == 2) {
 			if (args[1].isEmpty()) {
 				return commandNames;
-			} else {
-				ArrayList<String> retVal = new ArrayList<String>();
-				
-				for (int i = 0; i < commandNames.size(); i++) {
-					if (commandNames.get(i).toLowerCase().startsWith(args[1].toLowerCase())) {
-						retVal.add(commandNames.get(i));
-					}
-				}
-				
-				return retVal;
 			}
+			
+			ArrayList<String> retVal = new ArrayList<String>();
+			
+			for (int i = 0; i < commandNames.size(); i++) {
+				if (commandNames.get(i).toLowerCase().startsWith(args[1].toLowerCase())) {
+					retVal.add(commandNames.get(i));
+				}
+			}
+			
+			return retVal;
 		} else if (args.length > 2) {
 			org.bukkit.command.PluginCommand pluginCommand = Bukkit.getPluginCommand(args[1]);
 			
@@ -115,13 +114,11 @@ public class RunCommand extends PluginCommand {
 		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
 		if (players.size() > 0) {
 			for (Player player : players) {
-				UUID uuid = player.getUniqueId();
-				
 				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
 					continue;
 				}
 				
-				e(uuid, player, command);
+				e(player, command);
 			}
 		} else {
 			Player player = CommandUtil.getPlayerByName(args[0]);
@@ -132,20 +129,18 @@ public class RunCommand extends PluginCommand {
 				return;
 			}
 			
-			UUID uuid = player.getUniqueId();
-			
 			if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
 				sender.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
 				onError().invoke(this, new ExceptionEventArgs<PlayerImmuneException>(new PlayerImmuneException(player)));
 				return;
 			}
 			
-			e(uuid, player, command);
+			e(player, command);
 		}
 		
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
-	private void e(UUID uuid, Player player, String command) {
+	private void e(Player player, String command) {
 		CommandUtil.dispatchCommandAtSenderLocation(sender, player, command);
 		metricsHelper.commandWasRun(this);
 	}

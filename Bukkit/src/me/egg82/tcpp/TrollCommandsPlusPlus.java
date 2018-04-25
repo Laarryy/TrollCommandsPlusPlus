@@ -8,9 +8,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.bstats.bukkit.Metrics;
@@ -19,8 +16,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
@@ -47,8 +42,12 @@ import ninja.egg82.exceptionHandlers.builders.GameAnalyticsBuilder;
 import ninja.egg82.exceptionHandlers.builders.RollbarBuilder;
 import ninja.egg82.nbt.reflection.NullNBTHelper;
 import ninja.egg82.nbt.reflection.PowerNBTHelper;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IRegistry;
+import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.permissions.reflection.LuckPermissionsHelper;
+import ninja.egg82.permissions.reflection.NullPermissionsHelper;
+import ninja.egg82.permissions.reflection.PEXPermissionsHelper;
 import ninja.egg82.plugin.BasePlugin;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.BukkitInitType;
@@ -72,6 +71,7 @@ import ninja.egg82.startup.InitRegistry;
 import ninja.egg82.utils.FileUtil;
 import ninja.egg82.utils.ReflectUtil;
 import ninja.egg82.utils.StringUtil;
+import ninja.egg82.utils.ThreadUtil;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
 
@@ -89,8 +89,6 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	private String version = getDescription().getVersion();
 	private String userId = Bukkit.getServerId().trim();
 	
-	private ScheduledExecutorService mainThreadPool = null;
-	
 	//constructor
 	public TrollCommandsPlusPlus() {
 		super();
@@ -107,7 +105,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		ServiceLocator.provideService(RollbarExceptionHandler.class, false);
 		exceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
 		oldExceptionHandler.disconnect();
-		exceptionHandler.connect(new RollbarBuilder("78062d4e18074560850d4d8e0805b564", "production", version, userId));
+		exceptionHandler.connect(new RollbarBuilder("78062d4e18074560850d4d8e0805b564", "production", version, userId), "TrollCommandsPlusPlus");
 		exceptionHandler.setUnsentExceptions(oldExceptionHandler.getUnsentExceptions());
 		exceptionHandler.setUnsentLogs(oldExceptionHandler.getUnsentLogs());
 	}
@@ -159,6 +157,17 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 			ServiceLocator.provideService(NullNBTHelper.class);
 		}
 		
+		if (manager.getPlugin("LuckPerms") != null) {
+			printInfo(ChatColor.GREEN + "[TrollCommands++] Enabling support for LuckPerms.");
+			ServiceLocator.provideService(LuckPermissionsHelper.class);
+		} else if (manager.getPlugin("PermissionsEx") != null) {
+			printInfo(ChatColor.GREEN + "[TrollCommands++] Enabling support for PEX.");
+			ServiceLocator.provideService(PEXPermissionsHelper.class);
+		} else {
+			printWarning(ChatColor.YELLOW + "[TrollCommands++] Neither LP nor PEX were found. Using default Bukkit permissions.");
+			ServiceLocator.provideService(NullPermissionsHelper.class);
+		}
+		
 		ConfigUtil.fillRegistry(YamlUtil.getOrLoadDefaults(getDataFolder().getAbsolutePath() + FileUtil.DIRECTORY_SEPARATOR_CHAR + "config.yml", "config.yml", true));
 		
 		ServiceLocator.provideService(ControlHelper.class);
@@ -174,13 +183,13 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		populateLanguage();
 	}
 	
+	@SuppressWarnings("resource")
 	public void onEnable() {
 		super.onEnable();
 		
-		Config.globalThreadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new ThreadFactoryBuilder().setNameFormat(getName() + "-%d").build());
-		mainThreadPool = Executors.newScheduledThreadPool(1, new ThreadFactoryBuilder().setNameFormat(getName() + "-main-%d").build());
+		ThreadUtil.rename(getName());
 		
-		mainThreadPool.submit(new Runnable() {
+		ThreadUtil.submit(new Runnable() {
 			public void run() {
 				try {
 					metrics = new Metrics(ServiceLocator.getService(JavaPlugin.class));
@@ -190,7 +199,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 				
 				if (metrics != null) {
 					metrics.addCustomChart(new Metrics.AdvancedPie("commands", () -> {
-						IRegistry<String> commandRegistry = ServiceLocator.getService(CommandRegistry.class);
+						IVariableRegistry<String> commandRegistry = ServiceLocator.getService(CommandRegistry.class);
 						HashMap<String, Integer> values = new HashMap<String, Integer>();
 						for (String key : commandRegistry.getKeys()) {
 							values.put(key, commandRegistry.getRegister(key, Integer.class));
@@ -210,7 +219,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 			}
 		});
 		
-		IRegistry<String> configRegistry = ConfigUtil.getRegistry();
+		IVariableRegistry<String> configRegistry = ConfigUtil.getRegistry();
 		String queueType = configRegistry.getRegister("queueType", String.class);
 		if (queueType.equalsIgnoreCase("default") || queueType.equalsIgnoreCase("bungee") || queueType.equalsIgnoreCase("bungeecord")) {
 			// Do nothing, as it's the default
@@ -218,7 +227,11 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		} else if (queueType.equalsIgnoreCase("rabbit") || queueType.equalsIgnoreCase("rabbitmq")) {
 			List<IMessageHandler> services = ServiceLocator.removeServices(IMessageHandler.class);
 			for (IMessageHandler handler : services) {
-				handler.destroy();
+				try {
+					handler.close();
+				} catch (Exception ex) {
+					
+				}
 			}
 			ServiceLocator.provideService(new RabbitMessageHandler(configRegistry.getRegister("rabbitIp", String.class), configRegistry.getRegister("rabbitPort", Number.class).intValue(), configRegistry.getRegister("rabbitUser", String.class), configRegistry.getRegister("rabbitPass", String.class)));
 			printInfo(ChatColor.GREEN + "[TrollCommands++] Enabling support for RabbitMQ.");
@@ -238,10 +251,10 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		
 		enableMessage();
 		
-		mainThreadPool.scheduleAtFixedRate(checkUpdate, 0L, 24 * 60 * 60 * 1000, TimeUnit.MILLISECONDS);
-		mainThreadPool.scheduleAtFixedRate(checkExceptionLimitReached, 0L, 60 * 60 * 1000, TimeUnit.MILLISECONDS);
+		ThreadUtil.scheduleAtFixedRate(checkUpdate, 0L, 24L * 60L * 60L * 1000L);
+		ThreadUtil.scheduleAtFixedRate(checkExceptionLimitReached, 0L, 60L * 60L * 1000L);
 		
-		mainThreadPool.submit(new Runnable() {
+		ThreadUtil.submit(new Runnable() {
 			public void run() {
 				getTagger();
 			}
@@ -250,8 +263,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	public void onDisable() {
 		super.onDisable();
 		
-		mainThreadPool.shutdownNow();
-		Config.globalThreadPool.shutdownNow();
+		ThreadUtil.shutdown(1000L);
 		
 		ControlHelper controlHelper = ServiceLocator.getService(ControlHelper.class);
 		controlHelper.uncontrolAll();
@@ -304,7 +316,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 				ServiceLocator.provideService(GameAnalyticsExceptionHandler.class, false);
 				exceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
 				oldExceptionHandler.disconnect();
-				exceptionHandler.connect(new GameAnalyticsBuilder("250e5c508c3dd844ed1f8bd2a449d1a6", "dfb50b06e598e7a7ad9b3c84f7b118c12800ffce", version, userId));
+				exceptionHandler.connect(new GameAnalyticsBuilder("250e5c508c3dd844ed1f8bd2a449d1a6", "dfb50b06e598e7a7ad9b3c84f7b118c12800ffce", version, userId), getName());
 				exceptionHandler.setUnsentExceptions(oldExceptionHandler.getUnsentExceptions());
 				exceptionHandler.setUnsentLogs(oldExceptionHandler.getUnsentLogs());
 			}
@@ -319,7 +331,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		printInfo(ChatColor.AQUA + "    | | | | (_) | | | |___| (_) | | | | | | | | | | | (_| | | | | (_| \\__ \\ |_|   |_|  ");
 		printInfo(ChatColor.AQUA + "    |_|_|  \\___/|_|_|\\_____\\___/|_| |_| |_|_| |_| |_|\\__,_|_| |_|\\__,_|___/            ");
 		printInfo(ChatColor.GREEN + "[Version " + getDescription().getVersion() + "] " + ChatColor.RED + numCommands + " commands " + ChatColor.LIGHT_PURPLE + numEvents + " events " + ChatColor.WHITE + numPermissions + " permissions " + ChatColor.YELLOW + numTicks + " tick handlers " + ChatColor.BLUE + numMessages + " message handlers");
-		printInfo(ChatColor.WHITE + "[TrollCommands++] " + ChatColor.GRAY + "Attempting to load compatibility with Bukkit version " + ((InitRegistry) ServiceLocator.getService(InitRegistry.class)).getRegister(BukkitInitType.GAME_VERSION));
+		printInfo(ChatColor.WHITE + "[TrollCommands++] " + ChatColor.GRAY + "Attempting to load compatibility with Bukkit version " + ServiceLocator.getService(InitRegistry.class).getRegister(BukkitInitType.GAME_VERSION));
 	}
 	private void disableMessage() {
 		printInfo(ChatColor.GREEN + "--== " + ChatColor.LIGHT_PURPLE + "TrollCommands++ Disabled" + ChatColor.GREEN + " ==--");
@@ -327,7 +339,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	
 	private void populateCommandDatabase() {
 		LanguageDatabase commandNameDatabase = ServiceLocator.getService(CommandSearchDatabase.class);
-		IRegistry<String> keywordRegistry = ServiceLocator.getService(KeywordRegistry.class);
+		IVariableRegistry<String> keywordRegistry = ServiceLocator.getService(KeywordRegistry.class);
 		PluginDescriptionFile descriptionFile = getDescription();
 		
 		String[] commands = ((String) descriptionFile.getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
@@ -355,7 +367,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		}
 	}
 	private void populateLanguage() {
-		IRegistry<String> languageRegistry = ServiceLocator.getService(LanguageRegistry.class);
+		IRegistry<String, String> languageRegistry = ServiceLocator.getService(LanguageRegistry.class);
 		
 		languageRegistry.setRegister(LanguageType.PLAYER_IMMUNE, ChatColor.RED + "Player is immune.");
 		languageRegistry.setRegister(LanguageType.INVALID_TARGET, ChatColor.RED + "The target you've chosen is invalid.");
@@ -388,11 +400,11 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 				ServiceLocator.provideService(new POSTaggerME(model));
 				System.gc();
 			} catch (Exception ex2) {
-				mainThreadPool.schedule(new Runnable() {
+				ThreadUtil.schedule(new Runnable() {
 					public void run() {
 						getTagger();
 					}
-				}, 10 * 1000L, TimeUnit.MILLISECONDS);
+				}, 10L * 1000L);
 			}
 		}
 		

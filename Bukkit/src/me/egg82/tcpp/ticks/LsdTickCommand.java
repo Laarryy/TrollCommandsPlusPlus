@@ -9,12 +9,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.Config;
 import me.egg82.tcpp.services.registries.LsdRegistry;
+import ninja.egg82.concurrent.IConcurrentDeque;
 import ninja.egg82.exceptionHandlers.IExceptionHandler;
-import ninja.egg82.patterns.IObjectPool;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.patterns.tuples.Triplet;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.utils.BlockUtil;
@@ -22,18 +21,18 @@ import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.LocationUtil;
 import ninja.egg82.protocol.reflection.IFakeBlockHelper;
 import ninja.egg82.utils.MathUtil;
+import ninja.egg82.utils.ThreadUtil;
 
 public class LsdTickCommand extends TickCommand {
 	//vars
-	private IRegistry<UUID> lsdRegistry = ServiceLocator.getService(LsdRegistry.class);
+	private IVariableRegistry<UUID> lsdRegistry = ServiceLocator.getService(LsdRegistry.class);
 	
 	private IFakeBlockHelper fakeBlockHelper = ServiceLocator.getService(IFakeBlockHelper.class);
 	private int radius = 8;
 	
 	//constructor
 	public LsdTickCommand() {
-		super();
-		ticks = 5L;
+		super(5L);
 	}
 	
 	//public
@@ -42,15 +41,15 @@ public class LsdTickCommand extends TickCommand {
 	@SuppressWarnings("unchecked")
 	protected void onExecute(long elapsedMilliseconds) {
 		for (UUID key : lsdRegistry.getKeys()) {
-			e(CommandUtil.getPlayerByUuid(key), lsdRegistry.getRegister(key, IObjectPool.class));
+			e(CommandUtil.getPlayerByUuid(key), lsdRegistry.getRegister(key, IConcurrentDeque.class));
 		}
 	}
-	private void e(Player player, IObjectPool<Triplet<String, Integer, Integer>> bLocs) {
+	private void e(Player player, IConcurrentDeque<Triplet<String, Integer, Integer>> bLocs) {
 		if (player == null) {
 			return;
 		}
 		
-		Config.globalThreadPool.submit(new Runnable() {
+		ThreadUtil.submit(new Runnable() {
 			public void run() {
 				Set<Location> locations = getFilledCircle(player.getLocation(), radius, false);
 				

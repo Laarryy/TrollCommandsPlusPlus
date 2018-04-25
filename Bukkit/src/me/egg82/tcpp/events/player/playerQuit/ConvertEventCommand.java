@@ -5,13 +5,13 @@ import java.util.UUID;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import me.egg82.tcpp.services.registries.ConvertRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.plugin.commands.events.EventCommand;
 
 public class ConvertEventCommand extends EventCommand<PlayerQuitEvent> {
 	//vars
-	private IRegistry<UUID> convertRegistry = ServiceLocator.getService(ConvertRegistry.class);
+	private IVariableRegistry<UUID> convertRegistry = ServiceLocator.getService(ConvertRegistry.class);
 	
 	//constructor
 	public ConvertEventCommand() {

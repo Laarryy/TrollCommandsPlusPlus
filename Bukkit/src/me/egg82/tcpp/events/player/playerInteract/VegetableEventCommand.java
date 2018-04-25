@@ -7,14 +7,14 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.services.registries.VegetableRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.plugin.commands.events.EventCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
 
 public class VegetableEventCommand extends EventCommand<PlayerInteractEvent> {
 	//vars
-	private IRegistry<UUID> vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
+	private IVariableRegistry<UUID> vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
 	
 	//constructor
 	public VegetableEventCommand() {

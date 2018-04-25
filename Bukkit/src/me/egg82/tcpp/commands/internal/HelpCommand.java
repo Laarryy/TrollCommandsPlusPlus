@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.ChatColor;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.egg82.tcpp.enums.LanguageType;
@@ -16,7 +15,7 @@ import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CompleteEventArgs;
 import ninja.egg82.events.ExceptionEventArgs;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.tuples.Pair;
+import ninja.egg82.patterns.tuples.pair.Pair;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotLanguageType;
 import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
@@ -38,7 +37,7 @@ public class HelpCommand extends PluginCommand {
 	public HelpCommand() {
 		super();
 		
-		String[] list = ((String) ((PluginDescriptionFile) ServiceLocator.getService(JavaPlugin.class).getDescription()).getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
+		String[] list = ((String) ServiceLocator.getService(JavaPlugin.class).getDescription().getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
 		for (String entry : list) {
 			if (entry.contains("-= Available Commands =-")) {
 				continue;

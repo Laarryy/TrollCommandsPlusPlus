@@ -8,14 +8,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import me.egg82.tcpp.services.registries.InfinityRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.plugin.commands.events.EventCommand;
 import ninja.egg82.plugin.utils.LocationUtil;
 
 public class InfinityEventCommand extends EventCommand<PlayerMoveEvent> {
 	//vars
-	private IRegistry<UUID> infinityRegistry = ServiceLocator.getService(InfinityRegistry.class);
+	private IVariableRegistry<UUID> infinityRegistry = ServiceLocator.getService(InfinityRegistry.class);
 	
 	//constructor
 	public InfinityEventCommand() {

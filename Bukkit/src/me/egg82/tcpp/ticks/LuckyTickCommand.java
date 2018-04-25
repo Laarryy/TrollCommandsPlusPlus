@@ -9,20 +9,19 @@ import org.bukkit.inventory.ItemStack;
 
 import me.egg82.tcpp.services.registries.LuckyChickenRegistry;
 import me.egg82.tcpp.services.registries.LuckyVillagerRegistry;
-import ninja.egg82.patterns.IExpiringRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableExpiringRegistry;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.utils.MathUtil;
 
 public class LuckyTickCommand extends TickCommand {
 	//vars
-	private IExpiringRegistry<UUID> luckyChickenRegistry = ServiceLocator.getService(LuckyChickenRegistry.class);
-	private IExpiringRegistry<UUID> luckyVillagerRegistry = ServiceLocator.getService(LuckyVillagerRegistry.class);
+	private IVariableExpiringRegistry<UUID> luckyChickenRegistry = ServiceLocator.getService(LuckyChickenRegistry.class);
+	private IVariableExpiringRegistry<UUID> luckyVillagerRegistry = ServiceLocator.getService(LuckyVillagerRegistry.class);
 	
 	//constructor
 	public LuckyTickCommand() {
-		super();
-		ticks = 75L;
+		super(75L);
 	}
 	
 	//public

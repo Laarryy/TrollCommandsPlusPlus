@@ -21,8 +21,8 @@ import me.egg82.tcpp.services.registries.AnvilRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CompleteEventArgs;
 import ninja.egg82.events.ExceptionEventArgs;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotLanguageType;
 import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
@@ -37,7 +37,7 @@ public class AnvilCommand extends PluginCommand {
 	//vars
 	private boolean hasFallingBlockMethod = ReflectUtil.hasMethod("spawnFallingBlock", Bukkit.getWorlds().iterator().next());
 	
-	private IRegistry<UUID> anvilRegistry = ServiceLocator.getService(AnvilRegistry.class);
+	private IVariableRegistry<UUID> anvilRegistry = ServiceLocator.getService(AnvilRegistry.class);
 	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	

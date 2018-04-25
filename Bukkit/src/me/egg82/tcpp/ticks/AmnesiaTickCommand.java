@@ -5,20 +5,19 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.services.registries.AmnesiaRegistry;
-import ninja.egg82.patterns.IObjectPool;
-import ninja.egg82.patterns.IRegistry;
+import ninja.egg82.concurrent.IConcurrentDeque;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
 
 public class AmnesiaTickCommand extends TickCommand {
 	//vars
-	private IRegistry<UUID> amnesiaRegistry = ServiceLocator.getService(AmnesiaRegistry.class);
+	private IVariableRegistry<UUID> amnesiaRegistry = ServiceLocator.getService(AmnesiaRegistry.class);
 	
 	//constructor
 	public AmnesiaTickCommand() {
-		super();
-		ticks = 20L;
+		super(20L);
 	}
 	
 	//public
@@ -27,10 +26,10 @@ public class AmnesiaTickCommand extends TickCommand {
 	@SuppressWarnings("unchecked")
 	protected void onExecute(long elapsedMilliseconds) {
 		for (UUID key : amnesiaRegistry.getKeys()) {
-			e(key, CommandUtil.getPlayerByUuid(key), amnesiaRegistry.getRegister(key, IObjectPool.class));
+			e(CommandUtil.getPlayerByUuid(key), amnesiaRegistry.getRegister(key, IConcurrentDeque.class));
 		}
 	}
-	private void e(UUID uuid, Player player, IObjectPool<String> messages) {
+	private void e(Player player, IConcurrentDeque<String> messages) {
 		if (player == null) {
 			return;
 		}

@@ -6,13 +6,13 @@ import java.util.Arrays;
 import org.bukkit.Material;
 
 import me.egg82.tcpp.services.registries.VegetableNameRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.sql.LanguageDatabase;
 
 public class VegetableTypeSearchDatabase extends LanguageDatabase {
 	//vars
-	private IRegistry<String> vegetableNameRegistry = ServiceLocator.getService(VegetableNameRegistry.class);
+	private IVariableRegistry<String> vegetableNameRegistry = ServiceLocator.getService(VegetableNameRegistry.class);
 	
 	//constructor
 	public VegetableTypeSearchDatabase() {

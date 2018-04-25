@@ -6,15 +6,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import me.egg82.tcpp.services.registries.LsdRegistry;
-import ninja.egg82.patterns.IObjectPool;
-import ninja.egg82.patterns.IRegistry;
+import ninja.egg82.concurrent.IConcurrentDeque;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.patterns.tuples.Triplet;
-import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.plugin.commands.events.EventCommand;
 
 public class LsdEventCommand extends EventCommand<PlayerRespawnEvent> {
 	//vars
-	private IRegistry<UUID> lsdRegistry = ServiceLocator.getService(LsdRegistry.class);
+	private IVariableRegistry<UUID> lsdRegistry = ServiceLocator.getService(LsdRegistry.class);
 	
 	//constructor
 	public LsdEventCommand() {
@@ -30,7 +30,7 @@ public class LsdEventCommand extends EventCommand<PlayerRespawnEvent> {
 		UUID uuid = player.getUniqueId();
 		
 		if (lsdRegistry.hasRegister(uuid)) {
-			IObjectPool<Triplet<String, Integer, Integer>> bLocs = lsdRegistry.getRegister(uuid, IObjectPool.class);
+			IConcurrentDeque<Triplet<String, Integer, Integer>> bLocs = lsdRegistry.getRegister(uuid, IConcurrentDeque.class);
 			bLocs.clear();
 		}
 	}

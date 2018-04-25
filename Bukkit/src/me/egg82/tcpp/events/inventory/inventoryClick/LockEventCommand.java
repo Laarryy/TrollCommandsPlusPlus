@@ -8,13 +8,13 @@ import org.bukkit.inventory.Inventory;
 
 import me.egg82.tcpp.services.registries.LockRegistry;
 import me.egg82.tcpp.util.InventoryUtil;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.plugin.commands.events.EventCommand;
 
 public class LockEventCommand extends EventCommand<InventoryClickEvent> {
 	//vars
-	private IRegistry<UUID> lockRegistry = ServiceLocator.getService(LockRegistry.class);
+	private IVariableRegistry<UUID> lockRegistry = ServiceLocator.getService(LockRegistry.class);
 	
 	//constructor
 	public LockEventCommand() {

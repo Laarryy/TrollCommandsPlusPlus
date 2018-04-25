@@ -8,14 +8,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import me.egg82.tcpp.services.registries.AmnesiaRegistry;
-import ninja.egg82.patterns.IObjectPool;
-import ninja.egg82.patterns.IRegistry;
+import ninja.egg82.concurrent.IConcurrentDeque;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.plugin.commands.events.EventCommand;
 
 public class AmnesiaEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 	//vars
-	private IRegistry<UUID> amnesiaRegistry = ServiceLocator.getService(AmnesiaRegistry.class);
+	private IVariableRegistry<UUID> amnesiaRegistry = ServiceLocator.getService(AmnesiaRegistry.class);
 	
 	//constructor
 	public AmnesiaEventCommand() {
@@ -38,7 +38,7 @@ public class AmnesiaEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 			UUID uuid = i.next().getUniqueId();
 			
 			if (amnesiaRegistry.hasRegister(uuid)) {
-				IObjectPool<String> messages = amnesiaRegistry.getRegister(uuid, IObjectPool.class);
+				IConcurrentDeque<String> messages = amnesiaRegistry.getRegister(uuid, IConcurrentDeque.class);
 				
 				// Don't try to optimize RNG. Think about it for a sec.
 				

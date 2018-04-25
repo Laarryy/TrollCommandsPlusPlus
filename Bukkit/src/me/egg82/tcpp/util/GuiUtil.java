@@ -13,14 +13,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.egg82.tcpp.services.databases.CommandSearchDatabase;
 import me.egg82.tcpp.services.registries.GuiRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.tuples.Pair;
+import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.patterns.tuples.pair.Pair;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.sql.LanguageDatabase;
 
@@ -30,7 +29,7 @@ public class GuiUtil {
 	private static HashMap<String, Pair<String, String>> commands = null;
 	private static String[] allCommands = null;
 	
-	private static IRegistry<String> guiRegistry = null;
+	private static IVariableRegistry<String> guiRegistry = null;
 	
 	//constructor
 	public GuiUtil() {
@@ -44,7 +43,7 @@ public class GuiUtil {
 		}
 		if (commands == null) {
 			commands = new HashMap<String, Pair<String, String>>();
-			String[] list = ((String) ((PluginDescriptionFile) ServiceLocator.getService(JavaPlugin.class).getDescription()).getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
+			String[] list = ((String) ServiceLocator.getService(JavaPlugin.class).getDescription().getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
 			
 			for (String entry : list) {
 				if (entry.contains("-= Available Commands =-")) {
@@ -183,10 +182,10 @@ public class GuiUtil {
 					currentRow += input;
 					input = "";
 					break;
-				} else {
-					currentRow += input.substring(0, space + 1);
-					input = input.substring(space + 1);
 				}
+				
+				currentRow += input.substring(0, space + 1);
+				input = input.substring(space + 1);
 			}
 			currentRow = currentRow.trim();
 			if (!currentRow.isEmpty()) {

@@ -7,20 +7,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.services.registries.BludgerRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.LocationUtil;
 
 public class BludgerTickCommand extends TickCommand {
 	//vars
-	private IRegistry<UUID> bludgerRegistry = ServiceLocator.getService(BludgerRegistry.class);
+	private IVariableRegistry<UUID> bludgerRegistry = ServiceLocator.getService(BludgerRegistry.class);
 	
 	//constructor
 	public BludgerTickCommand() {
-		super();
-		ticks = 2L;
+		super(2L);
 	}
 	
 	//public

@@ -17,7 +17,7 @@ import me.egg82.tcpp.util.InventoryUtil;
 import ninja.egg82.nbt.core.INBTCompound;
 import ninja.egg82.nbt.reflection.INBTHelper;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.plugin.commands.events.EventCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.TaskUtil;
 

@@ -10,16 +10,16 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.services.registries.WhoAmIRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.tuples.Pair;
+import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.patterns.tuples.pair.Pair;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.utils.MathUtil;
 
 public class WhoAmITickCommand extends TickCommand {
 	//vars
-	private IRegistry<UUID> whoAmIRegistry = ServiceLocator.getService(WhoAmIRegistry.class);
+	private IVariableRegistry<UUID> whoAmIRegistry = ServiceLocator.getService(WhoAmIRegistry.class);
 	
 	private int numPlayers = 0;
 	private List<Pair<String, String>> players = null;
@@ -114,8 +114,7 @@ public class WhoAmITickCommand extends TickCommand {
 	
 	//constructor
 	public WhoAmITickCommand() {
-		super();
-		ticks = 15L;
+		super(15L);
 		
 		players = merge(startingList, Bukkit.getOfflinePlayers());
 		numPlayers = Bukkit.getOfflinePlayers().length;

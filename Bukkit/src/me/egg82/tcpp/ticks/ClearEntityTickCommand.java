@@ -6,19 +6,18 @@ import org.bukkit.entity.Entity;
 
 import me.egg82.tcpp.services.registries.SpartaArrowRegistry;
 import me.egg82.tcpp.services.registries.SquidDeathRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.TickCommand;
 
 public class ClearEntityTickCommand extends TickCommand {
 	//vars
-	private IRegistry<UUID> squidDeathRegistry = ServiceLocator.getService(SquidDeathRegistry.class);
-	private IRegistry<UUID> spartaArrowRegistry = ServiceLocator.getService(SpartaArrowRegistry.class);
+	private IVariableRegistry<UUID> squidDeathRegistry = ServiceLocator.getService(SquidDeathRegistry.class);
+	private IVariableRegistry<UUID> spartaArrowRegistry = ServiceLocator.getService(SpartaArrowRegistry.class);
 	
 	//constructor
 	public ClearEntityTickCommand() {
-		super();
-		ticks = 50L;
+		super(50L);
 	}
 	
 	//public
@@ -33,7 +32,7 @@ public class ClearEntityTickCommand extends TickCommand {
 			e(spartaArrowRegistry, key, spartaArrowRegistry.getRegister(key, Entity.class));
 		}
 	}
-	private void e(IRegistry<UUID> registry, UUID uuid, Entity entity) {
+	private void e(IVariableRegistry<UUID> registry, UUID uuid, Entity entity) {
 		if (entity.getTicksLived() >= 100L) {
 			entity.remove();
 			registry.removeRegister(uuid);

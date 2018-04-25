@@ -8,9 +8,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 import me.egg82.tcpp.core.LuckyCommand;
 import me.egg82.tcpp.services.registries.LuckyBlockRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.plugin.commands.events.EventCommand;
 import ninja.egg82.utils.MathUtil;
 import ninja.egg82.utils.ReflectUtil;
 
@@ -19,7 +19,7 @@ public class LuckyBlockEventCommand extends EventCommand<BlockBreakEvent> {
 	private ArrayList<LuckyCommand> luckyCommands = new ArrayList<LuckyCommand>();
 	private ArrayList<LuckyCommand> unluckyCommands = new ArrayList<LuckyCommand>();
 	
-	private IRegistry<Location> luckyBlockRegistry = ServiceLocator.getService(LuckyBlockRegistry.class);
+	private IVariableRegistry<Location> luckyBlockRegistry = ServiceLocator.getService(LuckyBlockRegistry.class);
 	
 	//constructor
 	public LuckyBlockEventCommand() {

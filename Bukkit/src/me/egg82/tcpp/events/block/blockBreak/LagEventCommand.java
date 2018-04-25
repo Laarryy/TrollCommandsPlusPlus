@@ -12,9 +12,9 @@ import org.bukkit.inventory.ItemStack;
 
 import me.egg82.tcpp.services.registries.LagBlockRegistry;
 import me.egg82.tcpp.services.registries.LagRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.plugin.commands.events.EventCommand;
 import ninja.egg82.plugin.reflection.player.IPlayerHelper;
 import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.TaskUtil;
@@ -22,8 +22,8 @@ import ninja.egg82.utils.MathUtil;
 
 public class LagEventCommand extends EventCommand<BlockBreakEvent> {
 	//vars
-	private IRegistry<UUID> lagRegistry = ServiceLocator.getService(LagRegistry.class);
-	private IRegistry<Location> lagBlockRegistry = ServiceLocator.getService(LagBlockRegistry.class);
+	private IVariableRegistry<UUID> lagRegistry = ServiceLocator.getService(LagRegistry.class);
+	private IVariableRegistry<Location> lagBlockRegistry = ServiceLocator.getService(LagBlockRegistry.class);
 	
 	private IPlayerHelper playerUtil = ServiceLocator.getService(IPlayerHelper.class);
 	

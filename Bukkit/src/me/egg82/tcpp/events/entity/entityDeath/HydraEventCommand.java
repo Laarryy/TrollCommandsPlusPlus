@@ -12,16 +12,16 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.potion.PotionEffect;
 
 import me.egg82.tcpp.services.registries.HydraMobRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.plugin.commands.events.EventCommand;
 import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.LocationUtil;
 import ninja.egg82.utils.MathUtil;
 
 public class HydraEventCommand extends EventCommand<EntityDeathEvent> {
 	//vars
-	private IRegistry<UUID> hydraMobRegistry = ServiceLocator.getService(HydraMobRegistry.class);
+	private IVariableRegistry<UUID> hydraMobRegistry = ServiceLocator.getService(HydraMobRegistry.class);
 	
 	//constructor
 	public HydraEventCommand() {
@@ -32,10 +32,6 @@ public class HydraEventCommand extends EventCommand<EntityDeathEvent> {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		if (!(event.getEntity() instanceof LivingEntity)) {
-			return;
-		}
-		
 		LivingEntity entity = event.getEntity();
 		UUID uuid = entity.getUniqueId();
 		

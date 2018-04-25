@@ -2,7 +2,6 @@ package me.egg82.tcpp.commands.internal;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -79,13 +78,11 @@ public class ChatCommand extends PluginCommand {
 		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
 		if (players.size() > 0) {
 			for (Player player : players) {
-				UUID uuid = player.getUniqueId();
-				
 				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
 					continue;
 				}
 				
-				e(uuid, player, message);
+				e(player, message);
 			}
 		} else {
 			Player player = CommandUtil.getPlayerByName(args[0]);
@@ -96,20 +93,18 @@ public class ChatCommand extends PluginCommand {
 				return;
 			}
 			
-			UUID uuid = player.getUniqueId();
-			
 			if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
 				sender.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
 				onError().invoke(this, new ExceptionEventArgs<PlayerImmuneException>(new PlayerImmuneException(player)));
 				return;
 			}
 			
-			e(uuid, player, message);
+			e(player, message);
 		}
 		
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
-	private void e(UUID uuid, Player player, String message) {
+	private void e(Player player, String message) {
 		player.chat(message);
 		metricsHelper.commandWasRun(this);
 	}

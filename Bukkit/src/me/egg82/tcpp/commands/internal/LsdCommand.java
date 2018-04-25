@@ -14,12 +14,12 @@ import me.egg82.tcpp.exceptions.InvalidLibraryException;
 import me.egg82.tcpp.exceptions.PlayerImmuneException;
 import me.egg82.tcpp.services.registries.LsdRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
+import ninja.egg82.concurrent.DynamicConcurrentDeque;
+import ninja.egg82.concurrent.IConcurrentDeque;
 import ninja.egg82.events.CompleteEventArgs;
 import ninja.egg82.events.ExceptionEventArgs;
-import ninja.egg82.patterns.DynamicObjectPool;
-import ninja.egg82.patterns.IObjectPool;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.patterns.tuples.Triplet;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotLanguageType;
@@ -32,7 +32,7 @@ import ninja.egg82.protocol.reflection.IFakeBlockHelper;
 
 public class LsdCommand extends PluginCommand {
 	//vars
-	private IRegistry<UUID> lsdRegistry = ServiceLocator.getService(LsdRegistry.class);
+	private IVariableRegistry<UUID> lsdRegistry = ServiceLocator.getService(LsdRegistry.class);
 	
 	private IFakeBlockHelper fakeBlockHelper = ServiceLocator.getService(IFakeBlockHelper.class);
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
@@ -138,7 +138,7 @@ public class LsdCommand extends PluginCommand {
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	private void e(UUID uuid, Player player) {
-		lsdRegistry.setRegister(uuid, new DynamicObjectPool<Triplet<String, Integer, Integer>>());
+		lsdRegistry.setRegister(uuid, new DynamicConcurrentDeque<Triplet<String, Integer, Integer>>());
 		metricsHelper.commandWasRun(this);
 		
 		sender.sendMessage(player.getName() + " is now on LSD.");
@@ -163,7 +163,7 @@ public class LsdCommand extends PluginCommand {
 	}
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	private void eUndo(UUID uuid, Player player) {
-		IObjectPool<Triplet<String, Integer, Integer>> bLocs = lsdRegistry.getRegister(uuid, IObjectPool.class);
+		IConcurrentDeque<Triplet<String, Integer, Integer>> bLocs = lsdRegistry.getRegister(uuid, IConcurrentDeque.class);
 		
 		for (Triplet<String, Integer, Integer> chunk : bLocs) {
 			Bukkit.getWorld(chunk.getLeft()).refreshChunk(chunk.getCenter(), chunk.getRight());

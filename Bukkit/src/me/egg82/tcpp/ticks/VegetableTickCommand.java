@@ -10,22 +10,21 @@ import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.services.registries.VegetableItemRegistry;
 import me.egg82.tcpp.services.registries.VegetableLocationRegistry;
 import me.egg82.tcpp.services.registries.VegetableRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.LocationUtil;
 
 public class VegetableTickCommand extends TickCommand {
 	//vars
-	private IRegistry<UUID> vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
-	private IRegistry<UUID> vegetableItemRegistry = ServiceLocator.getService(VegetableItemRegistry.class);
-	private IRegistry<UUID> vegetableLocationRegistry = ServiceLocator.getService(VegetableLocationRegistry.class);
+	private IVariableRegistry<UUID> vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
+	private IVariableRegistry<UUID> vegetableItemRegistry = ServiceLocator.getService(VegetableItemRegistry.class);
+	private IVariableRegistry<UUID> vegetableLocationRegistry = ServiceLocator.getService(VegetableLocationRegistry.class);
 	
 	//constructor
 	public VegetableTickCommand() {
-		super();
-		ticks = 2L;
+		super(2L);
 	}
 	
 	//public

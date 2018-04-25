@@ -8,7 +8,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import ninja.egg82.nbt.reflection.INBTHelper;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.plugin.commands.events.EventCommand;
 
 public class AttachCommandEventCommand extends EventCommand<PlayerDropItemEvent> {
 	//vars

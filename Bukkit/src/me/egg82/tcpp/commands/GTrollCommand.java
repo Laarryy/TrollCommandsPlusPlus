@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
-import org.bukkit.plugin.PluginDescriptionFile;
 
 import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
@@ -47,7 +46,7 @@ public class GTrollCommand extends PluginCommand {
 	public GTrollCommand() {
 		super();
 		
-		String[] list = ((String) ((PluginDescriptionFile) plugin.getDescription()).getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
+		String[] list = ((String) plugin.getDescription().getCommands().get("troll").get("usage")).replaceAll("\r\n", "\n").split("\n");
 		for (String entry : list) {
 			if (entry.contains("-= Available Commands =-")) {
 				continue;
@@ -82,7 +81,7 @@ public class GTrollCommand extends PluginCommand {
 		// Sort command names because it looks pretty on the client side
 		Collections.sort(commandNames);
 		// Get the total pages for /help
-		totalPages = (int) Math.ceil(((double) commandNames.size()) / 9.0d);
+		totalPages = (int) Math.ceil(commandNames.size() / 9.0d);
 	}
 	
 	//public

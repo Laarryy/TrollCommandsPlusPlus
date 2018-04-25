@@ -5,15 +5,15 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.services.registries.SpamRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.utils.MathUtil;
 
 public class SpamTickCommand extends TickCommand {
 	//vars
-	private IRegistry<UUID> spamRegistry = ServiceLocator.getService(SpamRegistry.class);
+	private IVariableRegistry<UUID> spamRegistry = ServiceLocator.getService(SpamRegistry.class);
 	
 	private String[] spam = new String[] {
 		"<Totally Legit> MAKE MONEY FROM HOME ONLINE! NO GIMMICKS! Call now!",
@@ -53,8 +53,7 @@ public class SpamTickCommand extends TickCommand {
 	
 	//constructor
 	public SpamTickCommand() {
-		super();
-		ticks = 15L;
+		super(15L);
 	}
 	
 	//public

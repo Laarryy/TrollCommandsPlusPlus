@@ -13,11 +13,11 @@ import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.exceptions.PlayerImmuneException;
 import me.egg82.tcpp.services.registries.AmnesiaRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
+import ninja.egg82.concurrent.DynamicConcurrentDeque;
 import ninja.egg82.events.CompleteEventArgs;
 import ninja.egg82.events.ExceptionEventArgs;
-import ninja.egg82.patterns.DynamicObjectPool;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotLanguageType;
 import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
@@ -28,7 +28,7 @@ import ninja.egg82.plugin.utils.LanguageUtil;
 
 public class AmnesiaCommand extends PluginCommand {
 	//vars
-	private IRegistry<UUID> amnesiaRegistry = ServiceLocator.getService(AmnesiaRegistry.class);
+	private IVariableRegistry<UUID> amnesiaRegistry = ServiceLocator.getService(AmnesiaRegistry.class);
 	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
@@ -128,7 +128,7 @@ public class AmnesiaCommand extends PluginCommand {
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	private void e(UUID uuid, Player player) {
-		amnesiaRegistry.setRegister(uuid, new DynamicObjectPool<String>());
+		amnesiaRegistry.setRegister(uuid, new DynamicConcurrentDeque<String>());
 		metricsHelper.commandWasRun(this);
 		
 		sender.sendMessage(player.getName() + " is now an amnesiac.");

@@ -16,8 +16,8 @@ import me.egg82.tcpp.services.registries.KillRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CompleteEventArgs;
 import ninja.egg82.events.ExceptionEventArgs;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotLanguageType;
 import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
@@ -32,7 +32,7 @@ public class KillCommand extends PluginCommand {
 	//vars
 	private IEntityHelper entityUtil = ServiceLocator.getService(IEntityHelper.class);
 	
-	private IRegistry<UUID> killRegistry = ServiceLocator.getService(KillRegistry.class);
+	private IVariableRegistry<UUID> killRegistry = ServiceLocator.getService(KillRegistry.class);
 	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	

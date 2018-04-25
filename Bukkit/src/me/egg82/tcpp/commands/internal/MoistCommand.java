@@ -15,8 +15,8 @@ import me.egg82.tcpp.services.registries.MoistRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CompleteEventArgs;
 import ninja.egg82.events.ExceptionEventArgs;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotLanguageType;
 import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
@@ -27,7 +27,7 @@ import ninja.egg82.plugin.utils.LanguageUtil;
 
 public class MoistCommand extends PluginCommand {
 	//vars
-	private IRegistry<UUID> moistRegistry = ServiceLocator.getService(MoistRegistry.class);
+	private IVariableRegistry<UUID> moistRegistry = ServiceLocator.getService(MoistRegistry.class);
 	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	

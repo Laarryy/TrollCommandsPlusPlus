@@ -5,7 +5,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import ninja.egg82.nbt.core.INBTCompound;
 import ninja.egg82.nbt.reflection.INBTHelper;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.plugin.commands.events.EventCommand;
 
 public class AttachEventCommand extends EventCommand<BlockPlaceEvent> {
 	//vars

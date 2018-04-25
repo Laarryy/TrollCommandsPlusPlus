@@ -5,13 +5,13 @@ import java.util.UUID;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
 import me.egg82.tcpp.services.registries.BludgerRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.plugin.commands.events.EventCommand;
 
 public class BludgerEventCommand extends EventCommand<EntityExplodeEvent> {
 	//vars
-	private IRegistry<UUID> bludgerRegistry = ServiceLocator.getService(BludgerRegistry.class);
+	private IVariableRegistry<UUID> bludgerRegistry = ServiceLocator.getService(BludgerRegistry.class);
 	
 	//constructor
 	public BludgerEventCommand() {

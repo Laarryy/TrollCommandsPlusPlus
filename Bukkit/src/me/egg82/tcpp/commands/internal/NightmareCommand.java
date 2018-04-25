@@ -11,7 +11,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import me.egg82.tcpp.Config;
 import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.exceptions.InvalidLibraryException;
@@ -19,12 +18,12 @@ import me.egg82.tcpp.exceptions.InvalidVersionException;
 import me.egg82.tcpp.exceptions.PlayerImmuneException;
 import me.egg82.tcpp.services.registries.NightmareRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
+import ninja.egg82.concurrent.FixedConcurrentDeque;
+import ninja.egg82.concurrent.IConcurrentDeque;
 import ninja.egg82.events.CompleteEventArgs;
 import ninja.egg82.events.ExceptionEventArgs;
-import ninja.egg82.patterns.FixedObjectPool;
-import ninja.egg82.patterns.IObjectPool;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.BukkitInitType;
 import ninja.egg82.plugin.enums.SpigotLanguageType;
@@ -39,10 +38,11 @@ import ninja.egg82.protocol.core.IFakeLivingEntity;
 import ninja.egg82.protocol.reflection.IFakeEntityHelper;
 import ninja.egg82.startup.InitRegistry;
 import ninja.egg82.utils.MathUtil;
+import ninja.egg82.utils.ThreadUtil;
 
 public class NightmareCommand extends PluginCommand {
 	//vars
-	private IRegistry<UUID> nightmareRegistry = ServiceLocator.getService(NightmareRegistry.class);
+	private IVariableRegistry<UUID> nightmareRegistry = ServiceLocator.getService(NightmareRegistry.class);
 	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	private IFakeEntityHelper fakeEntityHelper = ServiceLocator.getService(IFakeEntityHelper.class);
@@ -158,9 +158,9 @@ public class NightmareCommand extends PluginCommand {
 		Location[] zombieLocs = LocationUtil.getCircleAround(player.getLocation(), 3, MathUtil.fairRoundedRandom(6, 9));
 		Location[] zombie2Locs = LocationUtil.getCircleAround(player.getLocation(), 5, MathUtil.fairRoundedRandom(8, 12));
 		
-		IObjectPool<IFakeLivingEntity> entities = new FixedObjectPool<IFakeLivingEntity>(zombieLocs.length + zombie2Locs.length);
+		IConcurrentDeque<IFakeLivingEntity> entities = new FixedConcurrentDeque<IFakeLivingEntity>(zombieLocs.length + zombie2Locs.length);
 		
-		Config.globalThreadPool.submit(new Runnable() {
+		ThreadUtil.submit(new Runnable() {
 			public void run() {
 				for (int i = 0; i < zombieLocs.length; i++) {
 					IFakeLivingEntity e = fakeEntityHelper.createEntity(zombieLocs[i], EntityType.ZOMBIE);
@@ -211,9 +211,9 @@ public class NightmareCommand extends PluginCommand {
 	}
 	@SuppressWarnings("unchecked")
 	private void eUndo(UUID uuid, Player player) {
-		IObjectPool<IFakeLivingEntity> entities = nightmareRegistry.getRegister(uuid, IObjectPool.class);
+		IConcurrentDeque<IFakeLivingEntity> entities = nightmareRegistry.getRegister(uuid, IConcurrentDeque.class);
 		
-		Config.globalThreadPool.submit(new Runnable() {
+		ThreadUtil.submit(new Runnable() {
 			public void run() {
 				for (IFakeLivingEntity e : entities) {
 					e.destroy();
@@ -227,9 +227,9 @@ public class NightmareCommand extends PluginCommand {
 	}
 	@SuppressWarnings("unchecked")
 	private void eUndo(UUID uuid, OfflinePlayer player) {
-		IObjectPool<IFakeLivingEntity> entities = nightmareRegistry.getRegister(uuid, IObjectPool.class);
+		IConcurrentDeque<IFakeLivingEntity> entities = nightmareRegistry.getRegister(uuid, IConcurrentDeque.class);
 		
-		Config.globalThreadPool.submit(new Runnable() {
+		ThreadUtil.submit(new Runnable() {
 			public void run() {
 				for (IFakeLivingEntity e : entities) {
 					e.destroy();

@@ -2,9 +2,9 @@ package me.egg82.tcpp.services.registries;
 
 import org.bukkit.Material;
 
-import ninja.egg82.patterns.Registry;
+import ninja.egg82.patterns.registries.VariableRegistry;
 
-public class GuiRegistry extends Registry<String> {
+public class GuiRegistry extends VariableRegistry<String> {
 	//vars
 	
 	//constructor

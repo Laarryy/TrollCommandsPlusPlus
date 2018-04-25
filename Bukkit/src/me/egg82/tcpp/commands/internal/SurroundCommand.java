@@ -95,15 +95,15 @@ public class SurroundCommand extends PluginCommand {
 		} else if (args.length == 2) {
 			if (args[1].isEmpty()) {
 				return mobNames;
-			} else {
-				ArrayList<String> retVal = new ArrayList<String>();
-				for (int i = 0; i < mobNames.size(); i++) {
-					if (mobNames.get(i).toLowerCase().startsWith(args[1].toLowerCase())) {
-						retVal.add(mobNames.get(i));
-					}
-				}
-				return retVal;
 			}
+			
+			ArrayList<String> retVal = new ArrayList<String>();
+			for (int i = 0; i < mobNames.size(); i++) {
+				if (mobNames.get(i).toLowerCase().startsWith(args[1].toLowerCase())) {
+					retVal.add(mobNames.get(i));
+				}
+			}
+			return retVal;
 		}
 		
 		return null;
@@ -168,7 +168,7 @@ public class SurroundCommand extends PluginCommand {
 					continue;
 				}
 				
-				e(player.getUniqueId().toString(), player, type);
+				e(player, type);
 			}
 		} else {
 			Player player = CommandUtil.getPlayerByName(args[0]);
@@ -184,12 +184,12 @@ public class SurroundCommand extends PluginCommand {
 				return;
 			}
 			
-			e(player.getUniqueId().toString(), player, type);
+			e(player, type);
 		}
 		
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
-	private void e(String uuid, Player player, EntityType mobType) {
+	private void e(Player player, EntityType mobType) {
 		Location[] mobLocations = LocationUtil.getCircleAround(player.getLocation(), MathUtil.random(4.0d,  6.0d), MathUtil.fairRoundedRandom(8, 12));
 		
 		for (int i = 0; i < mobLocations.length; i++) {

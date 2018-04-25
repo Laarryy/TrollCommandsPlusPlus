@@ -9,13 +9,13 @@ import org.bukkit.Material;
 
 import me.egg82.tcpp.services.registries.DisplayLocationRegistry;
 import me.egg82.tcpp.services.registries.DisplayRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 
 public class DisplayHelper {
 	//vars
-	private IRegistry<UUID> displayRegistry = ServiceLocator.getService(DisplayRegistry.class);
-	private IRegistry<UUID> displayLocationRegistry = ServiceLocator.getService(DisplayLocationRegistry.class);
+	private IVariableRegistry<UUID> displayRegistry = ServiceLocator.getService(DisplayRegistry.class);
+	private IVariableRegistry<UUID> displayLocationRegistry = ServiceLocator.getService(DisplayLocationRegistry.class);
 	
 	private HashSet<Location> addedBlockLocations = new HashSet<Location>();
 	

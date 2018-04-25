@@ -20,8 +20,8 @@ import me.egg82.tcpp.services.registries.MaterialNameRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CompleteEventArgs;
 import ninja.egg82.events.ExceptionEventArgs;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotLanguageType;
 import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
@@ -32,9 +32,9 @@ import ninja.egg82.plugin.utils.LanguageUtil;
 
 public class ConvertCommand extends PluginCommand {
 	//vars
-	private IRegistry<UUID> convertRegistry = ServiceLocator.getService(ConvertRegistry.class);
+	private IVariableRegistry<UUID> convertRegistry = ServiceLocator.getService(ConvertRegistry.class);
 	private ArrayList<String> materialNames = new ArrayList<String>();
-	private IRegistry<String> materialNameRegistry = ServiceLocator.getService(MaterialNameRegistry.class);
+	private IVariableRegistry<String> materialNameRegistry = ServiceLocator.getService(MaterialNameRegistry.class);
 	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
@@ -70,17 +70,17 @@ public class ConvertCommand extends PluginCommand {
 		} else if(args.length == 2) {
 			if (args[1].isEmpty()) {
 				return materialNames;
-			} else {
-				ArrayList<String> retVal = new ArrayList<String>();
-				
-				for (String name : materialNames) {
-					if (name.toLowerCase().startsWith(args[1].toLowerCase())) {
-						retVal.add(name);
-					}
-				}
-				
-				return retVal;
 			}
+			
+			ArrayList<String> retVal = new ArrayList<String>();
+			
+			for (String name : materialNames) {
+				if (name.toLowerCase().startsWith(args[1].toLowerCase())) {
+					retVal.add(name);
+				}
+			}
+			
+			return retVal;
 		}
 		
 		return null;
@@ -182,7 +182,7 @@ public class ConvertCommand extends PluginCommand {
 		if (name.length() > 5 && name.substring(name.length() - 5).equals("_item")) {
 			name = name.substring(0, name.length() - 5);
 		}
-		name.replace('_', ' ');
+		name = name.replace('_', ' ');
 		
 		sender.sendMessage(player.getName() + "'s inventory is now " + name + ".");
 	}

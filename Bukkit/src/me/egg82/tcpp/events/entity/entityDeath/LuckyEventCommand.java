@@ -6,14 +6,14 @@ import org.bukkit.event.entity.EntityDeathEvent;
 
 import me.egg82.tcpp.services.registries.LuckyChickenRegistry;
 import me.egg82.tcpp.services.registries.LuckyVillagerRegistry;
-import ninja.egg82.patterns.IExpiringRegistry;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.patterns.registries.IVariableExpiringRegistry;
+import ninja.egg82.plugin.commands.events.EventCommand;
 
 public class LuckyEventCommand extends EventCommand<EntityDeathEvent> {
 	//vars
-	private IExpiringRegistry<UUID> luckyChickenRegistry = ServiceLocator.getService(LuckyChickenRegistry.class);
-	private IExpiringRegistry<UUID> luckyVillagerRegistry = ServiceLocator.getService(LuckyVillagerRegistry.class);
+	private IVariableExpiringRegistry<UUID> luckyChickenRegistry = ServiceLocator.getService(LuckyChickenRegistry.class);
+	private IVariableExpiringRegistry<UUID> luckyVillagerRegistry = ServiceLocator.getService(LuckyVillagerRegistry.class);
 	
 	//constructor
 	public LuckyEventCommand() {

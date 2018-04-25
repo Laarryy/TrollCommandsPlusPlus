@@ -7,15 +7,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import me.egg82.tcpp.services.registries.RandomBuildRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.plugin.commands.events.EventCommand;
 import ninja.egg82.plugin.reflection.type.TypeFilterHelper;
 import ninja.egg82.utils.MathUtil;
 
 public class RandomBuildEventCommand extends EventCommand<BlockPlaceEvent> {
 	//vars
-	private IRegistry<UUID> randomBuildRegistry = ServiceLocator.getService(RandomBuildRegistry.class);
+	private IVariableRegistry<UUID> randomBuildRegistry = ServiceLocator.getService(RandomBuildRegistry.class);
 	
 	private Material[] materials = null;
 

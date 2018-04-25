@@ -22,8 +22,8 @@ import me.egg82.tcpp.services.registries.SpawnBreakRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.events.CompleteEventArgs;
 import ninja.egg82.events.ExceptionEventArgs;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotLanguageType;
 import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
@@ -36,7 +36,7 @@ import ninja.egg82.utils.ReflectUtil;
 
 public class SpawnBreakCommand extends PluginCommand {
 	//vars
-	private IRegistry<UUID> spawnBreakRegistry = ServiceLocator.getService(SpawnBreakRegistry.class);
+	private IVariableRegistry<UUID> spawnBreakRegistry = ServiceLocator.getService(SpawnBreakRegistry.class);
 	private ArrayList<String> mobNames = new ArrayList<String>();
 	private LanguageDatabase mobTypeDatabase = ServiceLocator.getService(MobTypeSearchDatabase.class);
 	
@@ -95,15 +95,15 @@ public class SpawnBreakCommand extends PluginCommand {
 		} else if (args.length == 2) {
 			if (args[1].isEmpty()) {
 				return mobNames;
-			} else {
-				ArrayList<String> retVal = new ArrayList<String>();
-				for (int i = 0; i < mobNames.size(); i++) {
-					if (mobNames.get(i).toLowerCase().startsWith(args[1].toLowerCase())) {
-						retVal.add(mobNames.get(i));
-					}
-				}
-				return retVal;
 			}
+			
+			ArrayList<String> retVal = new ArrayList<String>();
+			for (int i = 0; i < mobNames.size(); i++) {
+				if (mobNames.get(i).toLowerCase().startsWith(args[1].toLowerCase())) {
+					retVal.add(mobNames.get(i));
+				}
+			}
+			return retVal;
 		}
 		
 		return null;
@@ -212,9 +212,9 @@ public class SpawnBreakCommand extends PluginCommand {
 					sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_TARGET));
 					onError().invoke(this, new ExceptionEventArgs<InvalidTargetException>(new InvalidTargetException(player)));
 					return;
-				} else {
-					eUndo(uuid, player);
 				}
+				
+				eUndo(uuid, player);
 			}
 		}
 		

@@ -8,16 +8,16 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 
 import me.egg82.tcpp.services.registries.LagLocationRegistry;
 import me.egg82.tcpp.services.registries.LagRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.plugin.commands.events.EventCommand;
 import ninja.egg82.plugin.utils.TaskUtil;
 import ninja.egg82.utils.MathUtil;
 
 public class LagEventCommand extends EventCommand<PlayerTeleportEvent> {
 	//vars
-	private IRegistry<UUID> lagRegistry = ServiceLocator.getService(LagRegistry.class);
-	private IRegistry<UUID> lagLocationRegistry = ServiceLocator.getService(LagLocationRegistry.class);
+	private IVariableRegistry<UUID> lagRegistry = ServiceLocator.getService(LagRegistry.class);
+	private IVariableRegistry<UUID> lagLocationRegistry = ServiceLocator.getService(LagLocationRegistry.class);
 	
 	//constructor
 	public LagEventCommand() {

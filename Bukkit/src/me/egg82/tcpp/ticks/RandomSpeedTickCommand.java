@@ -5,20 +5,19 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.services.registries.RandomSpeedRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.utils.MathUtil;
 
 public class RandomSpeedTickCommand extends TickCommand {
 	//vars
-	private IRegistry<UUID> randomSpeedRegistry = ServiceLocator.getService(RandomSpeedRegistry.class);
+	private IVariableRegistry<UUID> randomSpeedRegistry = ServiceLocator.getService(RandomSpeedRegistry.class);
 	
 	//constructor
 	public RandomSpeedTickCommand() {
-		super();
-		ticks = 55L;
+		super(55L);
 	}
 	
 	//public

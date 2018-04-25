@@ -2,9 +2,9 @@ package me.egg82.tcpp.core;
 
 import org.bukkit.entity.Player;
 
-import ninja.egg82.patterns.SynchronousCommand;
+import ninja.egg82.patterns.Command;
 
-public abstract class LuckyCommand extends SynchronousCommand {
+public abstract class LuckyCommand extends Command {
 	//vars
 	protected Player player = null;
 	

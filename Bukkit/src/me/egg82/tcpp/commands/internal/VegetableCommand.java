@@ -19,8 +19,8 @@ import me.egg82.tcpp.util.MetricsHelper;
 import me.egg82.tcpp.util.VegetableHelper;
 import ninja.egg82.events.CompleteEventArgs;
 import ninja.egg82.events.ExceptionEventArgs;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.PluginCommand;
 import ninja.egg82.plugin.enums.SpigotLanguageType;
 import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
@@ -32,8 +32,8 @@ import ninja.egg82.sql.LanguageDatabase;
 
 public class VegetableCommand extends PluginCommand {
 	//vars
-	private IRegistry<UUID> vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
-	private IRegistry<String> vegetableNameRegistry = ServiceLocator.getService(VegetableNameRegistry.class);
+	private IVariableRegistry<UUID> vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
+	private IVariableRegistry<String> vegetableNameRegistry = ServiceLocator.getService(VegetableNameRegistry.class);
 	private ArrayList<String> vegetableNames = new ArrayList<String>();
 	
 	private LanguageDatabase vegetableTypeDatabase = ServiceLocator.getService(VegetableTypeSearchDatabase.class);
@@ -70,17 +70,17 @@ public class VegetableCommand extends PluginCommand {
 		} else if (args.length == 2) {
 			if (args[1].isEmpty()) {
 				return vegetableNames;
-			} else {
-				ArrayList<String> retVal = new ArrayList<String>();
-				
-				for (int i = 0; i < vegetableNames.size(); i++) {
-					if (vegetableNames.get(i).toLowerCase().startsWith(args[1].toLowerCase())) {
-						retVal.add(vegetableNames.get(i));
-					}
-				}
-				
-				return retVal;
 			}
+			
+			ArrayList<String> retVal = new ArrayList<String>();
+			
+			for (int i = 0; i < vegetableNames.size(); i++) {
+				if (vegetableNames.get(i).toLowerCase().startsWith(args[1].toLowerCase())) {
+					retVal.add(vegetableNames.get(i));
+				}
+			}
+			
+			return retVal;
 		}
 		
 		return null;

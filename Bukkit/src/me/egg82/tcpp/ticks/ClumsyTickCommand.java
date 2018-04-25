@@ -9,8 +9,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import me.egg82.tcpp.services.registries.ClumsyRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.utils.BlockUtil;
 import ninja.egg82.plugin.utils.CommandUtil;
@@ -19,12 +19,11 @@ import ninja.egg82.utils.MathUtil;
 
 public class ClumsyTickCommand extends TickCommand {
 	//vars
-	private IRegistry<UUID> clumsyRegistry = ServiceLocator.getService(ClumsyRegistry.class);
+	private IVariableRegistry<UUID> clumsyRegistry = ServiceLocator.getService(ClumsyRegistry.class);
 	
 	//constructor
 	public ClumsyTickCommand() {
-		super();
-		ticks = 10L;
+		super(10L);
 	}
 	
 	//public

@@ -2,9 +2,9 @@ package me.egg82.tcpp.services.registries;
 
 import org.bukkit.Location;
 
-import ninja.egg82.patterns.Registry;
+import ninja.egg82.patterns.registries.VariableRegistry;
 
-public class LagBlockRegistry extends Registry<Location> {
+public class LagBlockRegistry extends VariableRegistry<Location> {
 	//vars
 	
 	//constructor

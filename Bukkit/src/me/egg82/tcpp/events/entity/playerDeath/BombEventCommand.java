@@ -5,13 +5,13 @@ import java.util.UUID;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import me.egg82.tcpp.services.registries.BombRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.plugin.commands.events.EventCommand;
 
 public class BombEventCommand extends EventCommand<PlayerDeathEvent> {
 	//vars
-	private IRegistry<UUID> bombRegistry = ServiceLocator.getService(BombRegistry.class);
+	private IVariableRegistry<UUID> bombRegistry = ServiceLocator.getService(BombRegistry.class);
 	
 	//constructor
 	public BombEventCommand() {

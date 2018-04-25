@@ -12,16 +12,16 @@ import me.egg82.tcpp.services.registries.ControlInventoryRegistry;
 import me.egg82.tcpp.services.registries.ControlModeRegistry;
 import me.egg82.tcpp.services.registries.ControlRegistry;
 import ninja.egg82.disguise.reflection.IDisguiseHelper;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.plugin.utils.TaskUtil;
 
 public class ControlHelper {
 	//vars
-	private IRegistry<UUID> controlRegistry = ServiceLocator.getService(ControlRegistry.class);
-	private IRegistry<UUID> controlModeRegistry = ServiceLocator.getService(ControlModeRegistry.class);
-	private IRegistry<UUID> controlInventoryRegistry = ServiceLocator.getService(ControlInventoryRegistry.class);
+	private IVariableRegistry<UUID> controlRegistry = ServiceLocator.getService(ControlRegistry.class);
+	private IVariableRegistry<UUID> controlModeRegistry = ServiceLocator.getService(ControlModeRegistry.class);
+	private IVariableRegistry<UUID> controlInventoryRegistry = ServiceLocator.getService(ControlInventoryRegistry.class);
 	
 	private IDisguiseHelper disguiseHelper = ServiceLocator.getService(IDisguiseHelper.class);
 	

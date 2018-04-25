@@ -11,22 +11,22 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.Config;
 import me.egg82.tcpp.services.registries.FoolsGoldChunkRegistry;
 import me.egg82.tcpp.services.registries.FoolsGoldRegistry;
-import ninja.egg82.patterns.DynamicObjectPool;
-import ninja.egg82.patterns.IObjectPool;
-import ninja.egg82.patterns.IRegistry;
+import ninja.egg82.concurrent.DynamicConcurrentDeque;
+import ninja.egg82.concurrent.IConcurrentDeque;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.tuples.Pair;
+import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.patterns.tuples.pair.Pair;
 import ninja.egg82.plugin.utils.TaskUtil;
 import ninja.egg82.protocol.reflection.IFakeBlockHelper;
 import ninja.egg82.utils.MathUtil;
+import ninja.egg82.utils.ThreadUtil;
 
 public class FoolsGoldHelper {
 	//vars
-	private IRegistry<UUID> foolsGoldRegistry = ServiceLocator.getService(FoolsGoldRegistry.class);
-	private IRegistry<UUID> foolsGoldChunkRegistry = ServiceLocator.getService(FoolsGoldChunkRegistry.class);
+	private IVariableRegistry<UUID> foolsGoldRegistry = ServiceLocator.getService(FoolsGoldRegistry.class);
+	private IVariableRegistry<UUID> foolsGoldChunkRegistry = ServiceLocator.getService(FoolsGoldChunkRegistry.class);
 	
 	private IFakeBlockHelper fakeBlockHelper = ServiceLocator.getService(IFakeBlockHelper.class);
 	
@@ -37,10 +37,10 @@ public class FoolsGoldHelper {
 	
 	//public
 	public void addPlayer(UUID uuid, Player player) {
-		IObjectPool<Location> blocks = new DynamicObjectPool<Location>();
-		IObjectPool<Pair<Integer, Integer>> chunks = new DynamicObjectPool<Pair<Integer, Integer>>();
+		IConcurrentDeque<Location> blocks = new DynamicConcurrentDeque<Location>();
+		IConcurrentDeque<Pair<Integer, Integer>> chunks = new DynamicConcurrentDeque<Pair<Integer, Integer>>();
 		
-		Config.globalThreadPool.submit(new Runnable() {
+		ThreadUtil.submit(new Runnable() {
 			public void run() {
 				addFakeBlocks(player, blocks, chunks, 1);
 			}
@@ -52,9 +52,9 @@ public class FoolsGoldHelper {
 	@SuppressWarnings("unchecked")
 	public void removePlayer(UUID uuid, Player player) {
 		if (foolsGoldRegistry.hasRegister(uuid)) {
-			IObjectPool<Location> blocks = foolsGoldRegistry.getRegister(uuid, IObjectPool.class);
+			IConcurrentDeque<Location> blocks = foolsGoldRegistry.getRegister(uuid, IConcurrentDeque.class);
 			
-			Config.globalThreadPool.submit(new Runnable() {
+			ThreadUtil.submit(new Runnable() {
 				public void run() {
 					removeFakeBlocks(player, blocks, 1);
 				}
@@ -71,10 +71,10 @@ public class FoolsGoldHelper {
 	
 	@SuppressWarnings("unchecked")
 	public void updatePlayer(UUID uuid, Player player, Location from, Location to) {
-		IObjectPool<Location> blocks = foolsGoldRegistry.getRegister(uuid, IObjectPool.class);
-		IObjectPool<Pair<Integer, Integer>> chunks = foolsGoldChunkRegistry.getRegister(uuid, IObjectPool.class);
+		IConcurrentDeque<Location> blocks = foolsGoldRegistry.getRegister(uuid, IConcurrentDeque.class);
+		IConcurrentDeque<Pair<Integer, Integer>> chunks = foolsGoldChunkRegistry.getRegister(uuid, IConcurrentDeque.class);
 		
-		Config.globalThreadPool.submit(new Runnable() {
+		ThreadUtil.submit(new Runnable() {
 			public void run() {
 				updateFakeBlocks(player, from, to, blocks, chunks, 1);
 			}
@@ -83,10 +83,10 @@ public class FoolsGoldHelper {
 	
 	@SuppressWarnings("unchecked")
 	public void updatePlayer(UUID uuid, Player player, Location newLocation) {
-		IObjectPool<Location> blocks = foolsGoldRegistry.getRegister(uuid, IObjectPool.class);
-		IObjectPool<Pair<Integer, Integer>> chunks = foolsGoldChunkRegistry.getRegister(uuid, IObjectPool.class);
+		IConcurrentDeque<Location> blocks = foolsGoldRegistry.getRegister(uuid, IConcurrentDeque.class);
+		IConcurrentDeque<Pair<Integer, Integer>> chunks = foolsGoldChunkRegistry.getRegister(uuid, IConcurrentDeque.class);
 		
-		Config.globalThreadPool.submit(new Runnable() {
+		ThreadUtil.submit(new Runnable() {
 			public void run() {
 				updateFakeBlocks(player, player.getLocation(), newLocation, blocks, chunks, 1);
 			}
@@ -94,7 +94,7 @@ public class FoolsGoldHelper {
 	}
 	
 	//private
-	private void addFakeBlocks(Player player, IObjectPool<Location> blocks, IObjectPool<Pair<Integer, Integer>> chunks, int tries) {
+	private void addFakeBlocks(Player player, IConcurrentDeque<Location> blocks, IConcurrentDeque<Pair<Integer, Integer>> chunks, int tries) {
 		if (!player.getWorld().isChunkLoaded(player.getLocation().getBlockX() >> 4, player.getLocation().getBlockZ() >> 4)) {
 			if (tries < 10) {
 				TaskUtil.runAsync(new Runnable() {
@@ -133,7 +133,7 @@ public class FoolsGoldHelper {
 			}
 		}
 	}
-	private void removeFakeBlocks(Player player, IObjectPool<Location> blocks, int tries) {
+	private void removeFakeBlocks(Player player, IConcurrentDeque<Location> blocks, int tries) {
 		if (!player.getWorld().isChunkLoaded(player.getLocation().getBlockX() >> 4, player.getLocation().getBlockZ() >> 4)) {
 			if (tries < 10) {
 				TaskUtil.runAsync(new Runnable() {
@@ -149,7 +149,7 @@ public class FoolsGoldHelper {
 			fakeBlockHelper.updateBlock(player, b, b.getBlock().getType());
 		}
 	}
-	private void updateFakeBlocks(Player player, Location from, Location to, IObjectPool<Location> blocks, IObjectPool<Pair<Integer, Integer>> chunks, int tries) {
+	private void updateFakeBlocks(Player player, Location from, Location to, IConcurrentDeque<Location> blocks, IConcurrentDeque<Pair<Integer, Integer>> chunks, int tries) {
 		if (!from.getWorld().isChunkLoaded(from.getBlockX() >> 4, from.getBlockZ() >> 4) || !to.getWorld().isChunkLoaded(to.getBlockX() >> 4, to.getBlockZ() >> 4)) {
 			if (tries < 10) {
 				TaskUtil.runAsync(new Runnable() {

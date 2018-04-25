@@ -9,16 +9,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import me.egg82.tcpp.services.registries.MoistRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.EventCommand;
+import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.plugin.commands.events.EventCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
 import opennlp.tools.postag.POSTagger;
 import opennlp.tools.tokenize.WhitespaceTokenizer;
 
 public class MoistEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 	//vars
-	private IRegistry<UUID> moistRegistry = ServiceLocator.getService(MoistRegistry.class);
+	private IVariableRegistry<UUID> moistRegistry = ServiceLocator.getService(MoistRegistry.class);
 	
 	private POSTagger tagger = ServiceLocator.getService(POSTagger.class);
 	private WhitespaceTokenizer tokenizer = WhitespaceTokenizer.INSTANCE;

@@ -10,8 +10,8 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.services.registries.StampedeRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.reflection.entity.IEntityHelper;
 import ninja.egg82.plugin.utils.CommandUtil;
@@ -19,14 +19,13 @@ import ninja.egg82.plugin.utils.LocationUtil;
 
 public class StampedeTickCommand extends TickCommand {
 	//vars
-	private IRegistry<UUID> stampedeRegistry = ServiceLocator.getService(StampedeRegistry.class);
+	private IVariableRegistry<UUID> stampedeRegistry = ServiceLocator.getService(StampedeRegistry.class);
 	
 	private IEntityHelper entityHelper = ServiceLocator.getService(IEntityHelper.class);
 	
 	//constructor
 	public StampedeTickCommand() {
-		super();
-		ticks = 2L;
+		super(2L);
 	}
 	
 	//public

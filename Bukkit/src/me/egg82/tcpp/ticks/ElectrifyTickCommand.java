@@ -7,20 +7,19 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.services.registries.ElectrifyRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.utils.MathUtil;
 
 public class ElectrifyTickCommand extends TickCommand {
 	//vars
-	private IRegistry<UUID> electrifyRegistry = ServiceLocator.getService(ElectrifyRegistry.class);
+	private IVariableRegistry<UUID> electrifyRegistry = ServiceLocator.getService(ElectrifyRegistry.class);
 	
 	//constructor
 	public ElectrifyTickCommand() {
-		super();
-		ticks = 15L;
+		super(15L);
 	}
 	
 	//public

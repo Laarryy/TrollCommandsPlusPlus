@@ -2,7 +2,6 @@ package me.egg82.tcpp.commands.internal;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -80,7 +79,7 @@ public class EntombCommand extends PluginCommand {
 					continue;
 				}
 				
-				e(player.getUniqueId(), player);
+				e(player);
 			}
 		} else {
 			Player player = CommandUtil.getPlayerByName(args[0]);
@@ -96,12 +95,12 @@ public class EntombCommand extends PluginCommand {
 				return;
 			}
 			
-			e(player.getUniqueId(), player);
+			e(player);
 		}
 		
 		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
-	private void e(UUID uuid, Player player) {
+	private void e(Player player) {
 		Location playerLocation = player.getLocation().clone();
 		Location blockLocation = new Location(playerLocation.getWorld(), playerLocation.getBlockX(), MathUtil.fairRoundedRandom(5, 15), playerLocation.getBlockZ());
 		

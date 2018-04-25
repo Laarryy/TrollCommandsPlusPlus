@@ -62,13 +62,13 @@ public class TimeCommand extends PluginCommand {
 		} else if (args.length == 2) {
 			if (args[1].isEmpty()) {
 				return timeNames;
-			} else {
-				ArrayList<String> retVal = new ArrayList<String>();
-				
-				for (String name : timeNames) {
-					if (name.startsWith(args[1].toLowerCase())) {
-						retVal.add(name);
-					}
+			}
+			
+			ArrayList<String> retVal = new ArrayList<String>();
+			
+			for (String name : timeNames) {
+				if (name.startsWith(args[1].toLowerCase())) {
+					retVal.add(name);
 				}
 			}
 		}

@@ -15,8 +15,8 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.material.MaterialData;
 
 import me.egg82.tcpp.services.registries.RadiateRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.core.BlockData;
 import ninja.egg82.plugin.reflection.entity.IEntityHelper;
@@ -25,14 +25,13 @@ import ninja.egg82.plugin.utils.CommandUtil;
 
 public class RadiateTickCommand extends TickCommand {
 	//vars
-	private IRegistry<UUID> radiationRegistry = ServiceLocator.getService(RadiateRegistry.class);
+	private IVariableRegistry<UUID> radiationRegistry = ServiceLocator.getService(RadiateRegistry.class);
 	
 	private IEntityHelper entityUtil = ServiceLocator.getService(IEntityHelper.class);
 	
 	//constructor
 	public RadiateTickCommand() {
-		super();
-		ticks = 10L;
+		super(10L);
 	}
 	
 	//public

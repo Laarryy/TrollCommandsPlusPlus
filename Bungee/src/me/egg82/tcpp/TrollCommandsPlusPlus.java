@@ -1,11 +1,6 @@
 package me.egg82.tcpp;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import net.md_5.bungee.api.ChatColor;
 import ninja.egg82.bungeecord.BasePlugin;
@@ -19,6 +14,7 @@ import ninja.egg82.exceptionHandlers.RollbarExceptionHandler;
 import ninja.egg82.exceptionHandlers.builders.GameAnalyticsBuilder;
 import ninja.egg82.exceptionHandlers.builders.RollbarBuilder;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.utils.ThreadUtil;
 
 public class TrollCommandsPlusPlus extends BasePlugin {
 	//vars
@@ -28,8 +24,6 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	
 	private IExceptionHandler exceptionHandler = null;
 	private String version = null;
-	
-	private ScheduledExecutorService mainThreadPool = null;
 	
 	//constructor
 	public TrollCommandsPlusPlus() {
@@ -49,7 +43,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		ServiceLocator.provideService(RollbarExceptionHandler.class, false);
 		exceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
 		oldExceptionHandler.disconnect();
-		exceptionHandler.connect(new RollbarBuilder("78062d4e18074560850d4d8e0805b564", "production", version, getServerId()));
+		exceptionHandler.connect(new RollbarBuilder("78062d4e18074560850d4d8e0805b564", "production", version, getServerId()), "TrollCommandsPlusPlus");
 		exceptionHandler.setUnsentExceptions(oldExceptionHandler.getUnsentExceptions());
 		exceptionHandler.setUnsentLogs(oldExceptionHandler.getUnsentLogs());
 		
@@ -68,13 +62,13 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		
 		enableMessage();
 		
-		mainThreadPool = Executors.newScheduledThreadPool(1, new ThreadFactoryBuilder().setNameFormat(getDescription().getName() + "-main-%d").build());
-		mainThreadPool.scheduleAtFixedRate(checkExceptionLimitReached, 0L, 60 * 60 * 1000, TimeUnit.MILLISECONDS);
+		ThreadUtil.rename(getDescription().getName());
+		ThreadUtil.scheduleAtFixedRate(checkExceptionLimitReached, 0L, 60L * 60L * 1000L);
 	}
 	public void onDisable() {
 		super.onDisable();
 		
-		mainThreadPool.shutdownNow();
+		ThreadUtil.shutdown(1000L);
 		
 		BungeeReflectUtil.clearAll();
 		disableMessage();
@@ -90,7 +84,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 				ServiceLocator.provideService(GameAnalyticsExceptionHandler.class, false);
 				exceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
 				oldExceptionHandler.disconnect();
-				exceptionHandler.connect(new GameAnalyticsBuilder("250e5c508c3dd844ed1f8bd2a449d1a6", "dfb50b06e598e7a7ad9b3c84f7b118c12800ffce", version, getServerId()));
+				exceptionHandler.connect(new GameAnalyticsBuilder("250e5c508c3dd844ed1f8bd2a449d1a6", "dfb50b06e598e7a7ad9b3c84f7b118c12800ffce", version, getServerId()), getDescription().getName());
 				exceptionHandler.setUnsentExceptions(oldExceptionHandler.getUnsentExceptions());
 				exceptionHandler.setUnsentLogs(oldExceptionHandler.getUnsentLogs());
 			}

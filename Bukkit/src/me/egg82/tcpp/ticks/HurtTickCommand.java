@@ -5,19 +5,18 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.services.registries.HurtRegistry;
-import ninja.egg82.patterns.IRegistry;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.plugin.utils.CommandUtil;
 
 public class HurtTickCommand extends TickCommand {
 	//vars
-	private IRegistry<UUID> hurtRegistry = ServiceLocator.getService(HurtRegistry.class);
+	private IVariableRegistry<UUID> hurtRegistry = ServiceLocator.getService(HurtRegistry.class);
 	
 	//constructor
 	public HurtTickCommand() {
-		super();
-		ticks = 15L;
+		super(15L);
 	}
 	
 	//public
