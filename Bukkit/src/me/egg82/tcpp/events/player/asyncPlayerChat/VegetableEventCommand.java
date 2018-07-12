@@ -7,13 +7,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.services.registries.VegetableItemRegistry;
+import me.egg82.tcpp.registries.VegetableItemRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
-import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class VegetableEventCommand extends EventCommand<AsyncPlayerChatEvent> {
+public class VegetableEventCommand extends EventHandler<AsyncPlayerChatEvent> {
 	//vars
 	private IVariableRegistry<UUID> vegetableItemRegistry = ServiceLocator.getService(VegetableItemRegistry.class);
 	
@@ -37,7 +36,7 @@ public class VegetableEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 			return;
 		}
 		
-		if (!CommandUtil.hasPermission(player, PermissionsType.CHAT_WHILE_VEGETABLE)) {
+		if (!player.hasPermission(PermissionsType.CHAT_WHILE_VEGETABLE)) {
 			String type = groundItem.getItemStack().getType().name();
 			int underscore = type.indexOf('_');
 			

@@ -8,12 +8,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.entity.EntityShootBowEvent;
 
-import me.egg82.tcpp.services.registries.SnowballFightRegistry;
+import me.egg82.tcpp.registries.SnowballFightRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class SnowballFightEventCommand extends EventCommand<EntityShootBowEvent> {
+public class SnowballFightEventCommand extends EventHandler<EntityShootBowEvent> {
 	//vars
 	private IVariableRegistry<UUID> snowballFightRegistry = ServiceLocator.getService(SnowballFightRegistry.class);
 	

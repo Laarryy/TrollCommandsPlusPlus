@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -14,28 +16,18 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.exceptions.InvalidTypeException;
+import me.egg82.tcpp.registries.EnchantNameRegistry;
 import me.egg82.tcpp.services.databases.EnchantTypeSearchDatabase;
-import me.egg82.tcpp.services.registries.EnchantNameRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.events.CompleteEventArgs;
-import ninja.egg82.events.ExceptionEventArgs;
-import ninja.egg82.exceptions.ArgumentNullException;
+import ninja.egg82.bukkit.reflection.player.IPlayerHelper;
+import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.SpigotLanguageType;
-import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
-import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
-import ninja.egg82.plugin.exceptions.SenderNotAllowedException;
-import ninja.egg82.plugin.reflection.player.IPlayerHelper;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LanguageUtil;
+import ninja.egg82.plugin.handlers.CommandHandler;
 import ninja.egg82.sql.LanguageDatabase;
 
-public class EnchantCommand extends PluginCommand {
+public class EnchantCommand extends CommandHandler {
 	//vars
 	private LanguageDatabase enchantTypeDatabase = ServiceLocator.getService(EnchantTypeSearchDatabase.class);
 	private IPlayerHelper playerHelper = ServiceLocator.getService(IPlayerHelper.class);
@@ -75,22 +67,19 @@ public class EnchantCommand extends PluginCommand {
 	//private
 	@SuppressWarnings("deprecation")
 	protected void onExecute(long elapsedMilliseconds) {
-		if (!CommandUtil.isPlayer(sender)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.SENDER_NOT_ALLOWED));
-			onError().invoke(this, new ExceptionEventArgs<SenderNotAllowedException>(new SenderNotAllowedException(sender, this)));
+		if (!CommandUtil.isPlayer((CommandSender) sender.getHandle())) {
+			sender.sendMessage(ChatColor.RED + "Console cannot run this command!");
 			return;
 		}
-		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_ENCHANT)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
-			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_ENCHANT)));
+		if (!sender.hasPermission(PermissionsType.COMMAND_ENCHANT)) {
+			sender.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
 			return;
 		}
 		if (args.length == 0) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
+			sender.sendMessage(ChatColor.RED + "Incorrect command usage!");
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
-			sender.getServer().dispatchCommand(sender, "troll help " + name);
-			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
+			Bukkit.getServer().dispatchCommand((CommandSender) sender.getHandle(), "troll help " + name);
 			return;
 		}
 		
@@ -107,15 +96,13 @@ public class EnchantCommand extends PluginCommand {
 			String[] types = enchantTypeDatabase.getValues(enchantTypeDatabase.naturalLanguage(search, false), 0);
 			
 			if (types == null || types.length == 0) {
-				sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_TYPE));
-				onError().invoke(this, new ExceptionEventArgs<InvalidTypeException>(new InvalidTypeException(search)));
+				sender.sendMessage(ChatColor.RED + "Searched type is invalid or was not found.");
 				return;
 			}
 			
 			type = Enchantment.getByName(types[0].toUpperCase());
 			if (type == null) {
-				sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_TYPE));
-				onError().invoke(this, new ExceptionEventArgs<InvalidTypeException>(new InvalidTypeException(search)));
+				sender.sendMessage(ChatColor.RED + "Searched type is invalid or was not found.");
 				return;
 			}
 		}
@@ -127,13 +114,11 @@ public class EnchantCommand extends PluginCommand {
 			// Ignored
 		}
 		
-		ItemStack item = playerHelper.getItemInMainHand((Player) sender);
+		ItemStack item = playerHelper.getItemInMainHand((Player) sender.getHandle());
 		if (item != null && item.getType() != Material.AIR) {
 			e(item, type, level);
-			((Player) sender).updateInventory();
+			((Player) sender.getHandle()).updateInventory();
 		}
-		
-		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	private void e(ItemStack item, Enchantment enchant, int level) {
 		if (item.getType() == Material.BOOK) {
@@ -176,7 +161,7 @@ public class EnchantCommand extends PluginCommand {
 	
 	private void applyLore(ItemMeta meta) {
 		if (meta == null) {
-			throw new ArgumentNullException("meta");
+			return;
 		}
 		
 		Map<Enchantment, Integer> enchants = null;

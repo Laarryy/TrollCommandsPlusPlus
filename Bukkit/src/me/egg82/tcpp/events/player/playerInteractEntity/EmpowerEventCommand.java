@@ -2,23 +2,21 @@ package me.egg82.tcpp.events.player.playerInteractEntity;
 
 import java.util.UUID;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.services.registries.EmpowerEntityRegistry;
-import me.egg82.tcpp.services.registries.EmpowerRegistry;
+import me.egg82.tcpp.registries.EmpowerEntityRegistry;
+import me.egg82.tcpp.registries.EmpowerRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LanguageUtil;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class EmpowerEventCommand extends EventCommand<PlayerInteractEntityEvent> {
+public class EmpowerEventCommand extends EventHandler<PlayerInteractEntityEvent> {
 	//vars
 	private IVariableRegistry<UUID> empowerRegistry = ServiceLocator.getService(EmpowerRegistry.class);
 	private IVariableRegistry<UUID> empowerEntityRegistry = ServiceLocator.getService(EmpowerEntityRegistry.class);
@@ -43,7 +41,7 @@ public class EmpowerEventCommand extends EventCommand<PlayerInteractEntityEvent>
 			return;
 		}
 		if (!(event.getRightClicked() instanceof LivingEntity)) {
-			player.sendMessage(LanguageUtil.getString(LanguageType.NOT_LIVING));
+			player.sendMessage(ChatColor.RED + "The entity you have selected is neither a player nor a mob!");
 			empowerRegistry.removeRegister(uuid);
 			return;
 		}
@@ -51,8 +49,8 @@ public class EmpowerEventCommand extends EventCommand<PlayerInteractEntityEvent>
 		LivingEntity entity = (LivingEntity) event.getRightClicked();
 		
 		if (entity instanceof Player) {
-			if (CommandUtil.hasPermission(entity, PermissionsType.IMMUNE)) {
-				player.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
+			if (entity.hasPermission(PermissionsType.IMMUNE)) {
+				player.sendMessage(ChatColor.RED + "Player is immune.");
 				return;
 			}
 		}
@@ -69,7 +67,7 @@ public class EmpowerEventCommand extends EventCommand<PlayerInteractEntityEvent>
 			entity.removePotionEffect(PotionEffectType.SPEED);
 			
 			empowerEntityRegistry.removeRegister(entityUuid);
-			player.sendMessage(LanguageUtil.getString(LanguageType.DISEMPOWERED));
+			player.sendMessage(ChatColor.GREEN + "The entity you have selected is now empowered!");
 		} else {
 			entity.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, Integer.MAX_VALUE, 5, true, false), true);
 			entity.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 5, true, false), true);
@@ -80,7 +78,7 @@ public class EmpowerEventCommand extends EventCommand<PlayerInteractEntityEvent>
 			entity.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 5, true, false), true);
 			
 			empowerEntityRegistry.setRegister(entityUuid, null);
-			player.sendMessage(LanguageUtil.getString(LanguageType.EMPOWERED));
+			player.sendMessage(ChatColor.GREEN + "The entity you have selected is no longer empowered!");
 		}
 		
 		empowerRegistry.removeRegister(uuid);

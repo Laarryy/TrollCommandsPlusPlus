@@ -9,8 +9,8 @@ import org.bukkit.entity.PigZombie;
 import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.core.LuckyCommand;
-import ninja.egg82.plugin.utils.BlockUtil;
-import ninja.egg82.plugin.utils.LocationUtil;
+import ninja.egg82.bukkit.utils.BlockUtil;
+import ninja.egg82.bukkit.utils.LocationUtil;
 import ninja.egg82.utils.MathUtil;
 import ninja.egg82.utils.ReflectUtil;
 
@@ -41,7 +41,7 @@ public class SpawnBehindCommand extends LuckyCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		Location spawnLocation = BlockUtil.getTopWalkableBlock(LocationUtil.getLocationBehind(player.getLocation(), 3.0d));
+		Location spawnLocation = BlockUtil.getHighestSolidBlock(LocationUtil.getLocationBehind(player.getLocation(), 3.0d)).add(0.0d, 1.0d, 0.0d);
 		int numMobs = MathUtil.fairRoundedRandom(4, 8);
 		
 		for (int i = 0; i < numMobs; i++) {

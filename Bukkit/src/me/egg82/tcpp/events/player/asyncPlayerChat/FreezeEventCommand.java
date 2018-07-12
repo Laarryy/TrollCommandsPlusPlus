@@ -2,19 +2,17 @@ package me.egg82.tcpp.events.player.asyncPlayerChat;
 
 import java.util.UUID;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.services.registries.FreezeRegistry;
+import me.egg82.tcpp.registries.FreezeRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LanguageUtil;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class FreezeEventCommand extends EventCommand<AsyncPlayerChatEvent> {
+public class FreezeEventCommand extends EventHandler<AsyncPlayerChatEvent> {
 	//vars
 	private IVariableRegistry<UUID> freezeRegistry = ServiceLocator.getService(FreezeRegistry.class);
 	
@@ -33,9 +31,9 @@ public class FreezeEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 		
 		Player player = event.getPlayer();
 		
-		if (freezeRegistry.hasRegister(player.getUniqueId()) && !CommandUtil.hasPermission(player, PermissionsType.CHAT_WHILE_FROZEN)) {
+		if (freezeRegistry.hasRegister(player.getUniqueId()) && !player.hasPermission(PermissionsType.CHAT_WHILE_FROZEN)) {
 			event.setCancelled(true);
-			player.sendMessage(LanguageUtil.getString(LanguageType.NO_CHAT_FROZEN));
+			player.sendMessage(ChatColor.RED + "You do not have permissions to chat while frozen!");
 		}
 	}
 }

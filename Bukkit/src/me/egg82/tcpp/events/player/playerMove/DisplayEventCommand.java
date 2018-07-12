@@ -6,12 +6,12 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import me.egg82.tcpp.services.registries.DisplayLocationRegistry;
+import me.egg82.tcpp.registries.DisplayLocationRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class DisplayEventCommand extends EventCommand<PlayerMoveEvent> {
+public class DisplayEventCommand extends EventHandler<PlayerMoveEvent> {
 	//vars
 	private IVariableRegistry<UUID> displayLocationRegistry = ServiceLocator.getService(DisplayLocationRegistry.class);
 	

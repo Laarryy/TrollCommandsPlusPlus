@@ -9,15 +9,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.util.Vector;
 
-import me.egg82.tcpp.services.registries.StampedeRegistry;
+import me.egg82.tcpp.registries.StampedeRegistry;
+import ninja.egg82.bukkit.handlers.TickHandler;
+import ninja.egg82.bukkit.reflection.entity.IEntityHelper;
+import ninja.egg82.bukkit.utils.CommandUtil;
+import ninja.egg82.bukkit.utils.LocationUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.plugin.reflection.entity.IEntityHelper;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LocationUtil;
 
-public class StampedeTickCommand extends TickCommand {
+public class StampedeTickCommand extends TickHandler {
 	//vars
 	private IVariableRegistry<UUID> stampedeRegistry = ServiceLocator.getService(StampedeRegistry.class);
 	
@@ -25,7 +25,7 @@ public class StampedeTickCommand extends TickCommand {
 	
 	//constructor
 	public StampedeTickCommand() {
-		super(2L);
+		super(0L, 2L);
 	}
 	
 	//public

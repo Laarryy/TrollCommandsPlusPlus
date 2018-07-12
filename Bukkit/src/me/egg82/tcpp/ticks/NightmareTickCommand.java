@@ -5,25 +5,25 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import me.egg82.tcpp.services.registries.NightmareRegistry;
+import me.egg82.tcpp.registries.NightmareRegistry;
+import ninja.egg82.bukkit.handlers.TickHandler;
+import ninja.egg82.bukkit.utils.BlockUtil;
+import ninja.egg82.bukkit.utils.CommandUtil;
+import ninja.egg82.bukkit.utils.LocationUtil;
+import ninja.egg82.bukkit.utils.TaskUtil;
 import ninja.egg82.concurrent.IConcurrentDeque;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.plugin.utils.BlockUtil;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LocationUtil;
-import ninja.egg82.plugin.utils.TaskUtil;
 import ninja.egg82.protocol.core.IFakeLivingEntity;
 import ninja.egg82.utils.ThreadUtil;
 
-public class NightmareTickCommand extends TickCommand {
+public class NightmareTickCommand extends TickHandler {
 	//vars
 	private IVariableRegistry<UUID> nightmareRegistry = ServiceLocator.getService(NightmareRegistry.class);
 	
 	//constructor
 	public NightmareTickCommand() {
-		super(2L);
+		super(0L, 2L);
 	}
 	
 	//public
@@ -57,7 +57,7 @@ public class NightmareTickCommand extends TickCommand {
 					
 					Vector v = player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23);
 					if (LocationUtil.isFinite(v)) {
-						e.moveTo(BlockUtil.getTopWalkableBlock(e.getLocation().add(v)));
+						e.moveTo(BlockUtil.getHighestSolidBlock(e.getLocation().add(v)).add(0.0d, 1.0d, 0.0d));
 						e.collideF(entities);
 					}
 					e.lookTo(player.getEyeLocation());

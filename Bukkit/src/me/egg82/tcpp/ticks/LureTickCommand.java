@@ -10,20 +10,20 @@ import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import me.egg82.tcpp.services.registries.LureRegistry;
+import me.egg82.tcpp.registries.LureRegistry;
+import ninja.egg82.bukkit.handlers.TickHandler;
+import ninja.egg82.bukkit.utils.CommandUtil;
+import ninja.egg82.bukkit.utils.LocationUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LocationUtil;
 
-public class LureTickCommand extends TickCommand {
+public class LureTickCommand extends TickHandler {
 	//vars
 	private IVariableRegistry<UUID> lureRegistry = ServiceLocator.getService(LureRegistry.class);
 	
 	//constructor
 	public LureTickCommand() {
-		super(40L);
+		super(0L, 40L);
 	}
 	
 	//public

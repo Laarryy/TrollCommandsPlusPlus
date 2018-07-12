@@ -5,13 +5,13 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import me.egg82.tcpp.services.registries.RandomSpeedRegistry;
+import me.egg82.tcpp.registries.RandomSpeedRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.patterns.tuples.pair.Pair;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.patterns.tuples.pair.FloatFloatPair;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class RandomSpeedEventCommand extends EventCommand<PlayerQuitEvent> {
+public class RandomSpeedEventCommand extends EventHandler<PlayerQuitEvent> {
 	//vars
 	private IVariableRegistry<UUID> randomSpeedRegistry = ServiceLocator.getService(RandomSpeedRegistry.class);
 	
@@ -23,7 +23,6 @@ public class RandomSpeedEventCommand extends EventCommand<PlayerQuitEvent> {
 	//public
 	
 	//private
-	@SuppressWarnings("unchecked")
 	protected void onExecute(long elapsedMilliseconds) {
 		Player player = event.getPlayer();
 		UUID uuid = player.getUniqueId();
@@ -32,7 +31,7 @@ public class RandomSpeedEventCommand extends EventCommand<PlayerQuitEvent> {
 			return;
 		}
 		
-		Pair<Float, Float> originalSpeed = randomSpeedRegistry.getRegister(uuid, Pair.class);
+		FloatFloatPair originalSpeed = randomSpeedRegistry.getRegister(uuid, FloatFloatPair.class);
 		player.setWalkSpeed(originalSpeed.getLeft());
 		player.setFlySpeed(originalSpeed.getRight());
 		randomSpeedRegistry.removeRegister(uuid);

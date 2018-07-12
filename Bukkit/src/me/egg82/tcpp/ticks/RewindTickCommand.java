@@ -4,19 +4,19 @@ import java.util.UUID;
 
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.services.registries.RewindRegistry;
+import me.egg82.tcpp.registries.RewindRegistry;
+import ninja.egg82.bukkit.handlers.TickHandler;
+import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.plugin.utils.CommandUtil;
 
-public class RewindTickCommand extends TickCommand {
+public class RewindTickCommand extends TickHandler {
 	//vars
 	private IVariableRegistry<UUID> rewindRegistry = ServiceLocator.getService(RewindRegistry.class);
 	
 	//constructor
 	public RewindTickCommand() {
-		super(5L);
+		super(0L, 5L);
 	}
 	
 	//public

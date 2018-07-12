@@ -6,12 +6,12 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 
-import me.egg82.tcpp.services.registries.AnvilRegistry;
+import me.egg82.tcpp.registries.AnvilRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class AnvilEventCommand extends EventCommand<EntityChangeBlockEvent> {
+public class AnvilEventCommand extends EventHandler<EntityChangeBlockEvent> {
 	//vars
 	private IVariableRegistry<UUID> anvilRegistry = ServiceLocator.getService(AnvilRegistry.class);
 	

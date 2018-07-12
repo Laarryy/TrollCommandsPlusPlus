@@ -2,8 +2,8 @@ package me.egg82.tcpp.core;
 
 import java.util.HashSet;
 
-import ninja.egg82.plugin.core.BlockData;
-import ninja.egg82.plugin.core.EntityData;
+import ninja.egg82.bukkit.core.BlockData;
+import ninja.egg82.bukkit.core.EntityData;
 
 public class GameState {
 	//vars

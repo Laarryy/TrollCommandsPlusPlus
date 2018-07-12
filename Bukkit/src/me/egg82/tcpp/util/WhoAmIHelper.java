@@ -7,10 +7,10 @@ import java.util.UUID;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.services.registries.WhoAmIRegistry;
+import me.egg82.tcpp.registries.WhoAmIRegistry;
+import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.utils.CommandUtil;
 
 public class WhoAmIHelper {
 	//vars

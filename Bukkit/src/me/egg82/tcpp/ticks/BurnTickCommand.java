@@ -4,19 +4,19 @@ import java.util.UUID;
 
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.services.registries.BurnRegistry;
+import me.egg82.tcpp.registries.BurnRegistry;
+import ninja.egg82.bukkit.handlers.TickHandler;
+import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.plugin.utils.CommandUtil;
 
-public class BurnTickCommand extends TickCommand {
+public class BurnTickCommand extends TickHandler {
 	//vars
 	private IVariableRegistry<UUID> burnRegistry = ServiceLocator.getService(BurnRegistry.class);
 	
 	//constructor
 	public BurnTickCommand() {
-		super(40L);
+		super(0L, 40L);
 	}
 	
 	//public

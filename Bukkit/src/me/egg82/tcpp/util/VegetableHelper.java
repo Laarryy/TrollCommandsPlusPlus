@@ -10,14 +10,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.egg82.tcpp.services.registries.VegetableItemRegistry;
-import me.egg82.tcpp.services.registries.VegetableLocationRegistry;
-import me.egg82.tcpp.services.registries.VegetableModeRegistry;
-import me.egg82.tcpp.services.registries.VegetableRegistry;
+import me.egg82.tcpp.registries.VegetableItemRegistry;
+import me.egg82.tcpp.registries.VegetableLocationRegistry;
+import me.egg82.tcpp.registries.VegetableModeRegistry;
+import me.egg82.tcpp.registries.VegetableRegistry;
+import ninja.egg82.bukkit.utils.BlockUtil;
+import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.utils.BlockUtil;
-import ninja.egg82.plugin.utils.CommandUtil;
 
 public class VegetableHelper {
 	//vars
@@ -62,7 +62,7 @@ public class VegetableHelper {
 		vegetableLocationRegistry.removeRegister(uuid);
 		
 		groundItem.remove();
-		player.teleport(BlockUtil.getTopWalkableBlock(playerLocation));
+		player.teleport(BlockUtil.getHighestSolidBlock(playerLocation).add(0.0d, 1.0d, 0.0d));
 		player.setGameMode(oldMode);
 	}
 	

@@ -5,12 +5,12 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import me.egg82.tcpp.services.registries.DisplayLocationRegistry;
+import me.egg82.tcpp.registries.DisplayLocationRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.HighEventHandler;
 
-public class DisplayEventCommand extends EventCommand<PlayerRespawnEvent> {
+public class DisplayEventCommand extends HighEventHandler<PlayerRespawnEvent> {
 	//vars
 	private IVariableRegistry<UUID> displayLocationRegistry = ServiceLocator.getService(DisplayLocationRegistry.class);
 	

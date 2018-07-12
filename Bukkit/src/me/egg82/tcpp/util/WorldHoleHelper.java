@@ -7,17 +7,18 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.services.registries.HoleBlockRegistry;
-import me.egg82.tcpp.services.registries.HoleRegistry;
-import me.egg82.tcpp.services.registries.HotTubRegistry;
-import me.egg82.tcpp.services.registries.PortalRegistry;
-import me.egg82.tcpp.services.registries.VoidRadiusRegistry;
-import me.egg82.tcpp.services.registries.VoidRegistry;
+import me.egg82.tcpp.registries.HoleBlockRegistry;
+import me.egg82.tcpp.registries.HoleRegistry;
+import me.egg82.tcpp.registries.HotTubRegistry;
+import me.egg82.tcpp.registries.PortalRegistry;
+import me.egg82.tcpp.registries.VoidRadiusRegistry;
+import me.egg82.tcpp.registries.VoidRegistry;
+import ninja.egg82.bukkit.core.BlockData;
+import ninja.egg82.bukkit.reflection.material.IMaterialHelper;
+import ninja.egg82.bukkit.utils.BlockUtil;
+import ninja.egg82.bukkit.utils.TaskUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.core.BlockData;
-import ninja.egg82.plugin.utils.BlockUtil;
-import ninja.egg82.plugin.utils.TaskUtil;
 
 public class WorldHoleHelper {
 	//vars
@@ -27,6 +28,8 @@ public class WorldHoleHelper {
 	private IVariableRegistry<UUID> voidRadiusRegistry = ServiceLocator.getService(VoidRadiusRegistry.class);
 	private IVariableRegistry<UUID> hotTubRegistry = ServiceLocator.getService(HotTubRegistry.class);
 	private IVariableRegistry<UUID> holeBlockRegistry = ServiceLocator.getService(HoleBlockRegistry.class);
+	
+	private Material enderPortal = ServiceLocator.getService(IMaterialHelper.class).getByName("ENDER_PORTAL");
 	
 	//constructor
 	public WorldHoleHelper() {
@@ -46,7 +49,7 @@ public class WorldHoleHelper {
 		// Fill the previous 3x3x5 area with air
 		BlockUtil.clearBlocks(centerLocation, Material.AIR, 1, 2, 1, false);
 		// Fill bottom layer of new air blocks with portals
-		BlockUtil.clearBlocks(centerLocation.clone().subtract(0.0d, 2.0d, 0.0d), Material.ENDER_PORTAL, 1, 0, 1, false);
+		BlockUtil.clearBlocks(centerLocation.clone().subtract(0.0d, 2.0d, 0.0d), enderPortal, 1, 0, 1, false);
 		
 		holeBlockRegistry.setRegister(uuid, blockData);
 		
@@ -111,7 +114,7 @@ public class WorldHoleHelper {
 		// Fill the previous 3x3x2 area with air
 		BlockUtil.clearBlocks(centerLocation, Material.AIR, 1, 1, 1, false);
 		// Fill bottom layer of new air blocks with lava
-		BlockUtil.clearBlocks(centerLocation.clone().subtract(0.0d, 1.0d, 0.0d), Material.STATIONARY_LAVA, 1, 0, 1, false);
+		BlockUtil.clearBlocks(centerLocation.clone().subtract(0.0d, 1.0d, 0.0d), enderPortal, 1, 0, 1, false);
 		
 		holeBlockRegistry.setRegister(uuid, blockData);
 		

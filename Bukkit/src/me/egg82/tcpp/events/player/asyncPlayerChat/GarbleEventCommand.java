@@ -5,13 +5,13 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import me.egg82.tcpp.services.registries.GarbleRegistry;
+import me.egg82.tcpp.registries.GarbleRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 import ninja.egg82.utils.StringUtil;
 
-public class GarbleEventCommand extends EventCommand<AsyncPlayerChatEvent> {
+public class GarbleEventCommand extends EventHandler<AsyncPlayerChatEvent> {
 	//vars
 	private IVariableRegistry<UUID> garbleRegistry = ServiceLocator.getService(GarbleRegistry.class);
 	

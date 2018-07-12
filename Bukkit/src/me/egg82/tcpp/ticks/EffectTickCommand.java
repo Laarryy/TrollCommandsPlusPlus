@@ -7,19 +7,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import me.egg82.tcpp.services.registries.EffectRegistry;
+import me.egg82.tcpp.registries.EffectRegistry;
+import ninja.egg82.bukkit.handlers.TickHandler;
+import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.plugin.utils.CommandUtil;
 
-public class EffectTickCommand extends TickCommand {
+public class EffectTickCommand extends TickHandler {
 	//vars
 	private IVariableRegistry<UUID> effectRegistry = ServiceLocator.getService(EffectRegistry.class);
 	
 	//constructor
 	public EffectTickCommand() {
-		super(100L);
+		super(0L, 100L);
 	}
 	
 	//public

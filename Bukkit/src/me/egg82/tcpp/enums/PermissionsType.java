@@ -9,8 +9,7 @@ public class PermissionsType {
 	public static final String FREECAM_WHILE_CONTROLLED = "tcpp.control.freecam";
 	public static final String FREECAM_WHILE_VEGETABLE = "tcpp.vegetable.freecam";
 	
-	public static final String COMMAND_GTROLL = "tcpp.command.gtroll";
-	public static final String COMMAND_TROLL = "tcpp.command.troll";
+	public static final String COMMAND_RELOAD = "tcpp.command.reload";
 	public static final String COMMAND_VAPORIZE = "tcpp.command.vaporize";
 	public static final String COMMAND_LIFT = "tcpp.command.lift";
 	public static final String COMMAND_CREEP = "tcpp.command.creep";

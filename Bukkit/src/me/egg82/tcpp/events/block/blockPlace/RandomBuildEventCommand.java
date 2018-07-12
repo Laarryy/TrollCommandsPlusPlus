@@ -6,14 +6,14 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-import me.egg82.tcpp.services.registries.RandomBuildRegistry;
+import me.egg82.tcpp.registries.RandomBuildRegistry;
+import ninja.egg82.filters.EnumFilter;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
-import ninja.egg82.plugin.reflection.type.TypeFilterHelper;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 import ninja.egg82.utils.MathUtil;
 
-public class RandomBuildEventCommand extends EventCommand<BlockPlaceEvent> {
+public class RandomBuildEventCommand extends EventHandler<BlockPlaceEvent> {
 	//vars
 	private IVariableRegistry<UUID> randomBuildRegistry = ServiceLocator.getService(RandomBuildRegistry.class);
 	
@@ -23,7 +23,7 @@ public class RandomBuildEventCommand extends EventCommand<BlockPlaceEvent> {
 	public RandomBuildEventCommand() {
 		super();
 		
-		TypeFilterHelper<Material> materialFilterHelper = new TypeFilterHelper<Material>(Material.class);
+		EnumFilter<Material> materialFilterHelper = new EnumFilter<Material>(Material.class);
 		materials = materialFilterHelper.filter(
 			materialFilterHelper.filter(
 			materialFilterHelper.filter(

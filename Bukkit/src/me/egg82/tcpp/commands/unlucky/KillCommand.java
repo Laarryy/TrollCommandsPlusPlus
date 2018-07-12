@@ -3,8 +3,8 @@ package me.egg82.tcpp.commands.unlucky;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import me.egg82.tcpp.core.LuckyCommand;
+import ninja.egg82.bukkit.reflection.entity.IEntityHelper;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.reflection.entity.IEntityHelper;
 
 public class KillCommand extends LuckyCommand {
 	//vars

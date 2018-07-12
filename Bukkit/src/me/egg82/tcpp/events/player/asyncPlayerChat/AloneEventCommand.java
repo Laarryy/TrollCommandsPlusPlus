@@ -7,14 +7,14 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import me.egg82.tcpp.services.registries.AloneRegistry;
+import me.egg82.tcpp.lists.AloneSet;
+import ninja.egg82.concurrent.IConcurrentSet;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class AloneEventCommand extends EventCommand<AsyncPlayerChatEvent> {
+public class AloneEventCommand extends EventHandler<AsyncPlayerChatEvent> {
 	//vars
-	private IVariableRegistry<UUID> aloneRegistry = ServiceLocator.getService(AloneRegistry.class);
+	private IConcurrentSet<UUID> aloneSet = ServiceLocator.getService(AloneSet.class);
 	
 	//constructor
 	public AloneEventCommand() {
@@ -31,19 +31,25 @@ public class AloneEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 		
 		Player player = event.getPlayer();
 		
-		if (aloneRegistry.hasRegister(player.getUniqueId())) {
-			event.setCancelled(true);
-			return;
-		}
-		
 		Set<Player> players = event.getRecipients();
 		HashSet<Player> removedPlayers = new HashSet<Player>();
 		
+		if (aloneSet.contains(player.getUniqueId())) {
+			for (Player p : players) {
+				if (p.getUniqueId().equals(player.getUniqueId())) {
+					continue;
+				}
+				removedPlayers.add(p);
+			}
+			return;
+		}
+		
 		for (Player p : players) {
-			if (aloneRegistry.hasRegister(p.getUniqueId())) {
+			if (aloneSet.contains(p.getUniqueId())) {
 				removedPlayers.add(p);
 			}
 		}
+		
 		players.removeAll(removedPlayers);
 	}
 }

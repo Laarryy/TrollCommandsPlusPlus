@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 import org.bukkit.potion.PotionEffectType;
 
-import me.egg82.tcpp.services.registries.PotionNameRegistry;
+import me.egg82.tcpp.registries.PotionNameRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.sql.LanguageDatabase;

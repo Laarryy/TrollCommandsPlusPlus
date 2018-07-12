@@ -7,22 +7,22 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import me.egg82.tcpp.services.registries.SpartaArrowRegistry;
-import me.egg82.tcpp.services.registries.SpartaRegistry;
+import me.egg82.tcpp.registries.SpartaArrowRegistry;
+import me.egg82.tcpp.registries.SpartaRegistry;
+import ninja.egg82.bukkit.handlers.TickHandler;
+import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.utils.MathUtil;
 
-public class SpartaTickCommand extends TickCommand {
+public class SpartaTickCommand extends TickHandler {
 	//vars
 	private IVariableRegistry<UUID> spartaRegistry = ServiceLocator.getService(SpartaRegistry.class);
 	private IVariableRegistry<UUID> spartaArrowRegistry = ServiceLocator.getService(SpartaArrowRegistry.class);
 	
 	//constructor
 	public SpartaTickCommand() {
-		super(10L);
+		super(0L, 10L);
 	}
 	
 	//public

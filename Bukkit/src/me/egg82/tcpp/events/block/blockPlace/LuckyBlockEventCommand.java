@@ -4,14 +4,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-import me.egg82.tcpp.services.registries.LuckyBlockRegistry;
+import me.egg82.tcpp.registries.LuckyBlockRegistry;
 import ninja.egg82.nbt.core.INBTCompound;
 import ninja.egg82.nbt.reflection.INBTHelper;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class LuckyBlockEventCommand extends EventCommand<BlockPlaceEvent> {
+public class LuckyBlockEventCommand extends EventHandler<BlockPlaceEvent> {
 	//vars
 	private IVariableRegistry<Location> luckyBlockRegistry = ServiceLocator.getService(LuckyBlockRegistry.class);
 	

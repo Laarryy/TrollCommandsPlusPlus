@@ -11,15 +11,15 @@ import org.bukkit.entity.PigZombie;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.potion.PotionEffect;
 
-import me.egg82.tcpp.services.registries.HydraMobRegistry;
+import me.egg82.tcpp.registries.HydraMobRegistry;
+import ninja.egg82.bukkit.utils.BlockUtil;
+import ninja.egg82.bukkit.utils.LocationUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
-import ninja.egg82.plugin.utils.BlockUtil;
-import ninja.egg82.plugin.utils.LocationUtil;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 import ninja.egg82.utils.MathUtil;
 
-public class HydraEventCommand extends EventCommand<EntityDeathEvent> {
+public class HydraEventCommand extends EventHandler<EntityDeathEvent> {
 	//vars
 	private IVariableRegistry<UUID> hydraMobRegistry = ServiceLocator.getService(HydraMobRegistry.class);
 	
@@ -39,7 +39,7 @@ public class HydraEventCommand extends EventCommand<EntityDeathEvent> {
 			Location[] mobLocations = LocationUtil.getCircleAround(entity.getLocation(), MathUtil.random(2.0d,  3.0d), MathUtil.fairRoundedRandom(2, 4));
 			
 			for (int i = 0; i < mobLocations.length; i++) {
-				Location creatureLocation = BlockUtil.getTopWalkableBlock(mobLocations[i]);
+				Location creatureLocation = BlockUtil.getHighestSolidBlock(mobLocations[i]).add(0.0d, 1.0d, 0.0d);
 				
 				LivingEntity e = (LivingEntity) entity.getWorld().spawn(creatureLocation, event.getEntityType().getEntityClass());
 				clone(entity, e);

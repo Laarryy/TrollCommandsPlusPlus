@@ -6,14 +6,14 @@ import org.bukkit.Material;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 
-import me.egg82.tcpp.services.registries.RandomDropRegistry;
+import me.egg82.tcpp.registries.RandomDropRegistry;
+import ninja.egg82.filters.EnumFilter;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
-import ninja.egg82.plugin.reflection.type.TypeFilterHelper;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 import ninja.egg82.utils.MathUtil;
 
-public class RandomDropEventCommand extends EventCommand<PlayerDropItemEvent> {
+public class RandomDropEventCommand extends EventHandler<PlayerDropItemEvent> {
 	//vars
 	private IVariableRegistry<UUID> randomDropRegistry = ServiceLocator.getService(RandomDropRegistry.class);
 	
@@ -23,7 +23,7 @@ public class RandomDropEventCommand extends EventCommand<PlayerDropItemEvent> {
 	public RandomDropEventCommand() {
 		super();
 		
-		TypeFilterHelper<Material> materialFilterHelper = new TypeFilterHelper<Material>(Material.class);
+		EnumFilter<Material> materialFilterHelper = new EnumFilter<Material>(Material.class);
 		materials = materialFilterHelper.filter(
 			materialFilterHelper.filter(
 			materialFilterHelper.filter(

@@ -5,14 +5,14 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import me.egg82.tcpp.services.registries.NightmareRegistry;
+import me.egg82.tcpp.registries.NightmareRegistry;
 import ninja.egg82.concurrent.IConcurrentDeque;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 import ninja.egg82.protocol.core.IFakeLivingEntity;
 
-public class NightmareEventCommand extends EventCommand<PlayerQuitEvent> {
+public class NightmareEventCommand extends EventHandler<PlayerQuitEvent> {
 	//vars
 	private IVariableRegistry<UUID> nightmareRegistry = ServiceLocator.getService(NightmareRegistry.class);
 	

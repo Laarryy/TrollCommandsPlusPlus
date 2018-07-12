@@ -7,16 +7,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 
-import me.egg82.tcpp.services.registries.VomitRegistry;
+import me.egg82.tcpp.registries.VomitRegistry;
+import ninja.egg82.bukkit.reflection.player.IPlayerHelper;
+import ninja.egg82.bukkit.utils.BlockUtil;
+import ninja.egg82.bukkit.utils.LocationUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
-import ninja.egg82.plugin.reflection.player.IPlayerHelper;
-import ninja.egg82.plugin.utils.BlockUtil;
-import ninja.egg82.plugin.utils.LocationUtil;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 import ninja.egg82.utils.MathUtil;
 
-public class VomitEventCommand extends EventCommand<PlayerItemConsumeEvent> {
+public class VomitEventCommand extends EventHandler<PlayerItemConsumeEvent> {
 	//vars
 	private IVariableRegistry<UUID> vomitRegistry = ServiceLocator.getService(VomitRegistry.class);
 	
@@ -56,7 +56,7 @@ public class VomitEventCommand extends EventCommand<PlayerItemConsumeEvent> {
 				playerUtil.setItemInMainHand(player, items);
 			}
 			
-			player.getWorld().dropItemNaturally(BlockUtil.getTopWalkableBlock(LocationUtil.getLocationInFront(player.getLocation(), MathUtil.random(3.0d, 5.0d))), droppedItem);
+			player.getWorld().dropItemNaturally(BlockUtil.getHighestSolidBlock(LocationUtil.getLocationInFront(player.getLocation(), MathUtil.random(3.0d, 5.0d))).add(0.0d, 1.0d, 0.0d), droppedItem);
 			
 			event.setCancelled(true);
 		}

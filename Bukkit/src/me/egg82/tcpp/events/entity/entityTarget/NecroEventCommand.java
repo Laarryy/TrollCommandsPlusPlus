@@ -5,12 +5,12 @@ import java.util.UUID;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityTargetEvent;
 
-import me.egg82.tcpp.services.registries.NecroRegistry;
+import me.egg82.tcpp.registries.NecroRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class NecroEventCommand extends EventCommand<EntityTargetEvent> {
+public class NecroEventCommand extends EventHandler<EntityTargetEvent> {
 	//vars
 	private IVariableRegistry<UUID> necroRegistry = ServiceLocator.getService(NecroRegistry.class);
 	

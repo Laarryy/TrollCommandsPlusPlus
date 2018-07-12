@@ -6,13 +6,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
-import me.egg82.tcpp.services.registries.LockRegistry;
+import me.egg82.tcpp.registries.LockRegistry;
 import me.egg82.tcpp.util.InventoryUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class LockEventCommand extends EventCommand<InventoryClickEvent> {
+public class LockEventCommand extends EventHandler<InventoryClickEvent> {
 	//vars
 	private IVariableRegistry<UUID> lockRegistry = ServiceLocator.getService(LockRegistry.class);
 	

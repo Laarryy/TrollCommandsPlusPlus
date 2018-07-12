@@ -4,12 +4,12 @@ import java.util.UUID;
 
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
-import me.egg82.tcpp.services.registries.TripRegistry;
+import me.egg82.tcpp.registries.TripRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class TripEventCommand extends EventCommand<PlayerPickupItemEvent> {
+public class TripEventCommand extends EventHandler<PlayerPickupItemEvent> {
 	//vars
 	private IVariableRegistry<UUID> tripRegistry = ServiceLocator.getService(TripRegistry.class);
 	

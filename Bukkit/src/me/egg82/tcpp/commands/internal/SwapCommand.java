@@ -4,26 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.exceptions.PlayerImmuneException;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.events.CompleteEventArgs;
-import ninja.egg82.events.ExceptionEventArgs;
+import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.SpigotLanguageType;
-import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
-import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
-import ninja.egg82.plugin.exceptions.PlayerNotFoundException;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LanguageUtil;
+import ninja.egg82.plugin.handlers.CommandHandler;
 
-public class SwapCommand extends PluginCommand {
+public class SwapCommand extends CommandHandler {
 	//vars
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
@@ -73,30 +66,27 @@ public class SwapCommand extends PluginCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_SWAP)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
-			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_SWAP)));
+		if (!sender.hasPermission(PermissionsType.COMMAND_SWAP)) {
+			sender.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
 			return;
 		}
 		if (!CommandUtil.isArrayOfAllowedLength(args, 2)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
+			sender.sendMessage(ChatColor.RED + "Incorrect command usage!");
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
-			sender.getServer().dispatchCommand(sender, "troll help " + name);
-			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
+			Bukkit.getServer().dispatchCommand((CommandSender) sender.getHandle(), "troll help " + name);
 			return;
 		}
 		
-		List<Player> players1 = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
-		List<Player> players2 = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[1], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
+		List<Player> players1 = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer((CommandSender) sender.getHandle()) ? ((Player) sender.getHandle()).getLocation() : null));
+		List<Player> players2 = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[1], CommandUtil.isPlayer((CommandSender) sender.getHandle()) ? ((Player) sender.getHandle()).getLocation() : null));
 		Player player1 = null;
 		Player player2 = null;
 		
 		if (players1.size() == 0) {
 			player1 = CommandUtil.getPlayerByName(args[0]);
 			if (player1 == null) {
-				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.PLAYER_NOT_FOUND));
-				onError().invoke(this, new ExceptionEventArgs<PlayerNotFoundException>(new PlayerNotFoundException(args[0])));
+				sender.sendMessage(ChatColor.RED + "Player could not be found.");
 				return;
 			}
 		} else {
@@ -105,27 +95,22 @@ public class SwapCommand extends PluginCommand {
 		if (players2.size() == 0) {
 			player2 = CommandUtil.getPlayerByName(args[1]);
 			if (player2 == null) {
-				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.PLAYER_NOT_FOUND));
-				onError().invoke(this, new ExceptionEventArgs<PlayerNotFoundException>(new PlayerNotFoundException(args[0])));
+				sender.sendMessage(ChatColor.RED + "Player could not be found.");
 				return;
 			}
 		} else {
 			player2 = players2.get(0);
 		}
-		if (CommandUtil.hasPermission(player1, PermissionsType.IMMUNE)) {
-			sender.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
-			onError().invoke(this, new ExceptionEventArgs<PlayerImmuneException>(new PlayerImmuneException(player1)));
+		if (player1.hasPermission(PermissionsType.IMMUNE)) {
+			sender.sendMessage(ChatColor.RED + player1.getName() + " is immune.");
 			return;
 		}
-		if (CommandUtil.hasPermission(player2, PermissionsType.IMMUNE)) {
-			sender.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
-			onError().invoke(this, new ExceptionEventArgs<PlayerImmuneException>(new PlayerImmuneException(player2)));
+		if (player2.hasPermission(PermissionsType.IMMUNE)) {
+			sender.sendMessage(ChatColor.RED + player2.getName() + " is immune.");
 			return;
 		}
 		
 		e(player1, player2);
-		
-		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	private void e(Player player1, Player player2) {
 		Location player1Location = player1.getLocation().clone();

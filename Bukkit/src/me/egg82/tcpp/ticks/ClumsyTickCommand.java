@@ -8,22 +8,22 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import me.egg82.tcpp.services.registries.ClumsyRegistry;
+import me.egg82.tcpp.registries.ClumsyRegistry;
+import ninja.egg82.bukkit.handlers.TickHandler;
+import ninja.egg82.bukkit.utils.BlockUtil;
+import ninja.egg82.bukkit.utils.CommandUtil;
+import ninja.egg82.bukkit.utils.LocationUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.plugin.utils.BlockUtil;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LocationUtil;
 import ninja.egg82.utils.MathUtil;
 
-public class ClumsyTickCommand extends TickCommand {
+public class ClumsyTickCommand extends TickHandler {
 	//vars
 	private IVariableRegistry<UUID> clumsyRegistry = ServiceLocator.getService(ClumsyRegistry.class);
 	
 	//constructor
 	public ClumsyTickCommand() {
-		super(10L);
+		super(0L, 10L);
 	}
 	
 	//public
@@ -68,7 +68,7 @@ public class ClumsyTickCommand extends TickCommand {
 				items.setAmount(itemsAmount - 1);
 			}
 			
-			player.getWorld().dropItemNaturally(BlockUtil.getTopWalkableBlock(LocationUtil.getLocationBehind(player.getLocation(), MathUtil.random(1.5d, 3.0d))), droppedItem);
+			player.getWorld().dropItemNaturally(BlockUtil.getHighestSolidBlock(LocationUtil.getLocationBehind(player.getLocation(), MathUtil.random(1.5d, 3.0d))).add(0.0d, 1.0d, 0.0d), droppedItem);
 		}
 	}
 }

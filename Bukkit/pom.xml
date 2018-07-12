@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>ninja.egg82.plugins</groupId>
   <artifactId>TrollCommandsPlusPlus-Bukkit</artifactId>
-  <version>6.29.54</version>
+  <version>7.29.54</version>
   <name>TrollCommandsPlusPlus-Bukkit</name>
   <build>
     <sourceDirectory>src</sourceDirectory>
@@ -43,8 +43,8 @@
                     <exclude>META-INF/*.RSA</exclude>
                     <exclude>**/*.html</exclude>
                     <exclude>**/*.txt</exclude>
-                    <exclude>com/google/common/**</exclude>
-                    <exclude>org/apache/commons/lang/**</exclude>
+                    <exclude>org/junit/**</exclude>
+					<exclude>org/hamcrest/**</exclude>
                   </excludes>
                 </filter>
               </filters>
@@ -55,61 +55,30 @@
                   <shadedPattern>me.egg82.tcpp.lib.ninja.egg82</shadedPattern>
                 </relocation>
                 <relocation>
-                  <pattern>it.unimi.dsi.fastutil</pattern>
-                  <shadedPattern>me.egg82.tcpp.extern.it.unimi.dsi.fastutil</shadedPattern>
-                </relocation>
-                <relocation>
                   <pattern>me.egg82.extern</pattern>
                   <shadedPattern>me.egg82.tcpp.extern</shadedPattern>
                 </relocation>
                 <relocation>
+                  <pattern>com.github</pattern>
+                  <shadedPattern>me.egg82.tcpp.extern.com.github</shadedPattern>
+                </relocation>
+                <relocation>
                   <pattern>org.bstats</pattern>
-                  <shadedPattern>me.egg82.tcpp.lib.org.bstats</shadedPattern>
+                  <shadedPattern>me.egg82.tcpp.extern.org.bstats</shadedPattern>
                 </relocation>
                 <relocation>
                   <pattern>net.gravitydevelopment</pattern>
-                  <shadedPattern>me.egg82.tcpp.lib.net.gravitydevelopment</shadedPattern>
+                  <shadedPattern>me.egg82.tcpp.extern.net.gravitydevelopment</shadedPattern>
                 </relocation>
                 <relocation>
                   <pattern>opennlp</pattern>
-                  <shadedPattern>me.egg82.tcpp.lib.opennlp</shadedPattern>
+                  <shadedPattern>me.egg82.tcpp.extern.opennlp</shadedPattern>
                 </relocation>
               </relocations>
             </configuration>
           </execution>
         </executions>
       </plugin>
-      <!-- <plugin>
-        <groupId>com.github.wvengen</groupId>
-        <artifactId>proguard-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>proguard</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <options>
-            <option>-dontobfuscate</option>
-            <option>-dontoptimize</option>
-            <option>-dontskipnonpubliclibraryclasses</option>
-            <option>-dontskipnonpubliclibraryclassmembers</option>
-            <option>-keepattributes *Annotation*</option>
-            <option>-keepattributes Signature</option>
-            <option>-keepattributes InnerClasses</option>
-            <option>-keep public class me.egg82.tcpp.TrollCommandsPlusPlus { *; }</option>
-            <option>-keepclassmembers class ** { @org.bukkit.event.EventHandler *; }</option>
-            <option>-dontnote</option>
-            <option>-dontwarn</option>
-          </options>
-          <libs>
-            <lib>${java.home}/lib/rt.jar</lib>
-            <lib>${java.home}/lib/jsse.jar</lib>
-          </libs>
-        </configuration>
-      </plugin> -->
     </plugins>
   </build>
   <repositories>
@@ -130,8 +99,8 @@
       <url>https://www.myget.org/F/egg82-java/maven/</url>
     </repository>
     <repository>
-      <id>aikar</id>
-      <url>https://repo.aikar.co/content/groups/aikar/</url>
+      <id>coreprotect-repo</id>
+      <url>http://maven.playpro.com/</url>
     </repository>
     <!-- Uncomment if you're having problems with ProtocolLib-4.2.0-SNAPSHOT jar not being found -->
     <!-- Eclipse doesn't like this repo for some reason, so comment it again after it's done downloading the jar -->
@@ -152,37 +121,86 @@
       <version>1.12.2-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>ninja.egg82.lib</groupId>
-      <artifactId>egg82-lib</artifactId>
-      <version>3.12.46</version>
+    <!-- <dependency>
+      <groupId>org.bukkit</groupId>
+      <artifactId>bukkit</artifactId>
+      <version>1.13-pre5-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
+    </dependency> -->
+    <dependency>
+      <groupId>ninja.egg82.lib</groupId>
+      <artifactId>bukkit</artifactId>
+      <version>1.1.7</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
-      <artifactId>plugin-lib</artifactId>
-      <version>3.7.34</version>
-    </dependency>
-    <dependency>
-      <groupId>ninja.egg82.lib</groupId>
-      <artifactId>nbt-lib</artifactId>
-      <version>1.2.25</version>
-    </dependency>
-    <dependency>
-      <groupId>ninja.egg82.lib</groupId>
-      <artifactId>protocol-lib</artifactId>
-      <version>1.4.32</version>
-    </dependency>
-    <dependency>
-      <groupId>ninja.egg82.lib</groupId>
-      <artifactId>disguise-lib</artifactId>
-      <version>[1.0.3,)</version>
+      <artifactId>plugin-common</artifactId>
+      <version>1.0.5</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>exception-lib</artifactId>
-      <version>1.3.25</version>
-      <scope>provided</scope>
+      <version>2.0.6</version>
+    </dependency>
+    <dependency>
+      <groupId>ninja.egg82.lib</groupId>
+      <artifactId>util-lib</artifactId>
+      <version>1.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>ninja.egg82.lib</groupId>
+      <artifactId>collections-lib</artifactId>
+      <version>1.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>ninja.egg82.lib</groupId>
+      <artifactId>extended-collections-lib</artifactId>
+      <version>1.0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>ninja.egg82.lib</groupId>
+      <artifactId>service-lib</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>ninja.egg82.lib</groupId>
+      <artifactId>reflect-lib</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>ninja.egg82.lib</groupId>
+      <artifactId>lang-lib</artifactId>
+      <version>1.0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>ninja.egg82.lib</groupId>
+      <artifactId>egg82-lib</artifactId>
+      <version>4.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>ninja.egg82.lib</groupId>
+      <artifactId>nbt-lib</artifactId>
+      <version>2.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>ninja.egg82.lib</groupId>
+      <artifactId>protocol-lib</artifactId>
+      <version>2.0.5</version>
+    </dependency>
+    <dependency>
+      <groupId>ninja.egg82.lib</groupId>
+      <artifactId>disguise-lib</artifactId>
+      <version>1.1.6</version>
+    </dependency>
+    <dependency>
+      <groupId>ninja.egg82.lib</groupId>
+      <artifactId>permissions-lib</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.ben-manes.caffeine</groupId>
+      <artifactId>caffeine</artifactId>
+      <version>2.6.2</version>
     </dependency>
     <dependency>
       <groupId>net.gravitydevelopment.updater</groupId>
@@ -195,9 +213,10 @@
       <version>1.8.4</version>
     </dependency>
     <dependency>
-      <groupId>co.aikar</groupId>
-      <artifactId>fastutil-lite</artifactId>
-      <version>1.0</version>
+      <groupId>net.coreprotect</groupId>
+      <artifactId>coreprotect</artifactId>
+      <version>2.14.2</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
   <description>TC++ for Bukkit/Spigot</description>

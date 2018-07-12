@@ -7,15 +7,15 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.services.registries.DeathTagRegistry;
+import me.egg82.tcpp.registries.DeathTagRegistry;
+import ninja.egg82.bukkit.reflection.entity.IEntityHelper;
+import ninja.egg82.bukkit.utils.CommandUtil;
+import ninja.egg82.bukkit.utils.TaskUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
-import ninja.egg82.plugin.reflection.entity.IEntityHelper;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.TaskUtil;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class DeathTagEventCommand extends EventCommand<AsyncPlayerChatEvent> {
+public class DeathTagEventCommand extends EventHandler<AsyncPlayerChatEvent> {
 	//vars
 	private IVariableRegistry<UUID> deathTagRegistry = ServiceLocator.getService(DeathTagRegistry.class);
 	
@@ -42,7 +42,7 @@ public class DeathTagEventCommand extends EventCommand<AsyncPlayerChatEvent> {
 			for (String s : split) {
 				Player p = CommandUtil.getPlayerByName(s, false);
 				if (p != null) {
-					if (CommandUtil.hasPermission(p, PermissionsType.IMMUNE)) {
+					if (p.hasPermission(PermissionsType.IMMUNE)) {
 						continue;
 					}
 					

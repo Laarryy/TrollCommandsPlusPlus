@@ -13,15 +13,15 @@ import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import me.egg82.tcpp.services.registries.GrantWishesRegistry;
+import me.egg82.tcpp.registries.GrantWishesRegistry;
+import ninja.egg82.bukkit.utils.LocationUtil;
+import ninja.egg82.bukkit.utils.TaskUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
-import ninja.egg82.plugin.utils.LocationUtil;
-import ninja.egg82.plugin.utils.TaskUtil;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 import ninja.egg82.utils.ReflectUtil;
 
-public class GrantWishesEventCommand extends EventCommand<AsyncPlayerChatEvent> {
+public class GrantWishesEventCommand extends EventHandler<AsyncPlayerChatEvent> {
 	//vars
 	private IVariableRegistry<UUID> grantWishesRegistry = ServiceLocator.getService(GrantWishesRegistry.class);
 	

@@ -6,15 +6,15 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import me.egg82.tcpp.services.registries.LagLocationRegistry;
-import me.egg82.tcpp.services.registries.LagRegistry;
+import me.egg82.tcpp.registries.LagLocationRegistry;
+import me.egg82.tcpp.registries.LagRegistry;
+import ninja.egg82.bukkit.utils.TaskUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
-import ninja.egg82.plugin.utils.TaskUtil;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 import ninja.egg82.utils.MathUtil;
 
-public class LagEventCommand extends EventCommand<PlayerMoveEvent> {
+public class LagEventCommand extends EventHandler<PlayerMoveEvent> {
 	//vars
 	private IVariableRegistry<UUID> lagRegistry = ServiceLocator.getService(LagRegistry.class);
 	private IVariableRegistry<UUID> lagLocationRegistry = ServiceLocator.getService(LagLocationRegistry.class);

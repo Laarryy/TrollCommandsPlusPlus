@@ -6,13 +6,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.services.registries.VegetableRegistry;
+import me.egg82.tcpp.registries.VegetableRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
-import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class VegetableEventCommand extends EventCommand<PlayerInteractEntityEvent> {
+public class VegetableEventCommand extends EventHandler<PlayerInteractEntityEvent> {
 	//vars
 	private IVariableRegistry<UUID> vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
 	
@@ -32,7 +31,7 @@ public class VegetableEventCommand extends EventCommand<PlayerInteractEntityEven
 		Player player = event.getPlayer();
 		
 		if (vegetableRegistry.hasRegister(event.getPlayer().getUniqueId())) {
-			if (!CommandUtil.hasPermission(player, PermissionsType.FREECAM_WHILE_VEGETABLE)) {
+			if (!player.hasPermission(PermissionsType.FREECAM_WHILE_VEGETABLE)) {
 				event.setCancelled(true);
 			}
 		}

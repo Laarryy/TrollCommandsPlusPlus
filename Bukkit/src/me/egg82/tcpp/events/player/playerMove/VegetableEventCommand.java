@@ -7,15 +7,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.services.registries.VegetableLocationRegistry;
-import me.egg82.tcpp.services.registries.VegetableRegistry;
+import me.egg82.tcpp.registries.VegetableLocationRegistry;
+import me.egg82.tcpp.registries.VegetableRegistry;
+import ninja.egg82.bukkit.utils.LocationUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LocationUtil;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class VegetableEventCommand extends EventCommand<PlayerMoveEvent> {
+public class VegetableEventCommand extends EventHandler<PlayerMoveEvent> {
 	//vars
 	private IVariableRegistry<UUID> vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
 	private IVariableRegistry<UUID> vegetableLocationRegistry = ServiceLocator.getService(VegetableLocationRegistry.class);
@@ -37,7 +36,7 @@ public class VegetableEventCommand extends EventCommand<PlayerMoveEvent> {
 		UUID uuid = player.getUniqueId();
 		
 		if (vegetableRegistry.hasRegister(uuid)) {
-			if (!CommandUtil.hasPermission(player, PermissionsType.FREECAM_WHILE_VEGETABLE)) {
+			if (!player.hasPermission(PermissionsType.FREECAM_WHILE_VEGETABLE)) {
 				if (!event.getTo().getWorld().equals(event.getFrom().getWorld())) {
 					event.setCancelled(true);
 					player.teleport(vegetableLocationRegistry.getRegister(uuid, Location.class).clone().add(0.0d, -1.0d, 0.0d));

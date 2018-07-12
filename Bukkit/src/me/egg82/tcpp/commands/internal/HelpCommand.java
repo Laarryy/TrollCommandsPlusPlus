@@ -7,25 +7,16 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.exceptions.InvalidCommandException;
 import me.egg82.tcpp.services.databases.CommandSearchDatabase;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.events.CompleteEventArgs;
-import ninja.egg82.events.ExceptionEventArgs;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.tuples.pair.Pair;
-import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.SpigotLanguageType;
-import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
-import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LanguageUtil;
+import ninja.egg82.plugin.handlers.CommandHandler;
 import ninja.egg82.sql.LanguageDatabase;
 import ninja.egg82.utils.StringUtil;
 
-public class HelpCommand extends PluginCommand {
+public class HelpCommand extends CommandHandler {
 	//vars
 	private ArrayList<String> commandNames = new ArrayList<String>();
 	private HashMap<String, Pair<String, String>> commands = new HashMap<String, Pair<String, String>>();
@@ -71,15 +62,13 @@ public class HelpCommand extends PluginCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_HELP)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
-			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_HELP)));
+		if (!sender.hasPermission(PermissionsType.COMMAND_HELP)) {
+			sender.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
 			return;
 		}
 		if (args.length == 0) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
+			sender.sendMessage(ChatColor.RED + "Incorrect command usage!");
 			e("help", commands.get("help"));
-			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
 			return;
 		}
 		
@@ -97,8 +86,7 @@ public class HelpCommand extends PluginCommand {
 			String[] list = commandDatabase.getValues(commandDatabase.naturalLanguage(search, false), 0);
 			
 			if (list == null || list.length == 0) {
-				sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_COMMAND));
-				onError().invoke(this, new ExceptionEventArgs<InvalidCommandException>(new InvalidCommandException(search)));
+				sender.sendMessage(ChatColor.RED + "Command is invalid.");
 				return;
 			}
 			
@@ -106,15 +94,12 @@ public class HelpCommand extends PluginCommand {
 			commandValues = commands.get(command);
 			
 			if (commandValues == null) {
-				sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_COMMAND));
-				onError().invoke(this, new ExceptionEventArgs<InvalidCommandException>(new InvalidCommandException(search)));
+				sender.sendMessage(ChatColor.RED + "Command is invalid.");
 				return;
 			}
 		}
 		
 		e(command, commandValues);
-		
-		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	private void e(String command, Pair<String, String> commandValues) {
 		metricsHelper.commandWasRun(this);

@@ -10,14 +10,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
+import ninja.egg82.bukkit.reflection.player.IPlayerHelper;
+import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.nbt.core.INBTCompound;
 import ninja.egg82.nbt.reflection.INBTHelper;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.events.EventCommand;
-import ninja.egg82.plugin.reflection.player.IPlayerHelper;
-import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class AttachEventCommand extends EventCommand<BlockBreakEvent> {
+public class AttachEventCommand extends EventHandler<BlockBreakEvent> {
 	//vars
 	private INBTHelper nbtHelper = ServiceLocator.getService(INBTHelper.class);
 	private IPlayerHelper playerHelper = ServiceLocator.getService(IPlayerHelper.class);

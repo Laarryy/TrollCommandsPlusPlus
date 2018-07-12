@@ -6,12 +6,12 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import me.egg82.tcpp.services.registries.ExplodeBreakRegistry;
+import me.egg82.tcpp.registries.ExplodeBreakRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class ExplodeBreakEventCommand extends EventCommand<BlockBreakEvent> {
+public class ExplodeBreakEventCommand extends EventHandler<BlockBreakEvent> {
 	//vars
 	private IVariableRegistry<UUID> explodeBreakRegistry = ServiceLocator.getService(ExplodeBreakRegistry.class);
 	

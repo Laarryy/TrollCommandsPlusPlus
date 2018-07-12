@@ -5,13 +5,13 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import me.egg82.tcpp.services.registries.DuckRegistry;
+import me.egg82.tcpp.registries.DuckRegistry;
 import ninja.egg82.disguise.reflection.IDisguiseHelper;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class DuckEventCommand extends EventCommand<PlayerQuitEvent> {
+public class DuckEventCommand extends EventHandler<PlayerQuitEvent> {
 	//vars
 	private IVariableRegistry<UUID> duckRegistry = ServiceLocator.getService(DuckRegistry.class);
 	

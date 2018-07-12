@@ -4,12 +4,12 @@ import java.util.UUID;
 
 import org.bukkit.event.player.PlayerPickupArrowEvent;
 
-import me.egg82.tcpp.services.registries.SpartaArrowRegistry;
+import me.egg82.tcpp.registries.SpartaArrowRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class SpartaEventCommand extends EventCommand<PlayerPickupArrowEvent> {
+public class SpartaEventCommand extends EventHandler<PlayerPickupArrowEvent> {
 	//vars
 	private IVariableRegistry<UUID> spartaArrowRegistry = ServiceLocator.getService(SpartaArrowRegistry.class);
 	

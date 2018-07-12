@@ -7,31 +7,22 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.help.HelpTopic;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.exceptions.InvalidItemException;
-import me.egg82.tcpp.exceptions.InvalidLibraryException;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.events.CompleteEventArgs;
-import ninja.egg82.events.ExceptionEventArgs;
+import ninja.egg82.bukkit.reflection.player.IPlayerHelper;
+import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.nbt.core.INBTCompound;
 import ninja.egg82.nbt.reflection.INBTHelper;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.SpigotLanguageType;
-import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
-import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
-import ninja.egg82.plugin.exceptions.SenderNotAllowedException;
-import ninja.egg82.plugin.reflection.player.IPlayerHelper;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LanguageUtil;
+import ninja.egg82.plugin.handlers.CommandHandler;
 
-public class AttachCommand extends PluginCommand {
+public class AttachCommand extends CommandHandler {
 	//vars
 	private IPlayerHelper playerHelper = ServiceLocator.getService(IPlayerHelper.class);
 	private INBTHelper nbtHelper = ServiceLocator.getService(INBTHelper.class);
@@ -75,7 +66,7 @@ public class AttachCommand extends PluginCommand {
 			if (pluginCommand != null) {
 				ArrayList<String> newArgs = new ArrayList<String>(Arrays.asList(args));
 				newArgs.remove(0);
-				return pluginCommand.tabComplete(sender, label, newArgs.toArray(new String[0]));
+				return pluginCommand.tabComplete((CommandSender) sender.getHandle(), "", newArgs.toArray(new String[0]));
 			}
 		}
 		
@@ -84,27 +75,23 @@ public class AttachCommand extends PluginCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_ATTACH)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
-			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_ATTACH)));
+		if (!sender.hasPermission(PermissionsType.COMMAND_ATTACH)) {
+			sender.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
 			return;
 		}
 		if (!nbtHelper.isValidLibrary()) {
-			sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_LIBRARY));
-			onError().invoke(this, new ExceptionEventArgs<InvalidLibraryException>(new InvalidLibraryException(nbtHelper)));
+			sender.sendMessage(ChatColor.RED + "This command has been disabled because there is no recognized backing library available. Please install one and restart the server to enable this command.");
 			return;
 		}
-		if (!CommandUtil.isPlayer(sender)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.SENDER_NOT_ALLOWED));
-			onError().invoke(this, new ExceptionEventArgs<SenderNotAllowedException>(new SenderNotAllowedException(sender, this)));
+		if (!CommandUtil.isPlayer((CommandSender) sender.getHandle())) {
+			sender.sendMessage(ChatColor.RED + "Console cannot run this command!");
 			return;
 		}
 		
-		ItemStack item = playerHelper.getItemInMainHand((Player) sender);
+		ItemStack item = playerHelper.getItemInMainHand((Player) sender.getHandle());
 		
 		if (item == null || item.getType() == Material.AIR) {
-			sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_ITEM));
-			onError().invoke(this, new ExceptionEventArgs<InvalidItemException>(new InvalidItemException(item)));
+			sender.sendMessage(ChatColor.RED + "Item is invalid.");
 			return;
 		}
 		
@@ -113,15 +100,13 @@ public class AttachCommand extends PluginCommand {
 		if (args.length == 0) {
 			if (compound.hasTag("tcppCommand")) {
 				eUndo(item, compound);
-				onComplete().invoke(this, CompleteEventArgs.EMPTY);
 				return;
 			}
 			
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
+			sender.sendMessage(ChatColor.RED + "Incorrect command usage!");
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
-			sender.getServer().dispatchCommand(sender, "troll help " + name);
-			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
+			Bukkit.getServer().dispatchCommand((CommandSender) sender.getHandle(), "troll help " + name);
 			return;
 		}
 		
@@ -136,11 +121,9 @@ public class AttachCommand extends PluginCommand {
 		} else {
 			eUndo(item, compound);
 		}
-		
-		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	private void e(ItemStack item, INBTCompound compound, String runnableCommand) {
-		compound.setString("tcppSender", ((Player) sender).getUniqueId().toString());
+		compound.setString("tcppSender", sender.getUuid().toString());
 		compound.setString("tcppCommand", runnableCommand);
 		
 		ItemMeta meta = item.getItemMeta();

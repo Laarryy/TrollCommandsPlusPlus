@@ -1,10 +1,12 @@
-# Type of messaging queue to use. Options are "rabbit" or "bungee" ("default")
-queueType: 'default'
-# IP address of the RabbitMQ messaging queue server, if used
-rabbitIp: 'localhost'
-# Port of the RabbitMQ messaging queue server, if used
-rabbitPort: 5672
-# Username for the RabbitMQ messaging queue server, if used
-rabbitUser: 'guest'
-# Password for the RabbitMQ messaging queue server, if used
-rabbitPass: 'guest'
+# Messaging is used to push commands across the network
+# Messaging is required, though defaults works fine even without BungeeCord
+messaging:
+  # The type of messaging to use
+  # Values can be 'bungee' ('default') or 'rabbit'
+  type: 'bungee'
+  # Values to fill in if using Rabbit messaging
+  rabbit:
+    address: ''
+    port: 5672
+    user: 'guest'
+    pass: 'guest'

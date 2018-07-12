@@ -11,19 +11,19 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import me.egg82.tcpp.services.registries.SpoilRegistry;
+import me.egg82.tcpp.registries.SpoilRegistry;
+import ninja.egg82.bukkit.handlers.TickHandler;
+import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.plugin.utils.CommandUtil;
 
-public class SpoilTickCommand extends TickCommand {
+public class SpoilTickCommand extends TickHandler {
 	//vars
 	private IVariableRegistry<UUID> spoilRegistry = ServiceLocator.getService(SpoilRegistry.class);
 	
 	//constructor
 	public SpoilTickCommand() {
-		super(10L);
+		super(0L, 10L);
 	}
 	
 	//public

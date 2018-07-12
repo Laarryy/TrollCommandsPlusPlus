@@ -8,12 +8,12 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
-import me.egg82.tcpp.services.registries.DisplayRegistry;
+import me.egg82.tcpp.registries.DisplayRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class DisplayEventCommand extends EventCommand<EntityExplodeEvent> {
+public class DisplayEventCommand extends EventHandler<EntityExplodeEvent> {
 	//vars
 	private IVariableRegistry<UUID> displayRegistry = ServiceLocator.getService(DisplayRegistry.class);
 	

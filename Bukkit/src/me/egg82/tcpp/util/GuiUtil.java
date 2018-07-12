@@ -15,12 +15,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.egg82.tcpp.registries.GuiRegistry;
 import me.egg82.tcpp.services.databases.CommandSearchDatabase;
-import me.egg82.tcpp.services.registries.GuiRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.patterns.tuples.pair.Pair;
-import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.sql.LanguageDatabase;
 
 public class GuiUtil {
@@ -69,7 +68,7 @@ public class GuiUtil {
 			page = 0;
 		}
 		
-		Inventory retVal = Bukkit.createInventory(null, 27, "TrollCommands++");
+		Inventory retVal = Bukkit.createInventory(null, 45, "TrollCommands++");
 		String[] commands = null;
 		
 		if (search == null || search.isEmpty()) {
@@ -81,27 +80,27 @@ public class GuiUtil {
 			commands = new String[0];
 		}
 		
-		int numCommands = Math.min(Math.max(0, commands.length - (page * 19)), 19);
+		int numCommands = Math.min(Math.max(0, commands.length - (page * 37)), 37);
 		
 		for (int i = 0; i < numCommands; i++) {
-			if (i < 9) {
-				retVal.setItem(i, getItemStack(permissionsPlayer, commands[page * 19 + i]));
-			} else if (i >= 9 && i < 14) {
-				retVal.setItem(i + 2, getItemStack(permissionsPlayer, commands[page * 19 + i]));
+			if (i < 27) {
+				retVal.setItem(i, getItemStack(permissionsPlayer, commands[page * 37 + i]));
+			} else if (i >= 27 && i < 32) {
+				retVal.setItem(i + 2, getItemStack(permissionsPlayer, commands[page * 37 + i]));
 			} else {
-				retVal.setItem(i + 6, getItemStack(permissionsPlayer, commands[page * 19 + i]));
+				retVal.setItem(i + 6, getItemStack(permissionsPlayer, commands[page * 37 + i]));
 			}
 		}
 		
 		if (inventoryIsEmpty(retVal)) {
-			retVal.setItem(13, getCloseItem());
+			retVal.setItem(22, getCloseItem());
 		}
 		
-		if (commands.length > (page + 1) * 19) {
-			retVal.setItem(26, getNextItem());
+		if (commands.length > (page + 1) * 37) {
+			retVal.setItem(44, getNextItem());
 		}
 		if (page != 0) {
-			retVal.setItem(18, getPreviousItem());
+			retVal.setItem(36, getPreviousItem());
 		}
 		
 		return retVal;
@@ -123,11 +122,11 @@ public class GuiUtil {
 		
 		ItemMeta meta = item.getItemMeta();
 		
-		meta.setDisplayName(((CommandUtil.hasPermission(sender, "tcpp.command." + command)) ? ChatColor.WHITE : ChatColor.RED) + "/" + command);
+		meta.setDisplayName((sender.hasPermission("tcpp.command." + command) ? ChatColor.WHITE : ChatColor.RED) + "/" + command);
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_PLACED_ON, ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_UNBREAKABLE);
 		
 		ArrayList<String> lore = new ArrayList<String>();
-		if (!CommandUtil.hasPermission(sender, "tcpp.command." + command)) {
+		if (!sender.hasPermission("tcpp.command." + command)) {
 			lore.add(ChatColor.RED + ChatColor.ITALIC.toString() + "You do not have permissions");
 			lore.add(ChatColor.RED + ChatColor.ITALIC.toString() + "to run this command!");
 		}

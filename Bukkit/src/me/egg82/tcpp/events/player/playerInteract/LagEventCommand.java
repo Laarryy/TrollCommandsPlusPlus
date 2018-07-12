@@ -11,15 +11,15 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.InventoryHolder;
 
-import me.egg82.tcpp.services.registries.LagBlockRegistry;
-import me.egg82.tcpp.services.registries.LagRegistry;
+import me.egg82.tcpp.registries.LagBlockRegistry;
+import me.egg82.tcpp.registries.LagRegistry;
+import ninja.egg82.bukkit.utils.TaskUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
-import ninja.egg82.plugin.utils.TaskUtil;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 import ninja.egg82.utils.MathUtil;
 
-public class LagEventCommand extends EventCommand<PlayerInteractEvent> {
+public class LagEventCommand extends EventHandler<PlayerInteractEvent> {
 	//vars
 	private IVariableRegistry<UUID> lagRegistry = ServiceLocator.getService(LagRegistry.class);
 	private IVariableRegistry<Location> lagBlockRegistry = ServiceLocator.getService(LagBlockRegistry.class);

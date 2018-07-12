@@ -4,24 +4,20 @@ import java.util.UUID;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
-import me.egg82.tcpp.services.registries.LagBlockRegistry;
-import me.egg82.tcpp.services.registries.LagRegistry;
+import me.egg82.tcpp.registries.LagBlockRegistry;
+import me.egg82.tcpp.registries.LagRegistry;
+import ninja.egg82.bukkit.utils.TaskUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
-import ninja.egg82.plugin.core.BlockData;
-import ninja.egg82.plugin.utils.BlockUtil;
-import ninja.egg82.plugin.utils.TaskUtil;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 import ninja.egg82.utils.MathUtil;
 
-public class LagEventCommand extends EventCommand<BlockPlaceEvent> {
+public class LagEventCommand extends EventHandler<BlockPlaceEvent> {
 	//vars
 	private IVariableRegistry<UUID> lagRegistry = ServiceLocator.getService(LagRegistry.class);
 	private IVariableRegistry<Location> lagBlockRegistry = ServiceLocator.getService(LagBlockRegistry.class);
@@ -56,8 +52,6 @@ public class LagEventCommand extends EventCommand<BlockPlaceEvent> {
 		lagBlockRegistry.setRegister(blockLocation, null);
 		
 		// Capture the current state of everything
-		BlockState blockState = event.getBlock().getState();
-		Material blockType = blockState.getType();
 		ItemStack hand = event.getItemInHand();
 		GameMode gameMode = player.getGameMode();
 		
@@ -77,8 +71,8 @@ public class LagEventCommand extends EventCommand<BlockPlaceEvent> {
 					}
 				}
 				
-				// Break the block using the captured state
-				BlockUtil.setBlock(block, new BlockData(null, blockState, blockType, null), true);
+				// Set the block
+				block.setType(hand.getType(), true);
 				lagBlockRegistry.removeRegister(blockLocation);
 			}
 		}, MathUtil.fairRoundedRandom(30, 50));

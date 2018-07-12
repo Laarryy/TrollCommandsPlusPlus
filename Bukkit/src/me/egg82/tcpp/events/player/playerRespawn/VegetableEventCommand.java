@@ -5,12 +5,12 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import me.egg82.tcpp.services.registries.VegetableLocationRegistry;
+import me.egg82.tcpp.registries.VegetableLocationRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class VegetableEventCommand extends EventCommand<PlayerRespawnEvent> {
+public class VegetableEventCommand extends EventHandler<PlayerRespawnEvent> {
 	//vars
 	private IVariableRegistry<UUID> vegetableLocationRegistry = ServiceLocator.getService(VegetableLocationRegistry.class);
 	

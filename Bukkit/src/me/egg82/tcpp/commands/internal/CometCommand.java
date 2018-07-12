@@ -2,24 +2,20 @@ package me.egg82.tcpp.commands.internal;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.events.CompleteEventArgs;
-import ninja.egg82.events.ExceptionEventArgs;
+import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.SpigotLanguageType;
-import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
-import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
-import ninja.egg82.plugin.exceptions.SenderNotAllowedException;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LanguageUtil;
+import ninja.egg82.plugin.handlers.CommandHandler;
 
-public class CometCommand extends PluginCommand {
+public class CometCommand extends CommandHandler {
 	//vars
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
@@ -35,26 +31,23 @@ public class CometCommand extends PluginCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_COMET)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
-			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_COMET)));
+		if (!sender.hasPermission(PermissionsType.COMMAND_COMET)) {
+			sender.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
 			return;
 		}
-		if (!CommandUtil.isPlayer(sender)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.SENDER_NOT_ALLOWED));
-			onError().invoke(this, new ExceptionEventArgs<SenderNotAllowedException>(new SenderNotAllowedException(sender, this)));
+		if (!CommandUtil.isPlayer((CommandSender) sender.getHandle())) {
+			sender.sendMessage(ChatColor.RED + "Console cannot run this command!");
 			return;
 		}
 		if (!CommandUtil.isArrayOfAllowedLength(args, 0, 1, 2)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
+			sender.sendMessage(ChatColor.RED + "Incorrect command usage!");
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
-			sender.getServer().dispatchCommand(sender, "troll help " + name);
-			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
+			Bukkit.getServer().dispatchCommand((CommandSender) sender.getHandle(), "troll help " + name);
 			return;
 		}
 		
-		Player player = (Player) sender;
+		Player player = (Player) sender.getHandle();
 		double speed = 2.0d;
 		double power = 1.0d;
 		
@@ -62,11 +55,10 @@ public class CometCommand extends PluginCommand {
 			try {
 				speed = Double.parseDouble(args[0]);
 			} catch (Exception ex) {
-				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
+				sender.sendMessage(ChatColor.RED + "Incorrect command usage!");
 				String name = getClass().getSimpleName();
 				name = name.substring(0, name.length() - 7).toLowerCase();
-				sender.getServer().dispatchCommand(sender, "troll help " + name);
-				onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
+				Bukkit.getServer().dispatchCommand((CommandSender) sender.getHandle(), "troll help " + name);
 				return;
 			}
 		}
@@ -74,18 +66,15 @@ public class CometCommand extends PluginCommand {
 			try {
 				power = Double.parseDouble(args[1]);
 			} catch (Exception ex) {
-				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
+				sender.sendMessage(ChatColor.RED + "Incorrect command usage!");
 				String name = getClass().getSimpleName();
 				name = name.substring(0, name.length() - 7).toLowerCase();
-				sender.getServer().dispatchCommand(sender, "troll help " + name);
-				onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
+				Bukkit.getServer().dispatchCommand((CommandSender) sender.getHandle(), "troll help " + name);
 				return;
 			}
 		}
 		
 		e(player, speed, power);
-		
-		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	private void e(Player player, double speed, double power) {
 		Fireball fireball = player.launchProjectile(Fireball.class);

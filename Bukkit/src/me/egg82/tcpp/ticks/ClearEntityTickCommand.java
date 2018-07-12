@@ -4,20 +4,20 @@ import java.util.UUID;
 
 import org.bukkit.entity.Entity;
 
-import me.egg82.tcpp.services.registries.SpartaArrowRegistry;
-import me.egg82.tcpp.services.registries.SquidDeathRegistry;
+import me.egg82.tcpp.registries.SpartaArrowRegistry;
+import me.egg82.tcpp.registries.SquidDeathRegistry;
+import ninja.egg82.bukkit.handlers.TickHandler;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.TickCommand;
 
-public class ClearEntityTickCommand extends TickCommand {
+public class ClearEntityTickCommand extends TickHandler {
 	//vars
 	private IVariableRegistry<UUID> squidDeathRegistry = ServiceLocator.getService(SquidDeathRegistry.class);
 	private IVariableRegistry<UUID> spartaArrowRegistry = ServiceLocator.getService(SpartaArrowRegistry.class);
 	
 	//constructor
 	public ClearEntityTickCommand() {
-		super(50L);
+		super(0L, 50L);
 	}
 	
 	//public

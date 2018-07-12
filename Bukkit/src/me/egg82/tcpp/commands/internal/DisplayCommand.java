@@ -5,37 +5,32 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.exceptions.PlayerImmuneException;
-import me.egg82.tcpp.services.registries.DisplayLocationRegistry;
-import me.egg82.tcpp.services.registries.DisplayRegistry;
+import me.egg82.tcpp.registries.DisplayLocationRegistry;
+import me.egg82.tcpp.registries.DisplayRegistry;
 import me.egg82.tcpp.util.DisplayHelper;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.events.CompleteEventArgs;
-import ninja.egg82.events.ExceptionEventArgs;
+import ninja.egg82.bukkit.reflection.material.IMaterialHelper;
+import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.SpigotLanguageType;
-import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
-import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
-import ninja.egg82.plugin.exceptions.PlayerNotFoundException;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LanguageUtil;
+import ninja.egg82.plugin.handlers.CommandHandler;
 
-public class DisplayCommand extends PluginCommand {
+public class DisplayCommand extends CommandHandler {
 	//vars
 	private IVariableRegistry<UUID> displayRegistry = ServiceLocator.getService(DisplayRegistry.class);
 	private IVariableRegistry<UUID> displayLocationRegistry = ServiceLocator.getService(DisplayLocationRegistry.class);
 	
 	private DisplayHelper displayHelper = ServiceLocator.getService(DisplayHelper.class);
-	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
+	
+	private Material pane = ServiceLocator.getService(IMaterialHelper.class).getByName("THIN_GLASS");
 	
 	//constructor
 	public DisplayCommand() {
@@ -67,27 +62,25 @@ public class DisplayCommand extends PluginCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_DISPLAY)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
-			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_DISPLAY)));
+		if (!sender.hasPermission(PermissionsType.COMMAND_DISPLAY)) {
+			sender.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
 			return;
 		}
 		if (!CommandUtil.isArrayOfAllowedLength(args, 1)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
+			sender.sendMessage(ChatColor.RED + "Incorrect command usage!");
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
-			sender.getServer().dispatchCommand(sender, "troll help " + name);
-			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
+			Bukkit.getServer().dispatchCommand((CommandSender) sender.getHandle(), "troll help " + name);
 			return;
 		}
 		
-		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
+		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer((CommandSender) sender.getHandle()) ? ((Player) sender.getHandle()).getLocation() : null));
 		if (players.size() > 0) {
 			for (Player player : players) {
 				UUID uuid = player.getUniqueId();
 				
 				if (!displayRegistry.hasRegister(uuid)) {
-					if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+					if (player.hasPermission(PermissionsType.IMMUNE)) {
 						continue;
 					}
 					
@@ -100,17 +93,15 @@ public class DisplayCommand extends PluginCommand {
 			Player player = CommandUtil.getPlayerByName(args[0]);
 			
 			if (player == null) {
-				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.PLAYER_NOT_FOUND));
-				onError().invoke(this, new ExceptionEventArgs<PlayerNotFoundException>(new PlayerNotFoundException(args[0])));
+				sender.sendMessage(ChatColor.RED + "Player could not be found.");
 				return;
 			}
 			
 			UUID uuid = player.getUniqueId();
 			
 			if (!displayRegistry.hasRegister(uuid)) {
-				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-					sender.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
-					onError().invoke(this, new ExceptionEventArgs<PlayerImmuneException>(new PlayerImmuneException(player)));
+				if (player.hasPermission(PermissionsType.IMMUNE)) {
+					sender.sendMessage(ChatColor.RED + "Player is immune.");
 					return;
 				}
 				
@@ -119,8 +110,6 @@ public class DisplayCommand extends PluginCommand {
 				eUndo(uuid, player);
 			}
 		}
-		
-		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	private void e(UUID uuid, Player player) {
 		Location playerLocation = player.getLocation().clone();
@@ -128,7 +117,7 @@ public class DisplayCommand extends PluginCommand {
 		playerLocation.setY(playerLocation.getBlockY());
 		playerLocation.setZ(playerLocation.getBlockZ() + 0.5d);
 		
-		displayHelper.surround(playerLocation, Material.GLASS, Material.THIN_GLASS);
+		displayHelper.surround(playerLocation, Material.GLASS, pane);
 		displayRegistry.setRegister(uuid, displayHelper.getBlockLocationsAround(playerLocation));
 		displayLocationRegistry.setRegister(uuid, playerLocation);
 		
@@ -147,8 +136,6 @@ public class DisplayCommand extends PluginCommand {
 				eUndo(uuid, player);
 			}
 		}
-		
-		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	private void eUndo(UUID uuid, Player player) {
 		displayHelper.unsurround(displayLocationRegistry.getRegister(uuid, Location.class));

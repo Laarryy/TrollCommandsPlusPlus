@@ -8,17 +8,17 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import me.egg82.tcpp.services.registries.TrollInventoryRegistry;
-import me.egg82.tcpp.services.registries.TrollPageRegistry;
-import me.egg82.tcpp.services.registries.TrollPlayerRegistry;
-import me.egg82.tcpp.services.registries.TrollSearchRegistry;
+import me.egg82.tcpp.registries.TrollInventoryRegistry;
+import me.egg82.tcpp.registries.TrollPageRegistry;
+import me.egg82.tcpp.registries.TrollPlayerRegistry;
+import me.egg82.tcpp.registries.TrollSearchRegistry;
 import me.egg82.tcpp.util.GuiUtil;
 import me.egg82.tcpp.util.InventoryUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class TrollEventCommand extends EventCommand<InventoryClickEvent> {
+public class TrollEventCommand extends EventHandler<InventoryClickEvent> {
 	//vars
 	private IVariableRegistry<UUID> trollInventoryRegistry = ServiceLocator.getService(TrollInventoryRegistry.class);
 	private IVariableRegistry<UUID> trollPlayerRegistry = ServiceLocator.getService(TrollPlayerRegistry.class);

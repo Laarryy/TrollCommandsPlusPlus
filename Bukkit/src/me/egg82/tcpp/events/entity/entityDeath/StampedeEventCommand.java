@@ -7,12 +7,12 @@ import org.bukkit.entity.Creature;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-import me.egg82.tcpp.services.registries.StampedeRegistry;
+import me.egg82.tcpp.registries.StampedeRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class StampedeEventCommand extends EventCommand<EntityDeathEvent> {
+public class StampedeEventCommand extends EventHandler<EntityDeathEvent> {
 	//vars
 	private IVariableRegistry<UUID> stampedeRegistry = ServiceLocator.getService(StampedeRegistry.class);
 	

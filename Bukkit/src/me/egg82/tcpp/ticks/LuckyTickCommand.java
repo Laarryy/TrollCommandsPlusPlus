@@ -7,21 +7,21 @@ import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 
-import me.egg82.tcpp.services.registries.LuckyChickenRegistry;
-import me.egg82.tcpp.services.registries.LuckyVillagerRegistry;
+import me.egg82.tcpp.registries.LuckyChickenRegistry;
+import me.egg82.tcpp.registries.LuckyVillagerRegistry;
+import ninja.egg82.bukkit.handlers.TickHandler;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableExpiringRegistry;
-import ninja.egg82.plugin.commands.TickCommand;
 import ninja.egg82.utils.MathUtil;
 
-public class LuckyTickCommand extends TickCommand {
+public class LuckyTickCommand extends TickHandler {
 	//vars
 	private IVariableExpiringRegistry<UUID> luckyChickenRegistry = ServiceLocator.getService(LuckyChickenRegistry.class);
 	private IVariableExpiringRegistry<UUID> luckyVillagerRegistry = ServiceLocator.getService(LuckyVillagerRegistry.class);
 	
 	//constructor
 	public LuckyTickCommand() {
-		super(75L);
+		super(0L, 75L);
 	}
 	
 	//public

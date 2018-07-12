@@ -7,16 +7,16 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.services.registries.VegetableItemRegistry;
-import me.egg82.tcpp.services.registries.VegetableLocationRegistry;
-import me.egg82.tcpp.services.registries.VegetableRegistry;
+import me.egg82.tcpp.registries.VegetableItemRegistry;
+import me.egg82.tcpp.registries.VegetableLocationRegistry;
+import me.egg82.tcpp.registries.VegetableRegistry;
+import ninja.egg82.bukkit.handlers.TickHandler;
+import ninja.egg82.bukkit.utils.CommandUtil;
+import ninja.egg82.bukkit.utils.LocationUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LocationUtil;
 
-public class VegetableTickCommand extends TickCommand {
+public class VegetableTickCommand extends TickHandler {
 	//vars
 	private IVariableRegistry<UUID> vegetableRegistry = ServiceLocator.getService(VegetableRegistry.class);
 	private IVariableRegistry<UUID> vegetableItemRegistry = ServiceLocator.getService(VegetableItemRegistry.class);
@@ -24,7 +24,7 @@ public class VegetableTickCommand extends TickCommand {
 	
 	//constructor
 	public VegetableTickCommand() {
-		super(2L);
+		super(0L, 2L);
 	}
 	
 	//public
@@ -39,7 +39,7 @@ public class VegetableTickCommand extends TickCommand {
 		if (player == null) {
 			return;
 		}
-		if (CommandUtil.hasPermission(player, PermissionsType.FREECAM_WHILE_VEGETABLE)) {
+		if (player.hasPermission(PermissionsType.FREECAM_WHILE_VEGETABLE)) {
 			return;
 		}
 		

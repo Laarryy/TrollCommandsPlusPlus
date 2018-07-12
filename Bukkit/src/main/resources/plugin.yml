@@ -1,15 +1,19 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 6.28.53
+version: 7.29.54
 author: egg82
 description: For the people that really hate their friends
-softdepend: [LibsDisguises,iDisguise,ProtocolLib,PowerNBT]
+softdepend: [LibsDisguises, iDisguise, ProtocolLib, PowerNBT, CoreProtect]
 commands:
   gtroll:
+    aliases: [gtr]
     description: Same as /troll, except it can be used cross-server (if configured)
+    permission: tcpp.command.gtroll
     usage: /gtroll <troll> [options]
   troll:
+    aliases: [tr]
     description: TrollCommands++
+    permission: tcpp.command.troll
     usage: |
       -= Available Commands =-
       /troll alone <player>: (Toggleable) Hides all other players from the specified player.
@@ -65,7 +69,7 @@ commands:
       /troll lsd <player>: (Toggleable) RAAAAIIINNNNBOOOOWWWW! Does not affect the server.
       /troll luckyblock [luck]: (Undoable) Turns the block in your hand into a lucky/unlucky block. You may optionally provide a "luck chance" defining how high the "luck" value vs "unluck" is.
       /troll lure <player>: (Toggleable) Continuously attracts nearby monsters to the player.
-      /troll midastouch <player> [type]: (Toggleable) Any blocks the player touches turns to GOLD (or whatever you specify).
+      /troll midastouch <player> [type] [real]: (Toggleable) Any blocks the player touches turns to GOLD (or whatever you specify). Optionally can make blocks fake so it doesn't affect the server.
       /troll moist <player>: (Toggleable) Would you moist my moistness, please? (Requires internet connection)
       /troll necro <player>: (Toggleable) Let's play "pretend you're a skeleton"! (Removed on quit)
       /troll nightmare <player>: (Toggleable) Summons a waking nightmare for the player.
@@ -81,6 +85,7 @@ commands:
       /troll randommenu <player>: (Toggleable) Why is my chest now an anvil?
       /troll randompotion <player>: (Toggleable) Wait, what did I drink again?
       /troll randomspeed <player>: (Toggleable) My legs just take me wherever they want! (Removed on quit)
+      /troll reload: Reloads the plugin
       /troll rewind <player>: (Toggleable) Makes the player's time run backwards at speed. Does not affect the server.
       /troll run <player> <topic>: Run a command (topic) as a player using your permissions.
       /troll search <player> [search]: Opens a GUI with available commands for trolling the specified player. Optionally takes a search argument.

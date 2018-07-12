@@ -8,15 +8,15 @@ import java.util.regex.Pattern;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import me.egg82.tcpp.services.registries.MoistRegistry;
+import me.egg82.tcpp.registries.MoistRegistry;
+import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
-import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 import opennlp.tools.postag.POSTagger;
 import opennlp.tools.tokenize.WhitespaceTokenizer;
 
-public class MoistEventCommand extends EventCommand<AsyncPlayerChatEvent> {
+public class MoistEventCommand extends EventHandler<AsyncPlayerChatEvent> {
 	//vars
 	private IVariableRegistry<UUID> moistRegistry = ServiceLocator.getService(MoistRegistry.class);
 	

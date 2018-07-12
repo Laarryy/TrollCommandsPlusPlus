@@ -7,14 +7,14 @@ import org.bukkit.Location;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import me.egg82.tcpp.core.LuckyCommand;
-import me.egg82.tcpp.services.registries.LuckyBlockRegistry;
+import me.egg82.tcpp.registries.LuckyBlockRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 import ninja.egg82.utils.MathUtil;
 import ninja.egg82.utils.ReflectUtil;
 
-public class LuckyBlockEventCommand extends EventCommand<BlockBreakEvent> {
+public class LuckyBlockEventCommand extends EventHandler<BlockBreakEvent> {
 	//vars
 	private ArrayList<LuckyCommand> luckyCommands = new ArrayList<LuckyCommand>();
 	private ArrayList<LuckyCommand> unluckyCommands = new ArrayList<LuckyCommand>();

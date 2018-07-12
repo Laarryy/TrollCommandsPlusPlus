@@ -6,31 +6,23 @@ import java.util.UUID;
 
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.exceptions.InvalidTypeException;
-import me.egg82.tcpp.exceptions.PlayerImmuneException;
-import me.egg82.tcpp.services.registries.FillRegistry;
-import me.egg82.tcpp.services.registries.MaterialNameRegistry;
+import me.egg82.tcpp.registries.FillRegistry;
+import me.egg82.tcpp.registries.MaterialNameRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.events.CompleteEventArgs;
-import ninja.egg82.events.ExceptionEventArgs;
+import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.SpigotLanguageType;
-import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
-import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
-import ninja.egg82.plugin.exceptions.PlayerNotFoundException;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LanguageUtil;
+import ninja.egg82.plugin.handlers.CommandHandler;
 
-public class FillCommand extends PluginCommand {
+public class FillCommand extends CommandHandler {
 	//vars
 	private IVariableRegistry<UUID> fillRegistry = ServiceLocator.getService(FillRegistry.class);
 	private ArrayList<String> materialNames = new ArrayList<String>();
@@ -88,17 +80,15 @@ public class FillCommand extends PluginCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_FILL)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
-			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_FILL)));
+		if (!sender.hasPermission(PermissionsType.COMMAND_FILL)) {
+			sender.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
 			return;
 		}
 		if (!CommandUtil.isArrayOfAllowedLength(args, 1, 2)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
+			sender.sendMessage(ChatColor.RED + "Incorrect command usage!");
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
-			sender.getServer().dispatchCommand(sender, "troll help " + name);
-			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
+			Bukkit.getServer().dispatchCommand((CommandSender) sender.getHandle(), "troll help " + name);
 			return;
 		}
 		
@@ -108,18 +98,17 @@ public class FillCommand extends PluginCommand {
 			if (type == null) {
 				type = Material.getMaterial(args[1].replaceAll(" ", "_").toUpperCase());
 				if (type == null) {
-					sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_TYPE));
-					onError().invoke(this, new ExceptionEventArgs<InvalidTypeException>(new InvalidTypeException(args[1])));
+					sender.sendMessage(ChatColor.RED + "Searched type is invalid or was not found.");
 					return;
 				}
 			}
 		}
 		
-		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
+		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer((CommandSender) sender.getHandle()) ? ((Player) sender.getHandle()).getLocation() : null));
 		if (players.size() > 0) {
 			for (Player player : players) {
 				if (type != null) {
-					if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+					if (player.hasPermission(PermissionsType.IMMUNE)) {
 						continue;
 					}
 					
@@ -132,15 +121,13 @@ public class FillCommand extends PluginCommand {
 			Player player = CommandUtil.getPlayerByName(args[0]);
 			
 			if (player == null) {
-				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.PLAYER_NOT_FOUND));
-				onError().invoke(this, new ExceptionEventArgs<PlayerNotFoundException>(new PlayerNotFoundException(args[0])));
+				sender.sendMessage(ChatColor.RED + "Player could not be found.");
 				return;
 			}
 			
 			if (type != null) {
-				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-					sender.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
-					onError().invoke(this, new ExceptionEventArgs<PlayerImmuneException>(new PlayerImmuneException(player)));
+				if (player.hasPermission(PermissionsType.IMMUNE)) {
+					sender.sendMessage(ChatColor.RED + "Player is immune.");
 					return;
 				}
 				
@@ -149,8 +136,6 @@ public class FillCommand extends PluginCommand {
 				eUndo(player.getUniqueId(), player);
 			}
 		}
-		
-		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	private void e(UUID uuid, Player player, Material type) {
@@ -195,8 +180,6 @@ public class FillCommand extends PluginCommand {
 				eUndo(uuid, player);
 			}
 		}
-		
-		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	private void eUndo(UUID uuid, Player player) {

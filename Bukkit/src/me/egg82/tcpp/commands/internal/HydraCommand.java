@@ -3,24 +3,19 @@ package me.egg82.tcpp.commands.internal;
 import java.util.List;
 import java.util.UUID;
 
-import org.bukkit.entity.Player;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.services.registries.HydraRegistry;
+import me.egg82.tcpp.registries.HydraRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.events.CompleteEventArgs;
-import ninja.egg82.events.ExceptionEventArgs;
+import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.SpigotLanguageType;
-import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
-import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
-import ninja.egg82.plugin.exceptions.SenderNotAllowedException;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LanguageUtil;
+import ninja.egg82.plugin.handlers.CommandHandler;
 
-public class HydraCommand extends PluginCommand {
+public class HydraCommand extends CommandHandler {
 	//vars
 	private IVariableRegistry<UUID> hydraRegistry = ServiceLocator.getService(HydraRegistry.class);
 	
@@ -38,28 +33,23 @@ public class HydraCommand extends PluginCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_HYDRA)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
-			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_HYDRA)));
+		if (!sender.hasPermission(PermissionsType.COMMAND_HYDRA)) {
+			sender.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
 			return;
 		}
-		if (!CommandUtil.isPlayer(sender)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.SENDER_NOT_ALLOWED));
-			onError().invoke(this, new ExceptionEventArgs<SenderNotAllowedException>(new SenderNotAllowedException(sender, this)));
+		if (!CommandUtil.isPlayer((CommandSender) sender.getHandle())) {
+			sender.sendMessage(ChatColor.RED + "Console cannot run this command!");
 			return;
 		}
 		if (!CommandUtil.isArrayOfAllowedLength(args, 0)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
+			sender.sendMessage(ChatColor.RED + "Incorrect command usage!");
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
-			sender.getServer().dispatchCommand(sender, "troll help " + name);
-			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
+			Bukkit.getServer().dispatchCommand((CommandSender) sender.getHandle(), "troll help " + name);
 			return;
 		}
 		
-		e(((Player) sender).getUniqueId());
-		
-		onComplete().invoke(this, CompleteEventArgs.EMPTY);
+		e(sender.getUuid());
 	}
 	private void e(UUID uuid) {
 		if (hydraRegistry.hasRegister(uuid)) {

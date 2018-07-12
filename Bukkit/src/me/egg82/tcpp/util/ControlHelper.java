@@ -8,14 +8,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import me.egg82.tcpp.services.registries.ControlInventoryRegistry;
-import me.egg82.tcpp.services.registries.ControlModeRegistry;
-import me.egg82.tcpp.services.registries.ControlRegistry;
+import me.egg82.tcpp.registries.ControlInventoryRegistry;
+import me.egg82.tcpp.registries.ControlModeRegistry;
+import me.egg82.tcpp.registries.ControlRegistry;
+import ninja.egg82.bukkit.utils.CommandUtil;
+import ninja.egg82.bukkit.utils.TaskUtil;
 import ninja.egg82.disguise.reflection.IDisguiseHelper;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.TaskUtil;
 
 public class ControlHelper {
 	//vars

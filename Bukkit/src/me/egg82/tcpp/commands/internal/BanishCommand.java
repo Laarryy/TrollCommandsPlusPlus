@@ -4,29 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.WorldBorder;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.exceptions.NoBlockSpaceException;
-import me.egg82.tcpp.exceptions.PlayerImmuneException;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.events.CompleteEventArgs;
-import ninja.egg82.events.ExceptionEventArgs;
+import ninja.egg82.bukkit.utils.BlockUtil;
+import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.SpigotLanguageType;
-import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
-import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
-import ninja.egg82.plugin.exceptions.PlayerNotFoundException;
-import ninja.egg82.plugin.utils.BlockUtil;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LanguageUtil;
+import ninja.egg82.patterns.tuples.pair.DoubleDoublePair;
+import ninja.egg82.plugin.handlers.CommandHandler;
 import ninja.egg82.utils.MathUtil;
 
-public class BanishCommand extends PluginCommand {
+public class BanishCommand extends CommandHandler {
 	//vars
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
@@ -60,17 +54,15 @@ public class BanishCommand extends PluginCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_BANISH)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
-			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_BANISH)));
+		if (!sender.hasPermission(PermissionsType.COMMAND_BANISH)) {
+			sender.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
 			return;
 		}
 		if (!CommandUtil.isArrayOfAllowedLength(args, 1, 2)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
+			sender.sendMessage(ChatColor.RED + "Incorrect command usage!");
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
-			sender.getServer().dispatchCommand(sender, "troll help " + name);
-			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
+			Bukkit.getServer().dispatchCommand((CommandSender) sender.getHandle(), "troll help " + name);
 			return;
 		}
 		
@@ -79,80 +71,104 @@ public class BanishCommand extends PluginCommand {
 			try {
 				banishMax = Double.parseDouble(args[1]);
 			} catch (Exception ex) {
-				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
+				sender.sendMessage(ChatColor.RED + "Incorrect command usage!");
 				String name = getClass().getSimpleName();
 				name = name.substring(0, name.length() - 7).toLowerCase();
-				sender.getServer().dispatchCommand(sender, "troll help " + name);
-				onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
+				Bukkit.getServer().dispatchCommand((CommandSender) sender.getHandle(), "troll help " + name);
 				return;
 			}
 		}
 		
-		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
+		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer((CommandSender) sender.getHandle()) ? ((Player) sender.getHandle()).getLocation() : null));
 		if (players.size() > 0) {
 			for (Player player : players) {
-				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+				if (player.hasPermission(PermissionsType.IMMUNE)) {
 					continue;
 				}
 				
 				e(player, banishMax);
 			}
-			onComplete().invoke(this, CompleteEventArgs.EMPTY);
 		} else {
 			Player player = CommandUtil.getPlayerByName(args[0]);
 			
 			if (player == null) {
-				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.PLAYER_NOT_FOUND));
-				onError().invoke(this, new ExceptionEventArgs<PlayerNotFoundException>(new PlayerNotFoundException(args[0])));
+				sender.sendMessage(ChatColor.RED + "Player could not be found.");
 				return;
 			}
-			if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-				sender.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
-				onError().invoke(this, new ExceptionEventArgs<PlayerImmuneException>(new PlayerImmuneException(player)));
+			if (player.hasPermission(PermissionsType.IMMUNE)) {
+				sender.sendMessage(ChatColor.RED + "Player is immune.");
 				return;
 			}
 			
-			if (e(player, banishMax)) {
-				onComplete().invoke(this, CompleteEventArgs.EMPTY);
-			}
+			e(player, banishMax);
 		}
 	}
-	private boolean e(Player player, double maxRadius) {
-		double minRadius = maxRadius - (maxRadius / 3.0d);
+	private void e(Player player, double maxRadius) {
 		Location currentLocation = player.getLocation();
+		DoubleDoublePair maxXZ = getMax(currentLocation, maxRadius);
+		DoubleDoublePair minXZ = new DoubleDoublePair(maxXZ.getLeft() - (maxXZ.getLeft() / 5.0d), maxXZ.getRight() - (maxXZ.getRight() / 5.0d));
 		double currentX = currentLocation.getX();
 		double newX = currentX;
 		double currentZ = currentLocation.getZ();
 		double newZ = currentZ;
 		
-		while (newX >= currentX - minRadius && newX <= currentX + minRadius) {
-			newX = MathUtil.random(currentX - maxRadius, currentX + maxRadius);
-		}
-		while (newZ >= currentZ - minRadius && newZ <= currentZ + minRadius) {
-			newZ = MathUtil.random(currentZ - maxRadius, currentZ + maxRadius);
-		}
-		
 		Location newLocation = null;
 		Material headBlock = null;
+		Material footBlock = null;
+		Material belowBlock = null;
 		int retryCount = 0;
 		
 		do {
-			newLocation = BlockUtil.getTopWalkableBlock(new Location(currentLocation.getWorld(), newX, MathUtil.random(5.0d, currentLocation.getWorld().getMaxHeight()), newZ));
+			do {
+				newX = MathUtil.random(currentX - maxXZ.getLeft(), currentX + maxXZ.getLeft());
+			} while (newX >= currentX - minXZ.getLeft() && newX <= currentX + minXZ.getLeft());
+			do {
+				newZ = MathUtil.random(currentZ - maxXZ.getRight(), currentZ + maxXZ.getRight());
+			} while (newZ >= currentZ - minXZ.getRight() && newZ <= currentZ + minXZ.getRight());
+			
+			newLocation = BlockUtil.getHighestSolidBlock(new Location(currentLocation.getWorld(), newX, MathUtil.random(5.0d, currentLocation.getWorld().getMaxHeight()), newZ)).add(0.0d, 1.0d, 0.0d);
+			belowBlock = newLocation.add(0.0d, -1.0d, 0.0d).getBlock().getType();
+			footBlock = newLocation.getBlock().getType();
 			headBlock = newLocation.clone().add(0.0d, 1.0d, 0.0d).getBlock().getType();
 			retryCount++;
-		} while (headBlock != Material.AIR && retryCount <= 100);
+		} while (!isHospitable(headBlock, footBlock, belowBlock) && retryCount <= 100);
 		
-		if (headBlock != Material.AIR) {
-			sender.sendMessage(player.getName() + " could not be banished because there was not enough space around them!");
-			onError().invoke(this, new ExceptionEventArgs<NoBlockSpaceException>(new NoBlockSpaceException(newLocation)));
+		if (!isHospitable(headBlock, footBlock, belowBlock)) {
+			sender.sendMessage(ChatColor.RED + player.getName() + " could not be banished because all of the locations chosen were inhospitable!");
+			return;
+		}
+		
+		player.teleport(newLocation.add(0.5d, 0.0d, 0.5d));
+		metricsHelper.commandWasRun(this);
+		sender.sendMessage(player.getName() + " has been banished.");
+		return;
+	}
+	private DoubleDoublePair getMax(Location current, double max) {
+		// Get world border
+		WorldBorder border = current.getWorld().getWorldBorder();
+		// get border center
+		Location center = border.getCenter();
+		// Translate border center to player location and adjust for border size
+		double borderSizeX = border.getSize() - Math.abs(current.getX() - center.getX()) - 1.0d;
+		double borderSizeZ = border.getSize() - Math.abs(current.getZ() - center.getZ()) - 1.0d;
+		
+		// Return the min between border size and original max (effectively capping "max" at the world border if needed)
+		return new DoubleDoublePair(Math.min(borderSizeX, max), Math.min(borderSizeZ, max));
+	}
+	private boolean isHospitable(Material headBlock, Material footBlock, Material belowBlock) {
+		if (
+			headBlock != Material.AIR
+			|| footBlock == Material.LAVA
+			|| footBlock.name().equals("STATIONARY_LAVA")
+			|| footBlock.name().equals("LEGACY_STATIONARY_LAVA")
+			|| (footBlock == Material.WATER && headBlock == Material.WATER)
+			|| belowBlock == Material.CACTUS
+			|| belowBlock.name().equals("MAGMA")
+			|| belowBlock == Material.FIRE
+		) {
 			return false;
 		}
 		
-		player.teleport(newLocation);
-		
-		metricsHelper.commandWasRun(this);
-		
-		sender.sendMessage(player.getName() + " has been banished.");
 		return true;
 	}
 	

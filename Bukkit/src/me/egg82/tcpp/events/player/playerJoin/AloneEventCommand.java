@@ -6,15 +6,18 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import me.egg82.tcpp.services.registries.AloneRegistry;
+import me.egg82.tcpp.lists.AloneSet;
+import ninja.egg82.bukkit.reflection.player.IPlayerHelper;
+import ninja.egg82.bukkit.utils.CommandUtil;
+import ninja.egg82.concurrent.IConcurrentSet;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
-import ninja.egg82.plugin.utils.CommandUtil;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class AloneEventCommand extends EventCommand<PlayerJoinEvent> {
+public class AloneEventCommand extends EventHandler<PlayerJoinEvent> {
 	//vars
-	private IVariableRegistry<UUID> aloneRegistry = ServiceLocator.getService(AloneRegistry.class);
+	private IConcurrentSet<UUID> aloneSet = ServiceLocator.getService(AloneSet.class);
+	
+	private IPlayerHelper playerHelper = ServiceLocator.getService(IPlayerHelper.class);
 	
 	//constructor
 	public AloneEventCommand() {
@@ -28,16 +31,16 @@ public class AloneEventCommand extends EventCommand<PlayerJoinEvent> {
 		Player player = event.getPlayer();
 		UUID uuid = player.getUniqueId();
 		
-		if (aloneRegistry.hasRegister(uuid)) {
+		if (aloneSet.contains(uuid)) {
 			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-				player.hidePlayer(p);
+				playerHelper.hidePlayer(player, p);
 			}
-		} else {
-			for (UUID key : aloneRegistry.getKeys()) {
-				Player p = CommandUtil.getPlayerByUuid(key);
-				if (p != null) {
-					p.hidePlayer(player);
-				}
+		}
+		
+		for (UUID key : aloneSet) {
+			Player p = CommandUtil.getPlayerByUuid(key);
+			if (p != null) {
+				playerHelper.hidePlayer(p, player);
 			}
 		}
 	}

@@ -4,28 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.exceptions.PlayerImmuneException;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.events.CompleteEventArgs;
-import ninja.egg82.events.ExceptionEventArgs;
+import ninja.egg82.bukkit.utils.CommandUtil;
+import ninja.egg82.filters.EnumFilter;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.SpigotLanguageType;
-import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
-import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
-import ninja.egg82.plugin.exceptions.PlayerNotFoundException;
-import ninja.egg82.plugin.reflection.type.TypeFilterHelper;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LanguageUtil;
+import ninja.egg82.plugin.handlers.CommandHandler;
 import ninja.egg82.utils.MathUtil;
 
-public class SlapCommand extends PluginCommand {
+public class SlapCommand extends CommandHandler {
 	//vars
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	private Sound[] sounds = null;
@@ -34,7 +27,7 @@ public class SlapCommand extends PluginCommand {
 	public SlapCommand() {
 		super();
 		
-		TypeFilterHelper<Sound> soundFilterHelper = new TypeFilterHelper<Sound>(Sound.class);
+		EnumFilter<Sound> soundFilterHelper = new EnumFilter<Sound>(Sound.class);
 		sounds = soundFilterHelper.filter(
 				soundFilterHelper.getAllTypes(),
 			"anvil", true);
@@ -65,17 +58,15 @@ public class SlapCommand extends PluginCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_SLAP)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
-			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_SLAP)));
+		if (!sender.hasPermission(PermissionsType.COMMAND_SLAP)) {
+			sender.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
 			return;
 		}
 		if (!CommandUtil.isArrayOfAllowedLength(args, 1, 2)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
+			sender.sendMessage(ChatColor.RED + "Incorrect command usage!");
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
-			sender.getServer().dispatchCommand(sender, "troll help " + name);
-			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
+			Bukkit.getServer().dispatchCommand((CommandSender) sender.getHandle(), "troll help " + name);
 			return;
 		}
 		
@@ -84,19 +75,18 @@ public class SlapCommand extends PluginCommand {
 			try {
 				power = Double.parseDouble(args[1]);
 			} catch (Exception ex) {
-				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
+				sender.sendMessage(ChatColor.RED + "Incorrect command usage!");
 				String name = getClass().getSimpleName();
 				name = name.substring(0, name.length() - 7).toLowerCase();
-				sender.getServer().dispatchCommand(sender, "troll help " + name);
-				onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
+				Bukkit.getServer().dispatchCommand((CommandSender) sender.getHandle(), "troll help " + name);
 				return;
 			}
 		}
 		
-		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
+		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer((CommandSender) sender.getHandle()) ? ((Player) sender.getHandle()).getLocation() : null));
 		if (players.size() > 0) {
 			for (Player player : players) {
-				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+				if (player.hasPermission(PermissionsType.IMMUNE)) {
 					continue;
 				}
 				
@@ -106,20 +96,16 @@ public class SlapCommand extends PluginCommand {
 			Player player = CommandUtil.getPlayerByName(args[0]);
 			
 			if (player == null) {
-				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.PLAYER_NOT_FOUND));
-				onError().invoke(this, new ExceptionEventArgs<PlayerNotFoundException>(new PlayerNotFoundException(args[0])));
+				sender.sendMessage(ChatColor.RED + "Player could not be found.");
 				return;
 			}
-			if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-				sender.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
-				onError().invoke(this, new ExceptionEventArgs<PlayerImmuneException>(new PlayerImmuneException(player)));
+			if (player.hasPermission(PermissionsType.IMMUNE)) {
+				sender.sendMessage(ChatColor.RED + "Player is immune.");
 				return;
 			}
 			
 			e(player, power);
 		}
-		
-		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	private void e(Player player, double force) {
 		Location playerLocation = player.getLocation().clone();

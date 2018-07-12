@@ -4,14 +4,14 @@ import java.util.UUID;
 
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
-import me.egg82.tcpp.services.registries.LagItemRegistry;
-import me.egg82.tcpp.services.registries.LagRegistry;
+import me.egg82.tcpp.registries.LagItemRegistry;
+import me.egg82.tcpp.registries.LagRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 import ninja.egg82.utils.MathUtil;
 
-public class LagEventCommand extends EventCommand<PlayerPickupItemEvent> {
+public class LagEventCommand extends EventHandler<PlayerPickupItemEvent> {
 	//vars
 	private IVariableRegistry<UUID> lagRegistry = ServiceLocator.getService(LagRegistry.class);
 	private IVariableRegistry<UUID> lagItemRegistry = ServiceLocator.getService(LagItemRegistry.class);

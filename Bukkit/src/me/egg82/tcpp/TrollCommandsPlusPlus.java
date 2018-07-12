@@ -1,27 +1,23 @@
 package me.egg82.tcpp;
 
-import java.io.File;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bstats.bukkit.Metrics;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.egg82.tcpp.enums.LanguageType;
-import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.registries.CommandRegistry;
+import me.egg82.tcpp.registries.KeywordRegistry;
+import me.egg82.tcpp.rollback.reflection.CoreProtectRollbackHelper;
+import me.egg82.tcpp.rollback.reflection.NullRollbackHelper;
 import me.egg82.tcpp.services.databases.CommandSearchDatabase;
-import me.egg82.tcpp.services.registries.CommandRegistry;
-import me.egg82.tcpp.services.registries.KeywordRegistry;
 import me.egg82.tcpp.util.ControlHelper;
 import me.egg82.tcpp.util.DisplayHelper;
 import me.egg82.tcpp.util.FoolsGoldHelper;
@@ -32,6 +28,12 @@ import me.egg82.tcpp.util.WorldHoleHelper;
 import net.gravitydevelopment.updater.Updater;
 import net.gravitydevelopment.updater.Updater.UpdateResult;
 import net.gravitydevelopment.updater.Updater.UpdateType;
+import ninja.egg82.bukkit.BasePlugin;
+import ninja.egg82.bukkit.processors.CommandProcessor;
+import ninja.egg82.bukkit.processors.EventProcessor;
+import ninja.egg82.bukkit.services.ConfigRegistry;
+import ninja.egg82.bukkit.utils.VersionUtil;
+import ninja.egg82.bukkit.utils.YamlUtil;
 import ninja.egg82.disguise.reflection.DisguiseHelper;
 import ninja.egg82.disguise.reflection.LibsDisguisesHelper;
 import ninja.egg82.disguise.reflection.NullDisguiseHelper;
@@ -43,31 +45,17 @@ import ninja.egg82.exceptionHandlers.builders.RollbarBuilder;
 import ninja.egg82.nbt.reflection.NullNBTHelper;
 import ninja.egg82.nbt.reflection.PowerNBTHelper;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.registries.IRegistry;
 import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.permissions.reflection.LuckPermissionsHelper;
 import ninja.egg82.permissions.reflection.NullPermissionsHelper;
-import ninja.egg82.permissions.reflection.PEXPermissionsHelper;
-import ninja.egg82.plugin.BasePlugin;
-import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.BukkitInitType;
 import ninja.egg82.plugin.handlers.CommandHandler;
-import ninja.egg82.plugin.handlers.EventListener;
-import ninja.egg82.plugin.handlers.IMessageHandler;
-import ninja.egg82.plugin.handlers.PermissionsManager;
-import ninja.egg82.plugin.handlers.RabbitMessageHandler;
-import ninja.egg82.plugin.handlers.TickHandler;
-import ninja.egg82.plugin.services.LanguageRegistry;
-import ninja.egg82.plugin.utils.BukkitReflectUtil;
-import ninja.egg82.plugin.utils.ConfigUtil;
-import ninja.egg82.plugin.utils.VersionUtil;
-import ninja.egg82.plugin.utils.YamlUtil;
+import ninja.egg82.plugin.messaging.IMessageHandler;
+import ninja.egg82.plugin.utils.PluginReflectUtil;
 import ninja.egg82.protocol.reflection.NullFakeBlockHelper;
 import ninja.egg82.protocol.reflection.NullFakeEntityHelper;
 import ninja.egg82.protocol.reflection.ProtocolLibFakeBlockHelper;
 import ninja.egg82.protocol.reflection.ProtocolLibFakeEntityHelper;
 import ninja.egg82.sql.LanguageDatabase;
-import ninja.egg82.startup.InitRegistry;
 import ninja.egg82.utils.FileUtil;
 import ninja.egg82.utils.ReflectUtil;
 import ninja.egg82.utils.StringUtil;
@@ -82,21 +70,14 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	private int numMessages = 0;
 	private int numCommands = 0;
 	private int numEvents = 0;
-	private int numPermissions = 0;
 	private int numTicks = 0;
 	
 	private IExceptionHandler exceptionHandler = null;
 	private String version = getDescription().getVersion();
-	private String userId = Bukkit.getServerId().trim();
 	
 	//constructor
 	public TrollCommandsPlusPlus() {
 		super();
-		
-		if (userId.isEmpty() || userId.equalsIgnoreCase("unnamed") || userId.equalsIgnoreCase("unknown") || userId.equalsIgnoreCase("default")) {
-			userId = UUID.randomUUID().toString();
-			writeProperties();
-		}
 		
 		getLogger().setLevel(Level.WARNING);
 		IExceptionHandler oldExceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
@@ -105,7 +86,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		ServiceLocator.provideService(RollbarExceptionHandler.class, false);
 		exceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
 		oldExceptionHandler.disconnect();
-		exceptionHandler.connect(new RollbarBuilder("78062d4e18074560850d4d8e0805b564", "production", version, userId), "TrollCommandsPlusPlus");
+		exceptionHandler.connect(new RollbarBuilder("78062d4e18074560850d4d8e0805b564", "production", version, getServerId()), "TrollCommandsPlusPlus");
 		exceptionHandler.setUnsentExceptions(oldExceptionHandler.getUnsentExceptions());
 		exceptionHandler.setUnsentLogs(oldExceptionHandler.getUnsentLogs());
 	}
@@ -114,7 +95,8 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	public void onLoad() {
 		super.onLoad();
 		
-		BukkitReflectUtil.addServicesFromPackage("me.egg82.tcpp.services");
+		PluginReflectUtil.addServicesFromPackage("me.egg82.tcpp.registries", true);
+		PluginReflectUtil.addServicesFromPackage("me.egg82.tcpp.lists", true);
 		
 		PluginManager manager = getServer().getPluginManager();
 		
@@ -160,15 +142,20 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		if (manager.getPlugin("LuckPerms") != null) {
 			printInfo(ChatColor.GREEN + "[TrollCommands++] Enabling support for LuckPerms.");
 			ServiceLocator.provideService(LuckPermissionsHelper.class);
-		} else if (manager.getPlugin("PermissionsEx") != null) {
-			printInfo(ChatColor.GREEN + "[TrollCommands++] Enabling support for PEX.");
-			ServiceLocator.provideService(PEXPermissionsHelper.class);
 		} else {
-			printWarning(ChatColor.YELLOW + "[TrollCommands++] Neither LP nor PEX were found. Using default Bukkit permissions.");
+			printWarning(ChatColor.YELLOW + "[TrollCommands++] LP was not found. Using default Bukkit permissions.");
 			ServiceLocator.provideService(NullPermissionsHelper.class);
 		}
 		
-		ConfigUtil.fillRegistry(YamlUtil.getOrLoadDefaults(getDataFolder().getAbsolutePath() + FileUtil.DIRECTORY_SEPARATOR_CHAR + "config.yml", "config.yml", true));
+		if (manager.getPlugin("CoreProtect") != null) {
+			printInfo(ChatColor.GREEN + "[TrollCommands++] Enabling support for CoreProtect.");
+			ServiceLocator.provideService(CoreProtectRollbackHelper.class);
+		} else {
+			printWarning(ChatColor.YELLOW + "[TrollCommands++] Neither BlocksHub nor CoreProtect were found. Not logging any block changes.");
+			ServiceLocator.provideService(NullRollbackHelper.class);
+		}
+		
+		ServiceLocator.getService(ConfigRegistry.class).load(YamlUtil.getOrLoadDefaults(getDataFolder().getAbsolutePath() + FileUtil.DIRECTORY_SEPARATOR_CHAR + "config.yml", "config.yml", true));
 		
 		ServiceLocator.provideService(ControlHelper.class);
 		ServiceLocator.provideService(DisplayHelper.class);
@@ -180,15 +167,22 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		ServiceLocator.provideService(CommandSearchDatabase.class, false);
 		
 		populateCommandDatabase();
-		populateLanguage();
 	}
 	
-	@SuppressWarnings("resource")
 	public void onEnable() {
 		super.onEnable();
 		
-		ThreadUtil.rename(getName());
+		Loaders.loadMessaging();
 		
+		numCommands = ServiceLocator.getService(CommandProcessor.class).addHandlersFromPackage("me.egg82.tcpp.commands", PluginReflectUtil.getCommandMapFromPackage("me.egg82.tcpp.commands", false, null, "Command"), false);
+		numCommands += ReflectUtil.getClasses(CommandHandler.class, "me.egg82.tcpp.commands.internal", false, false, false).size();
+		ServiceLocator.getService(CommandProcessor.class).addAliases("gtroll",  "gtr");
+		ServiceLocator.getService(CommandProcessor.class).addAliases("troll",  "tr");
+		numEvents = ServiceLocator.getService(EventProcessor.class).addHandlersFromPackage("me.egg82.tcpp.events");
+		numMessages = ServiceLocator.getService(IMessageHandler.class).addHandlersFromPackage("me.egg82.tcpp.messages");
+		numTicks = PluginReflectUtil.addServicesFromPackage("me.egg82.tcpp.ticks", false);
+		
+		ThreadUtil.rename(getName());
 		ThreadUtil.submit(new Runnable() {
 			public void run() {
 				try {
@@ -218,47 +212,16 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 				}
 			}
 		});
-		
-		IVariableRegistry<String> configRegistry = ConfigUtil.getRegistry();
-		String queueType = configRegistry.getRegister("queueType", String.class);
-		if (queueType.equalsIgnoreCase("default") || queueType.equalsIgnoreCase("bungee") || queueType.equalsIgnoreCase("bungeecord")) {
-			// Do nothing, as it's the default
-			printInfo(ChatColor.GREEN + "[TrollCommands++] Enabling support for BungeeCord.");
-		} else if (queueType.equalsIgnoreCase("rabbit") || queueType.equalsIgnoreCase("rabbitmq")) {
-			List<IMessageHandler> services = ServiceLocator.removeServices(IMessageHandler.class);
-			for (IMessageHandler handler : services) {
-				try {
-					handler.close();
-				} catch (Exception ex) {
-					
-				}
-			}
-			ServiceLocator.provideService(new RabbitMessageHandler(configRegistry.getRegister("rabbitIp", String.class), configRegistry.getRegister("rabbitPort", Number.class).intValue(), configRegistry.getRegister("rabbitUser", String.class), configRegistry.getRegister("rabbitPass", String.class)));
-			printInfo(ChatColor.GREEN + "[TrollCommands++] Enabling support for RabbitMQ.");
-		} else {
-			printWarning("Config \"queueType\" does not match expected values. Using Bungeecord default.");
-		}
-		
-		IMessageHandler messageHandler = ServiceLocator.getService(IMessageHandler.class);
-		messageHandler.createChannel("Troll");
-		
-		numMessages = ServiceLocator.getService(IMessageHandler.class).addMessagesFromPackage("me.egg82.tcpp.messages");
-		numCommands = ServiceLocator.getService(CommandHandler.class).addCommandsFromPackage("me.egg82.tcpp.commands", BukkitReflectUtil.getCommandMapFromPackage("me.egg82.tcpp.commands", false, null, "Command"), false);
-		numCommands += ReflectUtil.getClasses(PluginCommand.class, "me.egg82.tcpp.commands.internal", false, false, false).size();
-		numEvents = ServiceLocator.getService(EventListener.class).addEventsFromPackage("me.egg82.tcpp.events");
-		numPermissions = ServiceLocator.getService(PermissionsManager.class).addPermissionsFromClass(PermissionsType.class);
-		numTicks = ServiceLocator.getService(TickHandler.class).addTicksFromPackage("me.egg82.tcpp.ticks");
-		
-		enableMessage();
-		
-		ThreadUtil.scheduleAtFixedRate(checkUpdate, 0L, 24L * 60L * 60L * 1000L);
-		ThreadUtil.scheduleAtFixedRate(checkExceptionLimitReached, 0L, 60L * 60L * 1000L);
+		ThreadUtil.schedule(checkUpdate, 24L * 60L * 60L * 1000L);
+		ThreadUtil.schedule(checkExceptionLimitReached, 60L * 60L * 1000L);
 		
 		ThreadUtil.submit(new Runnable() {
 			public void run() {
 				getTagger();
 			}
 		});
+		
+		enableMessage();
 	}
 	public void onDisable() {
 		super.onDisable();
@@ -280,7 +243,18 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		WorldHoleHelper worldHoleHelper = ServiceLocator.getService(WorldHoleHelper.class);
 		worldHoleHelper.undoAll();
 		
-		BukkitReflectUtil.clearAll();
+		List<IMessageHandler> services = ServiceLocator.removeServices(IMessageHandler.class);
+		for (IMessageHandler handler : services) {
+			try {
+				handler.close();
+			} catch (Exception ex) {
+				
+			}
+		}
+		
+		ServiceLocator.getService(CommandProcessor.class).clear();
+		ServiceLocator.getService(EventProcessor.class).clear();
+		
 		disableMessage();
 	}
 	
@@ -304,6 +278,8 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 				
 				printWarning(ChatColor.GREEN + "--== " + ChatColor.YELLOW + "TrollCommands++ UPDATE AVAILABLE (Latest: " + latestVersion + " Current: " + currentVersion + ") " + ChatColor.GREEN + " ==--");
 			}
+			
+			ThreadUtil.schedule(checkUpdate, 24L * 60L * 60L * 1000L);
 		}
 	};
 	
@@ -316,10 +292,12 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 				ServiceLocator.provideService(GameAnalyticsExceptionHandler.class, false);
 				exceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
 				oldExceptionHandler.disconnect();
-				exceptionHandler.connect(new GameAnalyticsBuilder("250e5c508c3dd844ed1f8bd2a449d1a6", "dfb50b06e598e7a7ad9b3c84f7b118c12800ffce", version, userId), getName());
+				exceptionHandler.connect(new GameAnalyticsBuilder("250e5c508c3dd844ed1f8bd2a449d1a6", "dfb50b06e598e7a7ad9b3c84f7b118c12800ffce", version, getServerId()), getName());
 				exceptionHandler.setUnsentExceptions(oldExceptionHandler.getUnsentExceptions());
 				exceptionHandler.setUnsentLogs(oldExceptionHandler.getUnsentLogs());
 			}
+			
+			ThreadUtil.schedule(checkExceptionLimitReached, 60L * 60L * 1000L);
 		}
 	};
 	
@@ -330,8 +308,8 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		printInfo(ChatColor.AQUA + "    | | '__/ _ \\| | | |    / _ \\| '_ ` _ \\| '_ ` _ \\ / _` | '_ \\ / _` / __|_   _|_   _|");
 		printInfo(ChatColor.AQUA + "    | | | | (_) | | | |___| (_) | | | | | | | | | | | (_| | | | | (_| \\__ \\ |_|   |_|  ");
 		printInfo(ChatColor.AQUA + "    |_|_|  \\___/|_|_|\\_____\\___/|_| |_| |_|_| |_| |_|\\__,_|_| |_|\\__,_|___/            ");
-		printInfo(ChatColor.GREEN + "[Version " + getDescription().getVersion() + "] " + ChatColor.RED + numCommands + " commands " + ChatColor.LIGHT_PURPLE + numEvents + " events " + ChatColor.WHITE + numPermissions + " permissions " + ChatColor.YELLOW + numTicks + " tick handlers " + ChatColor.BLUE + numMessages + " message handlers");
-		printInfo(ChatColor.WHITE + "[TrollCommands++] " + ChatColor.GRAY + "Attempting to load compatibility with Bukkit version " + ServiceLocator.getService(InitRegistry.class).getRegister(BukkitInitType.GAME_VERSION));
+		printInfo(ChatColor.GREEN + "[Version " + getDescription().getVersion() + "] " + ChatColor.RED + numCommands + " commands " + ChatColor.LIGHT_PURPLE + numEvents + " events " + ChatColor.YELLOW + numTicks + " tick handlers " + ChatColor.BLUE + numMessages + " message handlers");
+		printInfo(ChatColor.WHITE + "[TrollCommands++] " + ChatColor.GRAY + "Attempting to load compatibility with Bukkit version " + getGameVersion());
 	}
 	private void disableMessage() {
 		printInfo(ChatColor.GREEN + "--== " + ChatColor.LIGHT_PURPLE + "TrollCommands++ Disabled" + ChatColor.GREEN + " ==--");
@@ -366,40 +344,20 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 			commandNameDatabase.addRow(row.toArray(new String[0]));
 		}
 	}
-	private void populateLanguage() {
-		IRegistry<String, String> languageRegistry = ServiceLocator.getService(LanguageRegistry.class);
-		
-		languageRegistry.setRegister(LanguageType.PLAYER_IMMUNE, ChatColor.RED + "Player is immune.");
-		languageRegistry.setRegister(LanguageType.INVALID_TARGET, ChatColor.RED + "The target you've chosen is invalid.");
-		languageRegistry.setRegister(LanguageType.INVALID_LIBRARY, ChatColor.RED + "This command has been disabled because there is no recognized backing library available. Please install one and restart the server to enable this command.");
-		languageRegistry.setRegister(LanguageType.COMMAND_IN_USE, ChatColor.RED + "This command is currently in use against this player. Please wait for it to complete before using it again.");
-		languageRegistry.setRegister(LanguageType.NO_CHAT_CONTROL, ChatColor.RED + "You do not have permissions to chat while being controlled!");
-		languageRegistry.setRegister(LanguageType.NO_CHAT_FROZEN, ChatColor.RED + "You do not have permissions to chat while frozen!");
-		languageRegistry.setRegister(LanguageType.NOT_LIVING, ChatColor.RED + "The entity you have selected is neither a player nor a mob!");
-		languageRegistry.setRegister(LanguageType.NOT_MOB, ChatColor.RED + "The entity you have selected is not a mob!");
-		languageRegistry.setRegister(LanguageType.EMPOWERED, "The entity you have selected is now empowered!");
-		languageRegistry.setRegister(LanguageType.DISEMPOWERED, "The entity you have selected is now disempowered!");
-		languageRegistry.setRegister(LanguageType.HYDRA_ENABLED, "The entity you have selected is now hydra-powered!");
-		languageRegistry.setRegister(LanguageType.HYDRA_DISABLED, "The entity you have selected (and its related entities) are no longer hydra-powered!");
-		languageRegistry.setRegister(LanguageType.INVALID_VERSION, ChatColor.RED + "This command has been disabled because this version of Minecraft doesn't support it.");
-		languageRegistry.setRegister(LanguageType.INVALID_TYPE, ChatColor.RED + "Searched type is invalid or was not found.");
-		languageRegistry.setRegister(LanguageType.INVALID_COMMAND, ChatColor.RED + "Command is invalid.");
-		languageRegistry.setRegister(LanguageType.INVALID_ITEM, ChatColor.RED + "Item is invalid.");
-	}
 	
 	private void getTagger() {
-		exceptionHandler.addThread(Thread.currentThread());
-		
 		try {
 			POSModel model = new POSModel(new URL("http://opennlp.sourceforge.net/models-1.5/en-pos-maxent.bin"));
 			ServiceLocator.provideService(new POSTaggerME(model));
-			System.gc();
 		} catch (Exception ex) {
+			exceptionHandler.silentException(ex);
+			ex.printStackTrace();
 			try {
 				POSModel model = new POSModel(new URL("http://opennlp.sourceforge.net/models-1.5/en-pos-perceptron.bin"));
 				ServiceLocator.provideService(new POSTaggerME(model));
-				System.gc();
 			} catch (Exception ex2) {
+				exceptionHandler.silentException(ex2);
+				ex2.printStackTrace();
 				ThreadUtil.schedule(new Runnable() {
 					public void run() {
 						getTagger();
@@ -407,47 +365,5 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 				}, 10L * 1000L);
 			}
 		}
-		
-		exceptionHandler.removeThread(Thread.currentThread());
-	}
-	
-	private void writeProperties() {
-		File propertiesFile = new File(Bukkit.getWorldContainer(), "server.properties");
-		String path = propertiesFile.getAbsolutePath();
-		
-		if (!FileUtil.pathExists(path) || !FileUtil.pathIsFile(path)) {
-			return;
-		}
-		
-		try {
-			FileUtil.open(path);
-			
-			String[] lines = toString(FileUtil.read(path, 0L), Charset.forName("UTF-8")).replaceAll("\r", "").split("\n");
-			boolean found = false;
-			for (int i = 0; i < lines.length; i++) {
-				if (lines[i].trim().startsWith("server-id=")) {
-					found = true;
-					lines[i] = "server-id=" + userId;
-				}
-			}
-			if (!found) {
-				ArrayList<String> temp = new ArrayList<String>(Arrays.asList(lines));
-				temp.add("server-id=" + userId);
-				lines = temp.toArray(new String[0]);
-			}
-			
-			FileUtil.erase(path);
-			FileUtil.write(path, toBytes(String.join(FileUtil.LINE_SEPARATOR, lines), Charset.forName("UTF-8")), 0L);
-			FileUtil.close(path);
-		} catch (Exception ex) {
-			
-		}
-	}
-	
-	private byte[] toBytes(String input, Charset enc) {
-		return input.getBytes(enc);
-	}
-	private String toString(byte[] input, Charset enc) {
-		return new String(input, enc);
 	}
 }

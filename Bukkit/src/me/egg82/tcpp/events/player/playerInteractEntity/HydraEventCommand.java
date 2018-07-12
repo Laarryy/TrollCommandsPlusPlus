@@ -3,21 +3,20 @@ package me.egg82.tcpp.events.player.playerInteractEntity;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
-import me.egg82.tcpp.enums.LanguageType;
-import me.egg82.tcpp.services.registries.HydraMobRegistry;
-import me.egg82.tcpp.services.registries.HydraRegistry;
-import ninja.egg82.events.VariableExpireEventArgs;
+import me.egg82.tcpp.registries.HydraMobRegistry;
+import me.egg82.tcpp.registries.HydraRegistry;
+import ninja.egg82.events.VariableRegisterExpireEventArgs;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableExpiringRegistry;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
-import ninja.egg82.plugin.utils.LanguageUtil;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class HydraEventCommand extends EventCommand<PlayerInteractEntityEvent> {
+public class HydraEventCommand extends EventHandler<PlayerInteractEntityEvent> {
 	//vars
 	private IVariableRegistry<UUID> hydraRegistry = ServiceLocator.getService(HydraRegistry.class);
 	private IVariableExpiringRegistry<UUID> hydraMobRegistry = ServiceLocator.getService(HydraMobRegistry.class);
@@ -44,7 +43,7 @@ public class HydraEventCommand extends EventCommand<PlayerInteractEntityEvent> {
 			return;
 		}
 		if (!(event.getRightClicked() instanceof LivingEntity)) {
-			player.sendMessage(LanguageUtil.getString(LanguageType.NOT_LIVING));
+			player.sendMessage(ChatColor.RED + "The entity you have selected is not a mob!");
 			hydraRegistry.removeRegister(uuid);
 			return;
 		}
@@ -52,17 +51,17 @@ public class HydraEventCommand extends EventCommand<PlayerInteractEntityEvent> {
 		LivingEntity entity = (LivingEntity) event.getRightClicked();
 		
 		if (entity instanceof Player) {
-			player.sendMessage(LanguageUtil.getString(LanguageType.NOT_MOB));
+			player.sendMessage(ChatColor.RED + "The entity you have selected is not a mob!");
 		}
 		
 		UUID entityUuid = entity.getUniqueId();
 		
 		if (!hydraMobRegistry.hasRegister(entityUuid)) {
 			hydraMobRegistry.setRegister(entityUuid, null);
-			player.sendMessage(LanguageUtil.getString(LanguageType.HYDRA_ENABLED));
+			player.sendMessage(ChatColor.GREEN + "The entity you have selected is now hydra-powered!");
 		} else {
 			removeAll(getRoot(entityUuid));
-			player.sendMessage(LanguageUtil.getString(LanguageType.HYDRA_DISABLED));
+			player.sendMessage(ChatColor.GREEN + "The entity you have selected (and its related entities) are no longer hydra-powered!");
 		}
 		
 		hydraRegistry.removeRegister(uuid);
@@ -83,7 +82,7 @@ public class HydraEventCommand extends EventCommand<PlayerInteractEntityEvent> {
 		return (parent != null) ? getRoot(parent) : entityUuid;
 	}
 	
-	private void onMobExpire(VariableExpireEventArgs<UUID> e) {
+	private void onMobExpire(VariableRegisterExpireEventArgs<UUID> e) {
 		if (Bukkit.getEntity(e.getKey()) != null) {
 			hydraMobRegistry.setRegister(e.getKey(), e.getValue());
 		}

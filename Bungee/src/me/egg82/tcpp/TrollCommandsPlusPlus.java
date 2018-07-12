@@ -1,19 +1,23 @@
 package me.egg82.tcpp;
 
+import java.util.List;
 import java.util.logging.Level;
 
 import net.md_5.bungee.api.ChatColor;
 import ninja.egg82.bungeecord.BasePlugin;
-import ninja.egg82.bungeecord.handlers.CommandHandler;
-import ninja.egg82.bungeecord.handlers.EventListener;
-import ninja.egg82.bungeecord.handlers.IMessageHandler;
-import ninja.egg82.bungeecord.utils.BungeeReflectUtil;
+import ninja.egg82.bungeecord.processors.CommandProcessor;
+import ninja.egg82.bungeecord.processors.EventProcessor;
+import ninja.egg82.bungeecord.services.ConfigRegistry;
+import ninja.egg82.bungeecord.utils.YamlUtil;
 import ninja.egg82.exceptionHandlers.GameAnalyticsExceptionHandler;
 import ninja.egg82.exceptionHandlers.IExceptionHandler;
 import ninja.egg82.exceptionHandlers.RollbarExceptionHandler;
 import ninja.egg82.exceptionHandlers.builders.GameAnalyticsBuilder;
 import ninja.egg82.exceptionHandlers.builders.RollbarBuilder;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.plugin.messaging.IMessageHandler;
+import ninja.egg82.plugin.utils.PluginReflectUtil;
+import ninja.egg82.utils.FileUtil;
 import ninja.egg82.utils.ThreadUtil;
 
 public class TrollCommandsPlusPlus extends BasePlugin {
@@ -47,30 +51,52 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		exceptionHandler.setUnsentExceptions(oldExceptionHandler.getUnsentExceptions());
 		exceptionHandler.setUnsentLogs(oldExceptionHandler.getUnsentLogs());
 		
-		BungeeReflectUtil.addServicesFromPackage("me.egg82.tcpp.registries");
+		PluginReflectUtil.addServicesFromPackage("me.egg82.tcpp.registries", true);
+		PluginReflectUtil.addServicesFromPackage("me.egg82.tcpp.lists", true);
+		
+		ServiceLocator.getService(ConfigRegistry.class).load(YamlUtil.getOrLoadDefaults(getDataFolder().getAbsolutePath() + FileUtil.DIRECTORY_SEPARATOR_CHAR + "config.yml", "config.yml", true));
 	}
 	
 	public void onEnable() {
 		super.onEnable();
 		
-		IMessageHandler messageHandler = ServiceLocator.getService(IMessageHandler.class);
-		messageHandler.createChannel("Troll");
+		List<IMessageHandler> services = ServiceLocator.removeServices(IMessageHandler.class);
+		for (IMessageHandler handler : services) {
+			try {
+				handler.close();
+			} catch (Exception ex) {
+				
+			}
+		}
 		
-		numCommands = ServiceLocator.getService(CommandHandler.class).addCommandsFromPackage("me.egg82.tcpp.commands", BungeeReflectUtil.getCommandMapFromPackage("me.egg82.tcpp.commands", false, null, "Command"), false);
-		numEvents = ServiceLocator.getService(EventListener.class).addEventsFromPackage("me.egg82.tcpp.events");
-		numMessages = ServiceLocator.getService(IMessageHandler.class).addMessagesFromPackage("me.egg82.tcpp.messages");
+		Loaders.loadMessaging();
+		
+		numCommands = ServiceLocator.getService(CommandProcessor.class).addHandlersFromPackage("me.egg82.tcpp.commands", PluginReflectUtil.getCommandMapFromPackage("me.egg82.tcpp.commands", false, null, "Command"), false);
+		numEvents = ServiceLocator.getService(EventProcessor.class).addHandlersFromPackage("me.egg82.tcpp.events");
+		numMessages = ServiceLocator.getService(IMessageHandler.class).addHandlersFromPackage("me.egg82.tcpp.messages");
 		
 		enableMessage();
 		
 		ThreadUtil.rename(getDescription().getName());
-		ThreadUtil.scheduleAtFixedRate(checkExceptionLimitReached, 0L, 60L * 60L * 1000L);
+		ThreadUtil.schedule(checkExceptionLimitReached, 60L * 60L * 1000L);
 	}
 	public void onDisable() {
 		super.onDisable();
 		
 		ThreadUtil.shutdown(1000L);
 		
-		BungeeReflectUtil.clearAll();
+		List<IMessageHandler> services = ServiceLocator.removeServices(IMessageHandler.class);
+		for (IMessageHandler handler : services) {
+			try {
+				handler.close();
+			} catch (Exception ex) {
+				
+			}
+		}
+		
+		ServiceLocator.getService(CommandProcessor.class).clear();
+		ServiceLocator.getService(EventProcessor.class).clear();
+		
 		disableMessage();
 	}
 	
@@ -88,6 +114,8 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 				exceptionHandler.setUnsentExceptions(oldExceptionHandler.getUnsentExceptions());
 				exceptionHandler.setUnsentLogs(oldExceptionHandler.getUnsentLogs());
 			}
+			
+			ThreadUtil.schedule(checkExceptionLimitReached, 60L * 60L * 1000L);
 		}
 	};
 	

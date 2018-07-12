@@ -5,7 +5,8 @@ import java.util.Arrays;
 
 import org.bukkit.Material;
 
-import me.egg82.tcpp.services.registries.VegetableNameRegistry;
+import me.egg82.tcpp.registries.VegetableNameRegistry;
+import ninja.egg82.bukkit.reflection.material.IMaterialHelper;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.sql.LanguageDatabase;
@@ -18,21 +19,23 @@ public class VegetableTypeSearchDatabase extends LanguageDatabase {
 	public VegetableTypeSearchDatabase() {
 		super();
 		
+		IMaterialHelper materialHelper = ServiceLocator.getService(IMaterialHelper.class);
+		
 		Material[] types = new Material[] {
 			Material.getMaterial("BEETROOT"),
 			Material.BROWN_MUSHROOM,
-			Material.CARROT_ITEM,
-			Material.POTATO_ITEM,
+			materialHelper.getByName("CARROT_ITEM"),
+			materialHelper.getByName("POTATO_ITEM"),
 			Material.RED_MUSHROOM
 		};
 		
-		for (int i = 0; i < types.length; i++) {
-			if (types[i] == null) {
+		for (Material m : types) {
+			if (m == null) {
 				continue;
 			}
 			
 			ArrayList<String> fields = new ArrayList<String>();
-			String name = types[i].name();
+			String name = m.name();
 			fields.add(name);
 			fields.add(vegetableNameRegistry.getRegister(name, String.class));
 			fields.addAll(Arrays.asList(name.split("_")));

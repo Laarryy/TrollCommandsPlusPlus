@@ -6,12 +6,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Villager;
 
 import me.egg82.tcpp.core.LuckyCommand;
-import me.egg82.tcpp.services.registries.LuckyVillagerRegistry;
-import ninja.egg82.events.VariableExpireEventArgs;
+import me.egg82.tcpp.registries.LuckyVillagerRegistry;
+import ninja.egg82.bukkit.utils.BlockUtil;
+import ninja.egg82.bukkit.utils.LocationUtil;
+import ninja.egg82.events.VariableRegisterExpireEventArgs;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableExpiringRegistry;
-import ninja.egg82.plugin.utils.BlockUtil;
-import ninja.egg82.plugin.utils.LocationUtil;
 
 public class SpawnVillagerCommand extends LuckyCommand {
 	//vars
@@ -28,13 +28,13 @@ public class SpawnVillagerCommand extends LuckyCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		Villager v = player.getWorld().spawn(BlockUtil.getTopWalkableBlock(LocationUtil.getRandomPointAround(player.getLocation(), 1.5d)), Villager.class);
+		Villager v = player.getWorld().spawn(BlockUtil.getHighestSolidBlock(LocationUtil.getRandomPointAround(player.getLocation(), 1.5d)).add(0.0d, 1.0d, 0.0d), Villager.class);
 		luckyVillagerRegistry.setRegister(v.getUniqueId(), v);
 		v.setCustomName(ChatColor.GOLD + "Lucky Villager");
 		v.setCustomNameVisible(true);
 	}
 	
-	private void onExpire(VariableExpireEventArgs<UUID> e) {
+	private void onExpire(VariableRegisterExpireEventArgs<UUID> e) {
 		Villager v = (Villager) e.getValue();
 		
 		v.setCustomNameVisible(false);

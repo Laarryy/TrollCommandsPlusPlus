@@ -1,9 +1,9 @@
 package me.egg82.tcpp.util;
 
-import me.egg82.tcpp.services.registries.CommandRegistry;
+import me.egg82.tcpp.registries.CommandRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.PluginCommand;
+import ninja.egg82.plugin.handlers.CommandHandler;
 
 public class MetricsHelper {
 	//vars
@@ -15,10 +15,10 @@ public class MetricsHelper {
 	}
 	
 	//public
-	public void commandWasRun(PluginCommand command) {
+	public void commandWasRun(CommandHandler command) {
 		commandWasRun(command, 1);
 	}
-	public void commandWasRun(PluginCommand command, int numTimes) {
+	public void commandWasRun(CommandHandler command, int numTimes) {
 		String name = command.getClass().getSimpleName().toLowerCase();
 		if (name.substring(name.length() - 7).equals("command")) {
 			name = name.substring(0, name.length() - 7);

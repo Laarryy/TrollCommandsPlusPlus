@@ -6,14 +6,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.services.registries.ControlRegistry;
+import me.egg82.tcpp.registries.ControlRegistry;
+import ninja.egg82.bukkit.utils.CommandUtil;
+import ninja.egg82.bukkit.utils.LocationUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LocationUtil;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class ControlEventCommand extends EventCommand<PlayerTeleportEvent> {
+public class ControlEventCommand extends EventHandler<PlayerTeleportEvent> {
 	//vars
 	private IVariableRegistry<UUID> controlRegistry = ServiceLocator.getService(ControlRegistry.class);
 	
@@ -38,7 +38,7 @@ public class ControlEventCommand extends EventCommand<PlayerTeleportEvent> {
 			Player controlledPlayer = CommandUtil.getPlayerByUuid(controlRegistry.getRegister(playerUuid, UUID.class));
 			
 			if (controlledPlayer != null) {
-				if (!CommandUtil.hasPermission(controlledPlayer, PermissionsType.FREECAM_WHILE_CONTROLLED)) {
+				if (!controlledPlayer.hasPermission(PermissionsType.FREECAM_WHILE_CONTROLLED)) {
 					controlledPlayer.teleport(LocationUtil.makeEqualXYZ(LocationUtil.getLocationBehind(player.getLocation(), 1.5d).subtract(0.0d, 1.0d, 0.0d), controlledPlayer.getLocation()));
 				}
 			}
@@ -51,7 +51,7 @@ public class ControlEventCommand extends EventCommand<PlayerTeleportEvent> {
 			Player controller = CommandUtil.getPlayerByUuid(controllerUuid);
 			
 			if (controller != null) {
-				if (!CommandUtil.hasPermission(player, PermissionsType.FREECAM_WHILE_CONTROLLED)) {
+				if (!player.hasPermission(PermissionsType.FREECAM_WHILE_CONTROLLED)) {
 					event.setTo(LocationUtil.makeEqualXYZ(LocationUtil.getLocationBehind(controller.getLocation(), 1.5d).subtract(0.0d, 1.0d, 0.0d), event.getTo()));
 				}
 			}

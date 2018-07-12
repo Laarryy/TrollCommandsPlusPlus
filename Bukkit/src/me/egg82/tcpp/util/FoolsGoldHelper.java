@@ -11,14 +11,15 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.services.registries.FoolsGoldChunkRegistry;
-import me.egg82.tcpp.services.registries.FoolsGoldRegistry;
+import me.egg82.tcpp.registries.FoolsGoldChunkRegistry;
+import me.egg82.tcpp.registries.FoolsGoldRegistry;
+import ninja.egg82.bukkit.reflection.material.IMaterialHelper;
+import ninja.egg82.bukkit.utils.TaskUtil;
 import ninja.egg82.concurrent.DynamicConcurrentDeque;
 import ninja.egg82.concurrent.IConcurrentDeque;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.patterns.tuples.pair.Pair;
-import ninja.egg82.plugin.utils.TaskUtil;
 import ninja.egg82.protocol.reflection.IFakeBlockHelper;
 import ninja.egg82.utils.MathUtil;
 import ninja.egg82.utils.ThreadUtil;
@@ -29,6 +30,7 @@ public class FoolsGoldHelper {
 	private IVariableRegistry<UUID> foolsGoldChunkRegistry = ServiceLocator.getService(FoolsGoldChunkRegistry.class);
 	
 	private IFakeBlockHelper fakeBlockHelper = ServiceLocator.getService(IFakeBlockHelper.class);
+	private Material quartz = ServiceLocator.getService(IMaterialHelper.class).getByName("QUARTZ_ORE");
 	
 	//constructor
 	public FoolsGoldHelper() {
@@ -128,7 +130,7 @@ public class FoolsGoldHelper {
 			for (int x = -1; x <= 1; x++) {
 				for (int z = -1; z <= 1; z++) {
 					chunks.add(new Pair<Integer, Integer>(chunkX + x, chunkZ + z));
-					blocks.addAll(spawn(Material.QUARTZ_ORE, 15, 120, player, world, chunkX + x, chunkZ + z));
+					blocks.addAll(spawn(quartz, 15, 120, player, world, chunkX + x, chunkZ + z));
 				}
 			}
 		}
@@ -216,7 +218,7 @@ public class FoolsGoldHelper {
 					}
 					
 					chunks.add(chunk);
-					blocks.addAll(spawn(Material.QUARTZ_ORE, 15, 120, player, world, chunk.getLeft(), chunk.getRight()));
+					blocks.addAll(spawn(quartz, 15, 120, player, world, chunk.getLeft(), chunk.getRight()));
 				}
 			}
 		}

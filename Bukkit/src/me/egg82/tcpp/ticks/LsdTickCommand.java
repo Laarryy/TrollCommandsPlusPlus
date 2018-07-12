@@ -9,30 +9,33 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.services.registries.LsdRegistry;
+import me.egg82.tcpp.registries.LsdRegistry;
+import ninja.egg82.bukkit.handlers.TickHandler;
+import ninja.egg82.bukkit.reflection.material.IMaterialHelper;
+import ninja.egg82.bukkit.utils.BlockUtil;
+import ninja.egg82.bukkit.utils.CommandUtil;
+import ninja.egg82.bukkit.utils.LocationUtil;
 import ninja.egg82.concurrent.IConcurrentDeque;
 import ninja.egg82.exceptionHandlers.IExceptionHandler;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.patterns.tuples.Triplet;
-import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.plugin.utils.BlockUtil;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LocationUtil;
 import ninja.egg82.protocol.reflection.IFakeBlockHelper;
 import ninja.egg82.utils.MathUtil;
 import ninja.egg82.utils.ThreadUtil;
 
-public class LsdTickCommand extends TickCommand {
+public class LsdTickCommand extends TickHandler {
 	//vars
 	private IVariableRegistry<UUID> lsdRegistry = ServiceLocator.getService(LsdRegistry.class);
 	
 	private IFakeBlockHelper fakeBlockHelper = ServiceLocator.getService(IFakeBlockHelper.class);
 	private int radius = 8;
 	
+	private Material wool = ServiceLocator.getService(IMaterialHelper.class).getByName("WOOL");
+	
 	//constructor
 	public LsdTickCommand() {
-		super(5L);
+		super(0L, 5L);
 	}
 	
 	//public
@@ -61,7 +64,7 @@ public class LsdTickCommand extends TickCommand {
 				short[] data = new short[locations.size()];
 				
 				for (int i = 0; i < materials.length; i++) {
-					materials[i] = Material.WOOL;
+					materials[i] = wool;
 					data[i] = (short) MathUtil.fairRoundedRandom(0, 15);
 				}
 				
@@ -86,7 +89,7 @@ public class LsdTickCommand extends TickCommand {
 		HashSet<Location> retVal = new HashSet<Location>();
 		
 		if (useGround) {
-			l = BlockUtil.getTopWalkableBlock(l).subtract(0.0d, 1.0d, 0.0d);
+			l = BlockUtil.getHighestSolidBlock(l);
 			retVal.add(l);
 		} else {
 			if (Bukkit.isPrimaryThread() || l.getWorld().isChunkLoaded(l.getBlockX() >> 4, l.getBlockZ() >> 4)) {

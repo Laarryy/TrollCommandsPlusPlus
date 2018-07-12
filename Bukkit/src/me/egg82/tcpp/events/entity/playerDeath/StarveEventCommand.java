@@ -4,12 +4,12 @@ import java.util.UUID;
 
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-import me.egg82.tcpp.services.registries.StarveRegistry;
+import me.egg82.tcpp.registries.StarveRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class StarveEventCommand extends EventCommand<PlayerDeathEvent> {
+public class StarveEventCommand extends EventHandler<PlayerDeathEvent> {
 	//vars
 	private IVariableRegistry<UUID> starveRegistry = ServiceLocator.getService(StarveRegistry.class);
 	

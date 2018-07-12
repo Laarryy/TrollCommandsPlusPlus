@@ -7,20 +7,20 @@ import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import me.egg82.tcpp.services.registries.BombRegistry;
+import me.egg82.tcpp.registries.BombRegistry;
+import ninja.egg82.bukkit.handlers.TickHandler;
+import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.TickCommand;
-import ninja.egg82.plugin.utils.CommandUtil;
 import ninja.egg82.utils.MathUtil;
 
-public class BombTickCommand extends TickCommand {
+public class BombTickCommand extends TickHandler {
 	//vars
 	private IVariableRegistry<UUID> bombRegistry = ServiceLocator.getService(BombRegistry.class);
 	
 	//constructor
 	public BombTickCommand() {
-		super(10L);
+		super(0L, 10L);
 	}
 	
 	//public

@@ -6,36 +6,28 @@ import java.util.List;
 
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.exceptions.InvalidTypeException;
-import me.egg82.tcpp.exceptions.PlayerImmuneException;
 import me.egg82.tcpp.services.databases.MonsterTypeSearchDatabase;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.events.CompleteEventArgs;
-import ninja.egg82.events.ExceptionEventArgs;
+import ninja.egg82.bukkit.utils.BlockUtil;
+import ninja.egg82.bukkit.utils.CommandUtil;
+import ninja.egg82.bukkit.utils.LocationUtil;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.SpigotLanguageType;
-import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
-import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
-import ninja.egg82.plugin.exceptions.PlayerNotFoundException;
-import ninja.egg82.plugin.utils.BlockUtil;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LanguageUtil;
-import ninja.egg82.plugin.utils.LocationUtil;
+import ninja.egg82.plugin.handlers.CommandHandler;
 import ninja.egg82.sql.LanguageDatabase;
 import ninja.egg82.utils.MathUtil;
 import ninja.egg82.utils.ReflectUtil;
 
-public class SurroundCommand extends PluginCommand {
+public class SurroundCommand extends CommandHandler {
 	//vars
 	private ArrayList<String> mobNames = new ArrayList<String>();
 	private LanguageDatabase monsterTypeDatabase = ServiceLocator.getService(MonsterTypeSearchDatabase.class);
@@ -111,17 +103,15 @@ public class SurroundCommand extends PluginCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_SURROUND)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
-			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_SURROUND)));
+		if (!sender.hasPermission(PermissionsType.COMMAND_SURROUND)) {
+			sender.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
 			return;
 		}
 		if (args.length < 2) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
+			sender.sendMessage(ChatColor.RED + "Incorrect command usage!");
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
-			sender.getServer().dispatchCommand(sender, "troll help " + name);
-			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
+			Bukkit.getServer().dispatchCommand((CommandSender) sender.getHandle(), "troll help " + name);
 			return;
 		}
 		
@@ -144,8 +134,7 @@ public class SurroundCommand extends PluginCommand {
 			String[] types = monsterTypeDatabase.getValues(monsterTypeDatabase.naturalLanguage(search, false), 0);
 			
 			if (types == null || types.length == 0) {
-				sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_TYPE));
-				onError().invoke(this, new ExceptionEventArgs<InvalidTypeException>(new InvalidTypeException(search)));
+				sender.sendMessage(ChatColor.RED + "Searched type is invalid or was not found.");
 				return;
 			}
 			
@@ -155,16 +144,15 @@ public class SurroundCommand extends PluginCommand {
 				
 			}
 			if (type == null) {
-				sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_TYPE));
-				onError().invoke(this, new ExceptionEventArgs<InvalidTypeException>(new InvalidTypeException(search)));
+				sender.sendMessage(ChatColor.RED + "Searched type is invalid or was not found.");
 				return;
 			}
 		}
 		
-		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
+		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer((CommandSender) sender.getHandle()) ? ((Player) sender.getHandle()).getLocation() : null));
 		if (players.size() > 0) {
 			for (Player player : players) {
-				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+				if (player.hasPermission(PermissionsType.IMMUNE)) {
 					continue;
 				}
 				
@@ -174,26 +162,22 @@ public class SurroundCommand extends PluginCommand {
 			Player player = CommandUtil.getPlayerByName(args[0]);
 			
 			if (player == null) {
-				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.PLAYER_NOT_FOUND));
-				onError().invoke(this, new ExceptionEventArgs<PlayerNotFoundException>(new PlayerNotFoundException(args[0])));
+				sender.sendMessage(ChatColor.RED + "Player could not be found.");
 				return;
 			}
-			if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-				sender.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
-				onError().invoke(this, new ExceptionEventArgs<PlayerImmuneException>(new PlayerImmuneException(player)));
+			if (player.hasPermission(PermissionsType.IMMUNE)) {
+				sender.sendMessage(ChatColor.RED + "Player is immune.");
 				return;
 			}
 			
 			e(player, type);
 		}
-		
-		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	private void e(Player player, EntityType mobType) {
 		Location[] mobLocations = LocationUtil.getCircleAround(player.getLocation(), MathUtil.random(4.0d,  6.0d), MathUtil.fairRoundedRandom(8, 12));
 		
 		for (int i = 0; i < mobLocations.length; i++) {
-			Location creatureLocation = BlockUtil.getTopWalkableBlock(mobLocations[i]);
+			Location creatureLocation = BlockUtil.getHighestSolidBlock(mobLocations[i]).add(0.0d, 1.0d, 0.0d);
 			
 			Monster m = (Monster) player.getWorld().spawn(creatureLocation, mobType.getEntityClass());
 			if (m instanceof PigZombie) {

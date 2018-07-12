@@ -1,0 +1,12 @@
+# Messaging is used to push commands across the network
+# Messaging is required, though defaults work fine
+messaging:
+  # The type of messaging to use
+  # Values can be 'bungee' ('default') or 'rabbit'
+  type: 'bungee'
+  # Values to fill in if using Rabbit messaging
+  rabbit:
+    address: ''
+    port: 5672
+    user: 'guest'
+    pass: 'guest'

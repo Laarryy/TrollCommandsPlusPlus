@@ -5,49 +5,39 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import me.egg82.tcpp.enums.LanguageType;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.exceptions.InvalidLibraryException;
-import me.egg82.tcpp.exceptions.InvalidVersionException;
-import me.egg82.tcpp.exceptions.PlayerImmuneException;
-import me.egg82.tcpp.services.registries.NightmareRegistry;
+import me.egg82.tcpp.registries.NightmareRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
+import ninja.egg82.bukkit.BasePlugin;
+import ninja.egg82.bukkit.utils.BlockUtil;
+import ninja.egg82.bukkit.utils.CommandUtil;
+import ninja.egg82.bukkit.utils.LocationUtil;
 import ninja.egg82.concurrent.FixedConcurrentDeque;
 import ninja.egg82.concurrent.IConcurrentDeque;
-import ninja.egg82.events.CompleteEventArgs;
-import ninja.egg82.events.ExceptionEventArgs;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.PluginCommand;
-import ninja.egg82.plugin.enums.BukkitInitType;
-import ninja.egg82.plugin.enums.SpigotLanguageType;
-import ninja.egg82.plugin.exceptions.IncorrectCommandUsageException;
-import ninja.egg82.plugin.exceptions.InvalidPermissionsException;
-import ninja.egg82.plugin.exceptions.PlayerNotFoundException;
-import ninja.egg82.plugin.utils.BlockUtil;
-import ninja.egg82.plugin.utils.CommandUtil;
-import ninja.egg82.plugin.utils.LanguageUtil;
-import ninja.egg82.plugin.utils.LocationUtil;
+import ninja.egg82.plugin.handlers.CommandHandler;
 import ninja.egg82.protocol.core.IFakeLivingEntity;
 import ninja.egg82.protocol.reflection.IFakeEntityHelper;
-import ninja.egg82.startup.InitRegistry;
 import ninja.egg82.utils.MathUtil;
 import ninja.egg82.utils.ThreadUtil;
 
-public class NightmareCommand extends PluginCommand {
+public class NightmareCommand extends CommandHandler {
 	//vars
 	private IVariableRegistry<UUID> nightmareRegistry = ServiceLocator.getService(NightmareRegistry.class);
 	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	private IFakeEntityHelper fakeEntityHelper = ServiceLocator.getService(IFakeEntityHelper.class);
 	
-	private String gameVersion = ServiceLocator.getService(InitRegistry.class).getRegister(BukkitInitType.GAME_VERSION, String.class);
+	private String gameVersion = ServiceLocator.getService(BasePlugin.class).getGameVersion();
 	
 	//constructor
 	public NightmareCommand() {
@@ -79,37 +69,33 @@ public class NightmareCommand extends PluginCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		if (!CommandUtil.hasPermission(sender, PermissionsType.COMMAND_NIGHTMARE)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INVALID_PERMISSIONS));
-			onError().invoke(this, new ExceptionEventArgs<InvalidPermissionsException>(new InvalidPermissionsException(sender, PermissionsType.COMMAND_NIGHTMARE)));
+		if (!sender.hasPermission(PermissionsType.COMMAND_NIGHTMARE)) {
+			sender.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
 			return;
 		}
 		if (!CommandUtil.isArrayOfAllowedLength(args, 1)) {
-			sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.INCORRECT_COMMAND_USAGE));
+			sender.sendMessage(ChatColor.RED + "Incorrect command usage!");
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
-			sender.getServer().dispatchCommand(sender, "troll help " + name);
-			onError().invoke(this, new ExceptionEventArgs<IncorrectCommandUsageException>(new IncorrectCommandUsageException(sender, this, args)));
+			Bukkit.getServer().dispatchCommand((CommandSender) sender.getHandle(), "troll help " + name);
 			return;
 		}
 		if (!fakeEntityHelper.isValidLibrary()) {
-			sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_LIBRARY));
-			onError().invoke(null, new ExceptionEventArgs<InvalidLibraryException>(new InvalidLibraryException(fakeEntityHelper)));
+			sender.sendMessage(ChatColor.RED + "This command has been disabled because there is no recognized backing library available. Please install one and restart the server to enable this command.");
 			return;
 		}
 		if (gameVersion.equals("1.8") || gameVersion.equals("1.8.1") || gameVersion.equals("1.8.3") || gameVersion.equals("1.8.8")) {
-			sender.sendMessage(LanguageUtil.getString(LanguageType.INVALID_VERSION));
-			onError().invoke(this, new ExceptionEventArgs<InvalidVersionException>(new InvalidVersionException(gameVersion, "1.9")));
+			sender.sendMessage(ChatColor.RED + "This command has been disabled because this version of Minecraft doesn't support it.");
 			return;
 		}
 		
-		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer(sender) ? ((Player) sender).getLocation() : null));
+		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer((CommandSender) sender.getHandle()) ? ((Player) sender.getHandle()).getLocation() : null));
 		if (players.size() > 0) {
 			for (Player player : players) {
 				UUID uuid = player.getUniqueId();
 				
 				if (!nightmareRegistry.hasRegister(uuid)) {
-					if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
+					if (player.hasPermission(PermissionsType.IMMUNE)) {
 						continue;
 					}
 					
@@ -127,22 +113,19 @@ public class NightmareCommand extends PluginCommand {
 					UUID uuid = offlinePlayer.getUniqueId();
 					if (nightmareRegistry.hasRegister(uuid)) {
 						eUndo(uuid, offlinePlayer);
-						onComplete().invoke(this, CompleteEventArgs.EMPTY);
 						return;
 					}
 				}
 				
-				sender.sendMessage(LanguageUtil.getString(SpigotLanguageType.PLAYER_NOT_FOUND));
-				onError().invoke(this, new ExceptionEventArgs<PlayerNotFoundException>(new PlayerNotFoundException(args[0])));
+				sender.sendMessage(ChatColor.RED + "Player could not be found.");
 				return;
 			}
 			
 			UUID uuid = player.getUniqueId();
 			
 			if (!nightmareRegistry.hasRegister(uuid)) {
-				if (CommandUtil.hasPermission(player, PermissionsType.IMMUNE)) {
-					sender.sendMessage(LanguageUtil.getString(LanguageType.PLAYER_IMMUNE));
-					onError().invoke(this, new ExceptionEventArgs<PlayerImmuneException>(new PlayerImmuneException(player)));
+				if (player.hasPermission(PermissionsType.IMMUNE)) {
+					sender.sendMessage(ChatColor.RED + "Player is immune.");
 					return;
 				}
 				
@@ -151,8 +134,6 @@ public class NightmareCommand extends PluginCommand {
 				eUndo(uuid, player);
 			}
 		}
-		
-		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	private void e(UUID uuid, Player player) {
 		Location[] zombieLocs = LocationUtil.getCircleAround(player.getLocation(), 3, MathUtil.fairRoundedRandom(6, 9));
@@ -167,7 +148,7 @@ public class NightmareCommand extends PluginCommand {
 					e.addPlayer(player);
 					Vector v = player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23);
 					if (LocationUtil.isFinite(v)) {
-						e.moveTo(BlockUtil.getTopWalkableBlock(e.getLocation().add(v)));
+						e.moveTo(BlockUtil.getHighestSolidBlock(e.getLocation().add(v)).add(0.0d, 1.0d, 0.0d));
 					}
 					e.lookTo(player.getEyeLocation());
 					entities.add(e);
@@ -177,7 +158,7 @@ public class NightmareCommand extends PluginCommand {
 					e.addPlayer(player);
 					Vector v = player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23);
 					if (LocationUtil.isFinite(v)) {
-						e.moveTo(BlockUtil.getTopWalkableBlock(e.getLocation().add(v)));
+						e.moveTo(BlockUtil.getHighestSolidBlock(e.getLocation().add(v)).add(0.0d, 1.0d, 0.0d));
 					}
 					e.lookTo(player.getEyeLocation());
 					entities.add(e);
@@ -206,8 +187,6 @@ public class NightmareCommand extends PluginCommand {
 				eUndo(uuid, offlinePlayer);
 			}
 		}
-		
-		onComplete().invoke(this, CompleteEventArgs.EMPTY);
 	}
 	@SuppressWarnings("unchecked")
 	private void eUndo(UUID uuid, Player player) {

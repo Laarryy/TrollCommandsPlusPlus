@@ -4,12 +4,12 @@ import java.util.UUID;
 
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
-import me.egg82.tcpp.services.registries.NoPickupRegistry;
+import me.egg82.tcpp.registries.NoPickupRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class NoPickupEventCommand extends EventCommand<PlayerPickupItemEvent> {
+public class NoPickupEventCommand extends EventHandler<PlayerPickupItemEvent> {
 	//vars
 	private IVariableRegistry<UUID> noPickupRegistry = ServiceLocator.getService(NoPickupRegistry.class);
 	

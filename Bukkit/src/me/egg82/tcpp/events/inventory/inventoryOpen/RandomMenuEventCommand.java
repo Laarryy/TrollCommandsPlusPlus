@@ -8,15 +8,15 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
-import me.egg82.tcpp.services.registries.RandomMenuMenuRegistry;
-import me.egg82.tcpp.services.registries.RandomMenuRegistry;
+import me.egg82.tcpp.registries.RandomMenuMenuRegistry;
+import me.egg82.tcpp.registries.RandomMenuRegistry;
+import ninja.egg82.filters.EnumFilter;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
-import ninja.egg82.plugin.reflection.type.TypeFilterHelper;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 import ninja.egg82.utils.MathUtil;
 
-public class RandomMenuEventCommand extends EventCommand<InventoryOpenEvent> {
+public class RandomMenuEventCommand extends EventHandler<InventoryOpenEvent> {
 	//vars
 	private IVariableRegistry<UUID> randomMenuRegistry = ServiceLocator.getService(RandomMenuRegistry.class);
 	private IVariableRegistry<UUID> randomMenuMenuRegistry = ServiceLocator.getService(RandomMenuMenuRegistry.class);
@@ -27,7 +27,7 @@ public class RandomMenuEventCommand extends EventCommand<InventoryOpenEvent> {
 	public RandomMenuEventCommand() {
 		super();
 		
-		TypeFilterHelper<InventoryType> typeFilterHelper = new TypeFilterHelper<InventoryType>(InventoryType.class);
+		EnumFilter<InventoryType> typeFilterHelper = new EnumFilter<InventoryType>(InventoryType.class);
 		types = typeFilterHelper.filter(
 				typeFilterHelper.filter(
 					typeFilterHelper.getAllTypes(),

@@ -7,8 +7,8 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
-import me.egg82.tcpp.services.registries.DisplayLocationRegistry;
-import me.egg82.tcpp.services.registries.DisplayRegistry;
+import me.egg82.tcpp.registries.DisplayLocationRegistry;
+import me.egg82.tcpp.registries.DisplayRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
 

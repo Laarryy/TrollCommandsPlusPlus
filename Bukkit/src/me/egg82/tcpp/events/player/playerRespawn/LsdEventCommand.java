@@ -5,14 +5,14 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import me.egg82.tcpp.services.registries.LsdRegistry;
+import me.egg82.tcpp.registries.LsdRegistry;
 import ninja.egg82.concurrent.IConcurrentDeque;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.patterns.tuples.Triplet;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class LsdEventCommand extends EventCommand<PlayerRespawnEvent> {
+public class LsdEventCommand extends EventHandler<PlayerRespawnEvent> {
 	//vars
 	private IVariableRegistry<UUID> lsdRegistry = ServiceLocator.getService(LsdRegistry.class);
 	

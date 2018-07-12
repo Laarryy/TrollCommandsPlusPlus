@@ -6,13 +6,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffectType;
 
-import me.egg82.tcpp.services.registries.EmpowerEntityRegistry;
-import me.egg82.tcpp.services.registries.EmpowerRegistry;
+import me.egg82.tcpp.registries.EmpowerEntityRegistry;
+import me.egg82.tcpp.registries.EmpowerRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 
-public class EmpowerEventCommand extends EventCommand<PlayerQuitEvent> {
+public class EmpowerEventCommand extends EventHandler<PlayerQuitEvent> {
 	//vars
 	private IVariableRegistry<UUID> empowerRegistry = ServiceLocator.getService(EmpowerRegistry.class);
 	private IVariableRegistry<UUID> empowerEntityRegistry = ServiceLocator.getService(EmpowerEntityRegistry.class);

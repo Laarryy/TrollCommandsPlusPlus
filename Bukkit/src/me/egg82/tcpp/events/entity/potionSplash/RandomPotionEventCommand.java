@@ -11,14 +11,14 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.google.common.collect.ImmutableCollection;
 
-import me.egg82.tcpp.services.registries.RandomPotionRegistry;
+import me.egg82.tcpp.registries.RandomPotionRegistry;
+import ninja.egg82.filters.EnumFilter;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.plugin.commands.events.EventCommand;
-import ninja.egg82.plugin.reflection.type.TypeFilterHelper;
+import ninja.egg82.plugin.handlers.events.EventHandler;
 import ninja.egg82.utils.MathUtil;
 
-public class RandomPotionEventCommand extends EventCommand<PotionSplashEvent> {
+public class RandomPotionEventCommand extends EventHandler<PotionSplashEvent> {
 	//vars
 	private IVariableRegistry<UUID> randomPotionRegistry = ServiceLocator.getService(RandomPotionRegistry.class);
 	
@@ -28,7 +28,7 @@ public class RandomPotionEventCommand extends EventCommand<PotionSplashEvent> {
 	public RandomPotionEventCommand() {
 		super();
 		
-		TypeFilterHelper<PotionEffectType> potionEffectTypeFilterHelper = new TypeFilterHelper<PotionEffectType>(PotionEffectType.class);
+		EnumFilter<PotionEffectType> potionEffectTypeFilterHelper = new EnumFilter<PotionEffectType>(PotionEffectType.class);
 		effects = potionEffectTypeFilterHelper.getAllTypes();
 	}
 	
