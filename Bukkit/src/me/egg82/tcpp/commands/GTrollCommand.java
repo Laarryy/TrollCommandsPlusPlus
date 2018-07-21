@@ -14,15 +14,19 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import me.egg82.tcpp.services.databases.CommandSearchDatabase;
+import me.egg82.tcpp.util.RedisUtil;
 import me.egg82.tcpp.util.TrollChannelUtil;
 import ninja.egg82.bukkit.BasePlugin;
+import ninja.egg82.bukkit.services.ConfigRegistry;
 import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.exceptionHandlers.IExceptionHandler;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.handlers.CommandHandler;
 import ninja.egg82.plugin.utils.PluginReflectUtil;
 import ninja.egg82.sql.LanguageDatabase;
 import ninja.egg82.utils.ReflectUtil;
+import redis.clients.jedis.Jedis;
 
 public class GTrollCommand extends CommandHandler {
 	//vars
@@ -165,7 +169,19 @@ public class GTrollCommand extends CommandHandler {
 			}
 		}
 		
-		TrollChannelUtil.broadcastTroll(String.join(" ", args));
+		IVariableRegistry<String> configRegistry = ServiceLocator.getService(ConfigRegistry.class);
+		if (configRegistry.getRegister("redis.enabled", Boolean.class).booleanValue()) {
+			TrollChannelUtil.broadcastTroll(String.join(" ", args));
+		} else if (configRegistry.getRegister("messaging.enabled", Boolean.class).booleanValue()) {
+			try (Jedis redis = RedisUtil.getRedis()) {
+				if (redis != null) {
+					redis.publish("tcpp", String.join(" ", args));
+				}
+			}
+		} else {
+			sender.sendMessage(ChatColor.RED + "Redis and messaging are both disabled in the config. Please try enabling one or both of them to enable this command.");
+			return;
+		}
 		
 		CommandHandler run = getCommand(troll, false);
 		if (run == null) {

@@ -127,7 +127,7 @@ public class BanishCommand extends CommandHandler {
 			} while (newZ >= currentZ - minXZ.getRight() && newZ <= currentZ + minXZ.getRight());
 			
 			newLocation = BlockUtil.getHighestSolidBlock(new Location(currentLocation.getWorld(), newX, MathUtil.random(5.0d, currentLocation.getWorld().getMaxHeight()), newZ)).add(0.0d, 1.0d, 0.0d);
-			belowBlock = newLocation.add(0.0d, -1.0d, 0.0d).getBlock().getType();
+			belowBlock = newLocation.clone().add(0.0d, -1.0d, 0.0d).getBlock().getType();
 			footBlock = newLocation.getBlock().getType();
 			headBlock = newLocation.clone().add(0.0d, 1.0d, 0.0d).getBlock().getType();
 			retryCount++;
@@ -149,8 +149,8 @@ public class BanishCommand extends CommandHandler {
 		// get border center
 		Location center = border.getCenter();
 		// Translate border center to player location and adjust for border size
-		double borderSizeX = border.getSize() - Math.abs(current.getX() - center.getX()) - 1.0d;
-		double borderSizeZ = border.getSize() - Math.abs(current.getZ() - center.getZ()) - 1.0d;
+		double borderSizeX = (border.getSize() / 2.0d) - Math.abs(current.getX() - center.getX()) - 1.0d;
+		double borderSizeZ = (border.getSize() / 2.0d) - Math.abs(current.getZ() - center.getZ()) - 1.0d;
 		
 		// Return the min between border size and original max (effectively capping "max" at the world border if needed)
 		return new DoubleDoublePair(Math.min(borderSizeX, max), Math.min(borderSizeZ, max));

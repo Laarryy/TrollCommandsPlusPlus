@@ -32,6 +32,9 @@
             </goals>
             <configuration>
               <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                  <resource>META-INF/services/java.sql.Driver</resource>
+                </transformer>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
               </transformers>
               <filters>
@@ -73,6 +76,10 @@
                 <relocation>
                   <pattern>opennlp</pattern>
                   <shadedPattern>me.egg82.tcpp.extern.opennlp</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>redis.clients</pattern>
+                  <shadedPattern>me.egg82.tcpp.extern.redis.clients</shadedPattern>
                 </relocation>
               </relocations>
             </configuration>
@@ -130,22 +137,47 @@
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.1.7</version>
+      <version>1.1.10</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>plugin-common</artifactId>
-      <version>1.0.5</version>
+      <version>1.0.6</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
-      <artifactId>exception-lib</artifactId>
-      <version>2.0.6</version>
+      <artifactId>permissions-lib</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>ninja.egg82.lib</groupId>
+      <artifactId>disguise-lib</artifactId>
+      <version>1.1.6</version>
+    </dependency>
+    <dependency>
+      <groupId>ninja.egg82.lib</groupId>
+      <artifactId>nbt-lib</artifactId>
+      <version>2.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>ninja.egg82.lib</groupId>
+      <artifactId>protocol-lib</artifactId>
+      <version>2.0.8</version>
+    </dependency>
+    <dependency>
+      <groupId>ninja.egg82.lib</groupId>
+      <artifactId>lang-lib</artifactId>
+      <version>1.0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>ninja.egg82.lib</groupId>
+      <artifactId>sql-lib</artifactId>
+      <version>2.0.8</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>util-lib</artifactId>
-      <version>1.1.0</version>
+      <version>1.1.1</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
@@ -155,7 +187,7 @@
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>extended-collections-lib</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.3</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
@@ -164,38 +196,13 @@
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
-      <artifactId>reflect-lib</artifactId>
-      <version>1.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>ninja.egg82.lib</groupId>
-      <artifactId>lang-lib</artifactId>
-      <version>1.0.2</version>
-    </dependency>
-    <dependency>
-      <groupId>ninja.egg82.lib</groupId>
       <artifactId>egg82-lib</artifactId>
       <version>4.1.2</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
-      <artifactId>nbt-lib</artifactId>
-      <version>2.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>ninja.egg82.lib</groupId>
-      <artifactId>protocol-lib</artifactId>
-      <version>2.0.5</version>
-    </dependency>
-    <dependency>
-      <groupId>ninja.egg82.lib</groupId>
-      <artifactId>disguise-lib</artifactId>
-      <version>1.1.6</version>
-    </dependency>
-    <dependency>
-      <groupId>ninja.egg82.lib</groupId>
-      <artifactId>permissions-lib</artifactId>
-      <version>1.1.1</version>
+      <artifactId>exception-lib</artifactId>
+      <version>2.0.7</version>
     </dependency>
     <dependency>
       <groupId>com.github.ben-manes.caffeine</groupId>
@@ -211,6 +218,11 @@
       <groupId>org.apache.opennlp</groupId>
       <artifactId>opennlp-tools</artifactId>
       <version>1.8.4</version>
+    </dependency>
+    <dependency>
+      <groupId>redis.clients</groupId>
+      <artifactId>jedis</artifactId>
+      <version>2.9.0</version>
     </dependency>
     <dependency>
       <groupId>net.coreprotect</groupId>
