@@ -29,7 +29,7 @@ public class RandomPotionEventCommand extends EventHandler<PlayerItemConsumeEven
 		super();
 		
 		EnumFilter<PotionEffectType> potionEffectTypeFilterHelper = new EnumFilter<PotionEffectType>(PotionEffectType.class);
-		effects = potionEffectTypeFilterHelper.getAllTypes();
+		effects = potionEffectTypeFilterHelper.build();
 	}
 	
 	//public

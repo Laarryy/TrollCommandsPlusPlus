@@ -24,31 +24,20 @@ public class RandomBuildEventCommand extends EventHandler<BlockPlaceEvent> {
 		super();
 		
 		EnumFilter<Material> materialFilterHelper = new EnumFilter<Material>(Material.class);
-		materials = materialFilterHelper.filter(
-			materialFilterHelper.filter(
-			materialFilterHelper.filter(
-			materialFilterHelper.filter(
-			materialFilterHelper.filter(
-			materialFilterHelper.filter(
-			materialFilterHelper.filter(
-			materialFilterHelper.filter(
-			materialFilterHelper.filter(
-			materialFilterHelper.filter(
-			materialFilterHelper.filter(
-			materialFilterHelper.filter(
-				materialFilterHelper.getAllTypes(),
-			"_item", false),
-			"barrier", false),
-			"air", false),
-			"stationary_", false),
-			"piston_", false),
-			"mob_spawner", false),
-			"torch_on", false),
-			"command_", false),
-			"sponge", false),
-			"bedrock", false),
-			"_portal", false),
-			"sign", false);
+		materials = materialFilterHelper
+				.blacklist("_block")
+				.blacklist("barrier")
+				.blacklist("air")
+				.blacklist("stationary_")
+				.blacklist("piston_")
+				.blacklist("mob_spawner")
+				.blacklist("torch_on")
+				.blacklist("command")
+				.blacklist("sponge")
+				.blacklist("_portal")
+				.blacklist("bedrock")
+				.blacklist("sign")
+				.build();
 	}
 	
 	//public

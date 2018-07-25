@@ -40,20 +40,95 @@
                     <exclude>META-INF/*.RSA</exclude>
                     <exclude>**/*.html</exclude>
                     <exclude>**/*.txt</exclude>
+                    <exclude>junit/**</exclude>
                     <exclude>org/junit/**</exclude>
 					<exclude>org/hamcrest/**</exclude>
+					<exclude>edu/umd/cs/findbugs/**</exclude>
+                    <exclude>org/checkerframework/**</exclude>
+                    <exclude>afu/**</exclude>
+                    <exclude>org/codehaus/mojo/animal_sniffer/**</exclude>
+                    <exclude>com/google/common/**</exclude>
+                    <exclude>com/google/gson/**</exclude>
+                    <exclude>org/yaml/**</exclude>
                   </excludes>
                 </filter>
               </filters>
               <minimizeJar>false</minimizeJar>
               <relocations>
                 <relocation>
+                  <pattern>com.github</pattern>
+                  <shadedPattern>me.egg82.tcpp.extern.com.github</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google</pattern>
+                  <shadedPattern>me.egg82.tcpp.extern.com.google</shadedPattern>
+                  <excludes>
+                    <exclude>com.google.common.*</exclude>
+                    <exclude>com.google.gson.*</exclude>
+                  </excludes>
+                </relocation>
+                <relocation>
+                  <pattern>com.googlecode</pattern>
+                  <shadedPattern>me.egg82.tcpp.extern.com.googlecode</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.rabbitmq</pattern>
+                  <shadedPattern>me.egg82.tcpp.extern.com.rabbitmq</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.rollbar</pattern>
+                  <shadedPattern>me.egg82.tcpp.extern.com.rollbar</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.zaxxer</pattern>
+                  <shadedPattern>me.egg82.tcpp.extern.com.zaxxer</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>it.unimi</pattern>
+                  <shadedPattern>me.egg82.tcpp.extern.it.unimi</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>javassist</pattern>
+                  <shadedPattern>me.egg82.tcpp.extern.javassist</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>javax.annotation</pattern>
+                  <shadedPattern>me.egg82.tcpp.extern.javax.annotation</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>net.jodah</pattern>
+                  <shadedPattern>me.egg82.tcpp.extern.net.jodah</shadedPattern>
+                </relocation>
+                <relocation>
                   <pattern>ninja.egg82</pattern>
                   <shadedPattern>me.egg82.tcpp.lib.ninja.egg82</shadedPattern>
                 </relocation>
                 <relocation>
-                  <pattern>me.egg82.extern</pattern>
-                  <shadedPattern>me.egg82.tcpp.extern</shadedPattern>
+                  <pattern>ninja.leaping</pattern>
+                  <shadedPattern>me.egg82.avpn.lib.ninja.leaping</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache</pattern>
+                  <shadedPattern>me.egg82.tcpp.extern.org.apache</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.bouncycastle</pattern>
+                  <shadedPattern>me.egg82.tcpp.extern.org.bouncycastle</shadedPattern>
+                  <excludes>
+                    <exclude>org.bouncycastle.x509.*</exclude>
+                  </excludes>
+                </relocation>
+                <relocation>
+                  <pattern>org.json</pattern>
+                  <shadedPattern>me.egg82.tcpp.extern.org.json</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.reflections</pattern>
+                  <shadedPattern>me.egg82.tcpp.extern.org.reflections</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>redis.clients</pattern>
+                  <shadedPattern>me.egg82.tcpp.extern.redis.clients</shadedPattern>
                 </relocation>
               </relocations>
             </configuration>
@@ -82,37 +157,37 @@
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>bungee</artifactId>
-      <version>1.0.6</version>
+      <version>1.0.7</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>plugin-common</artifactId>
-      <version>1.0.6</version>
+      <version>1.0.7</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>exception-lib</artifactId>
-      <version>2.0.7</version>
+      <version>2.0.8</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>util-lib</artifactId>
-      <version>1.1.1</version>
+      <version>1.1.2</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>collections-lib</artifactId>
-      <version>1.2.1</version>
+      <version>1.2.2</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>extended-collections-lib</artifactId>
-      <version>1.0.3</version>
+      <version>1.0.4</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>service-lib</artifactId>
-      <version>1.0.1</version>
+      <version>1.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>

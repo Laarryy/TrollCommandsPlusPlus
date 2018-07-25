@@ -28,9 +28,7 @@ public class SlapCommand extends CommandHandler {
 		super();
 		
 		EnumFilter<Sound> soundFilterHelper = new EnumFilter<Sound>(Sound.class);
-		sounds = soundFilterHelper.filter(
-				soundFilterHelper.getAllTypes(),
-			"anvil", true);
+		sounds = soundFilterHelper.whitelist("anvil").build();
 	}
 	
 	//public

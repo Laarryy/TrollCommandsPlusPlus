@@ -7,8 +7,6 @@ import net.md_5.bungee.api.ChatColor;
 import ninja.egg82.bungeecord.BasePlugin;
 import ninja.egg82.bungeecord.processors.CommandProcessor;
 import ninja.egg82.bungeecord.processors.EventProcessor;
-import ninja.egg82.bungeecord.services.ConfigRegistry;
-import ninja.egg82.bungeecord.utils.YamlUtil;
 import ninja.egg82.exceptionHandlers.GameAnalyticsExceptionHandler;
 import ninja.egg82.exceptionHandlers.IExceptionHandler;
 import ninja.egg82.exceptionHandlers.RollbarExceptionHandler;
@@ -17,7 +15,6 @@ import ninja.egg82.exceptionHandlers.builders.RollbarBuilder;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.messaging.IMessageHandler;
 import ninja.egg82.plugin.utils.PluginReflectUtil;
-import ninja.egg82.utils.FileUtil;
 import ninja.egg82.utils.ThreadUtil;
 
 public class TrollCommandsPlusPlus extends BasePlugin {
@@ -53,8 +50,6 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		
 		PluginReflectUtil.addServicesFromPackage("me.egg82.tcpp.registries", true);
 		PluginReflectUtil.addServicesFromPackage("me.egg82.tcpp.lists", true);
-		
-		ServiceLocator.getService(ConfigRegistry.class).load(YamlUtil.getOrLoadDefaults(getDataFolder().getAbsolutePath() + FileUtil.DIRECTORY_SEPARATOR_CHAR + "config.yml", "config.yml", true));
 	}
 	
 	public void onEnable() {
@@ -69,7 +64,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 			}
 		}
 		
-		Loaders.loadMessaging();
+		Loaders.loadMessaging(getDescription().getName(), null, getServerId());
 		
 		numCommands = ServiceLocator.getService(CommandProcessor.class).addHandlersFromPackage("me.egg82.tcpp.commands", PluginReflectUtil.getCommandMapFromPackage("me.egg82.tcpp.commands", false, null, "Command"), false);
 		numEvents = ServiceLocator.getService(EventProcessor.class).addHandlersFromPackage("me.egg82.tcpp.events");
@@ -120,10 +115,10 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	};
 	
 	private void enableMessage() {
-		printInfo(ChatColor.AQUA + "TrollCommands++ enabled.");
-		printInfo(ChatColor.GREEN + "[Version " + getDescription().getVersion() + "] " + ChatColor.RED + numCommands + " commands " + ChatColor.LIGHT_PURPLE + numEvents + " events " + ChatColor.BLUE + numMessages + " message handlers");
+		printInfo(ChatColor.GREEN + "Enabled.");
+		printInfo(ChatColor.AQUA + "[Version " + getDescription().getVersion() + "] " + ChatColor.DARK_GREEN + numCommands + " commands " + ChatColor.LIGHT_PURPLE + numEvents + " events " + ChatColor.BLUE + numMessages + " message handlers");
 	}
 	private void disableMessage() {
-		printInfo(ChatColor.GREEN + "--== " + ChatColor.LIGHT_PURPLE + "TrollCommands++ Disabled" + ChatColor.GREEN + " ==--");
+		printInfo(ChatColor.RED + "Disabled");
 	}
 }

@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 
 import ninja.egg82.exceptionHandlers.IExceptionHandler;
 import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.plugin.messaging.IMessageHandler;
 import ninja.egg82.plugin.utils.ChannelUtil;
 
 public class TrollChannelUtil {
@@ -21,6 +22,10 @@ public class TrollChannelUtil {
 			throw new IllegalArgumentException("args cannot be null.");
 		}
 		
+		if (ServiceLocator.getService(IMessageHandler.class) == null) {
+			return;
+		}
+		
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream(stream);
 		
@@ -32,7 +37,7 @@ public class TrollChannelUtil {
 			return;
 		}
 		
-		ChannelUtil.broadcastToServers("Troll", stream.toByteArray());
+		ChannelUtil.broadcastToServers("troll", stream.toByteArray());
 	}
 	
 	//private

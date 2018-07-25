@@ -22,3 +22,6 @@ messaging:
     port: 5672
     user: 'guest'
     pass: 'guest'
+
+# Config version, no touchy plz
+version: 2.0

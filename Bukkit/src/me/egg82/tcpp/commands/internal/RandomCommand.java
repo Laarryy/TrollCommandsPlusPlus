@@ -122,7 +122,7 @@ public class RandomCommand extends CommandHandler {
 	}
 	private void e(String player) {
 		CommandHandler command = getCommand(commandNames.get(MathUtil.fairRoundedRandom(0, commandNames.size() - 1)));
-		Bukkit.getServer().dispatchCommand((CommandSender) sender.getHandle(), "troll " + command + " " + player);
+		Bukkit.getServer().dispatchCommand((CommandSender) sender.getHandle(), "troll " + command.getCommandName() + " " + player);
 		
 		metricsHelper.commandWasRun(this);
 	}

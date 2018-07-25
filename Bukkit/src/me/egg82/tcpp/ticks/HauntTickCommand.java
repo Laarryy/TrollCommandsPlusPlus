@@ -24,7 +24,7 @@ public class HauntTickCommand extends TickHandler {
 		super(0L, 20L);
 		
 		EnumFilter<Sound> soundFilterHelper = new EnumFilter<Sound>(Sound.class);
-		sounds = soundFilterHelper.getAllTypes();
+		sounds = soundFilterHelper.build();
 	}
 	
 	//public

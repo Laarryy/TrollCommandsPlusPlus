@@ -24,11 +24,7 @@ public class AnnoyTickCommand extends TickHandler {
 		super(0L, 20L);
 		
 		EnumFilter<Sound> soundFilterHelper = new EnumFilter<Sound>(Sound.class);
-		sounds = soundFilterHelper.filter(
-			soundFilterHelper.filter(
-				soundFilterHelper.getAllTypes(),
-			"villager", true),
-			"zombie", false);
+		sounds = soundFilterHelper.whitelist("villager").blacklist("zombie").build();
 	}
 	
 	//public

@@ -24,7 +24,7 @@ public class TrollMessage extends AsyncMessageHandler {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		if (!channelName.equals("Troll")) {
+		if (!channelName.equals("troll")) {
 			return;
 		}
 		if (sender.equals(senderId)) {

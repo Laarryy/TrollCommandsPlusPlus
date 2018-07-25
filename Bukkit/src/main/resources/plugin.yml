@@ -2,6 +2,7 @@ name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
 version: 7.29.54
 author: egg82
+api-version: 1.13
 description: For the people that really hate their friends
 softdepend: [LibsDisguises, iDisguise, ProtocolLib, PowerNBT, CoreProtect]
 commands:

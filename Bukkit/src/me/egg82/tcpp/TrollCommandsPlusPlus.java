@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.bstats.bukkit.Metrics;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
@@ -31,9 +32,7 @@ import net.gravitydevelopment.updater.Updater.UpdateType;
 import ninja.egg82.bukkit.BasePlugin;
 import ninja.egg82.bukkit.processors.CommandProcessor;
 import ninja.egg82.bukkit.processors.EventProcessor;
-import ninja.egg82.bukkit.services.ConfigRegistry;
 import ninja.egg82.bukkit.utils.VersionUtil;
-import ninja.egg82.bukkit.utils.YamlUtil;
 import ninja.egg82.disguise.reflection.DisguiseHelper;
 import ninja.egg82.disguise.reflection.LibsDisguisesHelper;
 import ninja.egg82.disguise.reflection.NullDisguiseHelper;
@@ -48,6 +47,7 @@ import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.permissions.reflection.LuckPermissionsHelper;
 import ninja.egg82.permissions.reflection.NullPermissionsHelper;
+import ninja.egg82.plugin.enums.SenderType;
 import ninja.egg82.plugin.handlers.CommandHandler;
 import ninja.egg82.plugin.messaging.IMessageHandler;
 import ninja.egg82.plugin.utils.PluginReflectUtil;
@@ -56,7 +56,6 @@ import ninja.egg82.protocol.reflection.NullFakeEntityHelper;
 import ninja.egg82.protocol.reflection.ProtocolLibFakeBlockHelper;
 import ninja.egg82.protocol.reflection.ProtocolLibFakeEntityHelper;
 import ninja.egg82.sql.LanguageDatabase;
-import ninja.egg82.utils.FileUtil;
 import ninja.egg82.utils.ReflectUtil;
 import ninja.egg82.utils.StringUtil;
 import ninja.egg82.utils.ThreadUtil;
@@ -102,60 +101,60 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		
 		if (manager.getPlugin("LibsDisguises") != null) {
 			if (manager.getPlugin("ProtocolLib") != null) {
-				printInfo(ChatColor.GREEN + "[TrollCommands++] Enabling support for LibsDisguises.");
+				printInfo(ChatColor.GREEN + "Enabling support for LibsDisguises.");
 				ServiceLocator.provideService(LibsDisguisesHelper.class);
 			} else {
-				printWarning(ChatColor.RED + "[TrollCommands++] LibsDisguises requires ProtocolLib to function, which was not found. The /troll control and /troll duck commands have been disabled.");
+				printWarning(ChatColor.RED + "LibsDisguises requires ProtocolLib to function, which was not found. The /troll control and /troll duck commands have been disabled.");
 				ServiceLocator.provideService(NullDisguiseHelper.class);
 			}
 		} else if (manager.getPlugin("iDisguise") != null) {
 			if (manager.getPlugin("ProtocolLib") != null) {
-				printInfo(ChatColor.GREEN + "[TrollCommands++] Enabling support for iDisguise.");
+				printInfo(ChatColor.GREEN + "Enabling support for iDisguise.");
 				ServiceLocator.provideService(DisguiseHelper.class);
 			} else {
-				printWarning(ChatColor.RED + "[TrollCommands++] iDisguise requires ProtocolLib to function, which was not found. The /troll control and /troll duck commands have been disabled.");
+				printWarning(ChatColor.RED + "iDisguise requires ProtocolLib to function, which was not found. The /troll control and /troll duck commands have been disabled.");
 				ServiceLocator.provideService(NullDisguiseHelper.class);
 			}
 		} else {
-			printWarning(ChatColor.RED + "[TrollCommands++] Neither LibsDisguises nor iDisguise was found. The /troll control and /troll duck commands have been disabled.");
+			printWarning(ChatColor.RED + "Neither LibsDisguises nor iDisguise was found. The /troll control and /troll duck commands have been disabled.");
 			ServiceLocator.provideService(NullDisguiseHelper.class);
 		}
 		
 		if (manager.getPlugin("ProtocolLib") != null) {
-			printInfo(ChatColor.GREEN + "[TrollCommands++] Enabling support for ProtocolLib.");
+			printInfo(ChatColor.GREEN + "Enabling support for ProtocolLib.");
 			ServiceLocator.provideService(ProtocolLibFakeEntityHelper.class);
 			ServiceLocator.provideService(ProtocolLibFakeBlockHelper.class);
 		} else {
-			printWarning(ChatColor.RED + "[TrollCommands++] ProtocolLib was not found. The /troll foolsgold, /troll nightmare, and /troll rewind commands have been disabled.");
+			printWarning(ChatColor.RED + "ProtocolLib was not found. The /troll foolsgold, /troll nightmare, and /troll rewind commands have been disabled.");
 			ServiceLocator.provideService(NullFakeEntityHelper.class);
 			ServiceLocator.provideService(NullFakeBlockHelper.class);
 		}
 		
 		if (manager.getPlugin("PowerNBT") != null) {
-			printInfo(ChatColor.GREEN + "[TrollCommands++] Enabling support for PowerNBT.");
+			printInfo(ChatColor.GREEN + "Enabling support for PowerNBT.");
 			ServiceLocator.provideService(PowerNBTHelper.class);
 		} else {
-			printWarning(ChatColor.RED + "[TrollCommands++] PowerNBT was not found. The /troll attachcommand command has been disabled.");
+			printWarning(ChatColor.RED + "PowerNBT was not found. The /troll attachcommand command has been disabled.");
 			ServiceLocator.provideService(NullNBTHelper.class);
 		}
 		
 		if (manager.getPlugin("LuckPerms") != null) {
-			printInfo(ChatColor.GREEN + "[TrollCommands++] Enabling support for LuckPerms.");
+			printInfo(ChatColor.GREEN + "Enabling support for LuckPerms.");
 			ServiceLocator.provideService(LuckPermissionsHelper.class);
 		} else {
-			printWarning(ChatColor.YELLOW + "[TrollCommands++] LP was not found. Using default Bukkit permissions.");
+			printWarning(ChatColor.YELLOW + "LP was not found. Using default Bukkit permissions.");
 			ServiceLocator.provideService(NullPermissionsHelper.class);
 		}
 		
 		if (manager.getPlugin("CoreProtect") != null) {
-			printInfo(ChatColor.GREEN + "[TrollCommands++] Enabling support for CoreProtect.");
+			printInfo(ChatColor.GREEN + "Enabling support for CoreProtect.");
 			ServiceLocator.provideService(CoreProtectRollbackHelper.class);
 		} else {
-			printWarning(ChatColor.YELLOW + "[TrollCommands++] Neither BlocksHub nor CoreProtect were found. Not logging any block changes.");
+			printWarning(ChatColor.YELLOW + "CoreProtect was not found. Not logging any block changes.");
 			ServiceLocator.provideService(NullRollbackHelper.class);
 		}
 		
-		ServiceLocator.getService(ConfigRegistry.class).load(YamlUtil.getOrLoadDefaults(getDataFolder().getAbsolutePath() + FileUtil.DIRECTORY_SEPARATOR_CHAR + "config.yml", "config.yml", true));
+		ConfigLoader.getConfig("config.yml", "config.yml");
 		
 		ServiceLocator.provideService(ControlHelper.class);
 		ServiceLocator.provideService(DisplayHelper.class);
@@ -172,14 +171,26 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	public void onEnable() {
 		super.onEnable();
 		
-		Loaders.loadMessaging();
+		List<IMessageHandler> services = ServiceLocator.removeServices(IMessageHandler.class);
+		for (IMessageHandler handler : services) {
+			try {
+				handler.close();
+			} catch (Exception ex) {
+				
+			}
+		}
+		
+		Loaders.loadRedis();
+		Loaders.loadMessaging(getDescription().getName(), Bukkit.getServerName(), getServerId(), SenderType.SERVER);
 		
 		numCommands = ServiceLocator.getService(CommandProcessor.class).addHandlersFromPackage("me.egg82.tcpp.commands", PluginReflectUtil.getCommandMapFromPackage("me.egg82.tcpp.commands", false, null, "Command"), false);
 		numCommands += ReflectUtil.getClasses(CommandHandler.class, "me.egg82.tcpp.commands.internal", false, false, false).size();
 		ServiceLocator.getService(CommandProcessor.class).addAliases("gtroll",  "gtr");
 		ServiceLocator.getService(CommandProcessor.class).addAliases("troll",  "tr");
 		numEvents = ServiceLocator.getService(EventProcessor.class).addHandlersFromPackage("me.egg82.tcpp.events");
-		numMessages = ServiceLocator.getService(IMessageHandler.class).addHandlersFromPackage("me.egg82.tcpp.messages");
+		if (ServiceLocator.getService(IMessageHandler.class) != null) {
+			numMessages = ServiceLocator.getService(IMessageHandler.class).addHandlersFromPackage("me.egg82.tcpp.messages");
+		}
 		numTicks = PluginReflectUtil.addServicesFromPackage("me.egg82.tcpp.ticks", false);
 		
 		ThreadUtil.rename(getName());
@@ -302,17 +313,12 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	};
 	
 	private void enableMessage() {
-		printInfo(ChatColor.AQUA + "  _______        _ _  _____                                          _                 ");
-		printInfo(ChatColor.AQUA + " |__   __|      | | |/ ____|                                        | |      _     _   ");
-		printInfo(ChatColor.AQUA + "    | |_ __ ___ | | | |     ___  _ __ ___  _ __ ___   __ _ _ __   __| |___ _| |_ _| |_ ");
-		printInfo(ChatColor.AQUA + "    | | '__/ _ \\| | | |    / _ \\| '_ ` _ \\| '_ ` _ \\ / _` | '_ \\ / _` / __|_   _|_   _|");
-		printInfo(ChatColor.AQUA + "    | | | | (_) | | | |___| (_) | | | | | | | | | | | (_| | | | | (_| \\__ \\ |_|   |_|  ");
-		printInfo(ChatColor.AQUA + "    |_|_|  \\___/|_|_|\\_____\\___/|_| |_| |_|_| |_| |_|\\__,_|_| |_|\\__,_|___/            ");
-		printInfo(ChatColor.GREEN + "[Version " + getDescription().getVersion() + "] " + ChatColor.RED + numCommands + " commands " + ChatColor.LIGHT_PURPLE + numEvents + " events " + ChatColor.YELLOW + numTicks + " tick handlers " + ChatColor.BLUE + numMessages + " message handlers");
-		printInfo(ChatColor.WHITE + "[TrollCommands++] " + ChatColor.GRAY + "Attempting to load compatibility with Bukkit version " + getGameVersion());
+		printInfo(ChatColor.GREEN + "Enabled.");
+		printInfo(ChatColor.AQUA + "[Version " + getDescription().getVersion() + "] " + ChatColor.DARK_GREEN + numCommands + " commands " + ChatColor.LIGHT_PURPLE + numEvents + " events " + ChatColor.GOLD + numTicks + " tick handlers " + ChatColor.BLUE + numMessages + " message handlers");
+		printInfo("Attempting to load compatibility with Bukkit version " + getGameVersion());
 	}
 	private void disableMessage() {
-		printInfo(ChatColor.GREEN + "--== " + ChatColor.LIGHT_PURPLE + "TrollCommands++ Disabled" + ChatColor.GREEN + " ==--");
+		printInfo(ChatColor.RED + "Disabled");
 	}
 	
 	private void populateCommandDatabase() {

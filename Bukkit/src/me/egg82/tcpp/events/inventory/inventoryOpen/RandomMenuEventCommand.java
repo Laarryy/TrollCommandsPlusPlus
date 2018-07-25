@@ -28,11 +28,10 @@ public class RandomMenuEventCommand extends EventHandler<InventoryOpenEvent> {
 		super();
 		
 		EnumFilter<InventoryType> typeFilterHelper = new EnumFilter<InventoryType>(InventoryType.class);
-		types = typeFilterHelper.filter(
-				typeFilterHelper.filter(
-					typeFilterHelper.getAllTypes(),
-				"crafting", false),
-				"creative", false);
+		types = typeFilterHelper
+				.blacklist("crafting")
+				.blacklist("creative")
+				.build();
 	}
 	
 	//public
