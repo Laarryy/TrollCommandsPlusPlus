@@ -1,4 +1,4 @@
-package me.egg82.tcpp;
+package me.egg82.tcpp.bungee;
 
 import ninja.egg82.bungeecord.messaging.EnhancedBungeeMessageHandler;
 import ninja.egg82.patterns.ServiceLocator;

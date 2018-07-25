@@ -1,4 +1,4 @@
-package me.egg82.tcpp;
+package me.egg82.tcpp.bungee;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -48,8 +48,8 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		exceptionHandler.setUnsentExceptions(oldExceptionHandler.getUnsentExceptions());
 		exceptionHandler.setUnsentLogs(oldExceptionHandler.getUnsentLogs());
 		
-		PluginReflectUtil.addServicesFromPackage("me.egg82.tcpp.registries", true);
-		PluginReflectUtil.addServicesFromPackage("me.egg82.tcpp.lists", true);
+		PluginReflectUtil.addServicesFromPackage("me.egg82.tcpp.bungee.registries", true);
+		PluginReflectUtil.addServicesFromPackage("me.egg82.tcpp.bungee.lists", true);
 	}
 	
 	public void onEnable() {
@@ -66,9 +66,9 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		
 		Loaders.loadMessaging(getDescription().getName(), null, getServerId());
 		
-		numCommands = ServiceLocator.getService(CommandProcessor.class).addHandlersFromPackage("me.egg82.tcpp.commands", PluginReflectUtil.getCommandMapFromPackage("me.egg82.tcpp.commands", false, null, "Command"), false);
-		numEvents = ServiceLocator.getService(EventProcessor.class).addHandlersFromPackage("me.egg82.tcpp.events");
-		numMessages = ServiceLocator.getService(IMessageHandler.class).addHandlersFromPackage("me.egg82.tcpp.messages");
+		numCommands = ServiceLocator.getService(CommandProcessor.class).addHandlersFromPackage("me.egg82.tcpp.bungee.commands", PluginReflectUtil.getCommandMapFromPackage("me.egg82.tcpp.bungee.commands", false, null, "Command"), false);
+		numEvents = ServiceLocator.getService(EventProcessor.class).addHandlersFromPackage("me.egg82.tcpp.bungee.events");
+		numMessages = ServiceLocator.getService(IMessageHandler.class).addHandlersFromPackage("me.egg82.tcpp.bungee.messages");
 		
 		enableMessage();
 		
