@@ -22,7 +22,7 @@ public class RedisUtil {
 		JedisPool redisPool = ServiceLocator.getService(JedisPool.class);
 		if (redisPool != null) {
 			redis = redisPool.getResource();
-			String pass = config.getNode("redis", "pass").getString();
+			String pass = config.getNode("messaging", "redis", "pass").getString();
 			if (pass != null && !pass.isEmpty()) {
 				redis.auth(pass);
 			}

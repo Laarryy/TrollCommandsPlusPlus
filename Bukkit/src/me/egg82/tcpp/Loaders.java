@@ -19,28 +19,6 @@ public class Loaders {
 	
 	//public
 	@SuppressWarnings("resource")
-	public static void loadRedis() {
-		Configuration config = ServiceLocator.getService(Configuration.class);
-		
-		if (config.getNode("redis", "enabled").getBoolean()) {
-			JedisPoolConfig redisPoolConfig = new JedisPoolConfig();
-			redisPoolConfig.setMaxTotal(16);
-			redisPoolConfig.setMaxIdle(2);
-			redisPoolConfig.setBlockWhenExhausted(false);
-			redisPoolConfig.setTestOnBorrow(false);
-			redisPoolConfig.setTestOnCreate(false);
-			redisPoolConfig.setTestOnReturn(false);
-			redisPoolConfig.setTestWhileIdle(true);
-			redisPoolConfig.setMaxWaitMillis(30000L);
-			JedisPool redisPool = new JedisPool(
-				redisPoolConfig,
-				config.getNode("redis", "address").getString("127.0.0.1"),
-				config.getNode("redis", "port").getInt(6379)
-			);
-			ServiceLocator.provideService(redisPool);
-		}
-	}
-	@SuppressWarnings("resource")
 	public static void loadMessaging(String pluginName, String serverName, String serverId, SenderType senderType) {
 		if (pluginName == null) {
 			throw new IllegalArgumentException("pluginName cannot be null.");
@@ -65,6 +43,22 @@ public class Loaders {
 				if (!ServiceLocator.hasService(EnhancedBungeeMessageHandler.class)) {
 					ServiceLocator.provideService(new EnhancedBungeeMessageHandler(pluginName, (serverName != null) ? serverName : serverId));
 				}
+			} else if (type.equalsIgnoreCase("redis")) {
+				JedisPoolConfig redisPoolConfig = new JedisPoolConfig();
+				redisPoolConfig.setMaxTotal(16);
+				redisPoolConfig.setMaxIdle(2);
+				redisPoolConfig.setBlockWhenExhausted(false);
+				redisPoolConfig.setTestOnBorrow(false);
+				redisPoolConfig.setTestOnCreate(false);
+				redisPoolConfig.setTestOnReturn(false);
+				redisPoolConfig.setTestWhileIdle(true);
+				redisPoolConfig.setMaxWaitMillis(30000L);
+				JedisPool redisPool = new JedisPool(
+					redisPoolConfig,
+					config.getNode("messaging", "redis", "address").getString("127.0.0.1"),
+					config.getNode("messaging", "redis", "port").getInt(6379)
+				);
+				ServiceLocator.provideService(redisPool);
 			} else if (type.equalsIgnoreCase("rabbit") || type.equalsIgnoreCase("rabbitmq")) {
 				ServiceLocator.provideService(
 					new RabbitMessageHandler(

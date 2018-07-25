@@ -169,16 +169,19 @@ public class GTrollCommand extends CommandHandler {
 		}
 		
 		Configuration config = ServiceLocator.getService(Configuration.class);
-		if (config.getNode("redis", "enabled").getBoolean()) {
-			try (Jedis redis = RedisUtil.getRedis()) {
-				if (redis != null) {
-					redis.publish("tcpp", String.join(" ", args));
+		if (config.getNode("messaging", "enabled").getBoolean()) {
+			String type = config.getNode("messaging", "type").getString();
+			if (type.equalsIgnoreCase("redis")) {
+				try (Jedis redis = RedisUtil.getRedis()) {
+					if (redis != null) {
+						redis.publish("tcpp", String.join(" ", args));
+					}
 				}
+			} else {
+				TrollChannelUtil.broadcastTroll(String.join(" ", args));
 			}
-		} else if (config.getNode("messaging", "enabled").getBoolean()) {
-			TrollChannelUtil.broadcastTroll(String.join(" ", args));
 		} else {
-			sender.sendMessage(ChatColor.RED + "Redis and messaging are both disabled in the config. Please try enabling one or both of them to enable this command.");
+			sender.sendMessage(ChatColor.RED + "Messaging is disabled in the config. Please try enabling it to enable this command.");
 			return;
 		}
 		

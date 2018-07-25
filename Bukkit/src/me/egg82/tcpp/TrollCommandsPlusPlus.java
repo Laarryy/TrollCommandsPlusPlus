@@ -180,7 +180,6 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 			}
 		}
 		
-		Loaders.loadRedis();
 		Loaders.loadMessaging(getDescription().getName(), Bukkit.getServerName(), getServerId(), SenderType.SERVER);
 		
 		numCommands = ServiceLocator.getService(CommandProcessor.class).addHandlersFromPackage("me.egg82.tcpp.commands", PluginReflectUtil.getCommandMapFromPackage("me.egg82.tcpp.commands", false, null, "Command"), false);

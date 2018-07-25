@@ -55,7 +55,7 @@ public class ConfigLoader {
 		ConfigurationLoader<ConfigurationNode> loader = YAMLConfigurationLoader.builder().setFlowStyle(FlowStyle.BLOCK).setIndent(2).setFile(configFile).build();
 		ConfigurationNode root = null;
 		try {
-			root = loader.load(ConfigurationOptions.defaults().setHeader("Comments are gone because update :(. Click here for new config + comments: https://www.spigotmc.org/resources/anti-vpn.58291/"));
+			root = loader.load(ConfigurationOptions.defaults().setHeader("Comments are gone because update :(. Click here for new config + comments: https://www.spigotmc.org/resources/trollcommands-troll-your-frenemies.24237/"));
 		} catch (Exception ex) {
 			throw new RuntimeException("Error loading config. Aborting plugin load.", ex);
 		}
@@ -72,6 +72,9 @@ public class ConfigLoader {
 		
 		if (config.getNode("version").getDouble(1.0d) == 1.0d) {
 			to20(config);
+		}
+		if (config.getNode("version").getDouble() == 2.0d) {
+			to21(config);
 		}
 		
 		if (config.getNode("version").getDouble() != oldVersion) {
@@ -124,5 +127,19 @@ public class ConfigLoader {
 		
 		// Version
 		config.getNode("version").setValue(Double.valueOf(2.0d));
+	}
+	private static void to21(ConfigurationNode config) {
+		// Redis -> Messaging Redis
+		String redisAddress = config.getNode("redis", "address").getString("");
+		int redisPort = config.getNode("redis", "port").getInt(5672);
+		String redisPass = config.getNode("redis", "pass").getString("");
+		config.removeChild("redis");
+		
+		config.getNode("messaging", "redis", "address").setValue(redisAddress);
+		config.getNode("messaging", "redis", "port").setValue(Integer.valueOf(redisPort));
+		config.getNode("messaging", "redis", "pass").setValue(redisPass);
+		
+		// Version
+		config.getNode("version").setValue(Double.valueOf(2.1d));
 	}
 }
