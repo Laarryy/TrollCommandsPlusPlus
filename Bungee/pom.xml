@@ -105,7 +105,7 @@
                 </relocation>
                 <relocation>
                   <pattern>ninja.leaping</pattern>
-                  <shadedPattern>me.egg82.avpn.lib.ninja.leaping</shadedPattern>
+                  <shadedPattern>me.egg82.avpn.extern.ninja.leaping</shadedPattern>
                 </relocation>
                 <relocation>
                   <pattern>org.apache</pattern>
@@ -157,12 +157,12 @@
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>bungee</artifactId>
-      <version>1.0.7</version>
+      <version>1.0.8</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>plugin-common</artifactId>
-      <version>1.0.7</version>
+      <version>1.0.8</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
