@@ -17,6 +17,7 @@ import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.handlers.CommandHandler;
+import opennlp.tools.postag.POSTagger;
 
 public class MoistCommand extends CommandHandler {
 	//vars
@@ -63,6 +64,11 @@ public class MoistCommand extends CommandHandler {
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
 			Bukkit.getServer().dispatchCommand((CommandSender) sender.getHandle(), "troll help " + name);
+			return;
+		}
+		
+		if (ServiceLocator.getService(POSTagger.class) == null) {
+			sender.sendMessage(ChatColor.RED + "Speech model data could not be loaded. TC++ will continue retrying to download this periodically in the background.");
 			return;
 		}
 		

@@ -14,7 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import me.egg82.tcpp.Configuration;
-import me.egg82.tcpp.services.databases.CommandSearchDatabase;
+import me.egg82.tcpp.databases.CommandSearchDatabase;
 import me.egg82.tcpp.util.RedisUtil;
 import me.egg82.tcpp.util.TrollChannelUtil;
 import ninja.egg82.bukkit.BasePlugin;

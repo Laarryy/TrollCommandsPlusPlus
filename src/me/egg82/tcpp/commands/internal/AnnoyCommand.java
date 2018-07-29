@@ -6,21 +6,24 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.registries.AnnoyRegistry;
+import me.egg82.tcpp.lists.AnnoySet;
 import me.egg82.tcpp.util.MetricsHelper;
+import ninja.egg82.bukkit.core.PlayerInfoContainer;
+import ninja.egg82.bukkit.reflection.uuid.IUUIDHelper;
 import ninja.egg82.bukkit.utils.CommandUtil;
+import ninja.egg82.concurrent.IConcurrentSet;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.handlers.CommandHandler;
 
 public class AnnoyCommand extends CommandHandler {
 	//vars
-	private IVariableRegistry<UUID> annoyRegistry = ServiceLocator.getService(AnnoyRegistry.class);
+	private IConcurrentSet<UUID> annoySet = ServiceLocator.getService(AnnoySet.class);
+	
+	private IUUIDHelper uuidHelper = ServiceLocator.getService(IUUIDHelper.class);
 	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
@@ -71,77 +74,71 @@ public class AnnoyCommand extends CommandHandler {
 			for (Player player : players) {
 				UUID uuid = player.getUniqueId();
 				
-				if (!annoyRegistry.hasRegister(uuid)) {
-					if (player.hasPermission(PermissionsType.IMMUNE)) {
-						continue;
+				if (player.hasPermission(PermissionsType.IMMUNE)) {
+					if (annoySet.remove(uuid)) {
+						eUndo(player.getName());
 					}
-					
-					e(uuid, player);
+					continue;
+				}
+				
+				if (annoySet.add(uuid)) {
+					e(player.getName());
 				} else {
-					eUndo(uuid, player);
+					eUndo(player.getName());
 				}
 			}
 		} else {
-			Player player = CommandUtil.getPlayerByName(args[0]);
+			PlayerInfoContainer info = uuidHelper.getPlayer(args[0], true);
+			if (info == null) {
+				sender.sendMessage(ChatColor.RED + "Could not fetch player info. Please try again later.");
+				return;
+			}
 			
+			Player player = CommandUtil.getPlayerByUuid(info.getUuid());
 			if (player == null) {
-				OfflinePlayer offlinePlayer = CommandUtil.getOfflinePlayerByName(args[0]);
-				if (offlinePlayer != null) {
-					UUID uuid = offlinePlayer.getUniqueId();
-					if (annoyRegistry.hasRegister(uuid)) {
-						eUndo(uuid, offlinePlayer);
-						return;
-					}
+				if (annoySet.remove(info.getUuid())) {
+					eUndo(info.getName());
+					return;
 				}
 				
 				sender.sendMessage(ChatColor.RED + "Player could not be found.");
 				return;
 			}
 			
-			UUID uuid = player.getUniqueId();
-			
-			if (!annoyRegistry.hasRegister(uuid)) {
-				if (player.hasPermission(PermissionsType.IMMUNE)) {
+			if (player.hasPermission(PermissionsType.IMMUNE)) {
+				if (annoySet.remove(info.getUuid())) {
+					eUndo(info.getName());
+				} else {
 					sender.sendMessage(ChatColor.RED + "Player is immune.");
-					return;
 				}
-				
-				e(uuid, player);
-			} else {
-				eUndo(uuid, player);
+				return;
+			}
+			
+			if (annoySet.add(info.getUuid())) {
+				e(info.getName());
+			} else if (annoySet.remove(info.getUuid())) {
+				eUndo(info.getName());
 			}
 		}
 	}
-	private void e(UUID uuid, Player player) {
-		annoyRegistry.setRegister(uuid, null);
+	private void e(String name) {
 		metricsHelper.commandWasRun(this);
 		
-		sender.sendMessage(player.getName() + " is now being annoyed by villager sounds.");
+		sender.sendMessage(ChatColor.GREEN + name + " is now being annoyed by villager sounds.");
 	}
 	
 	protected void onUndo() {
-		Player player = CommandUtil.getPlayerByName(args[0]);
-		if (player != null) {
-			UUID uuid = player.getUniqueId();
-			if (annoyRegistry.hasRegister(uuid)) {
-				eUndo(uuid, player);
-			}
-		} else {
-			OfflinePlayer offlinePlayer = CommandUtil.getOfflinePlayerByName(args[0]);
-			UUID uuid = offlinePlayer.getUniqueId();
-			if (annoyRegistry.hasRegister(uuid)) {
-				eUndo(uuid, offlinePlayer);
-			}
+		PlayerInfoContainer info = uuidHelper.getPlayer(args[0], true);
+		if (info == null) {
+			sender.sendMessage(ChatColor.RED + "Could not fetch player info. Please try again later.");
+			return;
+		}
+		
+		if (annoySet.remove(info.getUuid())) {
+			eUndo(info.getName());
 		}
 	}
-	private void eUndo(UUID uuid, Player player) {
-		annoyRegistry.removeRegister(uuid);
-		
-		sender.sendMessage(player.getName() + " is no longer being annoyed by villager sounds.");
-	}
-	private void eUndo(UUID uuid, OfflinePlayer player) {
-		annoyRegistry.removeRegister(uuid);
-		
-		sender.sendMessage(player.getName() + " is no longer being annoyed by villager sounds.");
+	private void eUndo(String name) {
+		sender.sendMessage(ChatColor.GREEN + name + " is no longer being annoyed by villager sounds.");
 	}
 }

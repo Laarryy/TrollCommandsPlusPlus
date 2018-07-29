@@ -2,6 +2,7 @@ package me.egg82.tcpp.events.player.playerItemConsume;
 
 import java.util.UUID;
 
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -46,13 +47,15 @@ public class RandomPotionEventCommand extends EventHandler<PlayerItemConsumeEven
 			ItemStack items = playerUtil.getItemInMainHand(player);
 			
 			if (items.getType() == Material.POTION) {
-				int itemsAmount = items.getAmount();
-				
-				if (itemsAmount == 1) {
-					playerUtil.setItemInMainHand(player, null);
-				} else {
-					items.setAmount(itemsAmount - 1);
-					playerUtil.setItemInMainHand(player, items);
+				if (player.getGameMode() != GameMode.CREATIVE) {
+					int itemsAmount = items.getAmount();
+					
+					if (itemsAmount == 1) {
+						playerUtil.setItemInMainHand(player, null);
+					} else {
+						items.setAmount(itemsAmount - 1);
+						playerUtil.setItemInMainHand(player, items);
+					}
 				}
 				
 				player.addPotionEffect(new PotionEffect(effects[MathUtil.fairRoundedRandom(0, effects.length - 1)], MathUtil.fairRoundedRandom(450, 9600), MathUtil.fairRoundedRandom(1, 5)), true);

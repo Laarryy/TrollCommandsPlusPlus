@@ -5,17 +5,17 @@ import java.util.UUID;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.egg82.tcpp.registries.AnnoyRegistry;
+import me.egg82.tcpp.lists.AnnoySet;
 import ninja.egg82.bukkit.handlers.TickHandler;
 import ninja.egg82.bukkit.utils.CommandUtil;
+import ninja.egg82.concurrent.IConcurrentSet;
 import ninja.egg82.filters.EnumFilter;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.utils.MathUtil;
 
 public class AnnoyTickCommand extends TickHandler {
 	//vars
-	private IVariableRegistry<UUID> annoyRegistry = ServiceLocator.getService(AnnoyRegistry.class);
+	private IConcurrentSet<UUID> annoySet = ServiceLocator.getService(AnnoySet.class);
 	
 	private Sound[] sounds = null;
 	
@@ -31,8 +31,8 @@ public class AnnoyTickCommand extends TickHandler {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		for (UUID key : annoyRegistry.getKeys()) {
-			e(CommandUtil.getPlayerByUuid(key));
+		for (UUID uuid : annoySet) {
+			e(CommandUtil.getPlayerByUuid(uuid));
 		}
 	}
 	private void e(Player player) {

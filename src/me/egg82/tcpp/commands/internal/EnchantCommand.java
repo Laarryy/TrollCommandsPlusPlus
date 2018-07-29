@@ -16,9 +16,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import me.egg82.tcpp.databases.EnchantTypeSearchDatabase;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.registries.EnchantNameRegistry;
-import me.egg82.tcpp.services.databases.EnchantTypeSearchDatabase;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.bukkit.reflection.player.IPlayerHelper;
 import ninja.egg82.bukkit.utils.CommandUtil;

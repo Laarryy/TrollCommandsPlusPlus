@@ -6,14 +6,14 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 
-import me.egg82.tcpp.registries.AnvilRegistry;
+import me.egg82.tcpp.lists.AnvilSet;
+import ninja.egg82.concurrent.IConcurrentSet;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.handlers.events.EventHandler;
 
 public class AnvilEventCommand extends EventHandler<EntityChangeBlockEvent> {
 	//vars
-	private IVariableRegistry<UUID> anvilRegistry = ServiceLocator.getService(AnvilRegistry.class);
+	private IConcurrentSet<UUID> anvilSet = ServiceLocator.getService(AnvilSet.class);
 	
 	//constructor
 	public AnvilEventCommand() {
@@ -31,11 +31,10 @@ public class AnvilEventCommand extends EventHandler<EntityChangeBlockEvent> {
 		Entity entity = event.getEntity();
 		UUID uuid = entity.getUniqueId();
 		
-		if (anvilRegistry.hasRegister(uuid)) {
+		if (anvilSet.remove(uuid)) {
 			entity.getWorld().playSound(entity.getLocation(), Sound.BLOCK_ANVIL_LAND, 1.0f, 1.0f);
 			entity.remove();
 			event.setCancelled(true);
-			anvilRegistry.removeRegister(uuid);
 		}
 	}
 }

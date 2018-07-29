@@ -1,4 +1,4 @@
-package me.egg82.tcpp.services.databases;
+package me.egg82.tcpp.databases;
 
 import ninja.egg82.sql.LanguageDatabase;
 

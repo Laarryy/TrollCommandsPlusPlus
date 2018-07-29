@@ -1,4 +1,4 @@
-package me.egg82.tcpp.services.databases;
+package me.egg82.tcpp.databases;
 
 import java.util.ArrayList;
 import java.util.Arrays;

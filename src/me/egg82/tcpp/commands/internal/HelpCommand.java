@@ -7,8 +7,8 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.egg82.tcpp.databases.CommandSearchDatabase;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.services.databases.CommandSearchDatabase;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.tuples.pair.Pair;

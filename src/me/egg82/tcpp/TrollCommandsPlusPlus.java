@@ -1,6 +1,10 @@
 package me.egg82.tcpp;
 
+import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,11 +18,11 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.egg82.tcpp.databases.CommandSearchDatabase;
 import me.egg82.tcpp.registries.CommandRegistry;
 import me.egg82.tcpp.registries.KeywordRegistry;
 import me.egg82.tcpp.rollback.reflection.CoreProtectRollbackHelper;
 import me.egg82.tcpp.rollback.reflection.NullRollbackHelper;
-import me.egg82.tcpp.services.databases.CommandSearchDatabase;
 import me.egg82.tcpp.util.ControlHelper;
 import me.egg82.tcpp.util.DisplayHelper;
 import me.egg82.tcpp.util.FoolsGoldHelper;
@@ -50,6 +54,7 @@ import ninja.egg82.permissions.reflection.NullPermissionsHelper;
 import ninja.egg82.plugin.enums.SenderType;
 import ninja.egg82.plugin.handlers.CommandHandler;
 import ninja.egg82.plugin.messaging.IMessageHandler;
+import ninja.egg82.plugin.utils.DirectoryUtil;
 import ninja.egg82.plugin.utils.PluginReflectUtil;
 import ninja.egg82.protocol.reflection.NullFakeBlockHelper;
 import ninja.egg82.protocol.reflection.NullFakeEntityHelper;
@@ -94,6 +99,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	public void onLoad() {
 		super.onLoad();
 		
+		PluginReflectUtil.addServicesFromPackage("me.egg82.tcpp.databases", true);
 		PluginReflectUtil.addServicesFromPackage("me.egg82.tcpp.registries", true);
 		PluginReflectUtil.addServicesFromPackage("me.egg82.tcpp.lists", true);
 		
@@ -351,18 +357,48 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	}
 	
 	private void getTagger() {
+		if (getDataFolder().exists() && !getDataFolder().isDirectory()) {
+			getDataFolder().delete();
+		}
+		if (!getDataFolder().exists()) {
+			getDataFolder().mkdirs();
+		}
+		
+		File maxent = new File(getDataFolder(), "en-pos-maxent.bin");
+		File perceptron = new File(getDataFolder(), "en-pos-perceptron.bin");
+		
 		try {
-			POSModel model = new POSModel(new URL("http://opennlp.sourceforge.net/models-1.5/en-pos-maxent.bin"));
+			if (maxent.exists() && maxent.isDirectory()) {
+				DirectoryUtil.delete(maxent);
+			}
+			
+			if (!maxent.exists()) {
+				URL url = new URL("http://opennlp.sourceforge.net/models-1.5/en-pos-maxent.bin");
+				try (InputStream in = url.openStream()) {
+					Files.copy(in, maxent.toPath(), StandardCopyOption.REPLACE_EXISTING);
+				}
+			}
+			
+			POSModel model = new POSModel(maxent);
 			ServiceLocator.provideService(new POSTaggerME(model));
 		} catch (Exception ex) {
-			exceptionHandler.silentException(ex);
-			ex.printStackTrace();
 			try {
-				POSModel model = new POSModel(new URL("http://opennlp.sourceforge.net/models-1.5/en-pos-perceptron.bin"));
+				if (perceptron.exists() && perceptron.isDirectory()) {
+					DirectoryUtil.delete(perceptron);
+				}
+				
+				if (!perceptron.exists()) {
+					URL url = new URL("http://opennlp.sourceforge.net/models-1.5/en-pos-perceptron.bin");
+					try (InputStream in = url.openStream()) {
+						Files.copy(in, perceptron.toPath(), StandardCopyOption.REPLACE_EXISTING);
+					}
+				}
+				
+				POSModel model = new POSModel(perceptron);
 				ServiceLocator.provideService(new POSTaggerME(model));
 			} catch (Exception ex2) {
-				exceptionHandler.silentException(ex2);
-				ex2.printStackTrace();
+				printWarning("Speech model data coule not be loaded. /troll moist will be disabled until it can be. Retrying in 10 seconds..");
+				
 				ThreadUtil.schedule(new Runnable() {
 					public void run() {
 						getTagger();

@@ -15,8 +15,8 @@ import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import me.egg82.tcpp.databases.MonsterTypeSearchDatabase;
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.services.databases.MonsterTypeSearchDatabase;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.bukkit.utils.BlockUtil;
 import ninja.egg82.bukkit.utils.CommandUtil;

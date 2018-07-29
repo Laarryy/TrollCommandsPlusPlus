@@ -6,23 +6,26 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.registries.AmnesiaRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
+import ninja.egg82.bukkit.core.PlayerInfoContainer;
+import ninja.egg82.bukkit.reflection.uuid.IUUIDHelper;
 import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.concurrent.DynamicConcurrentDeque;
+import ninja.egg82.concurrent.IConcurrentDeque;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.patterns.registries.IRegistry;
 import ninja.egg82.plugin.handlers.CommandHandler;
 
 public class AmnesiaCommand extends CommandHandler {
 	//vars
-	private IVariableRegistry<UUID> amnesiaRegistry = ServiceLocator.getService(AmnesiaRegistry.class);
+	private IRegistry<UUID, IConcurrentDeque<String>> amnesiaRegistry = ServiceLocator.getService(AmnesiaRegistry.class);
 	
+	private IUUIDHelper uuidHelper = ServiceLocator.getService(IUUIDHelper.class);
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
@@ -70,79 +73,67 @@ public class AmnesiaCommand extends CommandHandler {
 		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer((CommandSender) sender.getHandle()) ? ((Player) sender.getHandle()).getLocation() : null));
 		if (players.size() > 0) {
 			for (Player player : players) {
-				UUID uuid = player.getUniqueId();
-				
-				if (!amnesiaRegistry.hasRegister(uuid)) {
+				if (!amnesiaRegistry.hasRegister(player.getUniqueId())) {
 					if (player.hasPermission(PermissionsType.IMMUNE)) {
 						continue;
 					}
 					
-					e(uuid, player);
+					e(player.getUniqueId(), player.getName());
 				} else {
-					eUndo(uuid, player);
+					eUndo(player.getUniqueId(), player.getName());
 				}
 			}
 		} else {
-			Player player = CommandUtil.getPlayerByName(args[0]);
+			PlayerInfoContainer info = uuidHelper.getPlayer(args[0], true);
+			if (info == null) {
+				sender.sendMessage(ChatColor.RED + "Could not fetch player info. Please try again later.");
+				return;
+			}
 			
+			Player player = CommandUtil.getPlayerByUuid(info.getUuid());
 			if (player == null) {
-				OfflinePlayer offlinePlayer = CommandUtil.getOfflinePlayerByName(args[0]);
-				if (offlinePlayer != null) {
-					UUID uuid = offlinePlayer.getUniqueId();
-					if (amnesiaRegistry.hasRegister(uuid)) {
-						eUndo(uuid, offlinePlayer);
-						return;
-					}
+				if (amnesiaRegistry.hasRegister(info.getUuid())) {
+					eUndo(info.getUuid(), info.getName());
+					return;
 				}
 				
 				sender.sendMessage(ChatColor.RED + "Player could not be found.");
 				return;
 			}
 			
-			UUID uuid = player.getUniqueId();
-			
-			if (!amnesiaRegistry.hasRegister(uuid)) {
+			if (!amnesiaRegistry.hasRegister(info.getUuid())) {
 				if (player.hasPermission(PermissionsType.IMMUNE)) {
 					sender.sendMessage(ChatColor.RED + "Player is immune.");
 					return;
 				}
 				
-				e(uuid, player);
+				e(info.getUuid(), info.getName());
 			} else {
-				eUndo(uuid, player);
+				eUndo(info.getUuid(), info.getName());
 			}
 		}
 	}
-	private void e(UUID uuid, Player player) {
+	private void e(UUID uuid, String name) {
 		amnesiaRegistry.setRegister(uuid, new DynamicConcurrentDeque<String>());
 		metricsHelper.commandWasRun(this);
 		
-		sender.sendMessage(player.getName() + " is now an amnesiac.");
+		sender.sendMessage(ChatColor.GREEN + name + " is now an amnesiac.");
 	}
 	
 	protected void onUndo() {
-		Player player = CommandUtil.getPlayerByName(args[0]);
-		if (player != null) {
-			UUID uuid = player.getUniqueId();
-			if (amnesiaRegistry.hasRegister(uuid)) {
-				eUndo(uuid, player);
-			}
-		} else {
-			OfflinePlayer offlinePlayer = CommandUtil.getOfflinePlayerByName(args[0]);
-			UUID uuid = offlinePlayer.getUniqueId();
-			if (amnesiaRegistry.hasRegister(uuid)) {
-				eUndo(uuid, offlinePlayer);
-			}
+		PlayerInfoContainer info = uuidHelper.getPlayer(args[0], true);
+		if (info == null) {
+			sender.sendMessage(ChatColor.RED + "Could not fetch player info. Please try again later.");
+			return;
+		}
+		
+		if (amnesiaRegistry.hasRegister(info.getUuid())) {
+			eUndo(info.getUuid(), info.getName());
 		}
 	}
-	private void eUndo(UUID uuid, Player player) {
+	private void eUndo(UUID uuid, String name) {
 		amnesiaRegistry.removeRegister(uuid);
 		
-		sender.sendMessage(player.getName() + " is no longer an amnesiac.");
-	}
-	private void eUndo(UUID uuid, OfflinePlayer player) {
-		amnesiaRegistry.removeRegister(uuid);
-		
-		sender.sendMessage(player.getName() + " is no longer an amnesiac.");
+		sender.sendMessage(ChatColor.GREEN + name + " is no longer an amnesiac.");
 	}
 }

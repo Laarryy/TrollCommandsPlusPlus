@@ -14,9 +14,9 @@ import org.bukkit.entity.Creature;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
+import me.egg82.tcpp.databases.MobTypeSearchDatabase;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.registries.SpawnBreakRegistry;
-import me.egg82.tcpp.services.databases.MobTypeSearchDatabase;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.patterns.ServiceLocator;

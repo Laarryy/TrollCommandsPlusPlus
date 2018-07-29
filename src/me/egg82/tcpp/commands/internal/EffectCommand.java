@@ -11,10 +11,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
+import me.egg82.tcpp.databases.PotionTypeSearchDatabase;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.registries.EffectRegistry;
 import me.egg82.tcpp.registries.PotionNameRegistry;
-import me.egg82.tcpp.services.databases.PotionTypeSearchDatabase;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.patterns.ServiceLocator;

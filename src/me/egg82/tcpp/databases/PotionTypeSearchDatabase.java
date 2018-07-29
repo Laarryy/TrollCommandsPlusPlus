@@ -1,33 +1,33 @@
-package me.egg82.tcpp.services.databases;
+package me.egg82.tcpp.databases;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.bukkit.enchantments.Enchantment;
+import org.bukkit.potion.PotionEffectType;
 
-import me.egg82.tcpp.registries.EnchantNameRegistry;
+import me.egg82.tcpp.registries.PotionNameRegistry;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.sql.LanguageDatabase;
 
-public class EnchantTypeSearchDatabase extends LanguageDatabase {
+public class PotionTypeSearchDatabase extends LanguageDatabase {
 	//vars
-	private IVariableRegistry<String> enchantNameRegistry = ServiceLocator.getService(EnchantNameRegistry.class);
+	private IVariableRegistry<String> potionNameRegistry = ServiceLocator.getService(PotionNameRegistry.class);
 	
 	//constructor
-	public EnchantTypeSearchDatabase() {
+	public PotionTypeSearchDatabase() {
 		super();
 		
-		Enchantment[] types = Enchantment.values();
+		PotionEffectType[] types = PotionEffectType.values();
 		
 		Arrays.sort(types, (a, b) -> {
-			if (a == null || a.getName() == null) {
-				if (b == null || b.getName() == null) {
+			if (a == null) {
+				if (b == null) {
 					return 0;
 				}
 				return -1;
 			}
-			if (b == null || b.getName() == null) {
+			if (b == null) {
 				return 1;
 			}
 			
@@ -42,7 +42,7 @@ public class EnchantTypeSearchDatabase extends LanguageDatabase {
 			ArrayList<String> fields = new ArrayList<String>();
 			String name = types[i].getName();
 			fields.add(name);
-			fields.add(enchantNameRegistry.getRegister(name, String.class));
+			fields.add(potionNameRegistry.getRegister(name, String.class));
 			fields.addAll(Arrays.asList(name.split("_")));
 			
 			addRow(fields.toArray(new String[0]));

@@ -16,12 +16,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 
 import me.egg82.tcpp.enums.PermissionsType;
-import me.egg82.tcpp.registries.AnvilRegistry;
+import me.egg82.tcpp.lists.AnvilSet;
 import me.egg82.tcpp.util.MetricsHelper;
+import ninja.egg82.bukkit.core.BlockData;
+import ninja.egg82.bukkit.utils.BlockUtil;
 import ninja.egg82.bukkit.utils.CommandUtil;
+import ninja.egg82.bukkit.utils.LocationUtil;
 import ninja.egg82.bukkit.utils.TaskUtil;
+import ninja.egg82.concurrent.IConcurrentSet;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.handlers.CommandHandler;
 import ninja.egg82.utils.ReflectUtil;
 
@@ -29,7 +32,7 @@ public class AnvilCommand extends CommandHandler {
 	//vars
 	private boolean hasFallingBlockMethod = ReflectUtil.hasMethod("spawnFallingBlock", Bukkit.getWorlds().iterator().next());
 	
-	private IVariableRegistry<UUID> anvilRegistry = ServiceLocator.getService(AnvilRegistry.class);
+	private IConcurrentSet<UUID> anvilSet = ServiceLocator.getService(AnvilSet.class);
 	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
@@ -86,11 +89,11 @@ public class AnvilCommand extends CommandHandler {
 			}
 		} else {
 			Player player = CommandUtil.getPlayerByName(args[0]);
-			
 			if (player == null) {
 				sender.sendMessage(ChatColor.RED + "Player could not be found.");
 				return;
 			}
+			
 			if (player.hasPermission(PermissionsType.IMMUNE)) {
 				sender.sendMessage(ChatColor.RED + "Player is immune.");
 				return;
@@ -100,15 +103,18 @@ public class AnvilCommand extends CommandHandler {
 		}
 	}
 	private void e(Player player) {
-		Location loc = player.getLocation().clone();
-		for (int i = 0; i < 4; i++) {
+		Location loc = LocationUtil.toBlockLocation(player.getLocation());
+		
+		List<BlockData> data = new ArrayList<BlockData>();
+		for (int i = 0; i < 5; i++) {
 			loc.add(0.0d, 1.0d, 0.0d);
-			loc.getBlock().setType(Material.AIR);
+			
+			data.add(BlockUtil.getBlock(loc));
+			loc.getBlock().setType(Material.AIR, false);
 		}
-		loc.add(0.0d, 1.0d, 0.0d);
 		
 		if (hasFallingBlockMethod) {
-			anvilRegistry.setRegister(loc.getWorld().spawnFallingBlock(loc, new MaterialData(Material.ANVIL)).getUniqueId(), null);
+			anvilSet.add(loc.getWorld().spawnFallingBlock(loc, new MaterialData(Material.ANVIL)).getUniqueId());
 		} else {
 			loc.getBlock().setType(Material.ANVIL);
 			TaskUtil.runSync(new Runnable() {
@@ -118,16 +124,25 @@ public class AnvilCommand extends CommandHandler {
 			}, 1L);
 		}
 		
+		TaskUtil.runSync(new Runnable() {
+			public void run() {
+				for (int i = data.size() - 1; i >= 0; i--) {
+					BlockUtil.setBlock(loc, data.get(i), false);
+					loc.add(0.0d, -1.0d, 0.0d);
+				}
+			}
+		}, 30L);
+		
 		metricsHelper.commandWasRun(this);
 		
-		sender.sendMessage("The " + ChatColor.STRIKETHROUGH + ChatColor.ITALIC + "base" + ChatColor.RESET + " anvil has been dropped on " + player.getName() + ".");
+		sender.sendMessage(ChatColor.GREEN + "The " + ChatColor.STRIKETHROUGH + ChatColor.ITALIC + "base" + ChatColor.RESET + " anvil has been dropped on " + player.getName() + ".");
 	}
 	private void tryGetAnvil(Location loc, int tries) {
 		Collection<Entity> entities = loc.getWorld().getNearbyEntities(loc, 2.0d, 2.0d, 2.0d);
 		for (Entity e : entities) {
 			if (e instanceof FallingBlock) {
 				if (((FallingBlock) e).getMaterial() == Material.ANVIL) {
-					anvilRegistry.setRegister(e.getUniqueId(), null);
+					anvilSet.add(e.getUniqueId());
 					return;
 				}
 			}

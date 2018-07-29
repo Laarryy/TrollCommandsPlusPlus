@@ -15,8 +15,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.egg82.tcpp.databases.CommandSearchDatabase;
 import me.egg82.tcpp.registries.GuiRegistry;
-import me.egg82.tcpp.services.databases.CommandSearchDatabase;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.patterns.tuples.pair.Pair;

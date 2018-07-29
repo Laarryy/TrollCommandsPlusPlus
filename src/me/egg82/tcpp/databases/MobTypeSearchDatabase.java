@@ -1,20 +1,20 @@
-package me.egg82.tcpp.services.databases;
+package me.egg82.tcpp.databases;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.apache.commons.lang.WordUtils;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Monster;
 
 import ninja.egg82.sql.LanguageDatabase;
 import ninja.egg82.utils.ReflectUtil;
 
-public class MonsterTypeSearchDatabase extends LanguageDatabase {
+public class MobTypeSearchDatabase extends LanguageDatabase {
 	//vars
 	
 	//constructor
-	public MonsterTypeSearchDatabase() {
+	public MobTypeSearchDatabase() {
 		super();
 		
 		EntityType[] types = EntityType.values();
@@ -37,7 +37,7 @@ public class MonsterTypeSearchDatabase extends LanguageDatabase {
 			if (types[i] == null) {
 				continue;
 			}
-			if (!ReflectUtil.doesExtend(Monster.class, types[i].getEntityClass())) {
+			if (!ReflectUtil.doesExtend(Creature.class, types[i].getEntityClass())) {
 				continue;
 			}
 			

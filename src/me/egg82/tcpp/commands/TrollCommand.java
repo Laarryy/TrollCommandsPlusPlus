@@ -13,7 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import me.egg82.tcpp.services.databases.CommandSearchDatabase;
+import me.egg82.tcpp.databases.CommandSearchDatabase;
 import ninja.egg82.bukkit.BasePlugin;
 import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.exceptionHandlers.IExceptionHandler;

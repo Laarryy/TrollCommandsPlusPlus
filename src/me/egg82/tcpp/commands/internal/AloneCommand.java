@@ -6,14 +6,15 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.lists.AloneSet;
 import me.egg82.tcpp.util.MetricsHelper;
+import ninja.egg82.bukkit.core.PlayerInfoContainer;
 import ninja.egg82.bukkit.reflection.player.IPlayerHelper;
+import ninja.egg82.bukkit.reflection.uuid.IUUIDHelper;
 import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.concurrent.IConcurrentSet;
 import ninja.egg82.patterns.ServiceLocator;
@@ -24,6 +25,7 @@ public class AloneCommand extends CommandHandler {
 	private IConcurrentSet<UUID> aloneSet = ServiceLocator.getService(AloneSet.class);
 	
 	private IPlayerHelper playerHelper = ServiceLocator.getService(IPlayerHelper.class);
+	private IUUIDHelper uuidHelper = ServiceLocator.getService(IUUIDHelper.class);
 	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
@@ -72,87 +74,89 @@ public class AloneCommand extends CommandHandler {
 		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer((CommandSender) sender.getHandle()) ? ((Player) sender.getHandle()).getLocation() : null));
 		if (players.size() > 0) {
 			for (Player player : players) {
-				UUID uuid = player.getUniqueId();
-				
 				if (player.hasPermission(PermissionsType.IMMUNE)) {
-					if (aloneSet.remove(uuid)) {
-						eUndo(player);
+					if (aloneSet.remove(player.getUniqueId())) {
+						eUndo(player, player.getName());
 					}
 					continue;
 				}
 				
-				if (aloneSet.add(uuid)) {
-					e(player);
+				if (aloneSet.add(player.getUniqueId())) {
+					e(player, player.getName());
 				} else {
-					eUndo(player);
+					eUndo(player, player.getName());
 				}
 			}
 		} else {
-			Player player = CommandUtil.getPlayerByName(args[0]);
+			PlayerInfoContainer info = uuidHelper.getPlayer(args[0], true);
+			if (info == null) {
+				sender.sendMessage(ChatColor.RED + "Could not fetch player info. Please try again later.");
+				return;
+			}
+			
+			Player player = CommandUtil.getPlayerByUuid(info.getUuid());
 			if (player == null) {
-				OfflinePlayer offlinePlayer = CommandUtil.getOfflinePlayerByName(args[0]);
-				if (offlinePlayer != null) {
-					if (aloneSet.remove(offlinePlayer.getUniqueId())) {
-						eUndo(offlinePlayer);
-						return;
-					}
+				if (aloneSet.remove(info.getUuid())) {
+					eUndo(info.getName());
+					return;
 				}
 				
 				sender.sendMessage(ChatColor.RED + "Player could not be found.");
 				return;
 			}
 			
-			UUID uuid = player.getUniqueId();
-			
 			if (player.hasPermission(PermissionsType.IMMUNE)) {
-				if (aloneSet.remove(uuid)) {
-					eUndo(player);
+				if (aloneSet.remove(info.getUuid())) {
+					eUndo(player, info.getName());
 				} else {
 					sender.sendMessage(ChatColor.RED + "Player is immune.");
 				}
 				return;
 			}
 			
-			if (aloneSet.add(uuid)) {
-				e(player);
-			} else {
-				eUndo(player);
+			if (aloneSet.add(info.getUuid())) {
+				e(player, info.getName());
+			} else if (aloneSet.remove(info.getUuid())) {
+				eUndo(player, info.getName());
 			}
 		}
 	}
-	private void e(Player player) {
+	private void e(Player player, String name) {
 		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 			playerHelper.hidePlayer(player, p);
 		}
 		
 		metricsHelper.commandWasRun(this);
 		
-		sender.sendMessage(ChatColor.GREEN + player.getName() + " is now all alone :(");
+		sender.sendMessage(ChatColor.GREEN + name + " is now all alone :(");
 	}
 	
 	protected void onUndo() {
-		Player player = CommandUtil.getPlayerByName(args[0]);
+		PlayerInfoContainer info = uuidHelper.getPlayer(args[0], true);
+		if (info == null) {
+			sender.sendMessage(ChatColor.RED + "Could not fetch player info. Please try again later.");
+			return;
+		}
+		
+		Player player = CommandUtil.getPlayerByUuid(info.getUuid());
 		if (player != null) {
-			UUID uuid = player.getUniqueId();
-			if (aloneSet.remove(uuid)) {
-				eUndo(player);
+			if (aloneSet.remove(info.getUuid())) {
+				eUndo(player, info.getName());
 			}
 		} else {
-			OfflinePlayer offlinePlayer = CommandUtil.getOfflinePlayerByName(args[0]);
-			UUID uuid = offlinePlayer.getUniqueId();
-			if (aloneSet.remove(uuid)) {
-				eUndo(offlinePlayer);
+			if (aloneSet.remove(info.getUuid())) {
+				eUndo(info.getName());
 			}
 		}
 	}
-	private void eUndo(Player player) {
+	private void eUndo(Player player, String name) {
 		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 			playerHelper.showPlayer(player, p);
 		}
 		
-		sender.sendMessage(ChatColor.GREEN + player.getName() + " is no longer alone in this wold!");
+		eUndo(name);
 	}
-	private void eUndo(OfflinePlayer player) {
-		sender.sendMessage(ChatColor.GREEN + player.getName() + " is no longer alone in this wold!");
+	private void eUndo(String name) {
+		sender.sendMessage(ChatColor.GREEN + name + " is no longer alone in this wold!");
 	}
 }

@@ -10,10 +10,10 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import me.egg82.tcpp.databases.VegetableTypeSearchDatabase;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.registries.VegetableNameRegistry;
 import me.egg82.tcpp.registries.VegetableRegistry;
-import me.egg82.tcpp.services.databases.VegetableTypeSearchDatabase;
 import me.egg82.tcpp.util.MetricsHelper;
 import me.egg82.tcpp.util.VegetableHelper;
 import ninja.egg82.bukkit.reflection.material.IMaterialHelper;
