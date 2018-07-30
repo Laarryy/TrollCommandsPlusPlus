@@ -135,7 +135,7 @@ public class AnvilCommand extends CommandHandler {
 		
 		metricsHelper.commandWasRun(this);
 		
-		sender.sendMessage(ChatColor.GREEN + "The " + ChatColor.STRIKETHROUGH + ChatColor.ITALIC + "base" + ChatColor.RESET + " anvil has been dropped on " + player.getName() + ".");
+		sender.sendMessage(ChatColor.GREEN + "The " + ChatColor.STRIKETHROUGH + ChatColor.ITALIC + "base" + ChatColor.RESET + ChatColor.GREEN + " anvil has been dropped on " + player.getName() + ".");
 	}
 	private void tryGetAnvil(Location loc, int tries) {
 		Collection<Entity> entities = loc.getWorld().getNearbyEntities(loc, 2.0d, 2.0d, 2.0d);
