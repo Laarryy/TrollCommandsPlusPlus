@@ -204,7 +204,7 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 				try {
 					metrics = new Metrics(ServiceLocator.getService(JavaPlugin.class));
 				} catch (Exception ex) {
-					printInfo(ChatColor.YELLOW + "[TrollCommands++] WARNING: Connection to metrics server could not be established. This affects nothing for server owners, but it does make me sad :(");
+					printWarning("Connection to metrics server could not be established. This affects nothing for server owners, but it does make me sad :(");
 				}
 				
 				if (metrics != null) {
@@ -288,11 +288,12 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 				
 				for (int i = 0; i < Math.min(latest.length, current.length); i++) {
 					if (latest[i] < current[i]) {
+						ThreadUtil.schedule(checkUpdate, 24L * 60L * 60L * 1000L);
 						return;
 					}
 				}
 				
-				printWarning(ChatColor.GREEN + "--== " + ChatColor.YELLOW + "TrollCommands++ UPDATE AVAILABLE (Latest: " + latestVersion + " Current: " + currentVersion + ") " + ChatColor.GREEN + " ==--");
+				printWarning(ChatColor.GREEN + "--== " + ChatColor.YELLOW + "UPDATE AVAILABLE (Latest: " + latestVersion + " Current: " + currentVersion + ") " + ChatColor.GREEN + " ==--");
 			}
 			
 			ThreadUtil.schedule(checkUpdate, 24L * 60L * 60L * 1000L);

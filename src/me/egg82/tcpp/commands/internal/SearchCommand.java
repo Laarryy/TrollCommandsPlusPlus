@@ -84,7 +84,7 @@ public class SearchCommand extends CommandHandler {
 			Bukkit.getServer().dispatchCommand((CommandSender) sender.getHandle(), "troll help " + name);
 			return;
 		}
-		if (!CommandUtil.isPlayer((CommandSender) sender.getHandle())) {
+		if (sender.isConsole()) {
 			sender.sendMessage(ChatColor.RED + "Console cannot run this command!");
 			return;
 		}
