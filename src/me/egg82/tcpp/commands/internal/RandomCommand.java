@@ -14,8 +14,8 @@ import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.util.MetricsHelper;
+import ninja.egg82.analytics.exceptions.IExceptionHandler;
 import ninja.egg82.bukkit.utils.CommandUtil;
-import ninja.egg82.exceptionHandlers.IExceptionHandler;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.handlers.CommandHandler;
 import ninja.egg82.plugin.utils.PluginReflectUtil;
@@ -151,7 +151,10 @@ public class RandomCommand extends CommandHandler {
 			try {
 				run = c.newInstance();
 			} catch (Exception ex) {
-				ServiceLocator.getService(IExceptionHandler.class).silentException(ex);
+				IExceptionHandler handler = ServiceLocator.getService(IExceptionHandler.class);
+				if (handler != null) {
+					handler.sendException(ex);
+				}
 				return null;
 			}
 			

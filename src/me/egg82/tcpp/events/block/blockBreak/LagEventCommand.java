@@ -17,7 +17,7 @@ import org.bukkit.material.MaterialData;
 
 import me.egg82.tcpp.registries.LagBlockRegistry;
 import me.egg82.tcpp.registries.LagRegistry;
-import ninja.egg82.bukkit.reflection.player.IPlayerHelper;
+import ninja.egg82.bukkit.reflection.entity.IEntityHelper;
 import ninja.egg82.bukkit.utils.TaskUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
@@ -29,7 +29,7 @@ public class LagEventCommand extends EventHandler<BlockBreakEvent> {
 	private IVariableRegistry<UUID> lagRegistry = ServiceLocator.getService(LagRegistry.class);
 	private IVariableRegistry<Location> lagBlockRegistry = ServiceLocator.getService(LagBlockRegistry.class);
 	
-	private IPlayerHelper playerUtil = ServiceLocator.getService(IPlayerHelper.class);
+	private IEntityHelper entityHelper = ServiceLocator.getService(IEntityHelper.class);
 	
 	//constructor
 	public LagEventCommand() {
@@ -62,7 +62,7 @@ public class LagEventCommand extends EventHandler<BlockBreakEvent> {
 		// Capture the current state of everything
 		BlockState blockState = block.getState();
 		GameMode gameMode = player.getGameMode();
-		ItemStack tool = playerUtil.getItemInMainHand(player);
+		ItemStack tool = entityHelper.getItemInMainHand(player);
 		
 		event.setCancelled(true);
 		

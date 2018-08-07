@@ -1,17 +1,17 @@
 package me.egg82.tcpp.bungee;
 
 import java.util.List;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.md_5.bungee.api.ChatColor;
+import ninja.egg82.analytics.exceptions.GameAnalyticsExceptionHandler;
+import ninja.egg82.analytics.exceptions.IExceptionHandler;
+import ninja.egg82.analytics.exceptions.RollbarExceptionHandler;
 import ninja.egg82.bungeecord.BasePlugin;
 import ninja.egg82.bungeecord.processors.CommandProcessor;
 import ninja.egg82.bungeecord.processors.EventProcessor;
-import ninja.egg82.exceptionHandlers.GameAnalyticsExceptionHandler;
-import ninja.egg82.exceptionHandlers.IExceptionHandler;
-import ninja.egg82.exceptionHandlers.RollbarExceptionHandler;
-import ninja.egg82.exceptionHandlers.builders.GameAnalyticsBuilder;
-import ninja.egg82.exceptionHandlers.builders.RollbarBuilder;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.messaging.IMessageHandler;
 import ninja.egg82.plugin.utils.PluginReflectUtil;
@@ -37,16 +37,8 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		
 		version = getDescription().getVersion();
 		
-		getLogger().setLevel(Level.WARNING);
-		IExceptionHandler oldExceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
-		ServiceLocator.removeServices(IExceptionHandler.class);
-		
-		ServiceLocator.provideService(RollbarExceptionHandler.class, false);
 		exceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
-		oldExceptionHandler.disconnect();
-		exceptionHandler.connect(new RollbarBuilder("78062d4e18074560850d4d8e0805b564", "production", version, getServerId()), "TrollCommandsPlusPlus");
-		exceptionHandler.setUnsentExceptions(oldExceptionHandler.getUnsentExceptions());
-		exceptionHandler.setUnsentLogs(oldExceptionHandler.getUnsentLogs());
+		getLogger().setLevel(Level.WARNING);
 		
 		PluginReflectUtil.addServicesFromPackage("me.egg82.tcpp.bungee.registries", true);
 		PluginReflectUtil.addServicesFromPackage("me.egg82.tcpp.bungee.lists", true);
@@ -54,6 +46,8 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	
 	public void onEnable() {
 		super.onEnable();
+		
+		swapExceptionHandlers(new RollbarExceptionHandler("78062d4e18074560850d4d8e0805b564", "production", version, getServerId(), getDescription().getName()));
 		
 		List<IMessageHandler> services = ServiceLocator.removeServices(IMessageHandler.class);
 		for (IMessageHandler handler : services) {
@@ -92,6 +86,8 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		ServiceLocator.getService(CommandProcessor.class).clear();
 		ServiceLocator.getService(EventProcessor.class).clear();
 		
+		exceptionHandler.close();
+		
 		disableMessage();
 	}
 	
@@ -99,20 +95,35 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	private Runnable checkExceptionLimitReached = new Runnable() {
 		public void run() {
 			if (exceptionHandler.isLimitReached()) {
-				IExceptionHandler oldExceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
-				ServiceLocator.removeServices(IExceptionHandler.class);
-				
-				ServiceLocator.provideService(GameAnalyticsExceptionHandler.class, false);
-				exceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
-				oldExceptionHandler.disconnect();
-				exceptionHandler.connect(new GameAnalyticsBuilder("250e5c508c3dd844ed1f8bd2a449d1a6", "dfb50b06e598e7a7ad9b3c84f7b118c12800ffce", version, getServerId()), getDescription().getName());
-				exceptionHandler.setUnsentExceptions(oldExceptionHandler.getUnsentExceptions());
-				exceptionHandler.setUnsentLogs(oldExceptionHandler.getUnsentLogs());
+				swapExceptionHandlers(new GameAnalyticsExceptionHandler("250e5c508c3dd844ed1f8bd2a449d1a6", "dfb50b06e598e7a7ad9b3c84f7b118c12800ffce", version, getServerId(), getDescription().getName()));
 			}
 			
-			ThreadUtil.schedule(checkExceptionLimitReached, 60L * 60L * 1000L);
+			if (exceptionHandler.hasLimit()) {
+				ThreadUtil.schedule(checkExceptionLimitReached, 10L * 60L * 1000L);
+			}
 		}
 	};
+	
+	private void swapExceptionHandlers(IExceptionHandler newHandler) {
+		List<IExceptionHandler> oldHandlers = ServiceLocator.removeServices(IExceptionHandler.class);
+		
+		exceptionHandler = newHandler;
+		ServiceLocator.provideService(exceptionHandler);
+		
+		Logger logger = getLogger();
+		if (exceptionHandler instanceof Handler) {
+			logger.addHandler((Handler) exceptionHandler);
+		}
+		
+		for (IExceptionHandler handler : oldHandlers) {
+			if (handler instanceof Handler) {
+				logger.removeHandler((Handler) handler);
+			}
+			
+			handler.close();
+			exceptionHandler.addLogs(handler.getUnsentLogs());
+		}
+	}
 	
 	private void enableMessage() {
 		printInfo(ChatColor.GREEN + "Enabled.");

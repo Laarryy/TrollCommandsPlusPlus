@@ -17,9 +17,9 @@ import me.egg82.tcpp.Configuration;
 import me.egg82.tcpp.databases.CommandSearchDatabase;
 import me.egg82.tcpp.util.RedisUtil;
 import me.egg82.tcpp.util.TrollChannelUtil;
+import ninja.egg82.analytics.exceptions.IExceptionHandler;
 import ninja.egg82.bukkit.BasePlugin;
 import ninja.egg82.bukkit.utils.CommandUtil;
-import ninja.egg82.exceptionHandlers.IExceptionHandler;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.handlers.CommandHandler;
 import ninja.egg82.plugin.utils.PluginReflectUtil;
@@ -228,7 +228,10 @@ public class GTrollCommand extends CommandHandler {
 			try {
 				run = c.newInstance();
 			} catch (Exception ex) {
-				ServiceLocator.getService(IExceptionHandler.class).silentException(ex);
+				IExceptionHandler handler = ServiceLocator.getService(IExceptionHandler.class);
+				if (handler != null) {
+					handler.sendException(ex);
+				}
 				return null;
 			}
 			

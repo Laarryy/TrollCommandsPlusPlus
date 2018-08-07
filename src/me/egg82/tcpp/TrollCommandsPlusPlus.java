@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -19,10 +21,13 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.egg82.tcpp.databases.CommandSearchDatabase;
+import me.egg82.tcpp.reflection.block.ProtocolLibFakeBlockHelper;
+import me.egg82.tcpp.reflection.entity.NullFakeLivingEntityHelper;
+import me.egg82.tcpp.reflection.entity.ProtocolLibFakeLivingEntityHelper;
+import me.egg82.tcpp.reflection.rollback.CoreProtectRollbackHelper;
+import me.egg82.tcpp.reflection.rollback.NullRollbackHelper;
 import me.egg82.tcpp.registries.CommandRegistry;
 import me.egg82.tcpp.registries.KeywordRegistry;
-import me.egg82.tcpp.rollback.reflection.CoreProtectRollbackHelper;
-import me.egg82.tcpp.rollback.reflection.NullRollbackHelper;
 import me.egg82.tcpp.util.ControlHelper;
 import me.egg82.tcpp.util.DisplayHelper;
 import me.egg82.tcpp.util.FoolsGoldHelper;
@@ -33,6 +38,9 @@ import me.egg82.tcpp.util.WorldHoleHelper;
 import net.gravitydevelopment.updater.Updater;
 import net.gravitydevelopment.updater.Updater.UpdateResult;
 import net.gravitydevelopment.updater.Updater.UpdateType;
+import ninja.egg82.analytics.exceptions.GameAnalyticsExceptionHandler;
+import ninja.egg82.analytics.exceptions.IExceptionHandler;
+import ninja.egg82.analytics.exceptions.RollbarExceptionHandler;
 import ninja.egg82.bukkit.BasePlugin;
 import ninja.egg82.bukkit.processors.CommandProcessor;
 import ninja.egg82.bukkit.processors.EventProcessor;
@@ -40,11 +48,6 @@ import ninja.egg82.bukkit.utils.VersionUtil;
 import ninja.egg82.disguise.reflection.DisguiseHelper;
 import ninja.egg82.disguise.reflection.LibsDisguisesHelper;
 import ninja.egg82.disguise.reflection.NullDisguiseHelper;
-import ninja.egg82.exceptionHandlers.GameAnalyticsExceptionHandler;
-import ninja.egg82.exceptionHandlers.IExceptionHandler;
-import ninja.egg82.exceptionHandlers.RollbarExceptionHandler;
-import ninja.egg82.exceptionHandlers.builders.GameAnalyticsBuilder;
-import ninja.egg82.exceptionHandlers.builders.RollbarBuilder;
 import ninja.egg82.nbt.reflection.NullNBTHelper;
 import ninja.egg82.nbt.reflection.PowerNBTHelper;
 import ninja.egg82.patterns.ServiceLocator;
@@ -56,10 +59,6 @@ import ninja.egg82.plugin.handlers.CommandHandler;
 import ninja.egg82.plugin.messaging.IMessageHandler;
 import ninja.egg82.plugin.utils.DirectoryUtil;
 import ninja.egg82.plugin.utils.PluginReflectUtil;
-import ninja.egg82.protocol.reflection.NullFakeBlockHelper;
-import ninja.egg82.protocol.reflection.NullFakeEntityHelper;
-import ninja.egg82.protocol.reflection.ProtocolLibFakeBlockHelper;
-import ninja.egg82.protocol.reflection.ProtocolLibFakeEntityHelper;
 import ninja.egg82.sql.LanguageDatabase;
 import ninja.egg82.utils.ReflectUtil;
 import ninja.egg82.utils.StringUtil;
@@ -83,16 +82,8 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	public TrollCommandsPlusPlus() {
 		super();
 		
-		getLogger().setLevel(Level.WARNING);
-		IExceptionHandler oldExceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
-		ServiceLocator.removeServices(IExceptionHandler.class);
-		
-		ServiceLocator.provideService(RollbarExceptionHandler.class, false);
 		exceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
-		oldExceptionHandler.disconnect();
-		exceptionHandler.connect(new RollbarBuilder("78062d4e18074560850d4d8e0805b564", "production", version, getServerId()), "TrollCommandsPlusPlus");
-		exceptionHandler.setUnsentExceptions(oldExceptionHandler.getUnsentExceptions());
-		exceptionHandler.setUnsentLogs(oldExceptionHandler.getUnsentLogs());
+		getLogger().setLevel(Level.WARNING);
 	}
 	
 	//public
@@ -106,21 +97,11 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		PluginManager manager = getServer().getPluginManager();
 		
 		if (manager.getPlugin("LibsDisguises") != null) {
-			if (manager.getPlugin("ProtocolLib") != null) {
-				printInfo(ChatColor.GREEN + "Enabling support for LibsDisguises.");
-				ServiceLocator.provideService(LibsDisguisesHelper.class);
-			} else {
-				printWarning(ChatColor.RED + "LibsDisguises requires ProtocolLib to function, which was not found. The /troll control and /troll duck commands have been disabled.");
-				ServiceLocator.provideService(NullDisguiseHelper.class);
-			}
+			printInfo(ChatColor.GREEN + "Enabling support for LibsDisguises.");
+			ServiceLocator.provideService(LibsDisguisesHelper.class);
 		} else if (manager.getPlugin("iDisguise") != null) {
-			if (manager.getPlugin("ProtocolLib") != null) {
-				printInfo(ChatColor.GREEN + "Enabling support for iDisguise.");
-				ServiceLocator.provideService(DisguiseHelper.class);
-			} else {
-				printWarning(ChatColor.RED + "iDisguise requires ProtocolLib to function, which was not found. The /troll control and /troll duck commands have been disabled.");
-				ServiceLocator.provideService(NullDisguiseHelper.class);
-			}
+			printInfo(ChatColor.GREEN + "Enabling support for iDisguise.");
+			ServiceLocator.provideService(DisguiseHelper.class);
 		} else {
 			printWarning(ChatColor.RED + "Neither LibsDisguises nor iDisguise was found. The /troll control and /troll duck commands have been disabled.");
 			ServiceLocator.provideService(NullDisguiseHelper.class);
@@ -128,12 +109,12 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		
 		if (manager.getPlugin("ProtocolLib") != null) {
 			printInfo(ChatColor.GREEN + "Enabling support for ProtocolLib.");
-			ServiceLocator.provideService(ProtocolLibFakeEntityHelper.class);
 			ServiceLocator.provideService(ProtocolLibFakeBlockHelper.class);
+			ServiceLocator.provideService(ProtocolLibFakeLivingEntityHelper.class);
 		} else {
-			printWarning(ChatColor.RED + "ProtocolLib was not found. The /troll foolsgold, /troll nightmare, and /troll rewind commands have been disabled.");
-			ServiceLocator.provideService(NullFakeEntityHelper.class);
-			ServiceLocator.provideService(NullFakeBlockHelper.class);
+			printWarning(ChatColor.YELLOW + "ProtocolLib was not found. Reverting to basic protocol support. The /troll nightmare command has been disabled.");
+			reflect(getGameVersion(), "me.egg82.tcpp.reflection.block");
+			ServiceLocator.provideService(NullFakeLivingEntityHelper.class);
 		}
 		
 		if (manager.getPlugin("PowerNBT") != null) {
@@ -176,6 +157,8 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	
 	public void onEnable() {
 		super.onEnable();
+		
+		swapExceptionHandlers(new RollbarExceptionHandler("78062d4e18074560850d4d8e0805b564", "production", version, getServerId(), getName()));
 		
 		List<IMessageHandler> services = ServiceLocator.removeServices(IMessageHandler.class);
 		for (IMessageHandler handler : services) {
@@ -229,7 +212,9 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 			}
 		});
 		ThreadUtil.schedule(checkUpdate, 24L * 60L * 60L * 1000L);
-		ThreadUtil.schedule(checkExceptionLimitReached, 60L * 60L * 1000L);
+		if (exceptionHandler.hasLimit()) {
+			ThreadUtil.schedule(checkExceptionLimitReached, 2L * 60L * 1000L);
+		}
 		
 		ThreadUtil.submit(new Runnable() {
 			public void run() {
@@ -271,6 +256,8 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 		ServiceLocator.getService(CommandProcessor.class).clear();
 		ServiceLocator.getService(EventProcessor.class).clear();
 		
+		exceptionHandler.close();
+		
 		disableMessage();
 	}
 	
@@ -303,20 +290,35 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	private Runnable checkExceptionLimitReached = new Runnable() {
 		public void run() {
 			if (exceptionHandler.isLimitReached()) {
-				IExceptionHandler oldExceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
-				ServiceLocator.removeServices(IExceptionHandler.class);
-				
-				ServiceLocator.provideService(GameAnalyticsExceptionHandler.class, false);
-				exceptionHandler = ServiceLocator.getService(IExceptionHandler.class);
-				oldExceptionHandler.disconnect();
-				exceptionHandler.connect(new GameAnalyticsBuilder("250e5c508c3dd844ed1f8bd2a449d1a6", "dfb50b06e598e7a7ad9b3c84f7b118c12800ffce", version, getServerId()), getName());
-				exceptionHandler.setUnsentExceptions(oldExceptionHandler.getUnsentExceptions());
-				exceptionHandler.setUnsentLogs(oldExceptionHandler.getUnsentLogs());
+				swapExceptionHandlers(new GameAnalyticsExceptionHandler("250e5c508c3dd844ed1f8bd2a449d1a6", "dfb50b06e598e7a7ad9b3c84f7b118c12800ffce", version, getServerId(), getName()));
 			}
 			
-			ThreadUtil.schedule(checkExceptionLimitReached, 60L * 60L * 1000L);
+			if (exceptionHandler.hasLimit()) {
+				ThreadUtil.schedule(checkExceptionLimitReached, 10L * 60L * 1000L);
+			}
 		}
 	};
+	
+	private void swapExceptionHandlers(IExceptionHandler newHandler) {
+		List<IExceptionHandler> oldHandlers = ServiceLocator.removeServices(IExceptionHandler.class);
+		
+		exceptionHandler = newHandler;
+		ServiceLocator.provideService(exceptionHandler);
+		
+		Logger logger = getLogger();
+		if (exceptionHandler instanceof Handler) {
+			logger.addHandler((Handler) exceptionHandler);
+		}
+		
+		for (IExceptionHandler handler : oldHandlers) {
+			if (handler instanceof Handler) {
+				logger.removeHandler((Handler) handler);
+			}
+			
+			handler.close();
+			exceptionHandler.addLogs(handler.getUnsentLogs());
+		}
+	}
 	
 	private void enableMessage() {
 		printInfo(ChatColor.GREEN + "Enabled.");

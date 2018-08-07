@@ -1,10 +1,10 @@
-package me.egg82.tcpp.events.player.playerQuit;
+package me.egg82.tcpp.events.player.playerTeleport;
 
 import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import me.egg82.tcpp.reflection.block.IFakeBlockHelper;
 import me.egg82.tcpp.registries.LsdRegistry;
@@ -14,7 +14,7 @@ import ninja.egg82.patterns.registries.IRegistry;
 import ninja.egg82.plugin.handlers.events.EventHandler;
 import ninja.egg82.utils.ThreadUtil;
 
-public class LsdEventCommand extends EventHandler<PlayerQuitEvent> {
+public class LsdEventCommand extends EventHandler<PlayerTeleportEvent> {
 	//vars
 	private IRegistry<UUID, IConcurrentSet<Location>> lsdRegistry = ServiceLocator.getService(LsdRegistry.class);
 	private IFakeBlockHelper fakeBlockHelper = ServiceLocator.getService(IFakeBlockHelper.class);
@@ -28,6 +28,10 @@ public class LsdEventCommand extends EventHandler<PlayerQuitEvent> {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
+		if (event.isCancelled()) {
+			return;
+		}
+		
 		Player player = event.getPlayer();
 		UUID uuid = player.getUniqueId();
 		

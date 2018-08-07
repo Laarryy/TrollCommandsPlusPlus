@@ -68,7 +68,7 @@ public class ClumsyTickCommand extends TickHandler {
 				items.setAmount(itemsAmount - 1);
 			}
 			
-			player.getWorld().dropItemNaturally(BlockUtil.getHighestSolidBlock(LocationUtil.getLocationBehind(player.getLocation(), MathUtil.random(1.5d, 3.0d))).add(0.0d, 1.0d, 0.0d), droppedItem);
+			player.getWorld().dropItemNaturally(BlockUtil.getHighestSolidBlock(LocationUtil.getLocationBehind(player.getLocation(), MathUtil.random(1.5d, 3.0d), false)).add(0.0d, 1.0d, 0.0d), droppedItem);
 		}
 	}
 }

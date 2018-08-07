@@ -8,14 +8,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
 import org.bukkit.help.HelpTopic;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.bukkit.reflection.player.IPlayerHelper;
+import ninja.egg82.bukkit.reflection.entity.IEntityHelper;
 import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.nbt.core.INBTCompound;
 import ninja.egg82.nbt.reflection.INBTHelper;
@@ -24,7 +24,7 @@ import ninja.egg82.plugin.handlers.CommandHandler;
 
 public class AttachCommand extends CommandHandler {
 	//vars
-	private IPlayerHelper playerHelper = ServiceLocator.getService(IPlayerHelper.class);
+	private IEntityHelper entityHelper = ServiceLocator.getService(IEntityHelper.class);
 	private INBTHelper nbtHelper = ServiceLocator.getService(INBTHelper.class);
 	private ArrayList<String> commandNames = new ArrayList<String>();
 	
@@ -88,7 +88,7 @@ public class AttachCommand extends CommandHandler {
 			return;
 		}
 		
-		ItemStack item = playerHelper.getItemInMainHand((Player) sender.getHandle());
+		ItemStack item = entityHelper.getItemInMainHand((Entity) sender.getHandle());
 		
 		if (item == null || item.getType() == Material.AIR) {
 			sender.sendMessage(ChatColor.RED + "Item is invalid.");

@@ -28,7 +28,7 @@ public class SpawnVillagerCommand extends LuckyCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		Villager v = player.getWorld().spawn(BlockUtil.getHighestSolidBlock(LocationUtil.getRandomPointAround(player.getLocation(), 1.5d)).add(0.0d, 1.0d, 0.0d), Villager.class);
+		Villager v = player.getWorld().spawn(BlockUtil.getHighestSolidBlock(LocationUtil.getRandomPointAround(player.getLocation(), 1.5d, false)).add(0.0d, 1.0d, 0.0d), Villager.class);
 		luckyVillagerRegistry.setRegister(v.getUniqueId(), v);
 		v.setCustomName(ChatColor.GOLD + "Lucky Villager");
 		v.setCustomNameVisible(true);

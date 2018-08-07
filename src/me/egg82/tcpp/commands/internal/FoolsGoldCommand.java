@@ -18,14 +18,12 @@ import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.plugin.handlers.CommandHandler;
-import ninja.egg82.protocol.reflection.IFakeBlockHelper;
 
 public class FoolsGoldCommand extends CommandHandler {
 	//vars
 	private IVariableRegistry<UUID> foolsGoldRegistry = ServiceLocator.getService(FoolsGoldRegistry.class);
 	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
-	private IFakeBlockHelper fakeBlockHelper = ServiceLocator.getService(IFakeBlockHelper.class);
 	private FoolsGoldHelper foolsGoldHelper = ServiceLocator.getService(FoolsGoldHelper.class);
 	
 	//constructor
@@ -67,10 +65,6 @@ public class FoolsGoldCommand extends CommandHandler {
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
 			Bukkit.getServer().dispatchCommand((CommandSender) sender.getHandle(), "troll help " + name);
-			return;
-		}
-		if (!fakeBlockHelper.isValidLibrary()) {
-			sender.sendMessage(ChatColor.RED + "This command has been disabled because there is no recognized backing library available. Please install one and restart the server to enable this command.");
 			return;
 		}
 		

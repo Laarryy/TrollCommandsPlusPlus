@@ -10,7 +10,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
 import me.egg82.tcpp.registries.RandomBreakRegistry;
-import ninja.egg82.bukkit.reflection.player.IPlayerHelper;
+import ninja.egg82.bukkit.reflection.entity.IEntityHelper;
 import ninja.egg82.filters.EnumFilter;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
@@ -21,7 +21,7 @@ public class RandomBreakEventCommand extends EventHandler<BlockBreakEvent> {
 	//vars
 	private IVariableRegistry<UUID> randomBreakRegistry = ServiceLocator.getService(RandomBreakRegistry.class);
 	
-	private IPlayerHelper playerHelper = ServiceLocator.getService(IPlayerHelper.class);
+	private IEntityHelper entityHelper = ServiceLocator.getService(IEntityHelper.class);
 	private Material[] materials = null;
 	
 	//constructor
@@ -59,7 +59,7 @@ public class RandomBreakEventCommand extends EventHandler<BlockBreakEvent> {
 			event.setCancelled(true);
 			
 			if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-				Collection<ItemStack> drops = event.getBlock().getDrops(playerHelper.getItemInMainHand(player));
+				Collection<ItemStack> drops = event.getBlock().getDrops(entityHelper.getItemInMainHand(player));
 				for (ItemStack item : drops) {
 					player.getWorld().dropItemNaturally(event.getBlock().getLocation(), new ItemStack(materials[MathUtil.fairRoundedRandom(0, materials.length - 1)], item.getAmount()));
 				}

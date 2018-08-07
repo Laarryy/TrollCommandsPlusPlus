@@ -14,9 +14,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import me.egg82.tcpp.databases.CommandSearchDatabase;
+import ninja.egg82.analytics.exceptions.IExceptionHandler;
 import ninja.egg82.bukkit.BasePlugin;
 import ninja.egg82.bukkit.utils.CommandUtil;
-import ninja.egg82.exceptionHandlers.IExceptionHandler;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.plugin.handlers.CommandHandler;
 import ninja.egg82.plugin.utils.PluginReflectUtil;
@@ -207,7 +207,10 @@ public class TrollCommand extends CommandHandler {
 			try {
 				run = c.newInstance();
 			} catch (Exception ex) {
-				ServiceLocator.getService(IExceptionHandler.class).silentException(ex);
+				IExceptionHandler handler = ServiceLocator.getService(IExceptionHandler.class);
+				if (handler != null) {
+					handler.sendException(ex);
+				}
 				return null;
 			}
 			

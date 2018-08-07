@@ -11,16 +11,18 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 
+import me.egg82.tcpp.reflection.block.IFakeBlockHelper;
 import me.egg82.tcpp.registries.FoolsGoldChunkRegistry;
 import me.egg82.tcpp.registries.FoolsGoldRegistry;
+import ninja.egg82.bukkit.core.BlockData;
 import ninja.egg82.bukkit.reflection.material.IMaterialHelper;
+import ninja.egg82.bukkit.utils.BlockUtil;
 import ninja.egg82.bukkit.utils.TaskUtil;
 import ninja.egg82.concurrent.DynamicConcurrentDeque;
 import ninja.egg82.concurrent.IConcurrentDeque;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
 import ninja.egg82.patterns.tuples.pair.Pair;
-import ninja.egg82.protocol.reflection.IFakeBlockHelper;
 import ninja.egg82.utils.MathUtil;
 import ninja.egg82.utils.ThreadUtil;
 
@@ -135,6 +137,7 @@ public class FoolsGoldHelper {
 			}
 		}
 	}
+	@SuppressWarnings("deprecation")
 	private void removeFakeBlocks(Player player, IConcurrentDeque<Location> blocks, int tries) {
 		if (!player.getWorld().isChunkLoaded(player.getLocation().getBlockX() >> 4, player.getLocation().getBlockZ() >> 4)) {
 			if (tries < 10) {
@@ -147,10 +150,14 @@ public class FoolsGoldHelper {
 			return;
 		}
 		
+		List<BlockData> data = new ArrayList<BlockData>();
 		for (Location b : blocks) {
-			fakeBlockHelper.updateBlock(player, b, b.getBlock().getType());
+			data.add(new BlockData(b, b.getBlock().getType(), b.getBlock().getData(), null));
 		}
+		
+		fakeBlockHelper.sendMulti(player, data);
 	}
+	@SuppressWarnings("deprecation")
 	private void updateFakeBlocks(Player player, Location from, Location to, IConcurrentDeque<Location> blocks, IConcurrentDeque<Pair<Integer, Integer>> chunks, int tries) {
 		if (!from.getWorld().isChunkLoaded(from.getBlockX() >> 4, from.getBlockZ() >> 4) || !to.getWorld().isChunkLoaded(to.getBlockX() >> 4, to.getBlockZ() >> 4)) {
 			if (tries < 10) {
@@ -181,7 +188,7 @@ public class FoolsGoldHelper {
 				if (from.getWorld().isChunkLoaded(loc.getBlockX() >> 4, loc.getBlockZ() >> 4)) {
 					Pair<Integer, Integer> chunk = new Pair<Integer, Integer>(loc.getBlockX() >> 4, loc.getBlockZ() >> 4);
 					if (!currentChunks.contains(chunk)) {
-						fakeBlockHelper.updateBlock(player, loc, loc.getBlock().getType());
+						fakeBlockHelper.send(player, new BlockData(loc, loc.getBlock().getType(), loc.getBlock().getData(), null));
 						removedBlocks.add(loc);
 						chunks.remove(chunk);
 					}
@@ -243,10 +250,11 @@ public class FoolsGoldHelper {
 				continue;
 			}
 			
+			fakeBlockHelper.send(player, loc, type, (byte) 0);
+			
 			retVal.add(loc);
 		}
 		
-		fakeBlockHelper.updateBlocks(player, retVal.toArray(new Location[0]), type);
 		return retVal;
 	}
 }

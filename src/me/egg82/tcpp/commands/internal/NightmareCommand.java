@@ -14,30 +14,27 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.reflection.entity.IFakeLivingEntity;
+import me.egg82.tcpp.reflection.entity.IFakeLivingEntityHelper;
 import me.egg82.tcpp.registries.NightmareRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.bukkit.BasePlugin;
 import ninja.egg82.bukkit.utils.BlockUtil;
 import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.bukkit.utils.LocationUtil;
-import ninja.egg82.concurrent.FixedConcurrentDeque;
-import ninja.egg82.concurrent.IConcurrentDeque;
+import ninja.egg82.concurrent.FixedConcurrentSet;
+import ninja.egg82.concurrent.IConcurrentSet;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.patterns.registries.IRegistry;
 import ninja.egg82.plugin.handlers.CommandHandler;
-import ninja.egg82.protocol.core.IFakeLivingEntity;
-import ninja.egg82.protocol.reflection.IFakeEntityHelper;
 import ninja.egg82.utils.MathUtil;
 import ninja.egg82.utils.ThreadUtil;
 
 public class NightmareCommand extends CommandHandler {
 	//vars
-	private IVariableRegistry<UUID> nightmareRegistry = ServiceLocator.getService(NightmareRegistry.class);
+	private IRegistry<UUID, IConcurrentSet<IFakeLivingEntity>> nightmareRegistry = ServiceLocator.getService(NightmareRegistry.class);
 	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
-	private IFakeEntityHelper fakeEntityHelper = ServiceLocator.getService(IFakeEntityHelper.class);
-	
-	private String gameVersion = ServiceLocator.getService(BasePlugin.class).getGameVersion();
+	private IFakeLivingEntityHelper fakeEntityHelper = ServiceLocator.getService(IFakeLivingEntityHelper.class);
 	
 	//constructor
 	public NightmareCommand() {
@@ -82,10 +79,6 @@ public class NightmareCommand extends CommandHandler {
 		}
 		if (!fakeEntityHelper.isValidLibrary()) {
 			sender.sendMessage(ChatColor.RED + "This command has been disabled because there is no recognized backing library available. Please install one and restart the server to enable this command.");
-			return;
-		}
-		if (gameVersion.equals("1.8") || gameVersion.equals("1.8.1") || gameVersion.equals("1.8.3") || gameVersion.equals("1.8.8")) {
-			sender.sendMessage(ChatColor.RED + "This command has been disabled because this version of Minecraft doesn't support it.");
 			return;
 		}
 		
@@ -139,28 +132,28 @@ public class NightmareCommand extends CommandHandler {
 		Location[] zombieLocs = LocationUtil.getCircleAround(player.getLocation(), 3, MathUtil.fairRoundedRandom(6, 9));
 		Location[] zombie2Locs = LocationUtil.getCircleAround(player.getLocation(), 5, MathUtil.fairRoundedRandom(8, 12));
 		
-		IConcurrentDeque<IFakeLivingEntity> entities = new FixedConcurrentDeque<IFakeLivingEntity>(zombieLocs.length + zombie2Locs.length);
+		IConcurrentSet<IFakeLivingEntity> entities = new FixedConcurrentSet<IFakeLivingEntity>(zombieLocs.length + zombie2Locs.length);
 		
 		ThreadUtil.submit(new Runnable() {
 			public void run() {
 				for (int i = 0; i < zombieLocs.length; i++) {
-					IFakeLivingEntity e = fakeEntityHelper.createEntity(zombieLocs[i], EntityType.ZOMBIE);
-					e.addPlayer(player);
+					IFakeLivingEntity e = fakeEntityHelper.spawn(zombieLocs[i], EntityType.ZOMBIE);
+					e.addVisibilityToPlayer(player);
 					Vector v = player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23);
 					if (LocationUtil.isFinite(v)) {
-						e.moveTo(BlockUtil.getHighestSolidBlock(e.getLocation().add(v)).add(0.0d, 1.0d, 0.0d));
+						e.moveToward(BlockUtil.getHighestSolidBlock(e.getLocation().add(v)).add(0.0d, 1.0d, 0.0d));
 					}
-					e.lookTo(player.getEyeLocation());
+					e.lookToward(player.getEyeLocation());
 					entities.add(e);
 				}
 				for (int i = 0; i < zombie2Locs.length; i++) {
-					IFakeLivingEntity e = fakeEntityHelper.createEntity(zombie2Locs[i], EntityType.ZOMBIE);
-					e.addPlayer(player);
+					IFakeLivingEntity e = fakeEntityHelper.spawn(zombie2Locs[i], EntityType.ZOMBIE);
+					e.addVisibilityToPlayer(player);
 					Vector v = player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.23);
 					if (LocationUtil.isFinite(v)) {
-						e.moveTo(BlockUtil.getHighestSolidBlock(e.getLocation().add(v)).add(0.0d, 1.0d, 0.0d));
+						e.moveToward(BlockUtil.getHighestSolidBlock(e.getLocation().add(v)).add(0.0d, 1.0d, 0.0d));
 					}
-					e.lookTo(player.getEyeLocation());
+					e.lookToward(player.getEyeLocation());
 					entities.add(e);
 				}
 			}
@@ -188,14 +181,13 @@ public class NightmareCommand extends CommandHandler {
 			}
 		}
 	}
-	@SuppressWarnings("unchecked")
 	private void eUndo(UUID uuid, Player player) {
-		IConcurrentDeque<IFakeLivingEntity> entities = nightmareRegistry.getRegister(uuid, IConcurrentDeque.class);
+		IConcurrentSet<IFakeLivingEntity> entities = nightmareRegistry.getRegister(uuid);
 		
 		ThreadUtil.submit(new Runnable() {
 			public void run() {
 				for (IFakeLivingEntity e : entities) {
-					e.destroy();
+					e.kill();
 				}
 			}
 		});
@@ -204,14 +196,13 @@ public class NightmareCommand extends CommandHandler {
 		
 		sender.sendMessage(player.getName() + " is no longer living in a nightmare.");
 	}
-	@SuppressWarnings("unchecked")
 	private void eUndo(UUID uuid, OfflinePlayer player) {
-		IConcurrentDeque<IFakeLivingEntity> entities = nightmareRegistry.getRegister(uuid, IConcurrentDeque.class);
+		IConcurrentSet<IFakeLivingEntity> entities = nightmareRegistry.getRegister(uuid);
 		
 		ThreadUtil.submit(new Runnable() {
 			public void run() {
 				for (IFakeLivingEntity e : entities) {
-					e.destroy();
+					e.kill();
 				}
 			}
 		});

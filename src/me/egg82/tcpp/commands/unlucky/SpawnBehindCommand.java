@@ -41,7 +41,7 @@ public class SpawnBehindCommand extends LuckyCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		Location spawnLocation = BlockUtil.getHighestSolidBlock(LocationUtil.getLocationBehind(player.getLocation(), 3.0d)).add(0.0d, 1.0d, 0.0d);
+		Location spawnLocation = BlockUtil.getHighestSolidBlock(LocationUtil.getLocationBehind(player.getLocation(), 3.0d, false)).add(0.0d, 1.0d, 0.0d);
 		int numMobs = MathUtil.fairRoundedRandom(4, 8);
 		
 		for (int i = 0; i < numMobs; i++) {

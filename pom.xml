@@ -73,6 +73,13 @@
               <minimizeJar>false</minimizeJar>
               <relocations>
                 <relocation>
+                  <pattern>com.comphenix</pattern>
+                  <shadedPattern>me.egg82.tcpp.extern.com.comphenix</shadedPattern>
+                  <excludes>
+                    <exclude>com.comphenix.protocol.*</exclude>
+                  </excludes>
+                </relocation>
+                <relocation>
                   <pattern>com.github</pattern>
                   <shadedPattern>me.egg82.tcpp.extern.com.github</shadedPattern>
                 </relocation>
@@ -181,6 +188,10 @@
       <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
     </repository>
     <repository>
+      <id>dmulloy2-repo</id>
+      <url>http://repo.dmulloy2.net/nexus/repository/public/</url>
+    </repository>
+    <repository>
       <id>bstats-repo</id>
       <url>http://repo.bstats.org/content/repositories/releases/</url>
     </repository>
@@ -214,18 +225,18 @@
       <version>1.12-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
+    <!-- <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
       <version>1.12.2-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
-    </dependency>
-    <!-- <dependency>
+    </dependency> -->
+    <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
       <version>1.13-pre7-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
-    </dependency> -->
+    </dependency>
     <dependency>
       <groupId>org.bstats</groupId>
       <artifactId>bstats-bukkit</artifactId>
@@ -234,22 +245,22 @@
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>bukkit-1.12</artifactId>
-      <version>1.1.15</version>
+      <version>1.1.17</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>bukkit-1.13</artifactId>
-      <version>1.1.15</version>
+      <version>1.1.16</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>bungee</artifactId>
-      <version>1.0.9</version>
+      <version>1.0.10</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>plugin-common</artifactId>
-      <version>1.0.9</version>
+      <version>1.1.10</version>
     </dependency>
     <dependency>
       <groupId>org.spongepowered</groupId>
@@ -270,11 +281,6 @@
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>nbt-lib</artifactId>
       <version>2.1.1</version>
-    </dependency>
-    <dependency>
-      <groupId>ninja.egg82.lib</groupId>
-      <artifactId>protocol-lib</artifactId>
-      <version>2.0.13</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
@@ -304,7 +310,7 @@
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
       <artifactId>service-lib</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.3</version>
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
@@ -313,13 +319,8 @@
     </dependency>
     <dependency>
       <groupId>ninja.egg82.lib</groupId>
-      <artifactId>exception-lib</artifactId>
-      <version>2.0.8</version>
-    </dependency>
-    <dependency>
-      <groupId>com.github.ben-manes.caffeine</groupId>
-      <artifactId>caffeine</artifactId>
-      <version>2.6.2</version>
+      <artifactId>analytics-lib</artifactId>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>net.gravitydevelopment.updater</groupId>
@@ -341,6 +342,17 @@
       <artifactId>coreprotect</artifactId>
       <version>2.14.2</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.comphenix.protocol</groupId>
+      <artifactId>ProtocolLib-API</artifactId>
+      <version>4.3.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.comphenix.packetwrapper</groupId>
+      <artifactId>PacketWrapper</artifactId>
+      <version>1.13-R0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <!-- 1.11 compatibility -->

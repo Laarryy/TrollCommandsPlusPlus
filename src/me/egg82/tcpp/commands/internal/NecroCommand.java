@@ -18,7 +18,6 @@ import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.registries.NecroRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.bukkit.reflection.entity.IEntityHelper;
-import ninja.egg82.bukkit.reflection.player.IPlayerHelper;
 import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.disguise.reflection.IDisguiseHelper;
 import ninja.egg82.patterns.ServiceLocator;
@@ -31,7 +30,6 @@ public class NecroCommand extends CommandHandler {
 	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	private IDisguiseHelper disguiseHelper = ServiceLocator.getService(IDisguiseHelper.class);
-	private IPlayerHelper playerHelper = ServiceLocator.getService(IPlayerHelper.class);
 	private IEntityHelper entityHelper = ServiceLocator.getService(IEntityHelper.class);
 	
 	//constructor
@@ -122,7 +120,7 @@ public class NecroCommand extends CommandHandler {
 		
 		ItemStack[] inventory = player.getInventory().getContents();
 		player.getInventory().clear();
-		playerHelper.setItemInMainHand(player, getInfinityBow());
+		entityHelper.setItemInMainHand(player, getInfinityBow());
 		player.getInventory().addItem(new ItemStack(Material.ARROW, 1));
 		
 		if (Math.random() <= 0.01) {

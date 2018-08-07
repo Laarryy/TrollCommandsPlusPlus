@@ -6,27 +6,30 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.reflection.block.IFakeBlockHelper;
 import me.egg82.tcpp.registries.LsdRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
+import ninja.egg82.bukkit.core.BlockData;
 import ninja.egg82.bukkit.utils.CommandUtil;
-import ninja.egg82.concurrent.DynamicConcurrentDeque;
-import ninja.egg82.concurrent.IConcurrentDeque;
+import ninja.egg82.concurrent.DynamicConcurrentSet;
+import ninja.egg82.concurrent.IConcurrentSet;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.patterns.tuples.Triplet;
+import ninja.egg82.patterns.registries.IRegistry;
 import ninja.egg82.plugin.handlers.CommandHandler;
-import ninja.egg82.protocol.reflection.IFakeBlockHelper;
+import ninja.egg82.utils.ThreadUtil;
 
 public class LsdCommand extends CommandHandler {
 	//vars
-	private IVariableRegistry<UUID> lsdRegistry = ServiceLocator.getService(LsdRegistry.class);
+	private IRegistry<UUID, IConcurrentSet<Location>> lsdRegistry = ServiceLocator.getService(LsdRegistry.class);
 	
 	private IFakeBlockHelper fakeBlockHelper = ServiceLocator.getService(IFakeBlockHelper.class);
+	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
@@ -68,10 +71,6 @@ public class LsdCommand extends CommandHandler {
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
 			Bukkit.getServer().dispatchCommand((CommandSender) sender.getHandle(), "troll help " + name);
-			return;
-		}
-		if (!fakeBlockHelper.isValidLibrary()) {
-			sender.sendMessage(ChatColor.RED + "This command has been disabled because there is no recognized backing library available. Please install one and restart the server to enable this command.");
 			return;
 		}
 		
@@ -122,7 +121,7 @@ public class LsdCommand extends CommandHandler {
 		}
 	}
 	private void e(UUID uuid, Player player) {
-		lsdRegistry.setRegister(uuid, new DynamicConcurrentDeque<Triplet<String, Integer, Integer>>());
+		lsdRegistry.setRegister(uuid, new DynamicConcurrentSet<Location>());
 		metricsHelper.commandWasRun(this);
 		
 		sender.sendMessage(player.getName() + " is now on LSD.");
@@ -143,20 +142,35 @@ public class LsdCommand extends CommandHandler {
 			}
 		}
 	}
-	@SuppressWarnings({ "unchecked", "deprecation" })
 	private void eUndo(UUID uuid, Player player) {
-		IConcurrentDeque<Triplet<String, Integer, Integer>> bLocs = lsdRegistry.getRegister(uuid, IConcurrentDeque.class);
+		IConcurrentSet<Location> bLocs = lsdRegistry.removeRegister(uuid);
 		
-		for (Triplet<String, Integer, Integer> chunk : bLocs) {
-			Bukkit.getWorld(chunk.getLeft()).refreshChunk(chunk.getCenter().intValue(), chunk.getRight().intValue());
-		}
-		
-		lsdRegistry.removeRegister(uuid);
+		ThreadUtil.submit(new Runnable() {
+			@SuppressWarnings("deprecation")
+			public void run() {
+				List<BlockData> list = new ArrayList<BlockData>();
+				for (Location l : bLocs) {
+					list.add(new BlockData(l, l.getBlock().getType(), l.getBlock().getData(), null));
+				}
+				fakeBlockHelper.sendAllMulti(list);
+			}
+		});
 		
 		sender.sendMessage(player.getName() + " is no longer on LSD.");
 	}
 	private void eUndo(UUID uuid, OfflinePlayer player) {
-		lsdRegistry.removeRegister(uuid);
+		IConcurrentSet<Location> bLocs = lsdRegistry.removeRegister(uuid);
+		
+		ThreadUtil.submit(new Runnable() {
+			@SuppressWarnings("deprecation")
+			public void run() {
+				List<BlockData> list = new ArrayList<BlockData>();
+				for (Location l : bLocs) {
+					list.add(new BlockData(l, l.getBlock().getType(), l.getBlock().getData(), null));
+				}
+				fakeBlockHelper.sendAllMulti(list);
+			}
+		});
 		
 		sender.sendMessage(player.getName() + " is no longer on LSD.");
 	}

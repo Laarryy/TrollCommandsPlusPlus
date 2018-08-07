@@ -11,7 +11,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import me.egg82.tcpp.registries.RandomPotionRegistry;
-import ninja.egg82.bukkit.reflection.player.IPlayerHelper;
+import ninja.egg82.bukkit.reflection.entity.IEntityHelper;
 import ninja.egg82.filters.EnumFilter;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
@@ -22,7 +22,7 @@ public class RandomPotionEventCommand extends EventHandler<PlayerItemConsumeEven
 	//vars
 	private IVariableRegistry<UUID> randomPotionRegistry = ServiceLocator.getService(RandomPotionRegistry.class);
 	
-	private IPlayerHelper playerUtil = ServiceLocator.getService(IPlayerHelper.class);
+	private IEntityHelper entityHelper = ServiceLocator.getService(IEntityHelper.class);
 	private PotionEffectType[] effects = null;
 	
 	//constructor
@@ -44,17 +44,17 @@ public class RandomPotionEventCommand extends EventHandler<PlayerItemConsumeEven
 		Player player = event.getPlayer();
 		
 		if (randomPotionRegistry.hasRegister(player.getUniqueId())) {
-			ItemStack items = playerUtil.getItemInMainHand(player);
+			ItemStack items = entityHelper.getItemInMainHand(player);
 			
 			if (items.getType() == Material.POTION) {
 				if (player.getGameMode() != GameMode.CREATIVE) {
 					int itemsAmount = items.getAmount();
 					
 					if (itemsAmount == 1) {
-						playerUtil.setItemInMainHand(player, null);
+						entityHelper.setItemInMainHand(player, null);
 					} else {
 						items.setAmount(itemsAmount - 1);
-						playerUtil.setItemInMainHand(player, items);
+						entityHelper.setItemInMainHand(player, items);
 					}
 				}
 				

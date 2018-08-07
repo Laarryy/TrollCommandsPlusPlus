@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
-import ninja.egg82.bukkit.reflection.player.IPlayerHelper;
+import ninja.egg82.bukkit.reflection.entity.IEntityHelper;
 import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.nbt.core.INBTCompound;
 import ninja.egg82.nbt.reflection.INBTHelper;
@@ -20,7 +20,7 @@ import ninja.egg82.plugin.handlers.events.EventHandler;
 public class AttachEventCommand extends EventHandler<BlockBreakEvent> {
 	//vars
 	private INBTHelper nbtHelper = ServiceLocator.getService(INBTHelper.class);
-	private IPlayerHelper playerHelper = ServiceLocator.getService(IPlayerHelper.class);
+	private IEntityHelper entityHelper = ServiceLocator.getService(IEntityHelper.class);
 	
 	//constructor
 	public AttachEventCommand() {
@@ -46,7 +46,7 @@ public class AttachEventCommand extends EventHandler<BlockBreakEvent> {
 		event.setCancelled(true);
 		
 		if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-			Collection<ItemStack> drops = event.getBlock().getDrops(playerHelper.getItemInMainHand(player));
+			Collection<ItemStack> drops = event.getBlock().getDrops(entityHelper.getItemInMainHand(player));
 			for (ItemStack item : drops) {
 				INBTCompound itemCompound = nbtHelper.getCompound(item);
 				itemCompound.setString("tcppSender", blockCompound.getString("tcppSender"));

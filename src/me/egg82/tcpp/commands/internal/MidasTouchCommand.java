@@ -6,30 +6,34 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.egg82.tcpp.enums.PermissionsType;
+import me.egg82.tcpp.reflection.block.IFakeBlockHelper;
 import me.egg82.tcpp.registries.MaterialNameRegistry;
 import me.egg82.tcpp.registries.MidasTouchRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.bukkit.utils.CommandUtil;
+import ninja.egg82.concurrent.DynamicConcurrentSet;
+import ninja.egg82.concurrent.IConcurrentSet;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IRegistry;
 import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.patterns.tuples.pair.Boolean2Pair;
+import ninja.egg82.patterns.tuples.pair.Pair;
 import ninja.egg82.plugin.handlers.CommandHandler;
-import ninja.egg82.protocol.reflection.IFakeBlockHelper;
+import ninja.egg82.utils.ThreadUtil;
 
 public class MidasTouchCommand extends CommandHandler {
 	//vars
-	private IRegistry<UUID, Boolean2Pair<Material>> midasTouchRegistry = ServiceLocator.getService(MidasTouchRegistry.class);
+	private IRegistry<UUID, Pair<Material, IConcurrentSet<Location>>> midasTouchRegistry = ServiceLocator.getService(MidasTouchRegistry.class);
 	private ArrayList<String> materialNames = new ArrayList<String>();
 	private IVariableRegistry<String> materialNameRegistry = ServiceLocator.getService(MaterialNameRegistry.class);
-	
 	private IFakeBlockHelper fakeBlockHelper = ServiceLocator.getService(IFakeBlockHelper.class);
+	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
@@ -86,7 +90,7 @@ public class MidasTouchCommand extends CommandHandler {
 			sender.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
 			return;
 		}
-		if (!CommandUtil.isArrayOfAllowedLength(args, 1, 2, 3)) {
+		if (!CommandUtil.isArrayOfAllowedLength(args, 1, 2)) {
 			sender.sendMessage(ChatColor.RED + "Incorrect command usage!");
 			String name = getClass().getSimpleName();
 			name = name.substring(0, name.length() - 7).toLowerCase();
@@ -102,14 +106,6 @@ public class MidasTouchCommand extends CommandHandler {
 				return;
 			}
 		}
-		boolean real = true;
-		if (args.length >= 3) {
-			real = Boolean.parseBoolean(args[2]);
-			if (!real && !fakeBlockHelper.isValidLibrary()) {
-				sender.sendMessage(ChatColor.RED + "The options you provided attempted to use a library that was not installed. Please use different options or install the required library and restart the server.");
-				return;
-			}
-		}
 		
 		List<Player> players = CommandUtil.getPlayers(CommandUtil.parseAtSymbol(args[0], CommandUtil.isPlayer((CommandSender) sender.getHandle()) ? ((Player) sender.getHandle()).getLocation() : null));
 		if (players.size() > 0) {
@@ -121,7 +117,7 @@ public class MidasTouchCommand extends CommandHandler {
 						continue;
 					}
 					
-					e(uuid, player, type, real);
+					e(uuid, player, type);
 				} else {
 					eUndo(uuid, player);
 				}
@@ -151,17 +147,17 @@ public class MidasTouchCommand extends CommandHandler {
 					return;
 				}
 				
-				e(uuid, player, type, real);
+				e(uuid, player, type);
 			} else {
 				eUndo(uuid, player);
 			}
 		}
 	}
-	private void e(UUID uuid, Player player, Material material, boolean real) {
-		midasTouchRegistry.setRegister(uuid, new Boolean2Pair<Material>(material, real));
+	private void e(UUID uuid, Player player, Material material) {
+		midasTouchRegistry.setRegister(uuid, new Pair<Material, IConcurrentSet<Location>>(material, new DynamicConcurrentSet<Location>()));
 		metricsHelper.commandWasRun(this);
 		
-		sender.sendMessage(player.getName() + " is now King Midas." + ((real) ? "" : " (Note that you won't be able to see block changes, but they can)"));
+		sender.sendMessage(player.getName() + " is now King Midas.");
 	}
 	
 	protected void onUndo() {
@@ -180,12 +176,28 @@ public class MidasTouchCommand extends CommandHandler {
 		}
 	}
 	private void eUndo(UUID uuid, Player player) {
-		midasTouchRegistry.removeRegister(uuid);
+		Pair<Material, IConcurrentSet<Location>> pair = midasTouchRegistry.removeRegister(uuid);
+		
+		ThreadUtil.submit(new Runnable() {
+			public void run() {
+				for (Location l : pair.getRight()) {
+					fakeBlockHelper.deque(l);
+				}
+			}
+		});
 		
 		sender.sendMessage(player.getName() + " is no longer King Midas.");
 	}
 	private void eUndo(UUID uuid, OfflinePlayer player) {
-		midasTouchRegistry.removeRegister(uuid);
+		Pair<Material, IConcurrentSet<Location>> pair = midasTouchRegistry.removeRegister(uuid);
+		
+		ThreadUtil.submit(new Runnable() {
+			public void run() {
+				for (Location l : pair.getRight()) {
+					fakeBlockHelper.deque(l);
+				}
+			}
+		});
 		
 		sender.sendMessage(player.getName() + " is no longer King Midas.");
 	}

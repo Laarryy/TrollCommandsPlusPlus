@@ -28,7 +28,7 @@ public class GoldenChickenCommand extends LuckyCommand {
 	
 	//private
 	protected void onExecute(long elapsedMilliseconds) {
-		Chicken c = player.getWorld().spawn(BlockUtil.getHighestSolidBlock(LocationUtil.getRandomPointAround(player.getLocation(), 1.5d)).add(0.0d, 1.0d, 0.0d), Chicken.class);
+		Chicken c = player.getWorld().spawn(BlockUtil.getHighestSolidBlock(LocationUtil.getRandomPointAround(player.getLocation(), 1.5d, false)).add(0.0d, 1.0d, 0.0d), Chicken.class);
 		luckyChickenRegistry.setRegister(c.getUniqueId(), c);
 		c.setCustomName(ChatColor.GOLD + "Lucky Chicken");
 		c.setCustomNameVisible(true);

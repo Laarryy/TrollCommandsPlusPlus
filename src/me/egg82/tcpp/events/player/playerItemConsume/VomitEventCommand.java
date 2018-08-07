@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 
 import me.egg82.tcpp.registries.VomitRegistry;
-import ninja.egg82.bukkit.reflection.player.IPlayerHelper;
+import ninja.egg82.bukkit.reflection.entity.IEntityHelper;
 import ninja.egg82.bukkit.utils.BlockUtil;
 import ninja.egg82.bukkit.utils.LocationUtil;
 import ninja.egg82.patterns.ServiceLocator;
@@ -20,7 +20,7 @@ public class VomitEventCommand extends EventHandler<PlayerItemConsumeEvent> {
 	//vars
 	private IVariableRegistry<UUID> vomitRegistry = ServiceLocator.getService(VomitRegistry.class);
 	
-	private IPlayerHelper playerUtil = ServiceLocator.getService(IPlayerHelper.class);
+	private IEntityHelper entityHelper = ServiceLocator.getService(IEntityHelper.class);
 	
 	//constructor
 	public VomitEventCommand() {
@@ -38,7 +38,7 @@ public class VomitEventCommand extends EventHandler<PlayerItemConsumeEvent> {
 		Player player = event.getPlayer();
 		
 		if (vomitRegistry.hasRegister(player.getUniqueId())) {
-			ItemStack items = playerUtil.getItemInMainHand(player);
+			ItemStack items = entityHelper.getItemInMainHand(player);
 			
 			if (items == null || items.getType() == Material.AIR) {
 				items = event.getItem();
@@ -50,13 +50,13 @@ public class VomitEventCommand extends EventHandler<PlayerItemConsumeEvent> {
 			int itemsAmount = items.getAmount();
 			
 			if (itemsAmount == 1) {
-				playerUtil.setItemInMainHand(player, null);
+				entityHelper.setItemInMainHand(player, null);
 			} else {
 				items.setAmount(itemsAmount - 1);
-				playerUtil.setItemInMainHand(player, items);
+				entityHelper.setItemInMainHand(player, items);
 			}
 			
-			player.getWorld().dropItemNaturally(BlockUtil.getHighestSolidBlock(LocationUtil.getLocationInFront(player.getLocation(), MathUtil.random(3.0d, 5.0d))).add(0.0d, 1.0d, 0.0d), droppedItem);
+			player.getWorld().dropItemNaturally(BlockUtil.getHighestSolidBlock(LocationUtil.getLocationInFront(player.getLocation(), MathUtil.random(3.0d, 5.0d), false)).add(0.0d, 1.0d, 0.0d), droppedItem);
 			
 			event.setCancelled(true);
 		}

@@ -39,7 +39,7 @@ public class ControlEventCommand extends EventHandler<PlayerMoveEvent> {
 			
 			if (controlledPlayer != null) {
 				if (!controlledPlayer.hasPermission(PermissionsType.FREECAM_WHILE_CONTROLLED)) {
-					controlledPlayer.teleport(LocationUtil.makeEqualXYZ(LocationUtil.getLocationBehind(player.getLocation(), 1.5d).subtract(0.0d, 1.0d, 0.0d), controlledPlayer.getLocation()));
+					controlledPlayer.teleport(LocationUtil.makeEqualXYZ(LocationUtil.getLocationBehind(player.getLocation(), 1.5d, false).subtract(0.0d, 1.0d, 0.0d), controlledPlayer.getLocation()));
 				}
 			}
 		}
@@ -52,7 +52,7 @@ public class ControlEventCommand extends EventHandler<PlayerMoveEvent> {
 			
 			if (controller != null) {
 				if (!player.hasPermission(PermissionsType.FREECAM_WHILE_CONTROLLED)) {
-					event.setTo(LocationUtil.makeEqualXYZ(LocationUtil.getLocationBehind(controller.getLocation(), 1.5d).subtract(0.0d, 1.0d, 0.0d), event.getTo()));
+					event.setTo(LocationUtil.makeEqualXYZ(LocationUtil.getLocationBehind(controller.getLocation(), 1.5d, false).subtract(0.0d, 1.0d, 0.0d), event.getTo()));
 				}
 			}
 		}

@@ -1,4 +1,4 @@
-package me.egg82.tcpp.rollback.reflection;
+package me.egg82.tcpp.reflection.rollback;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

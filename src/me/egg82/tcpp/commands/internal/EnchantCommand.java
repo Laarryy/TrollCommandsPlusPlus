@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +21,7 @@ import me.egg82.tcpp.databases.EnchantTypeSearchDatabase;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.registries.EnchantNameRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
-import ninja.egg82.bukkit.reflection.player.IPlayerHelper;
+import ninja.egg82.bukkit.reflection.entity.IEntityHelper;
 import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.patterns.ServiceLocator;
 import ninja.egg82.patterns.registries.IVariableRegistry;
@@ -30,7 +31,7 @@ import ninja.egg82.sql.LanguageDatabase;
 public class EnchantCommand extends CommandHandler {
 	//vars
 	private LanguageDatabase enchantTypeDatabase = ServiceLocator.getService(EnchantTypeSearchDatabase.class);
-	private IPlayerHelper playerHelper = ServiceLocator.getService(IPlayerHelper.class);
+	private IEntityHelper entityHelper = ServiceLocator.getService(IEntityHelper.class);
 	private IVariableRegistry<String> enchantNameRegistry = ServiceLocator.getService(EnchantNameRegistry.class);
 	
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
@@ -114,7 +115,7 @@ public class EnchantCommand extends CommandHandler {
 			// Ignored
 		}
 		
-		ItemStack item = playerHelper.getItemInMainHand((Player) sender.getHandle());
+		ItemStack item = entityHelper.getItemInMainHand((Entity) sender.getHandle());
 		if (item != null && item.getType() != Material.AIR) {
 			e(item, type, level);
 			((Player) sender.getHandle()).updateInventory();

@@ -117,14 +117,14 @@ public class BludgerCommand extends CommandHandler {
 				Location senderLocation = ((Player) sender.getHandle()).getLocation();
 				if (senderLocation.getWorld().getName().equals(playerLocation.getWorld().getName())) {
 					if (senderLocation.distanceSquared(playerLocation) <= 900.0d) { // 30
-						location = LocationUtil.getLocationInFront(senderLocation, 1.5d);
+						location = LocationUtil.getLocationInFront(senderLocation, 1.5d, true);
 					}
 				}
 			}
 		}
 		
 		if (location == null) {
-			location = BlockUtil.getNearestAirBlock(LocationUtil.getRandomPointAround(playerLocation, MathUtil.random(5.0d, 14.0d)), 10).add(0.5d, 0.5d, 0.5d);
+			location = BlockUtil.getNearestAirBlock(LocationUtil.getRandomPointAround(playerLocation, MathUtil.random(5.0d, 14.0d), true), 10).add(0.5d, 0.5d, 0.5d);
 		}
 		
 		Fireball fireball = player.getWorld().spawn(location, Fireball.class);

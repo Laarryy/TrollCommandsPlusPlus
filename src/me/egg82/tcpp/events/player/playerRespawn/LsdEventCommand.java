@@ -2,19 +2,22 @@ package me.egg82.tcpp.events.player.playerRespawn;
 
 import java.util.UUID;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
+import me.egg82.tcpp.reflection.block.IFakeBlockHelper;
 import me.egg82.tcpp.registries.LsdRegistry;
-import ninja.egg82.concurrent.IConcurrentDeque;
+import ninja.egg82.concurrent.IConcurrentSet;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.patterns.tuples.Triplet;
+import ninja.egg82.patterns.registries.IRegistry;
 import ninja.egg82.plugin.handlers.events.EventHandler;
+import ninja.egg82.utils.ThreadUtil;
 
 public class LsdEventCommand extends EventHandler<PlayerRespawnEvent> {
 	//vars
-	private IVariableRegistry<UUID> lsdRegistry = ServiceLocator.getService(LsdRegistry.class);
+	private IRegistry<UUID, IConcurrentSet<Location>> lsdRegistry = ServiceLocator.getService(LsdRegistry.class);
+	private IFakeBlockHelper fakeBlockHelper = ServiceLocator.getService(IFakeBlockHelper.class);
 	
 	//constructor
 	public LsdEventCommand() {
@@ -24,13 +27,20 @@ public class LsdEventCommand extends EventHandler<PlayerRespawnEvent> {
 	//public
 	
 	//private
-	@SuppressWarnings("unchecked")
 	protected void onExecute(long elapsedMilliseconds) {
 		Player player = event.getPlayer();
 		UUID uuid = player.getUniqueId();
 		
 		if (lsdRegistry.hasRegister(uuid)) {
-			IConcurrentDeque<Triplet<String, Integer, Integer>> bLocs = lsdRegistry.getRegister(uuid, IConcurrentDeque.class);
+			IConcurrentSet<Location> bLocs = lsdRegistry.getRegister(uuid);
+			ThreadUtil.submit(new Runnable() {
+				public void run() {
+					for (Location l : bLocs) {
+						fakeBlockHelper.deque(l);
+					}
+				}
+			});
+			
 			bLocs.clear();
 		}
 	}

@@ -63,13 +63,13 @@ public class GrantWishesEventCommand extends EventHandler<AsyncPlayerChatEvent> 
 			for (Entry<String, EntityType> kvp : entities.entrySet()) {
 				frequency = substringFrequency(kvp.getKey(), search);
 				for (int i = 0; i < frequency; i++) {
-					spawn(kvp.getValue(), LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
+					spawn(kvp.getValue(), LocationUtil.getRandomPointAround(playerLoc, 5.0d, false), player);
 				}
 			}
 			
 			frequency = substringFrequency("skellington", search);
 			for (int i = 0; i < frequency; i++) {
-				spawn(EntityType.SKELETON, LocationUtil.getRandomPointAround(playerLoc, 5.0d), player);
+				spawn(EntityType.SKELETON, LocationUtil.getRandomPointAround(playerLoc, 5.0d, false), player);
 			}
 		}
 	}

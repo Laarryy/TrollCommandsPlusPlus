@@ -1,32 +1,31 @@
 package me.egg82.tcpp.ticks;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.egg82.tcpp.reflection.block.IFakeBlockHelper;
 import me.egg82.tcpp.registries.LsdRegistry;
-import ninja.egg82.bukkit.handlers.TickHandler;
+import ninja.egg82.bukkit.core.BlockData;
+import ninja.egg82.bukkit.handlers.async.AsyncTickHandler;
 import ninja.egg82.bukkit.reflection.material.IMaterialHelper;
 import ninja.egg82.bukkit.utils.BlockUtil;
 import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.bukkit.utils.LocationUtil;
-import ninja.egg82.concurrent.IConcurrentDeque;
-import ninja.egg82.exceptionHandlers.IExceptionHandler;
+import ninja.egg82.concurrent.IConcurrentSet;
 import ninja.egg82.patterns.ServiceLocator;
-import ninja.egg82.patterns.registries.IVariableRegistry;
-import ninja.egg82.patterns.tuples.Triplet;
-import ninja.egg82.protocol.reflection.IFakeBlockHelper;
+import ninja.egg82.patterns.registries.IRegistry;
 import ninja.egg82.utils.MathUtil;
-import ninja.egg82.utils.ThreadUtil;
 
-public class LsdTickCommand extends TickHandler {
+public class LsdTickCommand extends AsyncTickHandler {
 	//vars
-	private IVariableRegistry<UUID> lsdRegistry = ServiceLocator.getService(LsdRegistry.class);
+	private IRegistry<UUID, IConcurrentSet<Location>> lsdRegistry = ServiceLocator.getService(LsdRegistry.class);
 	
 	private IFakeBlockHelper fakeBlockHelper = ServiceLocator.getService(IFakeBlockHelper.class);
 	private int radius = 8;
@@ -35,54 +34,36 @@ public class LsdTickCommand extends TickHandler {
 	
 	//constructor
 	public LsdTickCommand() {
-		super(0L, 5L);
+		super(0L, 2L);
 	}
 	
 	//public
 	
 	//private
-	@SuppressWarnings("unchecked")
 	protected void onExecute(long elapsedMilliseconds) {
 		for (UUID key : lsdRegistry.getKeys()) {
-			e(CommandUtil.getPlayerByUuid(key), lsdRegistry.getRegister(key, IConcurrentDeque.class));
+			e(CommandUtil.getPlayerByUuid(key), lsdRegistry.getRegister(key));
 		}
 	}
-	private void e(Player player, IConcurrentDeque<Triplet<String, Integer, Integer>> bLocs) {
+	private void e(Player player, IConcurrentSet<Location> bLocs) {
 		if (player == null) {
 			return;
 		}
 		
-		ThreadUtil.submit(new Runnable() {
-			public void run() {
-				Set<Location> locations = getFilledCircle(player.getLocation(), radius, false);
-				
-				if (locations.size() <= radius * 2) {
-					locations = getFilledCircle(player.getLocation(), radius, true);
-				}
-				
-				Material[] materials = new Material[locations.size()];
-				short[] data = new short[locations.size()];
-				
-				for (int i = 0; i < materials.length; i++) {
-					materials[i] = wool;
-					data[i] = (short) MathUtil.fairRoundedRandom(0, 15);
-				}
-				
-				for (Location l : locations) {
-					Triplet<String, Integer, Integer> triplet = new Triplet<String, Integer, Integer>(l.getWorld().getName(), l.getBlockX() >> 4, l.getBlockZ() >> 4);
-					if (!bLocs.contains(triplet)) {
-						bLocs.add(triplet);
-					}
-				}
-				
-				Player[] players = Bukkit.getOnlinePlayers().toArray(new Player[0]);
-				for (Player p : players) {
-					fakeBlockHelper.updateBlocks(p, locations.toArray(new Location[0]), materials, data);
-				}
-				
-				ServiceLocator.getService(IExceptionHandler.class).removeThread(Thread.currentThread());
-			}
-		});
+		Set<Location> locations = new HashSet<Location>();
+		locations.addAll(getFilledCircle(player.getLocation(), radius, false));
+		if (locations.size() <= radius * 2) {
+			locations.clear();
+			locations.addAll(getFilledCircle(player.getLocation(), radius, true));
+		}
+		
+		List<BlockData> list = new ArrayList<BlockData>();
+		for (Location l : locations) {
+			bLocs.add(l);
+			list.add(new BlockData(l, wool, (byte) MathUtil.fairRoundedRandom(0, 15), null));
+		}
+		
+		fakeBlockHelper.sendAllMulti(list);
 	}
 	
 	private Set<Location> getFilledCircle(Location l, int radius, boolean useGround) {
@@ -92,7 +73,7 @@ public class LsdTickCommand extends TickHandler {
 			l = BlockUtil.getHighestSolidBlock(l);
 			retVal.add(l);
 		} else {
-			if (Bukkit.isPrimaryThread() || l.getWorld().isChunkLoaded(l.getBlockX() >> 4, l.getBlockZ() >> 4)) {
+			if (l.getWorld().isChunkLoaded(l.getBlockX() >> 4, l.getBlockZ() >> 4)) {
 				l = LocationUtil.toBlockLocation(l);
 				if (l.getBlock().getType().isSolid()) {
 					retVal.add(l);
@@ -105,7 +86,7 @@ public class LsdTickCommand extends TickHandler {
 			for (int j = 0; j < locs.length; j++) {
 				for (int k = -radius; k < radius; k++) {
 					Location t = locs[j].clone().add(0.0d, k, 0.0d);
-					if (Bukkit.isPrimaryThread() || t.getWorld().isChunkLoaded(t.getBlockX() >> 4, t.getBlockZ() >> 4)) {
+					if (t.getWorld().isChunkLoaded(t.getBlockX() >> 4, t.getBlockZ() >> 4)) {
 						if (t.getBlock().getType().isSolid()) {
 							retVal.add(t);
 						}
