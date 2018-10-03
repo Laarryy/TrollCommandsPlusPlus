@@ -48,18 +48,18 @@
                     <exclude>**/*.txt</exclude>
                     <exclude>junit/**</exclude>
                     <exclude>org/junit/**</exclude>
-					<exclude>org/hamcrest/**</exclude>
-					<exclude>edu/umd/cs/findbugs/**</exclude>
+                    <exclude>org/hamcrest/**</exclude>
+                    <exclude>edu/umd/cs/findbugs/**</exclude>
                     <exclude>org/checkerframework/**</exclude>
                     <exclude>afu/**</exclude>
                     <exclude>org/codehaus/mojo/animal_sniffer/**</exclude>
                     <exclude>com/google/common/**</exclude>
-					<exclude>org/apache/commons/codec/**</exclude>
-					<exclude>org/apache/commons/io/**</exclude>
-					<exclude>org/apache/commons/lang/**</exclude>
-					<exclude>org/apache/commons/lang3/**</exclude>
-					<exclude>org/json/simple/**</exclude>
-					<exclude>org/yaml/**</exclude>
+                    <exclude>org/apache/commons/codec/**</exclude>
+                    <exclude>org/apache/commons/io/**</exclude>
+                    <exclude>org/apache/commons/lang/**</exclude>
+                    <exclude>org/apache/commons/lang3/**</exclude>
+                    <exclude>org/json/simple/**</exclude>
+                    <exclude>org/yaml/**</exclude>
                   </excludes>
                 </filter>
                 <filter>
@@ -189,7 +189,7 @@
     </repository>
     <repository>
       <id>paper-repo</id>
-      <url>https://repo.destroystokyo.com/content/groups/public/</url>
+      <url>https://papermc.io/repo/repository/maven-public/</url>
     </repository>
     <repository>
       <id>dmulloy2-repo</id>
