@@ -44,7 +44,6 @@ import ninja.egg82.analytics.exceptions.RollbarExceptionHandler;
 import ninja.egg82.bukkit.BasePlugin;
 import ninja.egg82.bukkit.processors.CommandProcessor;
 import ninja.egg82.bukkit.processors.EventProcessor;
-import ninja.egg82.bukkit.utils.VersionUtil;
 import ninja.egg82.disguise.reflection.DisguiseHelper;
 import ninja.egg82.disguise.reflection.LibsDisguisesHelper;
 import ninja.egg82.disguise.reflection.NullDisguiseHelper;
@@ -59,6 +58,7 @@ import ninja.egg82.plugin.handlers.CommandHandler;
 import ninja.egg82.plugin.messaging.IMessageHandler;
 import ninja.egg82.plugin.utils.DirectoryUtil;
 import ninja.egg82.plugin.utils.PluginReflectUtil;
+import ninja.egg82.plugin.utils.VersionUtil;
 import ninja.egg82.sql.LanguageDatabase;
 import ninja.egg82.utils.ReflectUtil;
 import ninja.egg82.utils.StringUtil;
@@ -90,6 +90,13 @@ public class TrollCommandsPlusPlus extends BasePlugin {
 	public void onLoad() {
 		super.onLoad();
 		
+        if (!Bukkit.getName().equals("Paper") && !Bukkit.getName().equals("PaperSpigot")) {
+            printWarning(ChatColor.AQUA + "============================================");
+            printWarning("Please note that TC++ works better with Paper!");
+            printWarning("https://whypaper.emc.gs/");
+            printWarning(ChatColor.AQUA + "============================================");
+        }
+
 		PluginReflectUtil.addServicesFromPackage("me.egg82.tcpp.databases", true);
 		PluginReflectUtil.addServicesFromPackage("me.egg82.tcpp.registries", true);
 		PluginReflectUtil.addServicesFromPackage("me.egg82.tcpp.lists", true);

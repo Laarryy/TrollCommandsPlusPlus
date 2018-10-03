@@ -19,6 +19,8 @@ import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.lists.AnvilSet;
 import me.egg82.tcpp.util.MetricsHelper;
 import ninja.egg82.bukkit.core.BlockData;
+import ninja.egg82.bukkit.core.PlayerInfoContainer;
+import ninja.egg82.bukkit.reflection.uuid.IUUIDHelper;
 import ninja.egg82.bukkit.utils.BlockUtil;
 import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.bukkit.utils.LocationUtil;
@@ -34,6 +36,8 @@ public class AnvilCommand extends CommandHandler {
 	
 	private IConcurrentSet<UUID> anvilSet = ServiceLocator.getService(AnvilSet.class);
 	
+    private IUUIDHelper uuidHelper = ServiceLocator.getService(IUUIDHelper.class);
+
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
@@ -88,7 +92,13 @@ public class AnvilCommand extends CommandHandler {
 				e(player);
 			}
 		} else {
-			Player player = CommandUtil.getPlayerByName(args[0]);
+            PlayerInfoContainer info = uuidHelper.getPlayer(args[0], true);
+            if (info == null) {
+                sender.sendMessage(ChatColor.RED + "Could not fetch player info. Please try again later.");
+                return;
+            }
+
+            Player player = CommandUtil.getPlayerByUuid(info.getUuid());
 			if (player == null) {
 				sender.sendMessage(ChatColor.RED + "Player could not be found.");
 				return;

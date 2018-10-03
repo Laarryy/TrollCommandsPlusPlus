@@ -15,6 +15,8 @@ import org.bukkit.util.Vector;
 import me.egg82.tcpp.enums.PermissionsType;
 import me.egg82.tcpp.registries.BludgerRegistry;
 import me.egg82.tcpp.util.MetricsHelper;
+import ninja.egg82.bukkit.core.PlayerInfoContainer;
+import ninja.egg82.bukkit.reflection.uuid.IUUIDHelper;
 import ninja.egg82.bukkit.utils.BlockUtil;
 import ninja.egg82.bukkit.utils.CommandUtil;
 import ninja.egg82.bukkit.utils.LocationUtil;
@@ -27,6 +29,8 @@ public class BludgerCommand extends CommandHandler {
 	//vars
 	private IVariableRegistry<UUID> bludgerRegistry = ServiceLocator.getService(BludgerRegistry.class);
 	
+    private IUUIDHelper uuidHelper = ServiceLocator.getService(IUUIDHelper.class);
+
 	private MetricsHelper metricsHelper = ServiceLocator.getService(MetricsHelper.class);
 	
 	//constructor
@@ -83,28 +87,31 @@ public class BludgerCommand extends CommandHandler {
 					
 					e(uuid, player);
 				} else {
-					eUndo(uuid, player);
+                    eUndo(uuid, player.getName());
 				}
 			}
 		} else {
-			Player player = CommandUtil.getPlayerByName(args[0]);
-			
+            PlayerInfoContainer info = uuidHelper.getPlayer(args[0], true);
+            if (info == null) {
+                sender.sendMessage(ChatColor.RED + "Could not fetch player info. Please try again later.");
+                return;
+            }
+
+            Player player = CommandUtil.getPlayerByUuid(info.getUuid());
 			if (player == null) {
 				sender.sendMessage(ChatColor.RED + "Player could not be found.");
 				return;
 			}
 			
-			UUID uuid = player.getUniqueId();
-			
-			if (!bludgerRegistry.hasRegister(uuid)) {
+            if (!bludgerRegistry.hasRegister(info.getUuid())) {
 				if (player.hasPermission(PermissionsType.IMMUNE)) {
 					sender.sendMessage(ChatColor.RED + "Player is immune.");
 					return;
 				}
 				
-				e(uuid, player);
+                e(info.getUuid(), player);
 			} else {
-				eUndo(uuid, player);
+                eUndo(info.getUuid(), info.getName());
 			}
 		}
 	}
@@ -140,18 +147,20 @@ public class BludgerCommand extends CommandHandler {
 	}
 	
 	protected void onUndo() {
-		Player player = CommandUtil.getPlayerByName(args[0]);
-		if (player != null) {
-			UUID uuid = player.getUniqueId();
-			if (bludgerRegistry.hasRegister(uuid)) {
-				eUndo(uuid, player);
-			}
+        PlayerInfoContainer info = uuidHelper.getPlayer(args[0], true);
+        if (info == null) {
+            sender.sendMessage(ChatColor.RED + "Could not fetch player info. Please try again later.");
+            return;
+        }
+
+        if (bludgerRegistry.hasRegister(info.getUuid())) {
+            eUndo(info.getUuid(), info.getName());
 		}
 	}
-	private void eUndo(UUID uuid, Player player) {
+    private void eUndo(UUID uuid, String playerName) {
 		bludgerRegistry.getRegister(uuid, Fireball.class).remove();
 		bludgerRegistry.removeRegister(uuid);
 		
-		sender.sendMessage(player.getName() + " is no longer being chased by a bludger.");
+        sender.sendMessage(playerName + " is no longer being chased by a bludger.");
 	}
 }
