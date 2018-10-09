@@ -1,6 +1,6 @@
 name: TrollCommandsPlusPlus
 main: me.egg82.tcpp.TrollCommandsPlusPlus
-version: 7.29.56
+version: 7.30.57
 author: egg82
 api-version: 1.13
 description: For the people that really hate their friends
@@ -70,6 +70,7 @@ commands:
       /troll lsd <player>: (Toggleable) RAAAAIIINNNNBOOOOWWWW! Does not affect the server.
       /troll luckyblock [luck]: (Undoable) Turns the block in your hand into a lucky/unlucky block. You may optionally provide a "luck chance" defining how high the "luck" value vs "unluck" is.
       /troll lure <player>: (Toggleable) Continuously attracts nearby monsters to the player.
+      /troll markov <player> [player]: (Toggleable) Mixes the player's chat with every other player's chat in strange ways. Optionally specify only a single other player to mix with.
       /troll midastouch <player> [type]: (Toggleable) Any blocks the player touches turns to GOLD (or whatever you specify). Does not affect the server.
       /troll moist <player>: (Toggleable) Would you moist my moistness, please? (Requires internet connection)
       /troll necro <player>: (Toggleable) Let's play "pretend you're a skeleton"! (Removed on quit)

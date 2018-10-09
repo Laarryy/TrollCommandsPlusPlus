@@ -1,0 +1,40 @@
+package me.egg82.tcpp.events.inventory.inventoryDrag;
+
+import java.util.UUID;
+
+import me.egg82.tcpp.registries.LockRegistry;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryDragEvent;
+
+import ninja.egg82.patterns.ServiceLocator;
+import ninja.egg82.patterns.registries.IVariableRegistry;
+import ninja.egg82.plugin.handlers.events.EventHandler;
+
+public class LockEventCommand extends EventHandler<InventoryDragEvent> {
+    //vars
+    private IVariableRegistry<UUID> lockRegistry = ServiceLocator.getService(LockRegistry.class);
+
+    //constructor
+    public LockEventCommand() {
+        super();
+    }
+
+    //public
+
+    //private
+    protected void onExecute(long elapsedMilliseconds) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        Player player = (Player) event.getWhoClicked();
+
+        if (lockRegistry.hasRegister(player.getUniqueId())) {
+            if (event.getInventory().getHolder() instanceof Player) {
+                if (((Player) event.getInventory().getHolder()).getUniqueId().equals(player.getUniqueId())) {
+                    event.setCancelled(true);
+                }
+            }
+        }
+    }
+}
