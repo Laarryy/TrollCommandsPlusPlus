@@ -59,7 +59,7 @@ public class MarkovEventCommand extends EventHandler<AsyncPlayerChatEvent> {
         // Single player
         if (markovSet.contains(event.getPlayer().getUniqueId())) {
             MarkovChain<String> chain = new MarkovChain<>(1);
-            chain.add(event.getMessage().split("\\s+"), 5);
+            chain.add(event.getMessage().split("\\s+"), 6);
             for (UUID key : markovSpeechRegistry.getKeys()) {
                 chain.add(markovSpeechRegistry.getRegister(key).split("\\s+"), 5);
             }
@@ -90,7 +90,7 @@ public class MarkovEventCommand extends EventHandler<AsyncPlayerChatEvent> {
         }
 
         MarkovChain<String> chain = new MarkovChain<>(1);
-        chain.add(event.getMessage().split("\\s+"), 10);
+        chain.add(event.getMessage().split("\\s+"), 12);
         chain.add(otherSpeech.split("\\s+"), 10);
         for (UUID key : markovSpeechRegistry.getKeys()) {
             chain.add(markovSpeechRegistry.getRegister(key).split("\\s+"), 1);
