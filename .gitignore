@@ -1,5 +1,27 @@
-log/
-bin/
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Netbeans
+nbproject/
+nbactions.xml
+
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+.idea/
+out/
+
+# Vim
+.*.sw[a-p]
+
+# Linux
+*~
+
+# Maven
+build.xml
 target/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -9,6 +31,32 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
-.classpath
-.project
-.settings
+.mvn/wrapper/maven-wrapper.jar
+
+# Build artifacts
+build/
+bin/
+dist/
+manifest.mf
+
+# Mac
+.DS_Store/
+.DS_Store
+
+# CMake
+cmake-build-*/
+
+# File-based project format
+*.iws
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
