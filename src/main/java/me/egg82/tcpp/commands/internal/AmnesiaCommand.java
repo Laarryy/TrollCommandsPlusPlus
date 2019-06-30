@@ -23,6 +23,10 @@ public class AmnesiaCommand extends BaseCommand {
                     Set<UUID> set = CollectionProvider.getSet("amnesia");
 
                     if (set.add(v)) {
+                        if (isOfflineOrImmune(v)) {
+                            return;
+                        }
+
                         AnalyticsHelper.incrementCommand("amnesia");
                         sender.sendMessage(LogUtil.getHeading() + ChatColor.WHITE + playerName + " is now an amnesiac.");
                     } else if (set.remove(v)) {

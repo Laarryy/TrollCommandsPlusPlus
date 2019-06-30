@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import me.egg82.tcpp.commands.TrollCommand;
 import me.egg82.tcpp.events.PlayerLoginUpdateNotifyHandler;
 import me.egg82.tcpp.events.entity.entityChangeBlock.EntityChangeBlockAnvil;
+import me.egg82.tcpp.events.entity.entityExplode.EntityExplodeBludger;
 import me.egg82.tcpp.events.inventory.inventoryClick.InventoryClickAttach;
 import me.egg82.tcpp.events.inventory.inventoryClick.InventoryClickAttachErase;
 import me.egg82.tcpp.events.inventory.inventoryDrag.InventoryDragAttach;
@@ -26,9 +27,11 @@ import me.egg82.tcpp.events.inventory.inventoryMoveItem.InventoryMoveItemAttach;
 import me.egg82.tcpp.events.inventory.inventoryMoveItem.InventoryMoveItemAttachErase;
 import me.egg82.tcpp.events.player.asyncPlayerChat.AsyncPlayerChatAlone;
 import me.egg82.tcpp.events.player.asyncPlayerChat.AsyncPlayerChatAmnesia;
+import me.egg82.tcpp.events.player.playerDeath.PlayerDeathBludger;
 import me.egg82.tcpp.events.player.playerDropItem.PlayerDropItemAttachErase;
 import me.egg82.tcpp.events.player.playerJoin.PlayerJoinAlone;
 import me.egg82.tcpp.events.player.playerPickupItem.PlayerPickupItemAttach;
+import me.egg82.tcpp.events.player.playerQuit.PlayerQuitBludger;
 import me.egg82.tcpp.extended.Configuration;
 import me.egg82.tcpp.hooks.PlayerAnalyticsHook;
 import me.egg82.tcpp.hooks.PluginHook;
@@ -38,6 +41,7 @@ import me.egg82.tcpp.services.block.FakeBlockHandler;
 import me.egg82.tcpp.services.entity.EntityItemHandler;
 import me.egg82.tcpp.services.player.PlayerVisibilityHandler;
 import me.egg82.tcpp.tasks.TaskAnnoy;
+import me.egg82.tcpp.tasks.TaskBludger;
 import me.egg82.tcpp.utils.*;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEventSubscriber;
@@ -52,6 +56,8 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
@@ -277,10 +283,15 @@ public class TrollCommandsPlusPlus {
             events.add(BukkitEvents.subscribe(plugin, InventoryMoveItemEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new InventoryMoveItemAttach().accept(e)));
             events.add(BukkitEvents.subscribe(plugin, PlayerPickupItemEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new PlayerPickupItemAttach().accept(e)));
         }
+
+        events.add(BukkitEvents.subscribe(plugin, EntityExplodeEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new EntityExplodeBludger().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, PlayerQuitEvent.class, EventPriority.NORMAL).handler(e -> new PlayerQuitBludger().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, PlayerDeathEvent.class, EventPriority.NORMAL).handler(e -> new PlayerDeathBludger().accept(e)));
     }
 
     private void loadTasks() {
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskAnnoy(), 0L, 45L));
+        tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskBludger(), 0L, 3L));
     }
 
     private void loadHooks() {

@@ -5,8 +5,11 @@ import co.aikar.taskchain.TaskChainAbortAction;
 import java.io.IOException;
 import java.util.UUID;
 import me.egg82.tcpp.services.lookup.PlayerLookup;
+import me.egg82.tcpp.utils.LogUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,9 +35,22 @@ public abstract class BaseCommand implements Runnable {
                 .abortIfNull(new TaskChainAbortAction<Object, Object, Object>() {
                     @Override
                     public void onAbort(TaskChain<?> chain, Object arg1) {
-                        sender.sendMessage(ChatColor.DARK_RED + "Could not get UUID for " + ChatColor.WHITE + playerName + ChatColor.DARK_RED + " (rate-limited?)");
+                        sender.sendMessage(LogUtil.getHeading() + ChatColor.DARK_RED + "Could not get UUID for " + ChatColor.WHITE + playerName + ChatColor.DARK_RED + " (rate-limited?)");
                     }
                 });
+    }
+
+    protected boolean isOfflineOrImmune(UUID uuid) {
+        Player p = Bukkit.getPlayer(uuid);
+        if (p == null) {
+            sender.sendMessage(LogUtil.getHeading() + ChatColor.DARK_RED + "Player could not be found.");
+            return true;
+        }
+        if (p.hasPermission("tcpp.immune")) {
+            sender.sendMessage(LogUtil.getHeading() + ChatColor.DARK_RED + "Player is immune.");
+            return true;
+        }
+        return false;
     }
 
     protected String getPlayerName(UUID uuid) {

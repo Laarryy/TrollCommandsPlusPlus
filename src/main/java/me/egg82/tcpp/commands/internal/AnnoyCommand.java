@@ -23,6 +23,10 @@ public class AnnoyCommand extends BaseCommand {
                     Set<UUID> set = CollectionProvider.getSet("annoy");
 
                     if (set.add(v)) {
+                        if (isOfflineOrImmune(v)) {
+                            return;
+                        }
+
                         AnalyticsHelper.incrementCommand("annoy");
                         sender.sendMessage(LogUtil.getHeading() + ChatColor.WHITE + playerName + " is now being annoyed by villager sounds.");
                     } else if (set.remove(v)) {

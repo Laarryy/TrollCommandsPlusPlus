@@ -39,6 +39,10 @@ public class AloneCommand extends BaseCommand {
                     Set<UUID> set = CollectionProvider.getSet("alone");
 
                     if (set.add(v)) {
+                        if (isOfflineOrImmune(v)) {
+                            return;
+                        }
+
                         AnalyticsHelper.incrementCommand("alone");
                         hidePlayers(Bukkit.getPlayer(v));
                         sender.sendMessage(LogUtil.getHeading() + ChatColor.WHITE + playerName + " is now all alone :(");

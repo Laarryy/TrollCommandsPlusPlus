@@ -40,6 +40,10 @@ public class AnvilCommand extends BaseCommand {
     public void run() {
         getChain(playerName)
                 .syncLast(v -> {
+                    if (isOfflineOrImmune(v)) {
+                        return;
+                    }
+
                     Set<UUID> set = CollectionProvider.getSet("anvil");
 
                     Player player = Bukkit.getPlayer(v);

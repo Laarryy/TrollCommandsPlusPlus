@@ -83,6 +83,24 @@ public class TrollCommand extends BaseCommand {
         new AttachCommand(sender, topic).run();
     }
 
+    @Subcommand("banish")
+    @CommandPermission("tcpp.command.banish")
+    @Description("Teleports the player to a random location.")
+    @Syntax("<player> [range]")
+    @CommandCompletion("@player")
+    public void onBanish(CommandSender sender, String playerName, @Default("5000") long range) {
+        new BanishCommand(taskFactory.newChain(), sender, playerName, range).run();
+    }
+
+    @Subcommand("bludger")
+    @CommandPermission("tcpp.command.bludger")
+    @Description("(Toggleable) That's been tampered with, that has! (Removed on quit, death, or explode)")
+    @Syntax("<player>")
+    @CommandCompletion("@player")
+    public void onBludger(CommandSender sender, String playerName) {
+        new BludgerCommand(taskFactory.newChain(), sender, playerName).run();
+    }
+
     @Subcommand("stop")
     @CommandPermission("tcpp.command.stop")
     @Description("Stops and undoes any currently-active trolls against the player.")
