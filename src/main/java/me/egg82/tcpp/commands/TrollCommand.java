@@ -5,7 +5,9 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import co.aikar.taskchain.TaskChainFactory;
 import me.egg82.tcpp.commands.internal.*;
+import me.egg82.tcpp.utils.LogUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
@@ -66,6 +68,19 @@ public class TrollCommand extends BaseCommand {
     @CommandCompletion("@player")
     public void onAnvil(CommandSender sender, String playerName) {
         new AnvilCommand(plugin, taskFactory.newChain(), sender, playerName).run();
+    }
+
+    @Subcommand("attach")
+    @CommandPermission("tcpp.command.attach")
+    @Description("(Undoable) The specified command (topic) will be attached to an item. The next time this item is picked up, it will run the command as the payer that picked the item up..")
+    @Syntax("[topic]")
+    @CommandCompletion("@topic")
+    public void onAttach(CommandSender sender, @Default() String[] topic) {
+        if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {
+            sender.sendMessage(LogUtil.getHeading() + ChatColor.DARK_RED + "This command requires ProtocolLib!");
+        }
+
+        new AttachCommand(sender, topic).run();
     }
 
     @Subcommand("stop")

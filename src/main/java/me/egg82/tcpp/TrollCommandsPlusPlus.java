@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.SetMultimap;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -17,9 +18,17 @@ import java.util.logging.Level;
 import me.egg82.tcpp.commands.TrollCommand;
 import me.egg82.tcpp.events.PlayerLoginUpdateNotifyHandler;
 import me.egg82.tcpp.events.entity.entityChangeBlock.EntityChangeBlockAnvil;
+import me.egg82.tcpp.events.inventory.inventoryClick.InventoryClickAttach;
+import me.egg82.tcpp.events.inventory.inventoryClick.InventoryClickAttachErase;
+import me.egg82.tcpp.events.inventory.inventoryDrag.InventoryDragAttach;
+import me.egg82.tcpp.events.inventory.inventoryDrag.InventoryDragAttachErase;
+import me.egg82.tcpp.events.inventory.inventoryMoveItem.InventoryMoveItemAttach;
+import me.egg82.tcpp.events.inventory.inventoryMoveItem.InventoryMoveItemAttachErase;
 import me.egg82.tcpp.events.player.asyncPlayerChat.AsyncPlayerChatAlone;
 import me.egg82.tcpp.events.player.asyncPlayerChat.AsyncPlayerChatAmnesia;
+import me.egg82.tcpp.events.player.playerDropItem.PlayerDropItemAttachErase;
 import me.egg82.tcpp.events.player.playerJoin.PlayerJoinAlone;
+import me.egg82.tcpp.events.player.playerPickupItem.PlayerPickupItemAttach;
 import me.egg82.tcpp.extended.Configuration;
 import me.egg82.tcpp.hooks.PlayerAnalyticsHook;
 import me.egg82.tcpp.hooks.PluginHook;
@@ -39,12 +48,15 @@ import ninja.egg82.updater.SpigotUpdater;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.player.*;
+import org.bukkit.help.HelpTopic;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -61,6 +73,18 @@ public class TrollCommandsPlusPlus {
 
     private List<BukkitEventSubscriber<?>> events = new ArrayList<>();
     private List<Integer> tasks = new ArrayList<>();
+
+    private List<String> commandNames = new ArrayList<>();
+    private static final Field commandMap;
+
+    static {
+        try {
+            commandMap = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");
+            commandMap.setAccessible(true);
+        } catch (NoSuchFieldException ex) {
+            throw new RuntimeException("Could not get command map.", ex);
+        }
+    }
 
     private Metrics metrics = null;
 
@@ -175,6 +199,50 @@ public class TrollCommandsPlusPlus {
             return ImmutableList.copyOf(players);
         });
 
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            // Hacks, first tick doesn't execute until everything's loaded
+            for (HelpTopic topic : Bukkit.getServer().getHelpMap().getHelpTopics()) {
+                String name = topic.getName();
+                if (name.charAt(0) != '/') {
+                    continue;
+                }
+
+                commandNames.add(name.substring(1));
+            }
+        }, 1L);
+
+        commandManager.getCommandCompletions().registerCompletion("topic", c -> {
+            // Whew, alrighty, so THIS is a hack and a half.
+            if (c.getContextValue(Object.class, 0) == null) {
+                // We are at the first arg
+                if (c.getInput().isEmpty()) {
+                    return ImmutableList.copyOf(commandNames);
+                }
+
+                List<String> retVal = new ArrayList<>();
+                String lower = c.getInput().toLowerCase();
+                for (String command : commandNames) {
+                    if (command.toLowerCase().startsWith(lower)) {
+                        retVal.add(command);
+                    }
+                }
+                return ImmutableList.copyOf(retVal);
+            }
+
+            // We are NOT at the first arg
+
+            String[] args = c.getContextValue(String[].class, 1);
+            try {
+                CommandMap map = (CommandMap) commandMap.get(Bukkit.getPluginManager());
+                List<String> completions = map.tabComplete(c.getSender(), String.join(" ", args));
+                return completions != null ? ImmutableList.copyOf(completions) : ImmutableList.of();
+            } catch (IllegalAccessException ex) {
+                logger.error(ex.getMessage(), ex);
+            }
+
+            return ImmutableList.of();
+        });
+
         commandManager.getCommandCompletions().registerCompletion("subcommand", c -> {
             String lower = c.getInput().toLowerCase();
             Set<String> commands = new LinkedHashSet<>();
@@ -197,7 +265,18 @@ public class TrollCommandsPlusPlus {
         events.add(BukkitEvents.subscribe(plugin, AsyncPlayerChatEvent.class, EventPriority.LOW).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new AsyncPlayerChatAlone().accept(e)));
 
         events.add(BukkitEvents.subscribe(plugin, AsyncPlayerChatEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new AsyncPlayerChatAmnesia(plugin).accept(e)));
-        events.add(BukkitEvents.subscribe(plugin, EntityChangeBlockEvent.class, EventPriority.LOW).handler(e -> new EntityChangeBlockAnvil().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, EntityChangeBlockEvent.class, EventPriority.NORMAL).handler(e -> new EntityChangeBlockAnvil().accept(e)));
+
+        events.add(BukkitEvents.subscribe(plugin, InventoryClickEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new InventoryClickAttachErase(plugin).accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, InventoryDragEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new InventoryDragAttachErase(plugin).accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, InventoryMoveItemEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new InventoryMoveItemAttachErase().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, PlayerDropItemEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new PlayerDropItemAttachErase().accept(e)));
+        if (plugin.getServer().getPluginManager().getPlugin("ProtocolLib") != null) {
+            events.add(BukkitEvents.subscribe(plugin, InventoryClickEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new InventoryClickAttach(plugin).accept(e)));
+            events.add(BukkitEvents.subscribe(plugin, InventoryDragEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new InventoryDragAttach(plugin).accept(e)));
+            events.add(BukkitEvents.subscribe(plugin, InventoryMoveItemEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new InventoryMoveItemAttach().accept(e)));
+            events.add(BukkitEvents.subscribe(plugin, PlayerPickupItemEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new PlayerPickupItemAttach().accept(e)));
+        }
     }
 
     private void loadTasks() {

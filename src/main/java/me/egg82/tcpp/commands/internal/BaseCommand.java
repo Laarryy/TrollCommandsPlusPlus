@@ -21,6 +21,11 @@ public abstract class BaseCommand implements Runnable {
         this.sender = sender;
     }
 
+    protected BaseCommand(CommandSender sender) {
+        this.chain = null;
+        this.sender = sender;
+    }
+
     protected TaskChain<UUID> getChain(String playerName) {
         return chain
                 .<UUID>asyncCallback((v, f) -> f.accept(getPlayerUUID(playerName)))

@@ -4,4 +4,4 @@ version: 8.29.57
 author: egg82
 api-version: 1.13
 description: For the people that really hate their friends
-softdepend: [Plan]
+softdepend: [Plan, ProtocolLib]
