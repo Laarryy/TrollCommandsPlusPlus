@@ -98,19 +98,19 @@ public class TrollCommandsPlusPlus {
     private final boolean isBukkit;
 
     public TrollCommandsPlusPlus(Plugin plugin) {
-        isBukkit = Bukkit.getName().equals("Bukkit") || Bukkit.getName().equals("CraftBukkit");
+        isBukkit = BukkitEnvironmentUtil.getEnvironment() == BukkitEnvironmentUtil.Environment.BUKKIT;
         this.plugin = plugin;
     }
 
     public void onLoad() {
-        if (!Bukkit.getName().equals("Paper") && !Bukkit.getName().equals("PaperSpigot")) {
+        if (BukkitEnvironmentUtil.getEnvironment() != BukkitEnvironmentUtil.Environment.PAPER) {
             log(Level.INFO, ChatColor.AQUA + "====================================");
             log(Level.INFO, ChatColor.YELLOW + "TrollCommands++ runs better on Paper!");
             log(Level.INFO, ChatColor.YELLOW + "https://whypaper.emc.gs/");
             log(Level.INFO, ChatColor.AQUA + "====================================");
         }
 
-        if (Bukkit.getBukkitVersion().startsWith("1.8") || Bukkit.getBukkitVersion().startsWith("1.8.8")) {
+        if (BukkitVersionUtil.getGameVersion().startsWith("1.8")) {
             log(Level.INFO, ChatColor.AQUA + "====================================");
             log(Level.INFO, ChatColor.DARK_RED + "DEAR LORD why are you on 1.8???");
             log(Level.INFO, ChatColor.DARK_RED + "Have you tried ViaVersion or ProtocolSupport lately?");
