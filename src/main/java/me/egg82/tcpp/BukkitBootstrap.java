@@ -197,6 +197,10 @@ public class BukkitBootstrap extends JavaPlugin {
                 .addRepository("https://www.myget.org/F/egg82-java/maven/")
                 .addRepository("https://nexus.egg82.me/repository/maven-central/");
         buildInject(abstractConfiguration, jarsDir, classLoader, "Abstract Configuration");
+
+        // Last
+
+        buildInject(guava, jarsDir, classLoader, "Google Guava", 1); // I swear to god, I WILL fix this Guava CL issue
     }
 
     private void printLatest(String friendlyName) {
