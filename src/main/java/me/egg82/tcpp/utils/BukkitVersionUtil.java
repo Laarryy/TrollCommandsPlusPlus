@@ -46,16 +46,64 @@ public class BukkitVersionUtil {
             synchronized (versionLock) {
                 localVersion = gameVersion;
                 if (localVersion == null) {
-                    localVersion = Bukkit.getVersion();
-                    localVersion = localVersion.substring(localVersion.indexOf('('));
-                    localVersion = localVersion.substring(localVersion.indexOf(' ') + 1, localVersion.length() - 1);
-                    localVersion = localVersion.trim().replace('_', '.');
+                    localVersion = getVersionFromVersionString(Bukkit.getVersion());
+                    if (localVersion == null || !isVersion(localVersion)) {
+                        localVersion = getVersionFromBukkitString(Bukkit.getBukkitVersion());
+                        if (localVersion == null || !isVersion(localVersion)) {
+                            localVersion = getVersionFromServerPackageString(Bukkit.getServer().getClass().getPackage().getName());
+                            if (!isVersion(localVersion)) {
+                                throw new RuntimeException("Could not get version from Bukkit! (Is the server or another plugin changing it?)");
+                            }
+                        }
+                    }
                     gameVersion = localVersion;
                 }
             }
         }
 
         return localVersion;
+    }
+
+    private static String getVersionFromVersionString(String versionString) {
+        int versionIndex = versionString.indexOf("(MC: ");
+        if (versionIndex == -1) {
+            return null;
+        }
+        int endIndex = versionString.indexOf(')', versionIndex);
+        if (endIndex == -1) {
+            return null;
+        }
+
+        return versionString.substring(versionIndex + 5, endIndex).trim().replace('_', '.');
+    }
+
+    private static String getVersionFromBukkitString(String versionString) {
+        int endIndex = versionString.indexOf("-R");
+        if (endIndex == -1) {
+            return null;
+        }
+
+        return versionString.substring(0, endIndex).trim().replace('_', '.');
+    }
+
+    private static String getVersionFromServerPackageString(String versionString) {
+        return versionString.substring(versionString.lastIndexOf('.') + 1).trim().replace('_', '.');
+    }
+
+    private static boolean isVersion(String versionString) {
+        String[] numbers = versionString.split("\\.");
+        int[] version = parseVersion(versionString, '.');
+        if (version.length != numbers.length) {
+            return false;
+        }
+
+        for (int i = 0; i < numbers.length; i++) {
+            if (tryParseInt(numbers[i]) != version[i]) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public static <T> Class<T> getBestMatch(Class<T> clazz, String version, String packageName, boolean recursive) {
