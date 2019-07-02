@@ -17,7 +17,6 @@ import ninja.egg82.maven.Artifact;
 import ninja.egg82.maven.Scope;
 import ninja.egg82.services.ProxiedURLClassLoader;
 import ninja.egg82.utils.InjectUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -109,7 +108,7 @@ public class BukkitBootstrap extends JavaPlugin {
 
         Artifact.Builder guava = Artifact.builder("com.google.guava", "guava", "27.1-jre", cacheDir)
                 .addRepository("https://nexus.egg82.me/repository/maven-central/");
-        buildInject(guava, jarsDir, classLoader, "Google Guava", 1);
+        buildInjectWait(guava, jarsDir, classLoader, "Google Guava", 1);
 
         // Same file
 
@@ -198,10 +197,6 @@ public class BukkitBootstrap extends JavaPlugin {
                 .addRepository("https://www.myget.org/F/egg82-java/maven/")
                 .addRepository("https://nexus.egg82.me/repository/maven-central/");
         buildInject(abstractConfiguration, jarsDir, classLoader, "Abstract Configuration");
-
-        // Last
-
-        buildInject(guava, jarsDir, classLoader, "Google Guava", 1); // I swear to god, I WILL fix this Guava CL issue
     }
 
     private void printLatest(String friendlyName) {
@@ -213,13 +208,15 @@ public class BukkitBootstrap extends JavaPlugin {
     }
 
     private void buildInject(Artifact.Builder builder, File jarsDir, URLClassLoader classLoader, String friendlyName, int depth) {
-        downloadPool.submit(() -> {
-            try {
-                injectArtifact(builder.build(), jarsDir, classLoader, friendlyName, depth);
-            } catch (IOException | IllegalAccessException | InvocationTargetException | URISyntaxException | XPathExpressionException | SAXException ex) {
-                logger.error(ex.getMessage(), ex);
-            }
-        });
+        downloadPool.submit(() -> buildInjectWait(builder, jarsDir, classLoader, friendlyName, depth));
+    }
+
+    private void buildInjectWait(Artifact.Builder builder, File jarsDir, URLClassLoader classLoader, String friendlyName, int depth) {
+        try {
+            injectArtifact(builder.build(), jarsDir, classLoader, friendlyName, depth);
+        } catch (IOException | IllegalAccessException | InvocationTargetException | URISyntaxException | XPathExpressionException | SAXException ex) {
+            logger.error(ex.getMessage(), ex);
+        }
     }
 
     private void injectArtifact(Artifact artifact, File jarsDir, URLClassLoader classLoader, String friendlyName, int depth) throws IOException, IllegalAccessException, InvocationTargetException, URISyntaxException, XPathExpressionException, SAXException {
