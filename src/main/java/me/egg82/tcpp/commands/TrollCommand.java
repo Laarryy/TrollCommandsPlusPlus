@@ -128,6 +128,14 @@ public class TrollCommand extends BaseCommand {
         new BurnCommand(taskFactory.newChain(), sender, playerName).run();
     }
 
+    @Subcommand("cannon")
+    @CommandPermission("tcpp.command.cannon")
+    @Description("Shoots a primed TNT wherever you're looking of adjustable speed and power.")
+    @Syntax("[speed] [power]")
+    public void onBanish(CommandSender sender, @Default("2.0") double speed, @Default("1.0") double power) {
+        new CannonCommand(sender, speed, power).run();
+    }
+
     @Subcommand("stop")
     @CommandPermission("tcpp.command.stop")
     @Description("Stops and undoes any currently-active trolls against the player.")

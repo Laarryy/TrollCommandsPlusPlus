@@ -39,14 +39,14 @@ public class BludgerCommand extends BaseCommand {
 
                         Location spawnLocation;
                         if (
-                                !(sender instanceof Player)
-                                        || ((Player) sender).getUniqueId().equals(p.getUniqueId())
-                                        || ((Player) sender).getLocation().getWorld() != p.getLocation().getWorld()
-                                        || ((Player) sender).getLocation().distanceSquared(p.getLocation()) >= 3600.0d // 60.0d
+                                !(sender instanceof Entity)
+                                        || ((Entity) sender).getUniqueId().equals(p.getUniqueId())
+                                        || ((Entity) sender).getLocation().getWorld() != p.getLocation().getWorld()
+                                        || ((Entity) sender).getLocation().distanceSquared(p.getLocation()) >= 3600.0d // 60.0d
                         ) {
                             spawnLocation = LocationUtil.getRandomPointAround(p.getLocation(), Math.random() * 10.0d + 5.0d, true);
                         } else {
-                            spawnLocation = LocationUtil.getLocationInFront(((Player) sender).getLocation(), 1.5d, true);
+                            spawnLocation = LocationUtil.getLocationInFront(((Entity) sender).getLocation(), 1.5d, true);
                         }
 
                         Fireball fireball = spawnLocation.getWorld().spawn(spawnLocation, Fireball.class);
