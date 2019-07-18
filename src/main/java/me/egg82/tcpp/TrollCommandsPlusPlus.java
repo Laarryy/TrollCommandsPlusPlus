@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import me.egg82.tcpp.commands.TrollCommand;
 import me.egg82.tcpp.events.PlayerLoginUpdateNotifyHandler;
 import me.egg82.tcpp.events.entity.entityChangeBlock.EntityChangeBlockAnvil;
+import me.egg82.tcpp.events.entity.entityDamageByEntity.EntityDamageByEntityBrittle;
 import me.egg82.tcpp.events.entity.entityExplode.EntityExplodeBludger;
 import me.egg82.tcpp.events.inventory.inventoryClick.InventoryClickAttach;
 import me.egg82.tcpp.events.inventory.inventoryClick.InventoryClickAttachErase;
@@ -28,8 +29,10 @@ import me.egg82.tcpp.events.inventory.inventoryMoveItem.InventoryMoveItemAttachE
 import me.egg82.tcpp.events.player.asyncPlayerChat.AsyncPlayerChatAlone;
 import me.egg82.tcpp.events.player.asyncPlayerChat.AsyncPlayerChatAmnesia;
 import me.egg82.tcpp.events.player.playerDeath.PlayerDeathBludger;
+import me.egg82.tcpp.events.player.playerDeath.PlayerDeathBrittle;
 import me.egg82.tcpp.events.player.playerDropItem.PlayerDropItemAttachErase;
 import me.egg82.tcpp.events.player.playerJoin.PlayerJoinAlone;
+import me.egg82.tcpp.events.player.playerMove.PlayerMoveBrittle;
 import me.egg82.tcpp.events.player.playerPickupItem.PlayerPickupItemAttach;
 import me.egg82.tcpp.events.player.playerQuit.PlayerQuitBludger;
 import me.egg82.tcpp.extended.Configuration;
@@ -55,9 +58,11 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandMap;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -289,6 +294,10 @@ public class TrollCommandsPlusPlus {
         events.add(BukkitEvents.subscribe(plugin, EntityExplodeEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new EntityExplodeBludger().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, PlayerQuitEvent.class, EventPriority.NORMAL).handler(e -> new PlayerQuitBludger().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, PlayerDeathEvent.class, EventPriority.NORMAL).handler(e -> new PlayerDeathBludger().accept(e)));
+
+        events.add(BukkitEvents.subscribe(plugin, PlayerMoveEvent.class, EventPriority.NORMAL).handler(e -> new PlayerMoveBrittle().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(e -> e.getEntity() instanceof LivingEntity).handler(e -> new EntityDamageByEntityBrittle().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, PlayerDeathEvent.class, EventPriority.NORMAL).handler(e -> new PlayerDeathBrittle().accept(e)));
     }
 
     private void loadTasks() {

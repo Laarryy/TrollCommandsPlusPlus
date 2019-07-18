@@ -110,6 +110,15 @@ public class TrollCommand extends BaseCommand {
         new BombCommand(taskFactory.newChain(), sender, playerName).run();
     }
 
+    @Subcommand("brittle")
+    @CommandPermission("tcpp.command.brittle")
+    @Description("(Toggleable) They're made of glass! (Removed on death)")
+    @Syntax("<player>")
+    @CommandCompletion("@player")
+    public void onBrittle(CommandSender sender, String playerName) {
+        new BrittleCommand(taskFactory.newChain(), sender, playerName).run();
+    }
+
     @Subcommand("stop")
     @CommandPermission("tcpp.command.stop")
     @Description("Stops and undoes any currently-active trolls against the player.")
