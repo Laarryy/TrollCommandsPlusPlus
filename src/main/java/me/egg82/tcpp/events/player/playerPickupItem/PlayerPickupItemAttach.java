@@ -12,7 +12,7 @@ public class PlayerPickupItemAttach implements Consumer<PlayerPickupItemEvent> {
     public PlayerPickupItemAttach() { }
 
     public void accept(PlayerPickupItemEvent event) {
-        ItemStack item = event.getItem().getItemStack();
+        ItemStack item = event.getItem().getItemStack().clone();
         if (tryRunCommand(item)) {
             event.getItem().setItemStack(item);
         }
