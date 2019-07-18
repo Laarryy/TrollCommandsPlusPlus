@@ -119,6 +119,15 @@ public class TrollCommand extends BaseCommand {
         new BrittleCommand(taskFactory.newChain(), sender, playerName).run();
     }
 
+    @Subcommand("burn")
+    @CommandPermission("tcpp.command.burn")
+    @Description("(Toggleable) AHH! FIRE! FIRE! FIIREE!! (Removed on death)")
+    @Syntax("<player>")
+    @CommandCompletion("@player")
+    public void onBurn(CommandSender sender, String playerName) {
+        new BurnCommand(taskFactory.newChain(), sender, playerName).run();
+    }
+
     @Subcommand("stop")
     @CommandPermission("tcpp.command.stop")
     @Description("Stops and undoes any currently-active trolls against the player.")

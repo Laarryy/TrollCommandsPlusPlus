@@ -30,6 +30,7 @@ import me.egg82.tcpp.events.player.asyncPlayerChat.AsyncPlayerChatAlone;
 import me.egg82.tcpp.events.player.asyncPlayerChat.AsyncPlayerChatAmnesia;
 import me.egg82.tcpp.events.player.playerDeath.PlayerDeathBludger;
 import me.egg82.tcpp.events.player.playerDeath.PlayerDeathBrittle;
+import me.egg82.tcpp.events.player.playerDeath.PlayerDeathBurn;
 import me.egg82.tcpp.events.player.playerDropItem.PlayerDropItemAttachErase;
 import me.egg82.tcpp.events.player.playerJoin.PlayerJoinAlone;
 import me.egg82.tcpp.events.player.playerMove.PlayerMoveBrittle;
@@ -47,6 +48,7 @@ import me.egg82.tcpp.services.player.PlayerVisibilityHandler;
 import me.egg82.tcpp.tasks.TaskAnnoy;
 import me.egg82.tcpp.tasks.TaskBludger;
 import me.egg82.tcpp.tasks.TaskBomb;
+import me.egg82.tcpp.tasks.TaskBurn;
 import me.egg82.tcpp.utils.*;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEventSubscriber;
@@ -298,12 +300,15 @@ public class TrollCommandsPlusPlus {
         events.add(BukkitEvents.subscribe(plugin, PlayerMoveEvent.class, EventPriority.NORMAL).handler(e -> new PlayerMoveBrittle().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(e -> e.getEntity() instanceof LivingEntity).handler(e -> new EntityDamageByEntityBrittle().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, PlayerDeathEvent.class, EventPriority.NORMAL).handler(e -> new PlayerDeathBrittle().accept(e)));
+
+        events.add(BukkitEvents.subscribe(plugin, PlayerDeathEvent.class, EventPriority.NORMAL).handler(e -> new PlayerDeathBurn().accept(e)));
     }
 
     private void loadTasks() {
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskAnnoy(), 0L, 45L));
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskBludger(), 0L, 3L));
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskBomb(), 0L, 10L));
+        tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskBurn(), 0L, 40L));
     }
 
     private void loadHooks() {
