@@ -36,12 +36,14 @@ import me.egg82.tcpp.extended.Configuration;
 import me.egg82.tcpp.hooks.PlayerAnalyticsHook;
 import me.egg82.tcpp.hooks.PluginHook;
 import me.egg82.tcpp.hooks.ProtocolLibHook;
+import me.egg82.tcpp.services.AnalyticsHelper;
 import me.egg82.tcpp.services.GameAnalyticsErrorHandler;
 import me.egg82.tcpp.services.block.FakeBlockHandler;
 import me.egg82.tcpp.services.entity.EntityItemHandler;
 import me.egg82.tcpp.services.player.PlayerVisibilityHandler;
 import me.egg82.tcpp.tasks.TaskAnnoy;
 import me.egg82.tcpp.tasks.TaskBludger;
+import me.egg82.tcpp.tasks.TaskBomb;
 import me.egg82.tcpp.utils.*;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEventSubscriber;
@@ -292,6 +294,7 @@ public class TrollCommandsPlusPlus {
     private void loadTasks() {
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskAnnoy(), 0L, 45L));
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskBludger(), 0L, 3L));
+        tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskBomb(), 0L, 10L));
     }
 
     private void loadHooks() {
@@ -318,6 +321,8 @@ public class TrollCommandsPlusPlus {
 
     private void loadMetrics() {
         metrics = new Metrics(plugin);
+
+        metrics.addCustomChart(new Metrics.AdvancedPie("commands", AnalyticsHelper::getAndEraseCommands));
     }
 
     private void checkUpdate() {

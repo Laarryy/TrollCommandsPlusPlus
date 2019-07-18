@@ -101,6 +101,15 @@ public class TrollCommand extends BaseCommand {
         new BludgerCommand(taskFactory.newChain(), sender, playerName).run();
     }
 
+    @Subcommand("bomb")
+    @CommandPermission("tcpp.command.bomb")
+    @Description("(Toggleable) May balls of fire rain down upon thine enemy. (Removed on death)")
+    @Syntax("<player>")
+    @CommandCompletion("@player")
+    public void onBomb(CommandSender sender, String playerName) {
+        new BombCommand(taskFactory.newChain(), sender, playerName).run();
+    }
+
     @Subcommand("stop")
     @CommandPermission("tcpp.command.stop")
     @Description("Stops and undoes any currently-active trolls against the player.")
