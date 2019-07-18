@@ -80,8 +80,10 @@ public class InventoryDragAttachErase implements Consumer<InventoryDragEvent> {
 
         boolean retVal = lore.removeIf(v -> ChatColor.stripColor(v).trim().startsWith("Command to run: "));
 
-        meta.setLore(lore);
-        item.setItemMeta(meta);
+        if (retVal) {
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+        }
 
         return retVal;
     }
