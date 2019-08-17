@@ -20,7 +20,7 @@ public class PaperPlayerInfo implements PlayerInfo {
     private static final Object uuidCacheLock = new Object();
     private static final Object nameCacheLock = new Object();
 
-    public PaperPlayerInfo(UUID uuid) throws IOException {
+    PaperPlayerInfo(UUID uuid) throws IOException {
         this.uuid = uuid;
 
         Optional<String> name = Optional.ofNullable(uuidCache.getIfPresent(uuid));
@@ -28,16 +28,16 @@ public class PaperPlayerInfo implements PlayerInfo {
             synchronized (uuidCacheLock) {
                 name = Optional.ofNullable(uuidCache.getIfPresent(uuid));
                 if (!name.isPresent()) {
-                    name = Optional.of(nameExpensive(uuid));
-                    uuidCache.put(uuid, name.get());
+                    name = Optional.ofNullable(nameExpensive(uuid));
+                    name.ifPresent(v -> uuidCache.put(uuid, v));
                 }
             }
         }
 
-        this.name = name.get();
+        this.name = name.orElse(null);
     }
 
-    public PaperPlayerInfo(String name) throws IOException {
+    PaperPlayerInfo(String name) throws IOException {
         this.name = name;
 
         Optional<UUID> uuid = Optional.ofNullable(nameCache.getIfPresent(name));
@@ -45,13 +45,13 @@ public class PaperPlayerInfo implements PlayerInfo {
             synchronized (nameCacheLock) {
                 uuid = Optional.ofNullable(nameCache.getIfPresent(name));
                 if (!uuid.isPresent()) {
-                    uuid = Optional.of(uuidExpensive(name));
-                    nameCache.put(name, uuid.get());
+                    uuid = Optional.ofNullable(uuidExpensive(name));
+                    uuid.ifPresent(v -> nameCache.put(name, v));
                 }
             }
         }
 
-        this.uuid = uuid.get();
+        this.uuid = uuid.orElse(null);
     }
 
     public UUID getUUID() { return uuid; }
@@ -62,6 +62,7 @@ public class PaperPlayerInfo implements PlayerInfo {
         // Currently-online lookup
         Player player = Bukkit.getPlayer(uuid);
         if (player != null) {
+            nameCache.put(player.getName(), uuid);
             return player.getName();
         }
 
@@ -86,6 +87,7 @@ public class PaperPlayerInfo implements PlayerInfo {
         // Currently-online lookup
         Player player = Bukkit.getPlayer(name);
         if (player != null) {
+            uuidCache.put(player.getUniqueId(), name);
             return player.getUniqueId();
         }
 

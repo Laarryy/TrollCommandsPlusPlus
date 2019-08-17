@@ -28,7 +28,7 @@ public class BukkitPlayerInfo implements PlayerInfo {
     private static final Object uuidCacheLock = new Object();
     private static final Object nameCacheLock = new Object();
 
-    public BukkitPlayerInfo(UUID uuid) throws IOException {
+    BukkitPlayerInfo(UUID uuid) throws IOException {
         this.uuid = uuid;
 
         Optional<String> name = Optional.ofNullable(uuidCache.getIfPresent(uuid));
@@ -36,16 +36,16 @@ public class BukkitPlayerInfo implements PlayerInfo {
             synchronized (uuidCacheLock) {
                 name = Optional.ofNullable(uuidCache.getIfPresent(uuid));
                 if (!name.isPresent()) {
-                    name = Optional.of(nameExpensive(uuid));
-                    uuidCache.put(uuid, name.get());
+                    name = Optional.ofNullable(nameExpensive(uuid));
+                    name.ifPresent(v -> uuidCache.put(uuid, v));
                 }
             }
         }
 
-        this.name = name.get();
+        this.name = name.orElse(null);
     }
 
-    public BukkitPlayerInfo(String name) throws IOException {
+    BukkitPlayerInfo(String name) throws IOException {
         this.name = name;
 
         Optional<UUID> uuid = Optional.ofNullable(nameCache.getIfPresent(name));
@@ -53,13 +53,13 @@ public class BukkitPlayerInfo implements PlayerInfo {
             synchronized (nameCacheLock) {
                 uuid = Optional.ofNullable(nameCache.getIfPresent(name));
                 if (!uuid.isPresent()) {
-                    uuid = Optional.of(uuidExpensive(name));
-                    nameCache.put(name, uuid.get());
+                    uuid = Optional.ofNullable(uuidExpensive(name));
+                    uuid.ifPresent(v -> nameCache.put(name, v));
                 }
             }
         }
 
-        this.uuid = uuid.get();
+        this.uuid = uuid.orElse(null);
     }
 
     public UUID getUUID() { return uuid; }
@@ -70,16 +70,19 @@ public class BukkitPlayerInfo implements PlayerInfo {
         // Currently-online lookup
         Player player = Bukkit.getPlayer(uuid);
         if (player != null) {
+            nameCache.put(player.getName(), uuid);
             return player.getName();
         }
 
         // Network lookup
-        HttpURLConnection conn = getConnection("https://api.mojang.com/user/profiles/" + uuid.toString().replace("-", "") + "/names");
+        HttpURLConnection conn = getConnection(new URL("https://api.mojang.com/user/profiles/" + uuid.toString().replace("-", "") + "/names"));
 
         int code = conn.getResponseCode();
-        try (InputStream in = (code == 200) ? conn.getInputStream() : conn.getErrorStream();
-             InputStreamReader reader = new InputStreamReader(in);
-             BufferedReader buffer = new BufferedReader(reader)) {
+        try (
+                InputStream in = (code == 200) ? conn.getInputStream() : conn.getErrorStream();
+                InputStreamReader reader = new InputStreamReader(in);
+                BufferedReader buffer = new BufferedReader(reader)
+        ) {
             StringBuilder builder = new StringBuilder();
             String line;
             while ((line = buffer.readLine()) != null) {
@@ -107,16 +110,19 @@ public class BukkitPlayerInfo implements PlayerInfo {
         // Currently-online lookup
         Player player = Bukkit.getPlayer(name);
         if (player != null) {
+            uuidCache.put(player.getUniqueId(), name);
             return player.getUniqueId();
         }
 
         // Network lookup
-        HttpURLConnection conn = getConnection("https://api.mojang.com/users/profiles/minecraft/" + name);
+        HttpURLConnection conn = getConnection(new URL("https://api.mojang.com/users/profiles/minecraft/" + name));
 
         int code = conn.getResponseCode();
-        try (InputStream in = (code == 200) ? conn.getInputStream() : conn.getErrorStream();
-             InputStreamReader reader = new InputStreamReader(in);
-             BufferedReader buffer = new BufferedReader(reader)) {
+        try (
+                InputStream in = (code == 200) ? conn.getInputStream() : conn.getErrorStream();
+                InputStreamReader reader = new InputStreamReader(in);
+                BufferedReader buffer = new BufferedReader(reader)
+        ) {
             StringBuilder builder = new StringBuilder();
             String line;
             while ((line = buffer.readLine()) != null) {
@@ -140,10 +146,33 @@ public class BukkitPlayerInfo implements PlayerInfo {
         throw new IOException("Could not load player data from Mojang (rate-limited?)");
     }
 
-    private static HttpURLConnection getConnection(String url) throws IOException {
-        HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+    private static HttpURLConnection getConnection(URL url) throws IOException {
+        HttpURLConnection conn = getBaseConnection(url);
+        conn.setInstanceFollowRedirects(true);
 
-        conn.setDoInput(true);
+        int status;
+        boolean redirect;
+
+        do {
+            status = conn.getResponseCode();
+            redirect = status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM || status == HttpURLConnection.HTTP_SEE_OTHER;
+
+            if (redirect) {
+                String newUrl = conn.getHeaderField("Location");
+                String cookies = conn.getHeaderField("Set-Cookie");
+
+                conn = getBaseConnection(new URL(newUrl));
+                conn.setRequestProperty("Cookie", cookies);
+                conn.addRequestProperty("Accept-Language", "en-US,en;q=0.8");
+            }
+        } while (redirect);
+
+        return conn;
+    }
+
+    private static HttpURLConnection getBaseConnection(URL url) throws IOException {
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
         conn.setRequestProperty("Accept", "application/json");
         conn.setRequestProperty("Connection", "close");
         conn.setRequestProperty("User-Agent", "egg82/BukkitPlayerInfo");
