@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>trollcommandsplusplus-parent</artifactId>
+        <groupId>me.egg82</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>trollcommandsplusplus-bukkit</artifactId>
+    <version>8.29.57</version>
+
+    <build>
+        <sourceDirectory>src/main/java</sourceDirectory>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.1</version>
+                <configuration>
+                    <relocations>
+                        <relocation>
+                            <pattern>org.bstats</pattern>
+                            <shadedPattern>me.egg82.tcpp.external.org.bstats</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>ninja.egg82.maven</pattern>
+                            <shadedPattern>me.egg82.tcpp.external.ninja.egg82.maven</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>ninja.egg82.services</pattern>
+                            <shadedPattern>me.egg82.tcpp.external.ninja.egg82.services</shadedPattern>
+                            <includes>
+                                <include>ninja.egg82.services.ProxiedURLClassLoader*</include>
+                            </includes>
+                        </relocation>
+                        <relocation>
+                            <pattern>ninja.egg82.utils</pattern>
+                            <shadedPattern>me.egg82.tcpp.external.ninja.egg82.utils</shadedPattern>
+                            <includes>
+                                <include>ninja.egg82.utils.DocumentUtil</include>
+                                <include>ninja.egg82.utils.InjectUtil</include>
+                                <include>ninja.egg82.utils.HTTPUtil</include>
+                                <include>ninja.egg82.utils.DownloadUtil</include>
+                                <include>ninja.egg82.utils.MavenUtil</include>
+                                <include>ninja.egg82.utils.XMLUtil</include>
+                            </includes>
+                        </relocation>
+                    </relocations>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
+                            <minimizeJar>false</minimizeJar>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <!-- included or useless -->
+                                        <exclude>LICENSE*</exclude>
+                                        <exclude>junit/**</exclude>
+                                        <exclude>org/intellij/**</exclude>
+                                        <exclude>org/junit/**</exclude>
+                                        <exclude>org/hamcrest/**</exclude>
+
+                                        <!-- dep-injected -->
+                                        <!-- mvn dependency:tree -->
+                                        <exclude>com/github/benmanes/caffeine/**</exclude>
+                                        <exclude>com/google/common/**</exclude> <!-- included with many things -->
+                                        <exclude>com/google/errorprone/annotations/**</exclude> <!-- included with guava -->
+                                        <exclude>com/google/gson/**</exclude> <!-- included with mineskin java-client -->
+                                        <exclude>com/google/j2objc/annotations/**</exclude> <!-- included with guava -->
+                                        <exclude>com/google/thirdparty/publicsuffix/**</exclude> <!-- included with guava -->
+                                        <exclude>javassist/**</exclude>
+                                        <exclude>javax/annotation/**</exclude>
+                                        <exclude>ninja/egg82/analytics/**</exclude>
+                                        <exclude>ninja/egg82/configuration/**</exclude>
+                                        <exclude>ninja/egg82/reflect/**</exclude>
+                                        <exclude>ninja/egg82/service/**</exclude>
+                                        <exclude>ninja/leaping/configurate/**</exclude>
+                                        <exclude>org/checkerframework/**</exclude> <!-- included with configurate-core -->
+                                        <exclude>org/codehaus/mojo/animal_sniffer/**</exclude> <!-- included with guava -->
+                                        <exclude>org/json/simple/**</exclude> <!-- included with gameanalytics-api -->
+                                        <exclude>org/jsoup/**</exclude> <!-- included with mineskin java-client -->
+                                        <exclude>org/mineskin/**</exclude>
+                                        <exclude>org/reflections/**</exclude> <!-- included with reflection-utils -->
+                                    </excludes>
+                                </filter>
+                                <filter>
+                                    <!-- prevent removal of things from common -->
+                                    <artifact>me.egg82:trollcommandsplusplus-common</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>egg82-ninja-proxy</id>
+            <url>https://nexus.egg82.me/repository/egg82/</url>
+        </repository>
+        <repository>
+            <id>egg82-ninja</id>
+            <url>https://www.myget.org/F/egg82-java/maven/</url>
+        </repository>
+
+        <repository>
+            <id>papermc-proxy</id>
+            <url>https://nexus.egg82.me/repository/papermc/</url>
+        </repository>
+        <repository>
+            <id>papermc</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
+        </repository>
+
+        <!--<repository>
+            <id>spigot-repo-proxy</id>
+            <url>https://nexus.egg82.me/repository/spigot/</url>
+        </repository>
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>-->
+
+        <repository>
+            <id>aikar-proxy</id>
+            <url>https://nexus.egg82.me/repository/aikar/</url>
+        </repository>
+        <repository>
+            <id>aikar</id>
+            <url>https://repo.aikar.co/content/groups/aikar/</url>
+        </repository>
+
+        <repository>
+            <id>sponge-proxy</id>
+            <url>https://nexus.egg82.me/repository/sponge/</url>
+        </repository>
+        <repository>
+            <id>sponge</id>
+            <url>https://repo.spongepowered.org/maven/</url>
+        </repository>
+
+        <repository>
+            <id>github-rjenkinsjr-proxy</id>
+            <url>https://nexus.egg82.me/repository/rjenkinsjr/</url>
+        </repository>
+        <repository>
+            <id>github-rjenkinsjr</id>
+            <url>https://raw.github.com/rjenkinsjr/maven2/repo</url>
+        </repository>
+
+        <repository>
+            <id>CodeMC-proxy</id>
+            <url>https://nexus.egg82.me/repository/codemc/</url>
+        </repository>
+        <repository>
+            <id>CodeMC</id>
+            <url>https://repo.codemc.org/repository/maven-public</url>
+        </repository>
+
+        <repository>
+            <id>inventivetalent-proxy</id>
+            <url>https://nexus.egg82.me/repository/inventivetalent/</url>
+        </repository>
+        <repository>
+            <id>inventivetalent</id>
+            <url>https://repo.inventivetalent.org/content/groups/public/</url>
+        </repository>
+
+        <repository>
+            <id>dmulloy2-repo-proxy</id>
+            <url>https://nexus.egg82.me/repository/dmulloy2/</url>
+        </repository>
+        <repository>
+            <id>dmulloy2-repo</id>
+            <url>https://repo.dmulloy2.net/nexus/repository/public/</url>
+        </repository>
+
+        <repository>
+            <id>dmulloy2-snapshots-proxy</id>
+            <url>https://nexus.egg82.me/repository/dmulloy2-snapshots/</url>
+        </repository>
+        <repository>
+            <id>dmulloy2-snapshots</id>
+            <url>https://repo.dmulloy2.net/nexus/repository/snapshots/</url>
+        </repository>
+
+        <repository>
+            <id>elmakers-proxy</id>
+            <url>https://nexus.egg82.me/repository/elmakers/</url>
+        </repository>
+        <repository>
+            <id>elmakers</id>
+            <url>http://maven.elmakers.com/repository/</url>
+        </repository>
+
+        <repository>
+            <id>plan-proxy</id>
+            <url>https://nexus.egg82.me/repository/plan/</url>
+        </repository>
+        <repository>
+            <id>plan</id>
+            <url>https://dl.bintray.com/rsl1122/Plan-repository</url>
+        </repository>
+
+        <repository>
+            <id>maven-central-proxy</id>
+            <url>https://nexus.egg82.me/repository/maven-central/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <!--<dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>1.8-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>-->
+        <dependency>
+            <groupId>com.destroystokyo.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.15.1-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>co.aikar</groupId>
+            <artifactId>taskchain-bukkit</artifactId>
+            <version>3.7.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>co.aikar</groupId>
+            <artifactId>acf-paper</artifactId>
+            <version>0.5.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>ninja.egg82</groupId>
+            <artifactId>event-chain-bukkit</artifactId>
+            <version>1.0.9</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.spongepowered</groupId>
+            <artifactId>configurate-yaml</artifactId>
+            <version>3.6.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>ninja.egg82</groupId>
+            <artifactId>spigot-updater</artifactId>
+            <version>1.0.3</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>ninja.egg82</groupId>
+            <artifactId>service-locator</artifactId>
+            <version>1.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>ninja.egg82</groupId>
+            <artifactId>dep-downloader</artifactId>
+            <version>2.2.10</version>
+        </dependency>
+        <dependency>
+            <groupId>ninja.egg82</groupId>
+            <artifactId>reflection-utils</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>info.ronjenkins</groupId>
+            <artifactId>slf4bukkit</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mineskin</groupId>
+            <artifactId>java-client</artifactId>
+            <version>1.0.3-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>1.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.djrapitops</groupId>
+            <artifactId>Plan-api</artifactId>
+            <version>5.0-R0.3</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib</artifactId>
+            <version>4.5.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.comphenix.packetwrapper</groupId>
+            <artifactId>PacketWrapper</artifactId>
+            <version>1.13-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.palmergames.bukkit.towny</groupId>
+            <artifactId>Towny</artifactId>
+            <version>0.95.2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.slikey</groupId>
+            <artifactId>EffectLib</artifactId>
+            <version>6.2</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.egg82</groupId>
+            <artifactId>trollcommandsplusplus-common</artifactId>
+            <version>8.29.57</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.6.0-M1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

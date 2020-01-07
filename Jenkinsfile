@@ -19,7 +19,7 @@ pipeline {
     }
 	post {
         always {
-            archiveArtifacts artifacts: 'target/trollcommandsplusplus-*.jar', fingerprint: true
+            archiveArtifacts artifacts: '**/target/trollcommandsplusplus-*.jar', fingerprint: true
         }
     }
 }
