@@ -1,4 +1,4 @@
-package me.egg82.ae.services;
+package me.egg82.tcpp.services;
 
 import co.aikar.commands.BukkitMessageFormatter;
 import co.aikar.commands.CommandManager;

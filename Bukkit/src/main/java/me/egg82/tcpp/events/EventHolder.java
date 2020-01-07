@@ -1,9 +1,9 @@
-package me.egg82.ae.events;
+package me.egg82.tcpp.events;
 
 import java.util.ArrayList;
 import java.util.List;
-import me.egg82.ae.EnchantAPI;
-import me.egg82.ae.hooks.TownyHook;
+import me.egg82.tcpp.TrollAPI;
+import me.egg82.tcpp.hooks.TownyHook;
 import ninja.egg82.events.BukkitEventSubscriber;
 import ninja.egg82.service.ServiceLocator;
 import ninja.egg82.service.ServiceNotFoundException;
@@ -16,7 +16,7 @@ public abstract class EventHolder {
 
     protected final List<BukkitEventSubscriber<?>> events = new ArrayList<>();
 
-    protected final EnchantAPI api = EnchantAPI.getInstance();
+    protected final TrollAPI api = TrollAPI.getInstance();
 
     public final int numEvents() { return events.size(); }
 

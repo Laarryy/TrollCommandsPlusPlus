@@ -1,4 +1,4 @@
-package me.egg82.ae.services.lookup;
+package me.egg82.tcpp.services.lookup;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.github.benmanes.caffeine.cache.Cache;

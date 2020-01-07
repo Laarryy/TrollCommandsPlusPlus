@@ -1,9 +1,9 @@
-package me.egg82.ae.commands.internal;
+package me.egg82.tcpp.commands.internal;
 
 import co.aikar.commands.CommandIssuer;
 import co.aikar.taskchain.TaskChain;
-import me.egg82.ae.enums.Message;
-import me.egg82.ae.utils.ConfigurationFileUtil;
+import me.egg82.tcpp.enums.Message;
+import me.egg82.tcpp.utils.ConfigurationFileUtil;
 import org.bukkit.plugin.Plugin;
 
 public class ReloadCommand implements Runnable {

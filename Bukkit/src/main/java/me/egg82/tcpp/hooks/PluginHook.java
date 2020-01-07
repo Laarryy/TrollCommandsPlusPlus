@@ -1,4 +1,4 @@
-package me.egg82.ae.hooks;
+package me.egg82.tcpp.hooks;
 
 public interface PluginHook {
     void cancel();

@@ -1,4 +1,4 @@
-package me.egg82.ae.hooks;
+package me.egg82.tcpp.hooks;
 
 import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.bukkit.towny.utils.CombatUtil;

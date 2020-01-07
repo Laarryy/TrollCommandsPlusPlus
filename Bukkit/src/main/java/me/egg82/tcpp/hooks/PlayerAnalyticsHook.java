@@ -1,4 +1,4 @@
-package me.egg82.ae.hooks;
+package me.egg82.tcpp.hooks;
 
 import com.djrapitops.plan.capability.CapabilityService;
 import com.djrapitops.plan.extension.CallEvents;
@@ -7,22 +7,14 @@ import com.djrapitops.plan.extension.ExtensionService;
 import com.djrapitops.plan.extension.FormatType;
 import com.djrapitops.plan.extension.annotation.NumberProvider;
 import com.djrapitops.plan.extension.annotation.PluginInfo;
-import com.djrapitops.plan.extension.annotation.TableProvider;
 import com.djrapitops.plan.extension.icon.Color;
 import com.djrapitops.plan.extension.icon.Family;
-import com.djrapitops.plan.extension.icon.Icon;
-import com.djrapitops.plan.extension.table.Table;
 import java.util.*;
-import me.egg82.ae.EnchantAPI;
-import me.egg82.ae.api.*;
-import me.egg82.ae.services.entity.EntityItemHandler;
-import ninja.egg82.service.ServiceLocator;
-import ninja.egg82.service.ServiceNotFoundException;
+import me.egg82.tcpp.APIException;
+import me.egg82.tcpp.TrollAPI;
+import me.egg82.tcpp.api.TrollType;
 import org.bukkit.Bukkit;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.ItemStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +25,7 @@ public class PlayerAnalyticsHook implements PluginHook {
     public PlayerAnalyticsHook() {
         capabilities = CapabilityService.getInstance();
 
-        if (isCapabilityAvailable("DATA_EXTENSION_VALUES") && isCapabilityAvailable("DATA_EXTENSION_TABLES")) {
+        if (isCapabilityAvailable("DATA_EXTENSION_VALUES")) {
             try {
                 ExtensionService.getInstance().register(new Data());
             } catch (NoClassDefFoundError ex) {
@@ -60,150 +52,68 @@ public class PlayerAnalyticsHook implements PluginHook {
     }
 
     @PluginInfo(
-            name = "AdvancedEnchantments",
-            iconName = "book",
+            name = "TrollCommands++",
+            iconName = "theater-masks",
             iconFamily = Family.SOLID,
             color = Color.PURPLE
     )
     class Data implements DataExtension {
-        private final EnchantAPI api = EnchantAPI.getInstance();
-        private final CallEvents[] events = new CallEvents[] { CallEvents.SERVER_PERIODICAL, CallEvents.PLAYER_JOIN, CallEvents.PLAYER_LEAVE, CallEvents.SERVER_EXTENSION_REGISTER };
-        private EntityItemHandler entityItemHandler;
-        private final BukkitEnchantment durability = BukkitEnchantment.fromEnchant(Enchantment.DURABILITY);
-        private final int numEnchants = AdvancedEnchantment.values().size();
+        private final TrollAPI api = TrollAPI.getInstance();
+        private final CallEvents[] events = new CallEvents[]{CallEvents.SERVER_PERIODICAL, CallEvents.PLAYER_JOIN, CallEvents.PLAYER_LEAVE, CallEvents.SERVER_EXTENSION_REGISTER};
+        private final int numTrolls = TrollType.values().size();
 
-        private Data() {
+        private Data() { }
+
+        @NumberProvider(
+                text = "Registered Trolls",
+                description = "Number of registered trolls.",
+                priority = 1,
+                iconName = "theater-masks",
+                iconFamily = Family.SOLID,
+                iconColor = Color.NONE,
+                format = FormatType.NONE
+        )
+        public long getTrolls() { return numTrolls; }
+
+        @NumberProvider(
+                text = "Running Trolls",
+                description = "Number of running trolls.",
+                priority = 2,
+                iconName = "theater-masks",
+                iconFamily = Family.SOLID,
+                iconColor = Color.NONE,
+                format = FormatType.NONE
+        )
+        public long getRunningTrolls() {
             try {
-                entityItemHandler = ServiceLocator.get(EntityItemHandler.class);
-            } catch (InstantiationException | IllegalAccessException | ServiceNotFoundException ex) {
-                logger.error(ex.getMessage(), ex);
+                return api.getNumRunningTrolls();
+            } catch (APIException ex) {
+                logger.error("[Hard: " + ex.isHard() + "] " + ex.getMessage(), ex);
             }
+            return 0L;
         }
 
         @NumberProvider(
-                text = "Registered Enchants",
-                description = "Number of registered custom enchants.",
+                text = "Trolls",
+                description = "Number of trolls running on the player.",
                 priority = 1,
-                iconName = "book",
+                iconName = "mask",
                 iconFamily = Family.SOLID,
                 iconColor = Color.NONE,
                 format = FormatType.NONE
         )
-        public long getEnchants() { return numEnchants; }
-
-        @NumberProvider(
-                text = "Souls",
-                description = "Number of souls the player possesses.",
-                priority = 1,
-                iconName = "ghost",
-                iconFamily = Family.SOLID,
-                iconColor = Color.NONE,
-                format = FormatType.NONE
-        )
-        public long getSouls(UUID playerUUID) {
+        public long getTrolls(UUID playerUUID) {
             Player player = Bukkit.getPlayer(playerUUID);
             if (player == null) {
-                return 0;
+                return 0L;
             }
 
-            int souls = 0;
-            Set<GenericEnchantableItem> items = getItems(player);
-            for (GenericEnchantableItem item : items) {
-                souls += item.getSouls();
+            try {
+                return api.getNumRunningTrolls(playerUUID);
+            } catch (APIException ex) {
+                logger.error("[Hard: " + ex.isHard() + "] " + ex.getMessage(), ex);
             }
-            return souls;
-        }
-
-        @TableProvider()
-        public Table getSoulsPerItem(UUID playerUUID) {
-            Table.Factory retVal = Table.builder()
-                    .columnOne("Item", Icon.called("user-shield").of(Family.SOLID).build())
-                    .columnTwo("Souls", Icon.called("ghost").of(Family.SOLID).build());
-
-            Player player = Bukkit.getPlayer(playerUUID);
-            if (player == null) {
-                return retVal.build();
-            }
-
-            Set<GenericEnchantableItem> items = getItems(player);
-            for (GenericEnchantableItem item : items) {
-                if (item.getSouls() > 0) {
-                    retVal.addRow(((ItemStack) item.getConcrete()).getType(), item.getSouls());
-                }
-            }
-            return retVal.build();
-        }
-
-        @NumberProvider(
-                text = "Enchants",
-                description = "Number of enchants the player possesses.",
-                iconName = "file",
-                iconFamily = Family.SOLID,
-                iconColor = Color.NONE,
-                format = FormatType.NONE
-        )
-        public long getEnchants(UUID playerUUID) {
-            Player player = Bukkit.getPlayer(playerUUID);
-            if (player == null) {
-                return 0;
-            }
-
-            int enchants = 0;
-            Set<GenericEnchantableItem> items = getItems(player);
-            for (GenericEnchantableItem item : items) {
-                for (Map.Entry<GenericEnchantment, Integer> kvp : item.getEnchantments().entrySet()) {
-                    if (kvp.getKey().equals(durability) && kvp.getValue() <= 0) {
-                        continue;
-                    }
-                   enchants += 1;
-                }
-            }
-            return enchants;
-        }
-
-        @TableProvider()
-        public Table getEnchantsPerItem(UUID playerUUID) {
-            Table.Factory retVal = Table.builder()
-                    .columnOne("Item", Icon.called("user-shield").of(Family.SOLID).build())
-                    .columnTwo("Enchant", Icon.called("file").of(Family.SOLID).build())
-                    .columnThree("Level", Icon.called("arrow-alt-circle-up").of(Family.SOLID).build());
-
-            Player player = Bukkit.getPlayer(playerUUID);
-            if (player == null) {
-                return retVal.build();
-            }
-
-            Set<GenericEnchantableItem> items = getItems(player);
-            for (GenericEnchantableItem item : items) {
-                for (Map.Entry<GenericEnchantment, Integer> kvp : item.getEnchantments().entrySet()) {
-                    if (kvp.getKey().equals(durability) && kvp.getValue() <= 0) {
-                        continue;
-                    }
-                    retVal.addRow(((ItemStack) item.getConcrete()).getType(), kvp.getKey().getFriendlyName(), kvp.getValue());
-                }
-            }
-            return retVal.build();
-        }
-
-        private Set<GenericEnchantableItem> getItems(Player player) {
-            Set<GenericEnchantableItem> retVal = new HashSet<>();
-
-            Optional<ItemStack> mainHand = entityItemHandler.getItemInMainHand(player);
-            mainHand.ifPresent(itemStack -> retVal.add(BukkitEnchantableItem.fromItemStack(itemStack)));
-            Optional<ItemStack> offHand = entityItemHandler.getItemInOffHand(player);
-            offHand.ifPresent(itemStack -> retVal.add(BukkitEnchantableItem.fromItemStack(itemStack)));
-
-            Optional<EntityEquipment> equipment = Optional.ofNullable(player.getEquipment());
-            if (!equipment.isPresent()) {
-                return retVal;
-            }
-
-            retVal.add(BukkitEnchantableItem.fromItemStack(equipment.get().getHelmet()));
-            retVal.add(BukkitEnchantableItem.fromItemStack(equipment.get().getChestplate()));
-            retVal.add(BukkitEnchantableItem.fromItemStack(equipment.get().getLeggings()));
-            retVal.add(BukkitEnchantableItem.fromItemStack(equipment.get().getBoots()));
-            retVal.remove(null);
-            return retVal;
+            return 0L;
         }
 
         public CallEvents[] callExtensionMethodsOn() { return events; }

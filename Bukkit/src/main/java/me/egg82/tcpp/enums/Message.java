@@ -1,4 +1,4 @@
-package me.egg82.ae.enums;
+package me.egg82.tcpp.enums;
 
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
@@ -12,29 +12,17 @@ public enum Message implements MessageKeyProvider {
     GENERAL__HOOK_DISABLE,
     GENERAL__UPDATE,
 
+    ALONE__START,
+    ALONE__STOP,
+
     ERROR__INTERNAL,
     ERROR__NO_CONSOLE,
-    ERROR__ENCHANT_NOT_FOUND,
-    ERROR__NO_ITEM,
-
-    PLAYER__SOUL_VANISHED,
-    PLAYER__SILENCED,
+    ERROR__PLAYER_OFFLINE,
+    ERROR__PLAYER_NOT_FOUND,
+    ERROR__PLAYER_IMMUNE,
 
     RELOAD__BEGIN,
-    RELOAD__END,
-
-    SET__ERROR_LEVEL_MIN,
-    SET__ERROR_LEVEL_MAX,
-    SET__ERROR_CONFLICTS,
-    SET__SUCCESS_MAIN_HAND,
-    SET__SUCCESS_OFF_HAND,
-
-    REMOVE__SUCCESS_MAIN_HAND,
-    REMOVE__SUCCESS_OFF_HAND,
-
-    SOULS__ERROR_MIN,
-    SOULS__SUCCESS_MAIN_HAND,
-    SOULS__SUCCESS_OFF_HAND;
+    RELOAD__END;
 
     private final MessageKey key = MessageKey.of(name().toLowerCase().replace("__", "."));
     public MessageKey getMessageKey() { return key; }

@@ -1,8 +1,8 @@
-package me.egg82.ae.services.block;
+package me.egg82.tcpp.services.block;
 
 import java.util.Map;
 import java.util.Set;
-import me.egg82.ae.core.FakeBlockData;
+import me.egg82.tcpp.core.FakeBlockData;
 import org.bukkit.block.Block;
 
 public interface FakeBlockHandler {

@@ -1,4 +1,4 @@
-package me.egg82.ae.utils;
+package me.egg82.tcpp.utils;
 
 import com.google.common.io.Files;
 import java.io.File;
@@ -17,10 +17,13 @@ public class ConfigurationVersionUtil {
         double oldVersion = config.getNode("version").getDouble(1.0d);
 
         if (config.getNode("version").getDouble(1.0d) == 1.0d) {
-            to11(config);
+            to20(config);
         }
-        if (config.getNode("version").getDouble() == 1.1d) {
-            to12(config);
+        if (config.getNode("version").getDouble() == 2.0d) {
+            to21(config);
+        }
+        if (config.getNode("version").getDouble() == 2.1d) {
+            to31(config);
         }
 
         if (config.getNode("version").getDouble() != oldVersion) {
@@ -34,26 +37,67 @@ public class ConfigurationVersionUtil {
         }
     }
 
-    private static void to11(ConfigurationNode config) {
-        // Add ignore
-        config.getNode("enchant-chance").setValue(0.0d);
+    private static void to20(ConfigurationNode config) {
+        // Redis
+        config.getNode("redis", "enabled").setValue(Boolean.FALSE);
+        config.getNode("redis", "address").setValue("");
+        config.getNode("redis", "port").setValue(6379);
+        config.getNode("redis", "pass").setValue("");
+
+        // Dump -> Messaging
+        String queueType = config.getNode("queueType").getString("bungee");
+        config.removeChild("queueType");
+        String rabbitIp = config.getNode("rabbitIp").getString("");
+        config.removeChild("rabbitIp");
+        int rabbitPort = config.getNode("rabbitPort").getInt(5672);
+        config.removeChild("rabbitPort");
+        String rabbitUser = config.getNode("rabbitUser").getString("guest");
+        config.removeChild("rabbitUser");
+        String rabbitPass = config.getNode("rabbitPass").getString("guest");
+        config.removeChild("rabbitPass");
+
+        config.getNode("messaging", "enabled").setValue((queueType.equalsIgnoreCase("rabbitmq") || queueType.equalsIgnoreCase("rabbit")) ? Boolean.TRUE : Boolean.FALSE);
+        config.getNode("messaging", "type").setValue(queueType);
+        config.getNode("messaging", "rabbit", "address").setValue(rabbitIp);
+        config.getNode("messaging", "rabbit", "port").setValue(rabbitPort);
+        config.getNode("messaging", "rabbit", "user").setValue(rabbitUser);
+        config.getNode("messaging", "rabbit", "pass").setValue(rabbitPass);
 
         // Version
-        config.getNode("version").setValue(1.1d);
+        config.getNode("version").setValue(2.0d);
     }
 
-    private static void to12(ConfigurationNode config) {
-        // Add unbreaking bypass(-bypass?)
-        config.getNode("bypass-unbreaking").setValue(Boolean.TRUE);
+    private static void to21(ConfigurationNode config) {
+        // Redis -> Messaging Redis
+        String redisAddress = config.getNode("redis", "address").getString("");
+        int redisPort = config.getNode("redis", "port").getInt(5672);
+        String redisPass = config.getNode("redis", "pass").getString("");
+        config.removeChild("redis");
 
-        // Add particles
-        config.getNode("particles").setValue(Boolean.TRUE);
-
-        // Add loot chances
-        config.getNode("loot-chance", "enchant").setValue(0.00045d);
-        config.getNode("loot-chance", "curse").setValue(0.00126d);
+        config.getNode("messaging", "redis", "address").setValue(redisAddress);
+        config.getNode("messaging", "redis", "port").setValue(redisPort);
+        config.getNode("messaging", "redis", "pass").setValue(redisPass);
 
         // Version
-        config.getNode("version").setValue(1.2d);
+        config.getNode("version").setValue(2.1d);
+    }
+
+    private static void to31(ConfigurationNode config) {
+        // Remove messaging
+        config.removeChild("messaging");
+
+        // Add debug
+        config.getNode("debug").setValue(Boolean.FALSE);
+
+        // Add stats
+        config.getNode("status", "usage").setValue(Boolean.TRUE);
+        config.getNode("status", "errors").setValue(Boolean.TRUE);
+
+        // Add update
+        config.getNode("update", "check").setValue(Boolean.TRUE);
+        config.getNode("update", "notify").setValue(Boolean.TRUE);
+
+        // Version
+        config.getNode("version").setValue(3.1d);
     }
 }

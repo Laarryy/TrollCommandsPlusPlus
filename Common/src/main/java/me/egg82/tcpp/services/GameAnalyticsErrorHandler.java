@@ -1,10 +1,10 @@
-package me.egg82.ae.services;
+package me.egg82.tcpp.services;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
-import me.egg82.ae.extended.ServiceKeys;
+import me.egg82.tcpp.extended.ServiceKeys;
 import ninja.egg82.analytics.GameAnalytics;
 import ninja.egg82.analytics.common.Severity;
 import ninja.egg82.analytics.events.GAError;

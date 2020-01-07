@@ -1,10 +1,10 @@
-package me.egg82.ae.services.block;
+package me.egg82.tcpp.services.block;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import me.egg82.ae.core.FakeBlockData;
-import me.egg82.ae.services.CollectionProvider;
+import me.egg82.tcpp.core.FakeBlockData;
+import me.egg82.tcpp.services.CollectionProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;

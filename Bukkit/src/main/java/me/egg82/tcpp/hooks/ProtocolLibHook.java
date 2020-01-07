@@ -1,6 +1,7 @@
-package me.egg82.ae.hooks;
+package me.egg82.tcpp.hooks;
 
-import com.comphenix.packetwrapper.*;
+import com.comphenix.packetwrapper.WrapperPlayServerBlockChange;
+import com.comphenix.packetwrapper.WrapperPlayServerMultiBlockChange;
 import com.comphenix.protocol.AsynchronousManager;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -16,11 +17,11 @@ import com.comphenix.protocol.wrappers.nbt.NbtCompound;
 import com.comphenix.protocol.wrappers.nbt.NbtFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import me.egg82.ae.core.ChunkData;
-import me.egg82.ae.core.FakeBlockData;
-import me.egg82.ae.services.CollectionProvider;
-import me.egg82.ae.services.block.FakeBlockHandler;
-import me.egg82.ae.utils.ConfigUtil;
+import me.egg82.tcpp.core.ChunkData;
+import me.egg82.tcpp.core.FakeBlockData;
+import me.egg82.tcpp.services.CollectionProvider;
+import me.egg82.tcpp.services.block.FakeBlockHandler;
+import me.egg82.tcpp.utils.ConfigUtil;
 import ninja.egg82.service.ServiceLocator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -87,26 +88,6 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
                 }
             }
         });
-    }
-
-    public static void setGlowing(ItemStack item) {
-        if (item == null) {
-            return;
-        }
-
-        NbtCompound compound = NbtFactory.asCompound(NbtFactory.fromItemTag(item));
-        compound.put("ench", NbtFactory.ofList(""));
-        NbtFactory.setItemTag(item, compound);
-    }
-
-    public static void removeGlowing(ItemStack item) {
-        if (item == null) {
-            return;
-        }
-
-        NbtCompound compound = NbtFactory.asCompound(NbtFactory.fromItemTag(item));
-        compound.remove("ench");
-        NbtFactory.setItemTag(item, compound);
     }
 
     public void cancel() {

@@ -1,4 +1,4 @@
-package me.egg82.ae.services.skin;
+package me.egg82.tcpp.services.skin;
 
 import java.io.File;
 import java.io.IOException;

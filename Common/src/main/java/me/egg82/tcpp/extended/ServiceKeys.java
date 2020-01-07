@@ -1,8 +1,8 @@
-package me.egg82.ae.extended;
+package me.egg82.tcpp.extended;
 
 public class ServiceKeys {
     private ServiceKeys() {}
 
-    public static final String GAMEANALYTICS_KEY = "ed78eb811f8f607906e21a09947c0487";
-    public static final String GAMEANALYTICS_SECRET = "76c063a77f10906f1d73e9b9c849d59833b2e00b";
+    public static final String GAMEANALYTICS_KEY = "250e5c508c3dd844ed1f8bd2a449d1a6";
+    public static final String GAMEANALYTICS_SECRET = "dfb50b06e598e7a7ad9b3c84f7b118c12800ffce";
 }

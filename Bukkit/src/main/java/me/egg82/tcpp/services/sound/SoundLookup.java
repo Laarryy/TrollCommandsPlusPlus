@@ -1,4 +1,4 @@
-package me.egg82.ae.services.sound;
+package me.egg82.tcpp.services.sound;
 
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;

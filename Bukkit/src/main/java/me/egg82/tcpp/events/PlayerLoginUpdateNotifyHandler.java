@@ -1,12 +1,12 @@
-package me.egg82.ae.events;
+package me.egg82.tcpp.events;
 
 import co.aikar.commands.CommandManager;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
-import me.egg82.ae.enums.Message;
-import me.egg82.ae.extended.Configuration;
-import me.egg82.ae.utils.ConfigUtil;
+import me.egg82.tcpp.enums.Message;
+import me.egg82.tcpp.extended.Configuration;
+import me.egg82.tcpp.utils.ConfigUtil;
 import ninja.egg82.service.ServiceLocator;
 import ninja.egg82.service.ServiceNotFoundException;
 import ninja.egg82.updater.SpigotUpdater;

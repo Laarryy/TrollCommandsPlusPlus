@@ -1,4 +1,4 @@
-package me.egg82.ae.services.entity;
+package me.egg82.tcpp.services.entity;
 
 import java.util.Optional;
 import org.bukkit.entity.LivingEntity;

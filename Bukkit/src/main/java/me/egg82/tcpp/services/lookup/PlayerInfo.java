@@ -1,4 +1,4 @@
-package me.egg82.ae.services.lookup;
+package me.egg82.tcpp.services.lookup;
 
 import java.util.UUID;
 

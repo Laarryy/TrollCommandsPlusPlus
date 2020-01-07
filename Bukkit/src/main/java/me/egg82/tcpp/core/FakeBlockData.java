@@ -1,4 +1,4 @@
-package me.egg82.ae.core;
+package me.egg82.tcpp.core;
 
 import java.util.Objects;
 import org.bukkit.Material;
