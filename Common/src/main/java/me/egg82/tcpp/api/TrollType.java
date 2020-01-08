@@ -18,6 +18,7 @@ public class TrollType {
     public static final TrollType AMNESIA = new TrollType("amnesia", "me.egg82.tcpp.api.trolls.AmnesiaTroll");
     public static final TrollType ANNOY = new TrollType("annoy", "me.egg82.tcpp.api.trolls.AnnoyTroll");
     public static final TrollType ANVIL = new TrollType("anvil", "me.egg82.tcpp.api.trolls.AnvilTroll");
+    public static final TrollType ATTACH = new TrollType("attach", "me.egg82.tcpp.api.trolls.AttachTroll");
 
     public static Set<TrollType> values() { return ImmutableSet.copyOf(allTypes); }
 
@@ -48,11 +49,6 @@ public class TrollType {
         this.name = null;
         this.className = null;
         this.hc = -1;
-    }
-
-    public static TrollType register(String name, String className) {
-        Optional<TrollType> retVal = getByName(name);
-        return retVal.orElseGet(() -> new TrollType(name, className));
     }
 
     public String getName() { return name; }

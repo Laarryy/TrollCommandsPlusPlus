@@ -20,6 +20,7 @@ error:
   player_not_found: "Could not get UUID for <c4>{player}</c4>. (rate-limited?)"
   troll_not_found: "Specified troll could not be found."
   player_immune: "Player is immune."
+  command_no_protocollib: "This command requires ProtocolLib!"
 
 reload:
   begin: "<c2>Reloading, please wait..</c2>"
@@ -43,5 +44,11 @@ annoy:
 anvil:
   description: "Now who could have put that up there?"
   start: "The <c9><c10>base</c10></c9> anvil has been dropped on {player}."
+
+attach:
+  description: "(Undoable) The specified command (topic) will be attached to an item. The next time this item is picked up, it will run the command as the payer that picked the item up.."
+  need_item: "You must be holding an item first!"
+  start: "\"{command}\" is now attached to your held item!"
+  stop: "There is no longer a command attached to your held item."
 
 version: 1.0

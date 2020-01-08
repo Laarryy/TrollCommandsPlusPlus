@@ -9,6 +9,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import de.slikey.effectlib.EffectManager;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.logging.Level;
@@ -17,6 +18,7 @@ import me.egg82.tcpp.api.TrollType;
 import me.egg82.tcpp.commands.TrollCommand;
 import me.egg82.tcpp.commands.TrollCommandsPlusPlusCommand;
 import me.egg82.tcpp.enums.Message;
+import me.egg82.tcpp.events.AttachEvents;
 import me.egg82.tcpp.events.EventHolder;
 import me.egg82.tcpp.events.PlayerLoginUpdateNotifyHandler;
 import me.egg82.tcpp.extended.Configuration;
@@ -38,10 +40,12 @@ import ninja.egg82.updater.SpigotUpdater;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandMap;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.help.HelpTopic;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -219,7 +223,62 @@ public class TrollCommandsPlusPlus {
         ServiceLocator.register(new SpigotUpdater(plugin, 24237));
     }
 
+    private List<String> commandNames = new ArrayList<>();
+    private static final Field commandMap;
+    static {
+        try {
+            commandMap = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");
+            commandMap.setAccessible(true);
+        } catch (NoSuchFieldException ex) {
+            throw new RuntimeException("Could not get command map.", ex);
+        }
+    }
+
     private void loadCommands() {
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            // Hacks, first tick doesn't execute until everything's loaded
+            for (HelpTopic topic : Bukkit.getServer().getHelpMap().getHelpTopics()) {
+                String name = topic.getName();
+                if (name.charAt(0) != '/') {
+                    continue;
+                }
+
+                commandNames.add(name.substring(1));
+            }
+        }, 1L);
+
+        commandManager.getCommandCompletions().registerCompletion("topic", c -> {
+            // Whew, alrighty, so THIS is a hack and a half.
+            if (c.getContextValue(Object.class, 0) == null) {
+                // We are at the first arg
+                if (c.getInput().isEmpty()) {
+                    return ImmutableList.copyOf(commandNames);
+                }
+
+                List<String> retVal = new ArrayList<>();
+                String lower = c.getInput().toLowerCase();
+                for (String command : commandNames) {
+                    if (command.toLowerCase().startsWith(lower)) {
+                        retVal.add(command);
+                    }
+                }
+                return ImmutableList.copyOf(retVal);
+            }
+
+            // We are NOT at the first arg
+
+            String args = c.getContextValue(String.class, 1);
+            try {
+                CommandMap map = (CommandMap) commandMap.get(Bukkit.getPluginManager());
+                List<String> completions = map.tabComplete(c.getSender(), args);
+                return completions != null ? ImmutableList.copyOf(completions) : ImmutableList.of();
+            } catch (IllegalAccessException ex) {
+                logger.error(ex.getMessage(), ex);
+            }
+
+            return ImmutableList.of();
+        });
+
         commandManager.getCommandCompletions().registerCompletion("troll", c -> {
             String lower = c.getInput().toLowerCase().replace(" ", "_");
             Set<String> trolls = new LinkedHashSet<>();
@@ -263,6 +322,10 @@ public class TrollCommandsPlusPlus {
 
     private void loadEvents() {
         events.add(BukkitEvents.subscribe(plugin, PlayerLoginEvent.class, EventPriority.LOW).handler(e -> new PlayerLoginUpdateNotifyHandler(plugin, commandManager).accept(e)));
+
+        if (Bukkit.getPluginManager().getPlugin("ProtocolLib") != null) {
+            eventHolders.add(new AttachEvents(plugin));
+        }
     }
 
     private void loadTasks() {

@@ -45,46 +45,68 @@ public class TrollCommand extends BaseCommand {
     @CommandPermission("tcpp.command.alone")
     @Description("{@@alone.description}")
     @Syntax("<player>")
-    @CommandCompletion("@player")
+    @CommandCompletion("@player @nothing")
     public void onAlone(CommandIssuer issuer, String player) {
-        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, TrollType.ALONE)).execute();
+        TrollType type = TrollType.ALONE;
+        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, plugin, v, type)).execute();
     }
 
     @Subcommand("amnesia")
     @CommandPermission("tcpp.command.amnesia")
     @Description("{@@amnesia.description}")
     @Syntax("<player>")
-    @CommandCompletion("@player")
+    @CommandCompletion("@player @nothing")
     public void onAmnesia(CommandIssuer issuer, String player) {
-        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, TrollType.AMNESIA)).execute();
+        TrollType type = TrollType.AMNESIA;
+        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, plugin, v, type)).execute();
     }
 
     @Subcommand("annoy")
     @CommandPermission("tcpp.command.annoy")
     @Description("{@@annoy.description}")
     @Syntax("<player>")
-    @CommandCompletion("@player")
+    @CommandCompletion("@player @nothing")
     public void onAnnoy(CommandIssuer issuer, String player) {
-        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, TrollType.ANNOY)).execute();
+        TrollType type = TrollType.ANNOY;
+        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, plugin, v, type)).execute();
     }
 
     @Subcommand("anvil")
     @CommandPermission("tcpp.command.anvil")
     @Description("{@@anvil.description}")
     @Syntax("<player>")
-    @CommandCompletion("@player")
+    @CommandCompletion("@player @nothing")
     public void onAnvil(CommandIssuer issuer, String player) {
-        getChain(issuer, player).syncLast(v -> startTroll(issuer, v, TrollType.ANVIL)).execute();
+        TrollType type = TrollType.ANVIL;
+        getChain(issuer, player).syncLast(v -> startTroll(issuer, v, type, true, plugin, v, type)).execute();
     }
 
-    private void startOrStopTroll(CommandIssuer issuer, UUID playerID, TrollType type) {
+    @Subcommand("attach")
+    @CommandPermission("tcpp.command.attach")
+    @Description("{@@attach.description}")
+    @Syntax("<topic>")
+    @CommandCompletion("@topic")
+    public void onAttach(CommandIssuer issuer, String command) {
+        if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {
+            issuer.sendError(Message.ERROR__COMMAND_NO_PROTOCOLLIB);
+        }
+        TrollType type = TrollType.ATTACH;
+        startTroll(issuer, issuer.getUniqueId(), type, false, issuer.getUniqueId(), command, type);
+    }
+
+    private void startOrStopTroll(CommandIssuer issuer, UUID playerID, TrollType type, boolean consoleCanRun, Object... trollParams) {
+        if (!consoleCanRun && !issuer.isPlayer()) {
+            issuer.sendError(Message.ERROR__NO_CONSOLE);
+            return;
+        }
+
         Troll t = tryGetRunningTroll(playerID, type);
         try {
             if ((t == null || !api.stopTroll(t, issuer)) && isPlayerOnlineAndNotImmune(issuer, playerID)) {
                 Constructor<Troll> c = trollConstructors.computeIfAbsent(type, k -> {
                     try {
                         Class<Troll> clazz = (Class<Troll>) getClass().getClassLoader().loadClass(type.getClassName());
-                        Constructor<Troll> constructor = clazz.getConstructor(Plugin.class, UUID.class, TrollType.class);
+                        Constructor<Troll> constructor = clazz.getConstructor(getParamClasses(trollParams));
                         constructor.setAccessible(true);
                         return constructor;
                     } catch (ClassCastException | ClassNotFoundException | NoSuchMethodException ex) {
@@ -96,7 +118,7 @@ public class TrollCommand extends BaseCommand {
                     issuer.sendError(Message.ERROR__INTERNAL);
                     return;
                 }
-                api.startTroll(c.newInstance(plugin, playerID, type), issuer);
+                api.startTroll(c.newInstance(trollParams), issuer);
             }
         } catch (APIException ex) {
             logger.error("[Hard: " + ex.isHard() + "] " + ex.getMessage(), ex);
@@ -107,14 +129,19 @@ public class TrollCommand extends BaseCommand {
         }
     }
 
-    private void startTroll(CommandIssuer issuer, UUID playerID, TrollType type) {
+    private void startTroll(CommandIssuer issuer, UUID playerID, TrollType type, boolean consoleCanRun, Object... trollParams) {
+        if (!consoleCanRun && !issuer.isPlayer()) {
+            issuer.sendError(Message.ERROR__NO_CONSOLE);
+            return;
+        }
+
         Troll t = tryGetRunningTroll(playerID, type);
         try {
             if (t == null && isPlayerOnlineAndNotImmune(issuer, playerID)) {
                 Constructor<Troll> c = trollConstructors.computeIfAbsent(type, k -> {
                     try {
                         Class<Troll> clazz = (Class<Troll>) getClass().getClassLoader().loadClass(type.getClassName());
-                        Constructor<Troll> constructor = clazz.getConstructor(Plugin.class, UUID.class, TrollType.class);
+                        Constructor<Troll> constructor = clazz.getConstructor(getParamClasses(trollParams));
                         constructor.setAccessible(true);
                         return constructor;
                     } catch (ClassCastException | ClassNotFoundException | NoSuchMethodException ex) {
@@ -126,7 +153,7 @@ public class TrollCommand extends BaseCommand {
                     issuer.sendError(Message.ERROR__INTERNAL);
                     return;
                 }
-                api.startTroll(c.newInstance(plugin, playerID, type), issuer);
+                api.startTroll(c.newInstance(trollParams), issuer);
             }
         } catch (APIException ex) {
             logger.error("[Hard: " + ex.isHard() + "] " + ex.getMessage(), ex);
@@ -135,6 +162,14 @@ public class TrollCommand extends BaseCommand {
             logger.error(ex.getMessage(), ex);
             issuer.sendError(Message.ERROR__INTERNAL);
         }
+    }
+
+    private Class[] getParamClasses(Object[] params) {
+        Class[] retVal = new Class[params.length];
+        for (int i = 0; i < params.length; i++) {
+            retVal[i] = (params[i] != null) ? (params[i] instanceof Plugin ? Plugin.class : params[i].getClass()) : null;
+        }
+        return retVal;
     }
 
     private Troll tryGetRunningTroll(UUID playerID, TrollType type) {

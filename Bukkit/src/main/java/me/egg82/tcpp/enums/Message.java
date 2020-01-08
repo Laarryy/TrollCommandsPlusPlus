@@ -19,6 +19,9 @@ public enum Message implements MessageKeyProvider {
     ANNOY__START,
     ANNOY__STOP,
     ANVIL__START,
+    ATTACH__NEED_ITEM,
+    ATTACH__START,
+    ATTACH__STOP,
 
     ERROR__INTERNAL,
     ERROR__NO_CONSOLE,
@@ -26,6 +29,7 @@ public enum Message implements MessageKeyProvider {
     ERROR__PLAYER_NOT_FOUND,
     ERROR__TROLL_NOT_FOUND,
     ERROR__PLAYER_IMMUNE,
+    ERROR__COMMAND_NO_PROTOCOLLIB,
 
     RELOAD__BEGIN,
     RELOAD__END;

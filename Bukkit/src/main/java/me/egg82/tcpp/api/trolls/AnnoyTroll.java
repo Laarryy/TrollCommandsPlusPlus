@@ -33,6 +33,7 @@ public class AnnoyTroll extends BukkitTroll {
     public void start(CommandIssuer issuer) throws Exception {
         Player player = Bukkit.getPlayer(playerID);
         if (player == null) {
+            api.stopTroll(this, issuer);
             return;
         }
 
