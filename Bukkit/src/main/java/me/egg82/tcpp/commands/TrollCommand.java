@@ -74,13 +74,43 @@ public class TrollCommand extends BaseCommand {
     @Syntax("<player>")
     @CommandCompletion("@player")
     public void onAnvil(CommandIssuer issuer, String player) {
-        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, TrollType.ANVIL)).execute();
+        getChain(issuer, player).syncLast(v -> startTroll(issuer, v, TrollType.ANVIL)).execute();
     }
 
     private void startOrStopTroll(CommandIssuer issuer, UUID playerID, TrollType type) {
         Troll t = tryGetRunningTroll(playerID, type);
         try {
             if ((t == null || !api.stopTroll(t, issuer)) && isPlayerOnlineAndNotImmune(issuer, playerID)) {
+                Constructor<Troll> c = trollConstructors.computeIfAbsent(type, k -> {
+                    try {
+                        Class<Troll> clazz = (Class<Troll>) getClass().getClassLoader().loadClass(type.getClassName());
+                        Constructor<Troll> constructor = clazz.getConstructor(Plugin.class, UUID.class, TrollType.class);
+                        constructor.setAccessible(true);
+                        return constructor;
+                    } catch (ClassCastException | ClassNotFoundException | NoSuchMethodException ex) {
+                        logger.error(ex.getMessage(), ex);
+                    }
+                    return null;
+                });
+                if (c == null) {
+                    issuer.sendError(Message.ERROR__INTERNAL);
+                    return;
+                }
+                api.startTroll(c.newInstance(plugin, playerID, type), issuer);
+            }
+        } catch (APIException ex) {
+            logger.error("[Hard: " + ex.isHard() + "] " + ex.getMessage(), ex);
+            issuer.sendError(Message.ERROR__INTERNAL);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+            issuer.sendError(Message.ERROR__INTERNAL);
+        }
+    }
+
+    private void startTroll(CommandIssuer issuer, UUID playerID, TrollType type) {
+        Troll t = tryGetRunningTroll(playerID, type);
+        try {
+            if (t == null && isPlayerOnlineAndNotImmune(issuer, playerID)) {
                 Constructor<Troll> c = trollConstructors.computeIfAbsent(type, k -> {
                     try {
                         Class<Troll> clazz = (Class<Troll>) getClass().getClassLoader().loadClass(type.getClassName());
