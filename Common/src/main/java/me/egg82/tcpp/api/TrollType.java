@@ -14,9 +14,9 @@ public class TrollType {
 
     private static final Set<TrollType> allTypes = new HashSet<>();
 
-    public static final TrollType ALONE = new TrollType("alone");
-    public static final TrollType AMNESIA = new TrollType("amnesia");
-    public static final TrollType ANNOY = new TrollType("annoy");
+    public static final TrollType ALONE = new TrollType("alone", "me.egg82.tcpp.api.trolls.AloneTroll");
+    public static final TrollType AMNESIA = new TrollType("amnesia", "me.egg82.tcpp.api.trolls.AmnesiaTroll");
+    public static final TrollType ANNOY = new TrollType("annoy", "me.egg82.tcpp.api.trolls.AnnoyTroll");
 
     public static Set<TrollType> values() { return ImmutableSet.copyOf(allTypes); }
 
@@ -30,12 +30,14 @@ public class TrollType {
     }
 
     private final String name;
+    private final String className;
     private final int hc;
-    private TrollType(String name) {
+    private TrollType(String name, String className) {
         if (ConfigUtil.getDebugOrFalse()) {
             logger.info("Adding new troll type " + name);
         }
         this.name = name;
+        this.className = className;
         this.hc = Objects.hash(name);
         allTypes.add(this);
     }
@@ -43,15 +45,18 @@ public class TrollType {
     // Used for ExternalAPI
     private TrollType() {
         this.name = null;
+        this.className = null;
         this.hc = -1;
     }
 
-    public static TrollType register(String name) {
+    public static TrollType register(String name, String className) {
         Optional<TrollType> retVal = getByName(name);
-        return retVal.orElseGet(() -> new TrollType(name));
+        return retVal.orElseGet(() -> new TrollType(name, className));
     }
 
     public String getName() { return name; }
+
+    public String getClassName() { return className; }
 
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -8,20 +8,18 @@ import co.aikar.taskchain.TaskChain;
 import co.aikar.taskchain.TaskChainAbortAction;
 import co.aikar.taskchain.TaskChainFactory;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import me.egg82.tcpp.APIException;
 import me.egg82.tcpp.TrollAPI;
 import me.egg82.tcpp.api.BukkitTroll;
 import me.egg82.tcpp.api.Troll;
 import me.egg82.tcpp.api.TrollType;
-import me.egg82.tcpp.api.trolls.AloneTroll;
-import me.egg82.tcpp.api.trolls.AmnesiaTroll;
-import me.egg82.tcpp.api.trolls.AnnoyTroll;
 import me.egg82.tcpp.enums.Message;
 import me.egg82.tcpp.services.lookup.PlayerLookup;
-import ninja.egg82.service.ServiceNotFoundException;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.slf4j.Logger;
@@ -36,6 +34,8 @@ public class TrollCommand extends BaseCommand {
 
     private final TrollAPI api = TrollAPI.getInstance();
 
+    private final Map<TrollType, Constructor<Troll>> trollConstructors = new HashMap<>();
+
     public TrollCommand(Plugin plugin, TaskChainFactory taskFactory) {
         this.plugin = plugin;
         this.taskFactory = taskFactory;
@@ -47,28 +47,7 @@ public class TrollCommand extends BaseCommand {
     @Syntax("<player>")
     @CommandCompletion("@player")
     public void onAlone(CommandIssuer issuer, String player) {
-        getChain(issuer, player)
-                .<Boolean>syncCallback((v, f) -> {
-                    Troll t = getTroll(v, TrollType.ALONE);
-                    try {
-                        if ((t == null || !api.stopTroll(t, issuer)) && isPlayerOnlineAndNotImmune(issuer, v)) {
-                            api.startTroll(new AloneTroll(plugin, v), issuer);
-                        }
-                        f.accept(Boolean.TRUE);
-                    } catch (InstantiationException | IllegalAccessException | ServiceNotFoundException ex) {
-                        logger.error(ex.getMessage(), ex);
-                        f.accept(Boolean.FALSE);
-                    } catch (APIException ex) {
-                        logger.error("[Hard: " + ex.isHard() + "] " + ex.getMessage(), ex);
-                        f.accept(Boolean.FALSE);
-                    }
-                })
-                .syncLast(f -> {
-                    if (!f.booleanValue()) {
-                        issuer.sendError(Message.ERROR__INTERNAL);
-                    }
-                })
-                .execute();
+        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, TrollType.ALONE)).execute();
     }
 
     @Subcommand("amnesia")
@@ -77,25 +56,7 @@ public class TrollCommand extends BaseCommand {
     @Syntax("<player>")
     @CommandCompletion("@player")
     public void onAmnesia(CommandIssuer issuer, String player) {
-        getChain(issuer, player)
-                .<Boolean>syncCallback((v, f) -> {
-                    Troll t = getTroll(v, TrollType.AMNESIA);
-                    try {
-                        if ((t == null || !api.stopTroll(t, issuer)) && isPlayerOnlineAndNotImmune(issuer, v)) {
-                            api.startTroll(new AmnesiaTroll(plugin, v), issuer);
-                        }
-                        f.accept(Boolean.TRUE);
-                    } catch (APIException ex) {
-                        logger.error("[Hard: " + ex.isHard() + "] " + ex.getMessage(), ex);
-                        f.accept(Boolean.FALSE);
-                    }
-                })
-                .syncLast(f -> {
-                    if (!f.booleanValue()) {
-                        issuer.sendError(Message.ERROR__INTERNAL);
-                    }
-                })
-                .execute();
+        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, TrollType.AMNESIA)).execute();
     }
 
     @Subcommand("annoy")
@@ -104,28 +65,40 @@ public class TrollCommand extends BaseCommand {
     @Syntax("<player>")
     @CommandCompletion("@player")
     public void onAnnoy(CommandIssuer issuer, String player) {
-        getChain(issuer, player)
-                .<Boolean>syncCallback((v, f) -> {
-                    Troll t = getTroll(v, TrollType.ANNOY);
-                    try {
-                        if ((t == null || !api.stopTroll(t, issuer)) && isPlayerOnlineAndNotImmune(issuer, v)) {
-                            api.startTroll(new AnnoyTroll(plugin, v), issuer);
-                        }
-                        f.accept(Boolean.TRUE);
-                    } catch (APIException ex) {
-                        logger.error("[Hard: " + ex.isHard() + "] " + ex.getMessage(), ex);
-                        f.accept(Boolean.FALSE);
-                    }
-                })
-                .syncLast(f -> {
-                    if (!f.booleanValue()) {
-                        issuer.sendError(Message.ERROR__INTERNAL);
-                    }
-                })
-                .execute();
+        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, TrollType.ANNOY)).execute();
     }
 
-    private Troll getTroll(UUID playerID, TrollType type) {
+    private void startOrStopTroll(CommandIssuer issuer, UUID playerID, TrollType type) {
+        Troll t = tryGetRunningTroll(playerID, type);
+        try {
+            if ((t == null || !api.stopTroll(t, issuer)) && isPlayerOnlineAndNotImmune(issuer, playerID)) {
+                Constructor<Troll> c = trollConstructors.computeIfAbsent(type, k -> {
+                    try {
+                        Class<Troll> clazz = (Class<Troll>) getClass().getClassLoader().loadClass(type.getClassName());
+                        Constructor<Troll> constructor = clazz.getConstructor(Plugin.class, UUID.class);
+                        constructor.setAccessible(true);
+                        return constructor;
+                    } catch (ClassCastException | ClassNotFoundException | NoSuchMethodException ex) {
+                        logger.error(ex.getMessage(), ex);
+                    }
+                    return null;
+                });
+                if (c == null) {
+                    issuer.sendError(Message.ERROR__INTERNAL);
+                    return;
+                }
+                api.startTroll(c.newInstance(plugin, playerID), issuer);
+            }
+        } catch (APIException ex) {
+            logger.error("[Hard: " + ex.isHard() + "] " + ex.getMessage(), ex);
+            issuer.sendError(Message.ERROR__INTERNAL);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+            issuer.sendError(Message.ERROR__INTERNAL);
+        }
+    }
+
+    private Troll tryGetRunningTroll(UUID playerID, TrollType type) {
         for (Troll t : BukkitTroll.getActiveTrolls()) {
             if (playerID.equals(t.getPlayerID()) && type.equals(t.getType())) {
                 return t;
@@ -170,11 +143,12 @@ public class TrollCommand extends BaseCommand {
 
     @CatchUnknown @Default
     @CommandCompletion("@troll")
-    public void onDefault(CommandSender sender, String[] args) {
-        Bukkit.getServer().dispatchCommand(sender, "troll help");
+    public void onDefault(CommandIssuer issuer) {
+        issuer.sendError(Message.ERROR__TROLL_NOT_FOUND);
+        Bukkit.getServer().dispatchCommand(issuer.getIssuer(), "troll help");
     }
 
     @HelpCommand
     @Syntax("[command]")
-    public void onHelp(CommandSender sender, CommandHelp help) { help.showHelp(); }
+    public void onHelp(CommandHelp help) { help.showHelp(); }
 }

@@ -18,6 +18,7 @@ error:
   no_console: "Console cannot perform this action."
   player_offline: "Player is offline."
   player_not_found: "Could not get UUID for <c4>{player}</c4>. (rate-limited?)"
+  troll_not_found: "Specified troll could not be found."
   player_immune: "Player is immune."
 
 reload:

@@ -23,6 +23,7 @@ public enum Message implements MessageKeyProvider {
     ERROR__NO_CONSOLE,
     ERROR__PLAYER_OFFLINE,
     ERROR__PLAYER_NOT_FOUND,
+    ERROR__TROLL_NOT_FOUND,
     ERROR__PLAYER_IMMUNE,
 
     RELOAD__BEGIN,
