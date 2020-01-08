@@ -24,7 +24,10 @@ public class AloneTroll extends BukkitTroll {
         this.plugin = plugin;
         playerVisibilityHandler = ServiceLocator.get(PlayerVisibilityHandler.class);
 
-        events.add(BukkitEvents.subscribe(plugin, PlayerJoinEvent.class, EventPriority.NORMAL).handler(this::playerJoin));
+        events.add(
+                BukkitEvents.subscribe(plugin, PlayerJoinEvent.class, EventPriority.NORMAL)
+                        .handler(this::playerJoin)
+        );
     }
 
     public void start(CommandIssuer issuer) throws Exception {

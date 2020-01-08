@@ -15,11 +15,13 @@ import me.egg82.tcpp.api.BukkitTroll;
 import me.egg82.tcpp.api.Troll;
 import me.egg82.tcpp.api.TrollType;
 import me.egg82.tcpp.api.trolls.AloneTroll;
+import me.egg82.tcpp.api.trolls.AmnesiaTroll;
 import me.egg82.tcpp.enums.Message;
 import me.egg82.tcpp.services.lookup.PlayerLookup;
 import ninja.egg82.service.ServiceNotFoundException;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +41,7 @@ public class TrollCommand extends BaseCommand {
     }
 
     @Subcommand("alone")
-    @CommandPermission("tcpp.use")
+    @CommandPermission("tcpp.command.alone")
     @Description("{@@alone.description}")
     @Syntax("<player>")
     @CommandCompletion("@player")
@@ -55,6 +57,33 @@ public class TrollCommand extends BaseCommand {
                     } catch (InstantiationException | IllegalAccessException | ServiceNotFoundException ex) {
                         logger.error(ex.getMessage(), ex);
                         f.accept(Boolean.FALSE);
+                    } catch (APIException ex) {
+                        logger.error("[Hard: " + ex.isHard() + "] " + ex.getMessage(), ex);
+                        f.accept(Boolean.FALSE);
+                    }
+                })
+                .syncLast(f -> {
+                    if (!f.booleanValue()) {
+                        issuer.sendError(Message.ERROR__INTERNAL);
+                    }
+                })
+                .execute();
+    }
+
+    @Subcommand("amnesia")
+    @CommandPermission("tcpp.command.amnesia")
+    @Description("{@@amnesia.description}")
+    @Syntax("<player>")
+    @CommandCompletion("@player")
+    public void onAmnesia(CommandIssuer issuer, String player) {
+        getChain(issuer, player)
+                .<Boolean>syncCallback((v, f) -> {
+                    Troll t = getTroll(v, TrollType.AMNESIA);
+                    try {
+                        if (t == null || !api.stopTroll(t, issuer)) {
+                            api.startTroll(new AmnesiaTroll(plugin, v), issuer);
+                        }
+                        f.accept(Boolean.TRUE);
                     } catch (APIException ex) {
                         logger.error("[Hard: " + ex.isHard() + "] " + ex.getMessage(), ex);
                         f.accept(Boolean.FALSE);
@@ -85,7 +114,22 @@ public class TrollCommand extends BaseCommand {
                     public void onAbort(TaskChain<?> chain, Object arg1) {
                         issuer.sendError(Message.ERROR__PLAYER_NOT_FOUND, "{player}", player);
                     }
-                });
+                })
+                .abortIf(v -> isPlayerOfflineOrImmune(issuer, v));
+    }
+
+    private boolean isPlayerOfflineOrImmune(CommandIssuer issuer, UUID playerID) {
+        Player player = Bukkit.getPlayer(playerID);
+        if (player == null) {
+            issuer.sendError(Message.ERROR__PLAYER_OFFLINE);
+            return true;
+        }
+        if (player.hasPermission("tcpp.immune")) {
+            issuer.sendError(Message.ERROR__PLAYER_IMMUNE);
+            return true;
+        }
+
+        return false;
     }
 
     private UUID getPlayerUUID(String name) {

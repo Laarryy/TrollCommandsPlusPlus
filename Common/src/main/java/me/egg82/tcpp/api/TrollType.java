@@ -15,6 +15,7 @@ public class TrollType {
     private static final Set<TrollType> allTypes = new HashSet<>();
 
     public static final TrollType ALONE = new TrollType("alone");
+    public static final TrollType AMNESIA = new TrollType("amnesia");
 
     public static Set<TrollType> values() { return ImmutableSet.copyOf(allTypes); }
 

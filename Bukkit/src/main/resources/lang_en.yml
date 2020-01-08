@@ -29,4 +29,9 @@ alone:
   start: "{player} is now all alone :("
   stop: "{player} is no longer alone in this world!"
 
+amnesia:
+  description: "(Toggleable) Screws with the player's chat in weird ways."
+  start: "{player} is now all alone :("
+  stop: "{player} is no longer alone in this world!"
+
 version: 1.0
