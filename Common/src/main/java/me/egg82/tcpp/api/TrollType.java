@@ -19,6 +19,7 @@ public class TrollType {
     public static final TrollType ANNOY = new TrollType("annoy", "me.egg82.tcpp.api.trolls.AnnoyTroll");
     public static final TrollType ANVIL = new TrollType("anvil", "me.egg82.tcpp.api.trolls.AnvilTroll");
     public static final TrollType ATTACH = new TrollType("attach", "me.egg82.tcpp.api.trolls.AttachTroll");
+    public static final TrollType BANISH = new TrollType("banish", "me.egg82.tcpp.api.trolls.BanishTroll");
 
     public static Set<TrollType> values() { return ImmutableSet.copyOf(allTypes); }
 

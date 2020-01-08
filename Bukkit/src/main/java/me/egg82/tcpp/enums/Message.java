@@ -22,6 +22,8 @@ public enum Message implements MessageKeyProvider {
     ATTACH__NEED_ITEM,
     ATTACH__START,
     ATTACH__STOP,
+    BANISH__NO_LOCATIONS,
+    BANISH__START,
 
     ERROR__INTERNAL,
     ERROR__NO_CONSOLE,

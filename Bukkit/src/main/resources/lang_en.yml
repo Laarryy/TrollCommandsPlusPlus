@@ -51,4 +51,9 @@ attach:
   start: "\"{command}\" is now attached to your held item!"
   stop: "There is no longer a command attached to your held item."
 
+banish:
+  description: "Teleports the player to a random location."
+  no_locations: "{player} could not be banished because all of the locations chosen were inhospitable!"
+  start: "{player} has been banished."
+
 version: 1.0

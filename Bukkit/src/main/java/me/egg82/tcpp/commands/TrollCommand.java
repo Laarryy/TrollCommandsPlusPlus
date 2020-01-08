@@ -94,6 +94,17 @@ public class TrollCommand extends BaseCommand {
         startTroll(issuer, issuer.getUniqueId(), type, false, issuer.getUniqueId(), command, type);
     }
 
+    @Subcommand("banish")
+    @CommandPermission("tcpp.command.banish")
+    @Description("{@@banish.description}")
+    @Syntax("<player> [range]")
+    @CommandCompletion("@player @nothing")
+    public void onBanish(CommandIssuer issuer, String player, @Default("5000") long range) {
+        range = Math.abs(range);
+        TrollType type = TrollType.BANISH;
+        startTroll(issuer, issuer.getUniqueId(), type, false, issuer.getUniqueId(), range, type);
+    }
+
     private void startOrStopTroll(CommandIssuer issuer, UUID playerID, TrollType type, boolean consoleCanRun, Object... trollParams) {
         if (!consoleCanRun && !issuer.isPlayer()) {
             issuer.sendError(Message.ERROR__NO_CONSOLE);
