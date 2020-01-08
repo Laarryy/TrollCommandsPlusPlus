@@ -16,6 +16,8 @@ public enum Message implements MessageKeyProvider {
     ALONE__STOP,
     AMNESIA__START,
     AMNESIA__STOP,
+    ANNOY__START,
+    ANNOY__STOP,
 
     ERROR__INTERNAL,
     ERROR__NO_CONSOLE,

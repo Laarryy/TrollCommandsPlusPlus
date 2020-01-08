@@ -16,6 +16,7 @@ public class TrollType {
 
     public static final TrollType ALONE = new TrollType("alone");
     public static final TrollType AMNESIA = new TrollType("amnesia");
+    public static final TrollType ANNOY = new TrollType("annoy");
 
     public static Set<TrollType> values() { return ImmutableSet.copyOf(allTypes); }
 

@@ -31,7 +31,12 @@ alone:
 
 amnesia:
   description: "(Toggleable) Screws with the player's chat in weird ways."
-  start: "{player} is now all alone :("
-  stop: "{player} is no longer alone in this world!"
+  start: "{player} is now an amnesiac."
+  stop: "{player} is no longer an amnesiac."
+
+annoy:
+  description: "(Toggleable) Hrmm. Hmm.. Hrrm.. Hrm. Hm. Hmm.."
+  start: "{player} is now being annoyed by villager sounds."
+  stop: "{player} is no longer being annoyed by villager sounds."
 
 version: 1.0
