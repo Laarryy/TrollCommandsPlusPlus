@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 public class AnnoyTroll extends BukkitTroll {
+    private final Plugin plugin;
     private final Random rand = new Random();
 
     private static final Sound[] sounds;
@@ -24,10 +25,9 @@ public class AnnoyTroll extends BukkitTroll {
                 .build();
     }
 
-    public AnnoyTroll(Plugin plugin, UUID playerID) {
-        super(playerID, TrollType.ANNOY);
-
-        tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this::playSound, 0L, 45L));
+    public AnnoyTroll(Plugin plugin, UUID playerID, TrollType type) {
+        super(playerID, type);
+        this.plugin = plugin;
     }
 
     public void start(CommandIssuer issuer) throws Exception {
@@ -35,6 +35,8 @@ public class AnnoyTroll extends BukkitTroll {
         if (player == null) {
             return;
         }
+
+        tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this::playSound, 0L, 45L));
 
         issuer.sendInfo(Message.ANNOY__START, "{player}", player.getName());
     }

@@ -19,15 +19,10 @@ public class AloneTroll extends BukkitTroll {
     private final Plugin plugin;
     private PlayerVisibilityHandler playerVisibilityHandler;
 
-    public AloneTroll(Plugin plugin, UUID playerID) throws InstantiationException, IllegalAccessException, ServiceNotFoundException {
-        super(playerID, TrollType.ALONE);
+    public AloneTroll(Plugin plugin, UUID playerID, TrollType type) throws InstantiationException, IllegalAccessException, ServiceNotFoundException {
+        super(playerID, type);
         this.plugin = plugin;
         playerVisibilityHandler = ServiceLocator.get(PlayerVisibilityHandler.class);
-
-        events.add(
-                BukkitEvents.subscribe(plugin, PlayerJoinEvent.class, EventPriority.NORMAL)
-                        .handler(this::playerJoin)
-        );
     }
 
     public void start(CommandIssuer issuer) throws Exception {
@@ -35,6 +30,11 @@ public class AloneTroll extends BukkitTroll {
         if (player == null) {
             return;
         }
+
+        events.add(
+                BukkitEvents.subscribe(plugin, PlayerJoinEvent.class, EventPriority.NORMAL)
+                        .handler(this::playerJoin)
+        );
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             playerVisibilityHandler.hide(plugin, player, p);

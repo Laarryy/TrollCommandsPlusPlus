@@ -40,4 +40,8 @@ annoy:
   start: "{player} is now being annoyed by villager sounds."
   stop: "{player} is no longer being annoyed by villager sounds."
 
+anvil:
+  description: "Now who could have put that up there?"
+  start: "The <c9><c10>base</c10></c9> anvil has been dropped on {player}."
+
 version: 1.0

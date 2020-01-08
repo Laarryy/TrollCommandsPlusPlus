@@ -49,9 +49,6 @@ public class TrollAPI {
         if (troll == null) {
             throw new APIException(false, "troll cannot be null.");
         }
-        if (issuer == null) {
-            throw new APIException(false, "issuer cannot be null.");
-        }
 
         if (trolls.putIfAbsent(troll, Boolean.TRUE) == null) {
             try {
@@ -67,9 +64,6 @@ public class TrollAPI {
     public boolean stopTroll(Troll troll, CommandIssuer issuer) throws APIException {
         if (troll == null) {
             throw new APIException(false, "troll cannot be null.");
-        }
-        if (issuer == null) {
-            throw new APIException(false, "issuer cannot be null.");
         }
 
         try {

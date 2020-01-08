@@ -68,6 +68,15 @@ public class TrollCommand extends BaseCommand {
         getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, TrollType.ANNOY)).execute();
     }
 
+    @Subcommand("anvil")
+    @CommandPermission("tcpp.command.anvil")
+    @Description("{@@anvil.description}")
+    @Syntax("<player>")
+    @CommandCompletion("@player")
+    public void onAnvil(CommandIssuer issuer, String player) {
+        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, TrollType.ANVIL)).execute();
+    }
+
     private void startOrStopTroll(CommandIssuer issuer, UUID playerID, TrollType type) {
         Troll t = tryGetRunningTroll(playerID, type);
         try {
@@ -75,7 +84,7 @@ public class TrollCommand extends BaseCommand {
                 Constructor<Troll> c = trollConstructors.computeIfAbsent(type, k -> {
                     try {
                         Class<Troll> clazz = (Class<Troll>) getClass().getClassLoader().loadClass(type.getClassName());
-                        Constructor<Troll> constructor = clazz.getConstructor(Plugin.class, UUID.class);
+                        Constructor<Troll> constructor = clazz.getConstructor(Plugin.class, UUID.class, TrollType.class);
                         constructor.setAccessible(true);
                         return constructor;
                     } catch (ClassCastException | ClassNotFoundException | NoSuchMethodException ex) {
@@ -87,7 +96,7 @@ public class TrollCommand extends BaseCommand {
                     issuer.sendError(Message.ERROR__INTERNAL);
                     return;
                 }
-                api.startTroll(c.newInstance(plugin, playerID), issuer);
+                api.startTroll(c.newInstance(plugin, playerID, type), issuer);
             }
         } catch (APIException ex) {
             logger.error("[Hard: " + ex.isHard() + "] " + ex.getMessage(), ex);

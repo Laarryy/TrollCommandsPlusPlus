@@ -19,15 +19,9 @@ public class AmnesiaTroll extends BukkitTroll {
     private final Plugin plugin;
     private final Random rand = new Random();
 
-    public AmnesiaTroll(Plugin plugin, UUID playerID) {
-        super(playerID, TrollType.AMNESIA);
+    public AmnesiaTroll(Plugin plugin, UUID playerID, TrollType type) {
+        super(playerID, type);
         this.plugin = plugin;
-
-        events.add(
-                BukkitEvents.subscribe(plugin, AsyncPlayerChatEvent.class, EventPriority.HIGH)
-                        .filter(BukkitEventFilters.ignoreCancelled())
-                        .handler(this::playerChat)
-        );
     }
 
     public void start(CommandIssuer issuer) throws Exception {
@@ -35,6 +29,12 @@ public class AmnesiaTroll extends BukkitTroll {
         if (player == null) {
             return;
         }
+
+        events.add(
+                BukkitEvents.subscribe(plugin, AsyncPlayerChatEvent.class, EventPriority.HIGH)
+                        .filter(BukkitEventFilters.ignoreCancelled())
+                        .handler(this::playerChat)
+        );
 
         issuer.sendInfo(Message.AMNESIA__START, "{player}", player.getName());
     }
