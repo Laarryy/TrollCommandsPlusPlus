@@ -1,5 +1,6 @@
 acf-minecraft:
   multiple_players_match: "en"
+  version: 1.0
 
 description:
   reload: "Reloads the plugin."
@@ -55,5 +56,3 @@ banish:
   description: "Teleports the player to a random location."
   no_locations: "{player} could not be banished because all of the locations chosen were inhospitable!"
   start: "{player} has been banished."
-
-version: 1.0

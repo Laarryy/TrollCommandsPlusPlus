@@ -8,10 +8,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import ninja.egg82.json.JSONUtil;
+import ninja.egg82.json.JSONWebUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONArray;
@@ -27,6 +30,14 @@ public class BukkitPlayerInfo implements PlayerInfo {
 
     private static final Object uuidCacheLock = new Object();
     private static final Object nameCacheLock = new Object();
+
+    private static final Map<String, String> headers = new HashMap<>();
+
+    static {
+        headers.put("Accept", "application/json");
+        headers.put("Connection", "close");
+        headers.put("Accept-Language", "en-US,en;q=0.8");
+    }
 
     BukkitPlayerInfo(UUID uuid) throws IOException {
         this.uuid = uuid;
@@ -75,32 +86,22 @@ public class BukkitPlayerInfo implements PlayerInfo {
         }
 
         // Network lookup
-        HttpURLConnection conn = getConnection(new URL("https://api.mojang.com/user/profiles/" + uuid.toString().replace("-", "") + "/names"));
+        HttpURLConnection conn = JSONWebUtil.getConnection(new URL("https://api.mojang.com/user/profiles/" + uuid.toString().replace("-", "") + "/names"), "GET", 5000, "egg82/PlayerInfo", headers);;
+        int status = conn.getResponseCode();
 
-        int code = conn.getResponseCode();
-        try (
-                InputStream in = (code == 200) ? conn.getInputStream() : conn.getErrorStream();
-                InputStreamReader reader = new InputStreamReader(in);
-                BufferedReader buffer = new BufferedReader(reader)
-        ) {
-            StringBuilder builder = new StringBuilder();
-            String line;
-            while ((line = buffer.readLine()) != null) {
-                builder.append(line);
-            }
-
-            if (code == 200) {
-                JSONArray json = JSONUtil.parseArray(builder.toString());
+        if (status == 204) {
+            // No data exists
+            return null;
+        } else if (status == 200) {
+            try {
+                JSONArray json = getJSONArray(conn, status);
                 JSONObject last = (JSONObject) json.get(json.size() - 1);
                 String name = (String) last.get("name");
-
                 nameCache.put(name, uuid);
-            } else if (code == 204) {
-                // No data exists
-                return null;
+                return name;
+            } catch (ParseException | ClassCastException ex) {
+                throw new IOException(ex.getMessage(), ex);
             }
-        } catch (ParseException ex) {
-            throw new IOException(ex.getMessage(), ex);
         }
 
         throw new IOException("Could not load player data from Mojang (rate-limited?)");
@@ -115,69 +116,52 @@ public class BukkitPlayerInfo implements PlayerInfo {
         }
 
         // Network lookup
-        HttpURLConnection conn = getConnection(new URL("https://api.mojang.com/users/profiles/minecraft/" + name));
+        HttpURLConnection conn = JSONWebUtil.getConnection(new URL("https://api.mojang.com/users/profiles/minecraft/" + name), "GET", 5000, "egg82/PlayerInfo", headers);
+        int status = conn.getResponseCode();
 
-        int code = conn.getResponseCode();
-        try (
-                InputStream in = (code == 200) ? conn.getInputStream() : conn.getErrorStream();
-                InputStreamReader reader = new InputStreamReader(in);
-                BufferedReader buffer = new BufferedReader(reader)
-        ) {
-            StringBuilder builder = new StringBuilder();
-            String line;
-            while ((line = buffer.readLine()) != null) {
-                builder.append(line);
-            }
-
-            if (code == 200) {
-                JSONObject json = JSONUtil.parseObject(builder.toString());
+        if (status == 204) {
+            // No data exists
+            return null;
+        } else if (status == 200) {
+            try {
+                JSONObject json = getJSONObject(conn, status);
                 UUID uuid = UUID.fromString(((String) json.get("id")).replaceFirst("(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)", "$1-$2-$3-$4-$5"));
                 name = (String) json.get("name");
-
                 uuidCache.put(uuid, name);
-            } else if (code == 204) {
-                // No data exists
-                return null;
+                return uuid;
+            } catch (ParseException | ClassCastException ex) {
+                throw new IOException(ex.getMessage(), ex);
             }
-        } catch (ParseException ex) {
-            throw new IOException(ex.getMessage(), ex);
         }
 
         throw new IOException("Could not load player data from Mojang (rate-limited?)");
     }
 
-    private static HttpURLConnection getConnection(URL url) throws IOException {
-        HttpURLConnection conn = getBaseConnection(url);
-        conn.setInstanceFollowRedirects(true);
-
-        int status;
-        boolean redirect;
-
-        do {
-            status = conn.getResponseCode();
-            redirect = status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM || status == HttpURLConnection.HTTP_SEE_OTHER;
-
-            if (redirect) {
-                String newUrl = conn.getHeaderField("Location");
-                String cookies = conn.getHeaderField("Set-Cookie");
-
-                conn = getBaseConnection(new URL(newUrl));
-                conn.setRequestProperty("Cookie", cookies);
-                conn.addRequestProperty("Accept-Language", "en-US,en;q=0.8");
-            }
-        } while (redirect);
-
-        return conn;
+    public static JSONArray getJSONArray(HttpURLConnection conn, int status) throws IOException, ParseException, ClassCastException {
+        return JSONUtil.parseArray(getString(conn, status));
     }
 
-    private static HttpURLConnection getBaseConnection(URL url) throws IOException {
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+    private static JSONObject getJSONObject(HttpURLConnection conn, int status) throws IOException, ParseException, ClassCastException {
+        return JSONUtil.parseObject(getString(conn, status));
+    }
 
-        conn.setRequestProperty("Accept", "application/json");
-        conn.setRequestProperty("Connection", "close");
-        conn.setRequestProperty("User-Agent", "egg82/BukkitPlayerInfo");
-        conn.setRequestMethod("GET");
+    private static String getString(HttpURLConnection conn, int status) throws IOException {
+        try (InputStream in = getInputStream(conn, status); InputStreamReader reader = new InputStreamReader(in); BufferedReader buffer = new BufferedReader(reader)) {
+            StringBuilder builder = new StringBuilder();
+            String line;
+            while ((line = buffer.readLine()) != null) {
+                builder.append(line);
+            }
+            return builder.toString();
+        }
+    }
 
-        return conn;
+    private static InputStream getInputStream(HttpURLConnection conn, int status) throws IOException {
+        if (status >= 400 && status < 600) {
+            // 400-500 errors
+            throw new IOException("Server returned status code " + status);
+        }
+
+        return conn.getInputStream();
     }
 }

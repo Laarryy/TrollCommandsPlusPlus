@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 public class PlayerLookup {
-    private PlayerLookup() {}
+    private PlayerLookup() { }
 
     private static boolean isPaper = true;
 
