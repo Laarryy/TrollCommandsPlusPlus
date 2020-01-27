@@ -335,20 +335,22 @@ public class TrollCommandsPlusPlus {
     private void loadHooks() {
         PluginManager manager = plugin.getServer().getPluginManager();
 
-        if (manager.getPlugin("Plan") != null) {
+        Plugin plan;
+        if ((plan = manager.getPlugin("Plan")) != null) {
             consoleCommandIssuer.sendInfo(Message.GENERAL__HOOK_ENABLE, "{plugin}", "Plan");
-            ServiceLocator.register(new PlayerAnalyticsHook());
+            PlayerAnalyticsHook.create(plugin, plan);
         } else {
             consoleCommandIssuer.sendInfo(Message.GENERAL__HOOK_DISABLE, "{plugin}", "Plan");
         }
 
-        if (manager.getPlugin("ProtocolLib") != null) {
+        Plugin protocolLib;
+        if ((protocolLib = manager.getPlugin("ProtocolLib")) != null) {
             consoleCommandIssuer.sendInfo(Message.GENERAL__HOOK_ENABLE, "{plugin}", "ProtocolLib");
             Set<? extends FakeBlockHandler> handlers = ServiceLocator.remove(FakeBlockHandler.class);
             for (FakeBlockHandler h : handlers) {
                 h.removeAll();
             }
-            ServiceLocator.register(new ProtocolLibHook(plugin));
+            ProtocolLibHook.create(plugin, protocolLib);
         } else {
             consoleCommandIssuer.sendInfo(Message.GENERAL__HOOK_DISABLE, "{plugin}", "ProtocolLib");
         }

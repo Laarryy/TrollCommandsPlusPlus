@@ -22,11 +22,14 @@ import me.egg82.tcpp.core.FakeBlockData;
 import me.egg82.tcpp.services.CollectionProvider;
 import me.egg82.tcpp.services.block.FakeBlockHandler;
 import me.egg82.tcpp.utils.ConfigUtil;
+import ninja.egg82.events.BukkitEvents;
 import ninja.egg82.service.ServiceLocator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.slf4j.Logger;
@@ -40,7 +43,18 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
 
     private Plugin plugin;
 
-    public ProtocolLibHook(Plugin plugin) {
+    public static void create(Plugin plugin, Plugin plan) {
+        if (!plan.isEnabled()) {
+            BukkitEvents.subscribe(plugin, PluginEnableEvent.class, EventPriority.MONITOR)
+                    .expireIf(e -> e.getPlugin().getName().equals("ProtocolLib"))
+                    .filter(e -> e.getPlugin().getName().equals("ProtocolLib"))
+                    .handler(e -> ServiceLocator.register(new ProtocolLibHook(plugin)));
+            return;
+        }
+        ServiceLocator.register(new ProtocolLibHook(plugin));
+    }
+
+    private ProtocolLibHook(Plugin plugin) {
         this.plugin = plugin;
 
         // Fake block events
