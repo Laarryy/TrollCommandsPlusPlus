@@ -364,7 +364,7 @@ public class TrollCommandsPlusPlus {
     }
 
     private void loadMetrics() {
-        metrics = new Metrics(plugin);
+        metrics = new Metrics(plugin, 419);
     }
 
     private void checkUpdate() {
