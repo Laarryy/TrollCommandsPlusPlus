@@ -6,16 +6,11 @@ import me.egg82.tcpp.api.TrollType;
 import me.egg82.tcpp.enums.Message;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 public class LiftTroll extends BukkitTroll {
-    private static final Set<Player> flyers = new HashSet<>();
-
     public LiftTroll(UUID playerID, TrollType type) {
         super(playerID, type);
     }
@@ -27,22 +22,10 @@ public class LiftTroll extends BukkitTroll {
             return;
         }
 
-        flyers.add(player);
+        Vector velocity = player.getVelocity();
+        velocity.setY(25);
+        player.setVelocity(velocity);
         issuer.sendInfo(Message.LIFT__START, "{player}", player.getName());
-    }
-
-    public void stop(CommandIssuer issuer) throws Exception {
-        super.stop(issuer);
-        Player player = Bukkit.getPlayer(playerID);
-        if (player == null) {
-            return;
-        }
-
-        flyers.remove(player);
-        issuer.sendInfo(Message.LIFT__STOP, "{player}", player.getName());
-    }
-
-    public static Set<Player> getFlyers() {
-        return flyers;
+        api.stopTroll(this, issuer);
     }
 }

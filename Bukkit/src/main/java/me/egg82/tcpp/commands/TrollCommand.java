@@ -136,6 +136,26 @@ public class TrollCommand extends BaseCommand {
         getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, v, type)).execute();
     }
 
+    @Subcommand("infinity")
+    @CommandPermission("tcpp.command.infinity")
+    @Description("{@@infinity.description}")
+    @Syntax("<player>")
+    @CommandCompletion("@player")
+    public void onInfinity(CommandIssuer issuer, String player) {
+        TrollType type = TrollType.INFINITY;
+        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, v, type)).execute();
+    }
+
+    @Subcommand("levitate")
+    @CommandPermission("tcpp.command.levitate")
+    @Description("{@@levitate.description}")
+    @Syntax("<player>")
+    @CommandCompletion("@player")
+    public void onLevitate(CommandIssuer issuer, String player) {
+        TrollType type = TrollType.LEVITATE;
+        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, v, type)).execute();
+    }
+
     @Subcommand("lift")
     @CommandPermission("tcpp.command.lift")
     @Description("{@@lift.description}")
@@ -143,7 +163,7 @@ public class TrollCommand extends BaseCommand {
     @CommandCompletion("@player")
     public void onLift(CommandIssuer issuer, String player) {
         TrollType type = TrollType.LIFT;
-        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, v, type)).execute();
+        getChain(issuer, player).syncLast(v -> startTroll(issuer, v, type, true, v, type)).execute();
     }
 
     @Subcommand("lock")

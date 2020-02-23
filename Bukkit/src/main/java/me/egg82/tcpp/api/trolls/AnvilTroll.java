@@ -3,6 +3,7 @@ package me.egg82.tcpp.api.trolls;
 import co.aikar.commands.CommandIssuer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 import me.egg82.tcpp.APIException;
@@ -14,9 +15,11 @@ import org.bukkit.*;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
 
@@ -46,10 +49,12 @@ public class AnvilTroll extends BukkitTroll {
             return;
         }
 
+        /*
         events.add(
                 BukkitEvents.subscribe(plugin, EntityChangeBlockEvent.class, EventPriority.LOW)
                         .handler(this::entityChangeBlock)
         );
+        */
 
         // TODO: save blocks and replace
         Location anvilLocation = player.getLocation();
@@ -61,7 +66,10 @@ public class AnvilTroll extends BukkitTroll {
 
         if (fallingBlockMethod != null) {
             try {
-                anvilID = ((FallingBlock) fallingBlockMethod.invoke(anvilLocation.getWorld(), anvilLocation, Material.ANVIL.createBlockData())).getUniqueId();
+                FallingBlock anvil = (FallingBlock) fallingBlockMethod.invoke(anvilLocation.getWorld(), anvilLocation, Material.ANVIL.createBlockData());
+                anvil.setHurtEntities(true);
+                anvil.setDropItem(false);
+                anvilID = anvil.getUniqueId();
             } catch (IllegalAccessException | InvocationTargetException ex) {
                 logger.error(ex.getMessage(), ex);
             }
@@ -71,6 +79,7 @@ public class AnvilTroll extends BukkitTroll {
         }
 
         issuer.sendInfo(Message.ANVIL__START, "{player}", player.getName());
+        api.stopTroll(this, issuer);
     }
 
     private void scheduleGetAnvil(Location anvilLocation, int tries) {
@@ -107,12 +116,14 @@ public class AnvilTroll extends BukkitTroll {
         if (anvilID != null && anvilID.equals(event.getEntity().getUniqueId())) {
             event.getEntity().getWorld().playSound(event.getEntity().getLocation(), Sound.BLOCK_ANVIL_LAND, 1.0f, 1.0f);
             event.getEntity().remove();
-            //event.setCancelled(true);
-            try {
-                api.stopTroll(this, null);
-            } catch (APIException ex) {
-                logger.error("[Hard: " + ex.isHard() + "] " + ex.getMessage(), ex);
+            Collection<LivingEntity> entities = event.getEntity().getWorld().getNearbyLivingEntities(event.getEntity().getLocation(), 0.5);
+            FallingBlock fb = (FallingBlock) event.getEntity();
+            double damage = fb.getFallDistance() * 2 > 40 ? 40 : fb.getFallDistance() * 2;
+            for (LivingEntity entity : entities) {
+                EntityDamageEvent ev = new EntityDamageEvent(entity, EntityDamageEvent.DamageCause.FALLING_BLOCK, damage);
             }
+            event.getBlock().setType(Material.AIR);
+            event.setCancelled(true);
         }
     }
 }

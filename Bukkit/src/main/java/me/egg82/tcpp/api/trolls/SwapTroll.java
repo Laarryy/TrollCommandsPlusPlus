@@ -30,6 +30,6 @@ public class SwapTroll extends BukkitTroll {
         player.teleportAsync(player2.getLocation());
         player2.teleportAsync(loc);
         issuer.sendInfo(Message.SWAP__START, "{player}", player.getName(), "{player2}", player2.getName());
-        api.stopTroll(this, null);
+        api.stopTroll(this, issuer);
     }
 }

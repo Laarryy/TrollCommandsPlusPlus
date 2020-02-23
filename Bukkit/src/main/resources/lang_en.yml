@@ -72,10 +72,19 @@ garble:
   start: "{player}'s speech is now a garbled mess"
   stop: "{player} has remembered how to speak."
 
-lift:
-  description: "(Toggleable) It's like flying, but only in one direction. And probably without a soft landing. (Removed on death and quit)"
+infinity:
+  description: "(Toggleable) Makes the player fall indefinitely. (Removed on death and quit)"
+  start: "{player} is now playing with the portal gun."
+  stop: "GladOS turned off {player}'s portal gun."
+
+levitate:
+  description: "(Toggleable) Ascends the player to the heavens forever. Drops them like a rock when removed. (Removed on death and quit)"
   start: "-Singing- I BELIEEEVE {player} CAN FLYYYYYY."
   stop: "The higher {player} rises, the harder {player} falls."
+
+lift:
+  description: "It's like flying, but only in one direction. And probably without a soft landing."
+  start: "{player}: My planet needs me!"
 
 lock:
   description: "(Toggleable) Prevents the player from interacting with their inventory or hotbar. They didn't REALLY need their sword, did they?"

@@ -32,7 +32,8 @@ import me.egg82.tcpp.services.block.FakeBlockHandler;
 import me.egg82.tcpp.services.entity.EntityItemHandler;
 import me.egg82.tcpp.services.player.PlayerVisibilityHandler;
 import me.egg82.tcpp.tasks.ControlTask;
-import me.egg82.tcpp.tasks.LiftTask;
+import me.egg82.tcpp.tasks.InfinityTask;
+import me.egg82.tcpp.tasks.LevitateTask;
 import me.egg82.tcpp.utils.*;
 import ninja.egg82.events.BukkitEventSubscriber;
 import ninja.egg82.events.BukkitEvents;
@@ -75,9 +76,6 @@ public class TrollCommandsPlusPlus {
     private CommandIssuer consoleCommandIssuer = null;
 
     private TrollAPI api = TrollAPI.getInstance();
-
-    private int controlTaskId = -1;
-    private int liftTaskId = -1;
 
     public TrollCommandsPlusPlus(Plugin plugin) {
         isBukkit = BukkitEnvironmentUtil.getEnvironment() == BukkitEnvironmentUtil.Environment.BUKKIT;
@@ -131,9 +129,6 @@ public class TrollCommandsPlusPlus {
                 "{events}", String.valueOf(numEvents),
                 "{tasks}", String.valueOf(tasks.size())
         );
-
-        liftTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new LiftTask(api), 20, 20);
-        controlTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new ControlTask(api), 20, 20);
 
         workPool.execute(this::checkUpdate);
     }
@@ -337,7 +332,9 @@ public class TrollCommandsPlusPlus {
     }
 
     private void loadTasks() {
-
+        tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new ControlTask(api), 20, 20));
+        tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new InfinityTask(api), 20, 20));
+        tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new LevitateTask(api), 20, 20));
     }
 
     private void loadHooks() {
