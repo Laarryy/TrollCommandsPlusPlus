@@ -32,8 +32,11 @@ public enum Message implements MessageKeyProvider {
     GARBLE__STOP,
     LIFT__START,
     LIFT__STOP,
+    LOCK__START,
+    LOCK__STOP,
     SNOWBALLFIGHT__START,
     SNOWBALLFIGHT__STOP,
+    SWAP__START,
 
     ERROR__INTERNAL,
     ERROR__NO_CONSOLE,

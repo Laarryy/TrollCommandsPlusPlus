@@ -107,7 +107,7 @@ public class AnvilTroll extends BukkitTroll {
         if (anvilID != null && anvilID.equals(event.getEntity().getUniqueId())) {
             event.getEntity().getWorld().playSound(event.getEntity().getLocation(), Sound.BLOCK_ANVIL_LAND, 1.0f, 1.0f);
             event.getEntity().remove();
-            event.setCancelled(true);
+            //event.setCancelled(true);
             try {
                 api.stopTroll(this, null);
             } catch (APIException ex) {

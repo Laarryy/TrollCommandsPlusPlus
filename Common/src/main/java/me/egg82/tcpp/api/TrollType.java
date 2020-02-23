@@ -24,7 +24,9 @@ public class TrollType {
     public static final TrollType FREEZE = new TrollType("freeze", "me.egg82.tcpp.api.trolls.FreezeTroll");
     public static final TrollType GARBLE = new TrollType("garble", "me.egg82.tcpp.api.trolls.GarbleTroll");
     public static final TrollType LIFT = new TrollType("lift", "me.egg82.tcpp.api.trolls.LiftTroll");
+    public static final TrollType LOCK = new TrollType("lock", "me.egg82.tcpp.api.trolls.LockTroll");
     public static final TrollType SNOWBALLFIGHT = new TrollType("snowballfight", "me.egg82.tcpp.api.trolls.SnowballFightTroll");
+    public static final TrollType SWAP = new TrollType("swap", "me.egg82.tcpp.api.trolls.SwapTroll");
 
     public static Set<TrollType> values() { return ImmutableSet.copyOf(allTypes); }
 

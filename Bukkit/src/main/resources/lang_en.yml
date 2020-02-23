@@ -77,7 +77,16 @@ lift:
   start: "-Singing- I BELIEEEVE {player} CAN FLYYYYYY."
   stop: "The higher {player} rises, the harder {player} falls."
 
+lock:
+  description: "(Toggleable) Prevents the player from interacting with their inventory or hotbar. They didn't REALLY need their sword, did they?"
+  start: "{player}'s inventory is now locked."
+  stop: "{player} can change items again."
+
 snowballfight:
   description: "(Toggleable) The player will fire snowballs instead of arrows. Good hunting, Will!"
   start: "{player} is in the middle of a snowball fight."
   stop: "{player} stopped throwing snowballs."
+
+swap:
+  description: "Swaps two players' locations, Freaky Friday style."
+  start: "{player} and {player2} switched positions."

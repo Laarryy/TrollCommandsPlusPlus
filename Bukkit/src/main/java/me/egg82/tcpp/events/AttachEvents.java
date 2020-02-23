@@ -5,10 +5,7 @@ import com.comphenix.protocol.wrappers.nbt.NbtFactory;
 
 import java.util.*;
 
-import me.egg82.tcpp.api.trolls.AttachTroll;
-import me.egg82.tcpp.api.trolls.FreezeTroll;
-import me.egg82.tcpp.api.trolls.GarbleTroll;
-import me.egg82.tcpp.api.trolls.SnowballFightTroll;
+import me.egg82.tcpp.api.trolls.*;
 import me.egg82.tcpp.utils.InventoryUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
@@ -20,14 +17,8 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.inventory.*;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -96,6 +87,31 @@ public class AttachEvents extends EventHolder {
                 BukkitEvents.subscribe(plugin, ProjectileLaunchEvent.class, EventPriority.HIGH)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .handler(this::snowballFight)
+        );
+        events.add(
+                BukkitEvents.subscribe(plugin, PlayerItemHeldEvent.class, EventPriority.HIGH)
+                        .filter(BukkitEventFilters.ignoreCancelled())
+                        .handler(this::hotbarLocker)
+        );
+        events.add(
+                BukkitEvents.subscribe(plugin, InventoryDragEvent.class, EventPriority.HIGH)
+                        .filter(BukkitEventFilters.ignoreCancelled())
+                        .handler(this::dragLocker)
+        );
+        events.add(
+                BukkitEvents.subscribe(plugin, InventoryClickEvent.class, EventPriority.HIGH)
+                        .filter(BukkitEventFilters.ignoreCancelled())
+                        .handler(this::clickLocker)
+        );
+        events.add(
+                BukkitEvents.subscribe(plugin, PlayerDropItemEvent.class, EventPriority.HIGH)
+                        .filter(BukkitEventFilters.ignoreCancelled())
+                        .handler(this::dropLocker)
+        );
+        events.add(
+                BukkitEvents.subscribe(plugin, PlayerSwapHandItemsEvent.class, EventPriority.HIGH)
+                        .filter(BukkitEventFilters.ignoreCancelled())
+                        .handler(this::swapLocker)
         );
     }
 
@@ -327,7 +343,7 @@ public class AttachEvents extends EventHolder {
     }
 
     private String shuffle(String input){
-        List<Character> characters = new ArrayList<Character>();
+        List<Character> characters = new ArrayList<>();
         StringBuilder output = new StringBuilder(input.length());
 
         for(char c : input.toCharArray()){
@@ -358,6 +374,51 @@ public class AttachEvents extends EventHolder {
                 p.launchProjectile(Snowball.class, proj.getVelocity());
                 ev.setCancelled(true);
             }
+        }
+    }
+
+    private void hotbarLocker(PlayerItemHeldEvent ev) {
+        if (LockTroll.getLockedOnes().contains(ev.getPlayer().getUniqueId()))
+            ev.setCancelled(true);
+    }
+
+    public void dragLocker(InventoryDragEvent ev) {
+        if (ev.getWhoClicked() instanceof Player) {
+            Player p = (Player) ev.getWhoClicked();
+            if (LockTroll.getLockedOnes().contains(p.getUniqueId())) {
+                ev.setCancelled(true);
+                p.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+                p.updateInventory();
+            }
+        }
+    }
+
+    public void clickLocker(InventoryClickEvent ev) {
+        if (ev.getWhoClicked() instanceof Player) {
+            Player p = (Player) ev.getWhoClicked();
+            if (LockTroll.getLockedOnes().contains(p.getUniqueId())) {
+                ev.setCancelled(true);
+                p.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+                p.updateInventory();
+            }
+        }
+    }
+
+    public void dropLocker(PlayerDropItemEvent ev) {
+        Player p = ev.getPlayer();
+        if (LockTroll.getLockedOnes().contains(p.getUniqueId())) {
+            ev.setCancelled(true);
+            p.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+            p.updateInventory();
+        }
+    }
+
+    public void swapLocker(PlayerSwapHandItemsEvent ev) {
+        Player p = ev.getPlayer();
+        if (LockTroll.getLockedOnes().contains(p.getUniqueId())) {
+            ev.setCancelled(true);
+            p.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+            p.updateInventory();
         }
     }
 }

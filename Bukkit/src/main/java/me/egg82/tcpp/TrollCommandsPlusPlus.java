@@ -132,8 +132,8 @@ public class TrollCommandsPlusPlus {
                 "{tasks}", String.valueOf(tasks.size())
         );
 
-        liftTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new LiftTask(), 20, 20);
-        controlTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new ControlTask(), 20, 20);
+        liftTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new LiftTask(api), 20, 20);
+        controlTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new ControlTask(api), 20, 20);
 
         workPool.execute(this::checkUpdate);
     }

@@ -51,7 +51,9 @@ public class ControlTroll extends BukkitTroll {
             return;
         }
 
-        puppets.remove(player);
+        puppets.remove(controller);
+        DisguiseUtil.get().undisguisePlayer(controller);
+        player.setGameMode(GameMode.SURVIVAL);
         issuer.sendInfo(Message.CONTROL__STOP, "{player}", player.getName());
     }
 

@@ -112,7 +112,7 @@ public class TrollCommand extends BaseCommand {
     @Syntax("<player>")
     @CommandCompletion("@player")
     public void onControl(CommandIssuer issuer, String player) {
-        TrollType type = TrollType.LIFT;
+        TrollType type = TrollType.CONTROL;
         getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, false, v, issuer.getUniqueId(), type)).execute();
     }
 
@@ -146,6 +146,16 @@ public class TrollCommand extends BaseCommand {
         getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, v, type)).execute();
     }
 
+    @Subcommand("lock")
+    @CommandPermission("tcpp.command.lock")
+    @Description("{@@lock.description}")
+    @Syntax("<player>")
+    @CommandCompletion("@player")
+    public void onLock(CommandIssuer issuer, String player) {
+        TrollType type = TrollType.LOCK;
+        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, v, type)).execute();
+    }
+
     @Subcommand("snowballfight")
     @CommandPermission("tcpp.command.snowballfight")
     @Description("{@@snowballfight.description}")
@@ -154,6 +164,27 @@ public class TrollCommand extends BaseCommand {
     public void onSnowballFight(CommandIssuer issuer, String player) {
         TrollType type = TrollType.SNOWBALLFIGHT;
         getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, v, type)).execute();
+    }
+
+    @Subcommand("swap")
+    @CommandPermission("tcpp.command.swap")
+    @Description("{@@swap.description}")
+    @Syntax("<player> <player>")
+    @CommandCompletion("@player @player")
+    public void onSwap(CommandIssuer issuer, String player1, String player2) {
+        TrollType type = TrollType.SWAP;
+
+        Player p1 = Bukkit.getPlayer(player1);
+        Player p2 = Bukkit.getPlayer(player2);
+        if (p1 == null) {
+            issuer.sendError(Message.ERROR__PLAYER_NOT_FOUND, "{player}", player1);
+        }
+        else if (p2 == null) {
+            issuer.sendError(Message.ERROR__PLAYER_NOT_FOUND, "{player}", player2);
+        }
+        else {
+            startTroll(issuer, p1.getUniqueId(), type, true, p1.getUniqueId(), p2.getUniqueId(), type);
+        }
     }
 
     private void startOrStopTroll(CommandIssuer issuer, UUID playerID, TrollType type, boolean consoleCanRun, Object... trollParams) {
