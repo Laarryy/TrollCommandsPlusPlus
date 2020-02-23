@@ -102,7 +102,58 @@ public class TrollCommand extends BaseCommand {
     public void onBanish(CommandIssuer issuer, String player, @Default("5000") long range) {
         range = Math.abs(range);
         TrollType type = TrollType.BANISH;
-        startTroll(issuer, issuer.getUniqueId(), type, false, issuer.getUniqueId(), range, type);
+        long finalRange = range;
+        getChain(issuer, player).syncLast(v -> startTroll(issuer, v, type, true, v, finalRange, type)).execute();
+    }
+
+    @Subcommand("control")
+    @CommandPermission("tcpp.command.control")
+    @Description("{@@control.description}")
+    @Syntax("<player>")
+    @CommandCompletion("@player")
+    public void onControl(CommandIssuer issuer, String player) {
+        TrollType type = TrollType.LIFT;
+        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, false, v, issuer.getUniqueId(), type)).execute();
+    }
+
+    @Subcommand("freeze")
+    @CommandPermission("tcpp.command.freeze")
+    @Description("{@@freeze.description}")
+    @Syntax("<player>")
+    @CommandCompletion("@player")
+    public void onFreeze(CommandIssuer issuer, String player) {
+        TrollType type = TrollType.FREEZE;
+        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, v, type)).execute();
+    }
+
+    @Subcommand("garble")
+    @CommandPermission("tcpp.command.garble")
+    @Description("{@@garble.description}")
+    @Syntax("<player>")
+    @CommandCompletion("@player")
+    public void onGarble(CommandIssuer issuer, String player) {
+        TrollType type = TrollType.GARBLE;
+        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, v, type)).execute();
+    }
+
+    @Subcommand("lift")
+    @CommandPermission("tcpp.command.lift")
+    @Description("{@@lift.description}")
+    @Syntax("<player>")
+    @CommandCompletion("@player")
+    public void onLift(CommandIssuer issuer, String player) {
+        TrollType type = TrollType.LIFT;
+        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, v, type)).execute();
+    }
+
+    @Subcommand("snowballfight")
+    @CommandPermission("tcpp.command.snowballfight")
+    @Description("{@@snowballfight.description}")
+    @Syntax("<player>")
+    @CommandCompletion("@player")
+    public void onSnowballFight(CommandIssuer issuer, String player) {
+        TrollType type = TrollType.SNOWBALLFIGHT;
+        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, v, type)).execute();
     }
 
     private void startOrStopTroll(CommandIssuer issuer, UUID playerID, TrollType type, boolean consoleCanRun, Object... trollParams) {

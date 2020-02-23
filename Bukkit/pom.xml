@@ -114,6 +114,15 @@
                                     </includes>
                                 </filter>
                             </filters>
+                            <artifactSet>
+                                <includes>
+                                    <include>me.egg82:trollcommandsplusplus-common</include>
+                                    <include>org.bstats:bstats-bukkit</include>
+                                    <include>ninja.egg82:*</include>
+                                    <include>info.ronjenkins:slf4bukkit</include>
+                                    <include>org.slf4j:slf4j-api</include>
+                                </includes>
+                            </artifactSet>
                         </configuration>
                     </execution>
                 </executions>
@@ -233,6 +242,11 @@
         <repository>
             <id>maven-central-proxy</id>
             <url>https://nexus.egg82.me/repository/maven-central/</url>
+        </repository>
+
+        <repository>
+            <id>md5</id>
+            <url>http://repo.md-5.net/content/groups/public/</url>
         </repository>
     </repositories>
 
@@ -356,6 +370,12 @@
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.6.0-M1</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>LibsDisguises</groupId>
+            <artifactId>LibsDisguises</artifactId>
+            <version>9.9.7</version>
         </dependency>
     </dependencies>
 </project>

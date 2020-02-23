@@ -56,3 +56,28 @@ banish:
   description: "Teleports the player to a random location."
   no_locations: "{player} could not be banished because all of the locations chosen were inhospitable!"
   start: "{player} has been banished."
+
+control:
+  description: "(Toggleable) Allows you to take control of a player. Oooh, spoooky! (Removed on death and quit)"
+  start: "{player} is now a puppet."
+  stop: "{player} is no longer a puppet."
+
+freeze:
+  description: "(Toggleable) Don't like someone? Turn them into a statue!"
+  start: "{player} is now frozen solid."
+  stop: "{player} can move again."
+
+garble:
+  description: "(Toggleable) ...And now the player makes even less sense!"
+  start: "{player}'s speech is now a garbled mess"
+  stop: "{player} has remembered how to speak."
+
+lift:
+  description: "(Toggleable) It's like flying, but only in one direction. And probably without a soft landing. (Removed on death and quit)"
+  start: "-Singing- I BELIEEEVE {player} CAN FLYYYYYY."
+  stop: "The higher {player} rises, the harder {player} falls."
+
+snowballfight:
+  description: "(Toggleable) The player will fire snowballs instead of arrows. Good hunting, Will!"
+  start: "{player} is in the middle of a snowball fight."
+  stop: "{player} stopped throwing snowballs."

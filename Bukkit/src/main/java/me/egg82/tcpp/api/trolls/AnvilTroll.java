@@ -11,6 +11,7 @@ import me.egg82.tcpp.api.TrollType;
 import me.egg82.tcpp.enums.Message;
 import ninja.egg82.events.BukkitEvents;
 import org.bukkit.*;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
@@ -27,7 +28,7 @@ public class AnvilTroll extends BukkitTroll {
     private static Method fallingBlockMethod;
     static {
         try {
-            fallingBlockMethod = World.class.getMethod("spawnFallingBlock", Location.class, MaterialData.class);
+            fallingBlockMethod = World.class.getMethod("spawnFallingBlock", Location.class, BlockData.class);
         } catch (NoSuchMethodException ignored) {
             fallingBlockMethod = null;
         }
@@ -60,7 +61,7 @@ public class AnvilTroll extends BukkitTroll {
 
         if (fallingBlockMethod != null) {
             try {
-                anvilID = ((FallingBlock) fallingBlockMethod.invoke(anvilLocation.getWorld(), anvilLocation, new MaterialData(Material.ANVIL))).getUniqueId();
+                anvilID = ((FallingBlock) fallingBlockMethod.invoke(anvilLocation.getWorld(), anvilLocation, Material.ANVIL.createBlockData())).getUniqueId();
             } catch (IllegalAccessException | InvocationTargetException ex) {
                 logger.error(ex.getMessage(), ex);
             }

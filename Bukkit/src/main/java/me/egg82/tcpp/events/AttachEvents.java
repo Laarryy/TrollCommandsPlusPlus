@@ -2,21 +2,31 @@ package me.egg82.tcpp.events;
 
 import com.comphenix.protocol.wrappers.nbt.NbtCompound;
 import com.comphenix.protocol.wrappers.nbt.NbtFactory;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
+
 import me.egg82.tcpp.api.trolls.AttachTroll;
+import me.egg82.tcpp.api.trolls.FreezeTroll;
+import me.egg82.tcpp.api.trolls.GarbleTroll;
+import me.egg82.tcpp.api.trolls.SnowballFightTroll;
 import me.egg82.tcpp.utils.InventoryUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -71,6 +81,21 @@ public class AttachEvents extends EventHolder {
                 BukkitEvents.subscribe(plugin, PlayerDropItemEvent.class, EventPriority.HIGH)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .handler(this::dropErase)
+        );
+        events.add(
+                BukkitEvents.subscribe(plugin, AsyncPlayerChatEvent.class, EventPriority.HIGH)
+                        .filter(BukkitEventFilters.ignoreCancelled())
+                        .handler(this::garbleChat)
+        );
+        events.add(
+                BukkitEvents.subscribe(plugin, PlayerMoveEvent.class, EventPriority.HIGH)
+                        .filter(BukkitEventFilters.ignoreCancelled())
+                        .handler(this::freezePlayer)
+        );
+        events.add(
+                BukkitEvents.subscribe(plugin, ProjectileLaunchEvent.class, EventPriority.HIGH)
+                        .filter(BukkitEventFilters.ignoreCancelled())
+                        .handler(this::snowballFight)
         );
     }
 
@@ -286,5 +311,53 @@ public class AttachEvents extends EventHolder {
         }
 
         return retVal;
+    }
+
+    private void garbleChat(AsyncPlayerChatEvent ev) {
+        Player p = ev.getPlayer();
+
+        if (GarbleTroll.getGarbles().contains(p.getUniqueId())) {
+            List<String> words = Arrays.asList(ev.getMessage().split(" "));
+            for (int i = 0; i < words.size(); i++) {
+                words.set(i, shuffle(words.get(i)));
+            }
+            Collections.shuffle(words);
+            ev.setMessage(String.join(" ", words));
+        }
+    }
+
+    private String shuffle(String input){
+        List<Character> characters = new ArrayList<Character>();
+        StringBuilder output = new StringBuilder(input.length());
+
+        for(char c : input.toCharArray()){
+            characters.add(c);
+        }
+        while(characters.size()!=0){
+            int randPicker = (int)(Math.random()*characters.size());
+            output.append(characters.remove(randPicker));
+        }
+
+        return output.toString();
+    }
+
+    private void freezePlayer(PlayerMoveEvent ev) {
+        Player p = ev.getPlayer();
+
+        if (FreezeTroll.getFrozen().contains(p.getUniqueId())) {
+            ev.setCancelled(true);
+        }
+    }
+
+    private void snowballFight(ProjectileLaunchEvent ev) {
+        Projectile proj = ev.getEntity();
+        if (proj.getType() != EntityType.SNOWBALL && proj.getShooter() instanceof Player) {
+            Player p = (Player) proj.getShooter();
+
+            if (SnowballFightTroll.getSnowy().contains(p.getUniqueId())) {
+                p.launchProjectile(Snowball.class, proj.getVelocity());
+                ev.setCancelled(true);
+            }
+        }
     }
 }
