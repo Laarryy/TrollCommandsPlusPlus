@@ -17,6 +17,7 @@ import java.util.UUID;
 public class LevitateTroll extends BukkitTroll {
     private final Plugin plugin;
     private CommandIssuer originalIssuer;
+    private boolean canFly;
 
     public LevitateTroll(Plugin plugin, UUID playerID, TrollType type) {
         super(playerID, type);
@@ -32,6 +33,8 @@ public class LevitateTroll extends BukkitTroll {
         }
         originalIssuer = issuer;
 
+        canFly = player.getAllowFlight();
+        player.setAllowFlight(false);
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this::keepFlying, 5, 20));
 
         issuer.sendInfo(Message.LEVITATE__START, "{player}", player.getName());
@@ -48,6 +51,7 @@ public class LevitateTroll extends BukkitTroll {
         Vector velocity = player.getVelocity();
         velocity.setY(-10);
         player.setVelocity(velocity);
+        player.setAllowFlight(true);
         issuer.sendInfo(Message.LEVITATE__STOP, "{player}", player.getName());
     }
 
