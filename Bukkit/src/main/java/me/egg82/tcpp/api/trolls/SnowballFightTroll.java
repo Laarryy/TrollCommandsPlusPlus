@@ -4,18 +4,26 @@ import co.aikar.commands.CommandIssuer;
 import me.egg82.tcpp.api.BukkitTroll;
 import me.egg82.tcpp.api.TrollType;
 import me.egg82.tcpp.enums.Message;
+import ninja.egg82.events.BukkitEventFilters;
+import ninja.egg82.events.BukkitEvents;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Snowball;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.plugin.Plugin;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 public class SnowballFightTroll extends BukkitTroll {
-    private static final Set<UUID> snowy = new HashSet<>();
+    private final Plugin plugin;
 
-    public SnowballFightTroll(UUID playerID, TrollType type) {
+    public SnowballFightTroll(Plugin plugin, UUID playerID, TrollType type) {
         super(playerID, type);
+
+        this.plugin = plugin;
     }
 
     public void start(CommandIssuer issuer) throws Exception {
@@ -25,7 +33,12 @@ public class SnowballFightTroll extends BukkitTroll {
             return;
         }
 
-        snowy.add(playerID);
+        events.add(
+                BukkitEvents.subscribe(plugin, ProjectileLaunchEvent.class, EventPriority.LOW)
+                        .filter(BukkitEventFilters.ignoreCancelled())
+                        .handler(this::snowballFight)
+        );
+
         issuer.sendInfo(Message.SNOWBALLFIGHT__START, "{player}", player.getName());
     }
 
@@ -36,11 +49,18 @@ public class SnowballFightTroll extends BukkitTroll {
             return;
         }
 
-        snowy.remove(playerID);
         issuer.sendInfo(Message.SNOWBALLFIGHT__STOP, "{player}", player.getName());
     }
 
-    public static Set<UUID> getSnowy() {
-        return snowy;
+    private void snowballFight(ProjectileLaunchEvent ev) {
+        Projectile proj = ev.getEntity();
+        if (proj.getType() != EntityType.SNOWBALL && proj.getShooter() instanceof Player) {
+            Player p = (Player) proj.getShooter();
+
+            if (playerID.equals(p.getUniqueId())) {
+                p.launchProjectile(Snowball.class, proj.getVelocity());
+                ev.setCancelled(true);
+            }
+        }
     }
 }

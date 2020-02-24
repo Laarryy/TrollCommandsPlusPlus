@@ -17,6 +17,7 @@ import me.egg82.tcpp.TrollAPI;
 import me.egg82.tcpp.api.BukkitTroll;
 import me.egg82.tcpp.api.Troll;
 import me.egg82.tcpp.api.TrollType;
+import me.egg82.tcpp.api.trolls.InfinityTroll;
 import me.egg82.tcpp.enums.Message;
 import me.egg82.tcpp.services.lookup.PlayerLookup;
 import org.bukkit.Bukkit;
@@ -113,7 +114,7 @@ public class TrollCommand extends BaseCommand {
     @CommandCompletion("@player")
     public void onControl(CommandIssuer issuer, String player) {
         TrollType type = TrollType.CONTROL;
-        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, false, v, issuer.getUniqueId(), type)).execute();
+        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, false, plugin, v, type)).execute();
     }
 
     @Subcommand("freeze")
@@ -123,7 +124,7 @@ public class TrollCommand extends BaseCommand {
     @CommandCompletion("@player")
     public void onFreeze(CommandIssuer issuer, String player) {
         TrollType type = TrollType.FREEZE;
-        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, v, type)).execute();
+        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, plugin, v, type)).execute();
     }
 
     @Subcommand("garble")
@@ -133,7 +134,7 @@ public class TrollCommand extends BaseCommand {
     @CommandCompletion("@player")
     public void onGarble(CommandIssuer issuer, String player) {
         TrollType type = TrollType.GARBLE;
-        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, v, type)).execute();
+        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, plugin, v, type)).execute();
     }
 
     @Subcommand("infinity")
@@ -143,7 +144,7 @@ public class TrollCommand extends BaseCommand {
     @CommandCompletion("@player")
     public void onInfinity(CommandIssuer issuer, String player) {
         TrollType type = TrollType.INFINITY;
-        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, v, type)).execute();
+        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, plugin, v, type)).execute();
     }
 
     @Subcommand("levitate")
@@ -153,7 +154,7 @@ public class TrollCommand extends BaseCommand {
     @CommandCompletion("@player")
     public void onLevitate(CommandIssuer issuer, String player) {
         TrollType type = TrollType.LEVITATE;
-        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, v, type)).execute();
+        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, plugin, v, type)).execute();
     }
 
     @Subcommand("lift")
@@ -173,7 +174,7 @@ public class TrollCommand extends BaseCommand {
     @CommandCompletion("@player")
     public void onLock(CommandIssuer issuer, String player) {
         TrollType type = TrollType.LOCK;
-        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, v, type)).execute();
+        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, plugin, v, type)).execute();
     }
 
     @Subcommand("snowballfight")
@@ -183,7 +184,7 @@ public class TrollCommand extends BaseCommand {
     @CommandCompletion("@player")
     public void onSnowballFight(CommandIssuer issuer, String player) {
         TrollType type = TrollType.SNOWBALLFIGHT;
-        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, v, type)).execute();
+        getChain(issuer, player).syncLast(v -> startOrStopTroll(issuer, v, type, true, plugin, v, type)).execute();
     }
 
     @Subcommand("swap")

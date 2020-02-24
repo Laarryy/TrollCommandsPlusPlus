@@ -4,7 +4,7 @@ import co.aikar.commands.CommandIssuer;
 import me.egg82.tcpp.api.BukkitTroll;
 import me.egg82.tcpp.api.TrollType;
 import me.egg82.tcpp.enums.Message;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
