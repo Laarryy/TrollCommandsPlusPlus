@@ -51,7 +51,7 @@ public class LevitateTroll extends BukkitTroll {
         Vector velocity = player.getVelocity();
         velocity.setY(-10);
         player.setVelocity(velocity);
-        player.setAllowFlight(true);
+        player.setAllowFlight(canFly);
         issuer.sendInfo(Message.LEVITATE__STOP, "{player}", player.getName());
     }
 
@@ -59,6 +59,7 @@ public class LevitateTroll extends BukkitTroll {
         Player target = Bukkit.getPlayer(playerID);
 
         if (target != null && !target.isDead() && target.isValid() && target.isOnline()) {
+            target.setAllowFlight(false);
             target.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 200, 1, false, false), true);
         }
         else {
