@@ -323,7 +323,7 @@ public class TrollCommandsPlusPlus {
     private void loadEvents() {
         events.add(BukkitEvents.subscribe(plugin, PlayerLoginEvent.class, EventPriority.LOW).handler(e -> new PlayerLoginUpdateNotifyHandler(plugin, commandManager).accept(e)));
 
-        if (Bukkit.getPluginManager().getPlugin("ProtocolLib") != null) {
+        if (Bukkit.getPluginManager().getPlugin("NBTAPI") != null) {
             eventHolders.add(new AttachEvents(plugin));
         }
     }
