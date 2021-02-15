@@ -58,6 +58,10 @@
                                 <include>ninja.egg82.utils.XMLUtil</include>
                             </includes>
                         </relocation>
+                        <relocation>
+                            <pattern>de.tr7zw.changeme.nbtapi</pattern>
+                            <shadedPattern>de.tr7zw.nbtapi</shadedPattern>
+                        </relocation>
                     </relocations>
                 </configuration>
                 <executions>
@@ -114,6 +118,15 @@
                                     </includes>
                                 </filter>
                             </filters>
+                            <artifactSet>
+                                <includes>
+                                    <include>me.egg82:trollcommandsplusplus-common</include>
+                                    <include>org.bstats:bstats-bukkit</include>
+                                    <include>ninja.egg82:*</include>
+                                    <include>info.ronjenkins:slf4bukkit</include>
+                                    <include>org.slf4j:slf4j-api</include>
+                                </includes>
+                            </artifactSet>
                         </configuration>
                     </execution>
                 </executions>
@@ -234,6 +247,11 @@
             <id>maven-central-proxy</id>
             <url>https://nexus.egg82.me/repository/maven-central/</url>
         </repository>
+
+        <repository>
+            <id>md5</id>
+            <url>http://repo.md-5.net/content/groups/public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -246,7 +264,7 @@
         <dependency>
             <groupId>com.destroystokyo.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.15.1-R0.1-SNAPSHOT</version>
+            <version>1.16.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
@@ -323,7 +341,7 @@
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>4.5.0</version>
+            <version>4.6.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -356,6 +374,18 @@
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.6.0-M1</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>LibsDisguises</groupId>
+            <artifactId>LibsDisguises</artifactId>
+            <version>10.0.15</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.tr7zw</groupId>
+            <artifactId>item-nbt-api</artifactId>
+            <version>2.5.0</version>
         </dependency>
     </dependencies>
 </project>

@@ -1,23 +1,22 @@
 package me.egg82.tcpp.events;
 
-import com.comphenix.protocol.wrappers.nbt.NbtCompound;
-import com.comphenix.protocol.wrappers.nbt.NbtFactory;
-import java.util.List;
-import java.util.Map;
-import me.egg82.tcpp.api.trolls.AttachTroll;
+
+import java.util.*;
+
+import de.tr7zw.changeme.nbtapi.NBTItem;
+import me.egg82.tcpp.api.trolls.*;
 import me.egg82.tcpp.utils.InventoryUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.inventory.*;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -34,6 +33,7 @@ public class AttachEvents extends EventHolder {
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .handler(this::clickRun)
         );
+
         events.add(
                 BukkitEvents.subscribe(plugin, InventoryClickEvent.class, EventPriority.HIGH)
                         .filter(BukkitEventFilters.ignoreCancelled())
@@ -45,6 +45,7 @@ public class AttachEvents extends EventHolder {
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .handler(this::dragRun)
         );
+
         events.add(
                 BukkitEvents.subscribe(plugin, InventoryDragEvent.class, EventPriority.HIGH)
                         .filter(BukkitEventFilters.ignoreCancelled())
@@ -56,6 +57,7 @@ public class AttachEvents extends EventHolder {
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .handler(this::moveRun)
         );
+
         events.add(
                 BukkitEvents.subscribe(plugin, InventoryMoveItemEvent.class, EventPriority.HIGH)
                         .filter(BukkitEventFilters.ignoreCancelled())
@@ -63,10 +65,11 @@ public class AttachEvents extends EventHolder {
         );
 
         events.add(
-                BukkitEvents.subscribe(plugin, PlayerPickupItemEvent.class, EventPriority.HIGH)
+                BukkitEvents.subscribe(plugin, EntityPickupItemEvent.class, EventPriority.HIGH)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .handler(this::pickupRun)
         );
+
         events.add(
                 BukkitEvents.subscribe(plugin, PlayerDropItemEvent.class, EventPriority.HIGH)
                         .filter(BukkitEventFilters.ignoreCancelled())
@@ -76,7 +79,9 @@ public class AttachEvents extends EventHolder {
 
     private void clickRun(InventoryClickEvent event) {
         if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
-            if (tryRunCommand(event.getCurrentItem())) {
+            ItemStack item = tryRunCommand(event.getCursor());
+            if (item != null) {
+                event.getView().setCursor(item);
                 Bukkit.getScheduler().runTaskLater(plugin, ((Player) event.getWhoClicked())::updateInventory, 1L);
             }
         } else if (
@@ -88,7 +93,9 @@ public class AttachEvents extends EventHolder {
                         || event.getAction() == InventoryAction.SWAP_WITH_CURSOR
         ) {
             if (InventoryUtil.getClickedInventory(event) == event.getView().getBottomInventory()) {
-                if (tryRunCommand(event.getCursor())) {
+                ItemStack item = tryRunCommand(event.getCursor());
+                if (item != null) {
+                    event.getView().setCursor(item);
                     Bukkit.getScheduler().runTaskLater(plugin, ((Player) event.getWhoClicked())::updateInventory, 1L);
                 }
             }
@@ -108,7 +115,9 @@ public class AttachEvents extends EventHolder {
         if (action == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
             boolean ran = false;
             for (Map.Entry<Integer, ItemStack> kvp : event.getNewItems().entrySet()) {
-                if (tryRunCommand(kvp.getValue())) {
+                ItemStack item = tryRunCommand(kvp.getValue());
+                if (item != null) {
+                    event.getNewItems().put(kvp.getKey(), item);
                     ran = true;
                 }
             }
@@ -126,7 +135,9 @@ public class AttachEvents extends EventHolder {
             if (clicked == event.getView().getBottomInventory()) {
                 boolean ran = false;
                 for (Map.Entry<Integer, ItemStack> kvp : event.getNewItems().entrySet()) {
-                    if (tryRunCommand(kvp.getValue())) {
+                    ItemStack item = tryRunCommand(kvp.getValue());
+                    if (item != null) {
+                        event.getNewItems().put(kvp.getKey(), item);
                         ran = true;
                     }
                 }
@@ -137,34 +148,41 @@ public class AttachEvents extends EventHolder {
         }
     }
 
-    private void moveRun(InventoryMoveItemEvent event) { tryRunCommand(event.getItem()); }
-
-    private void pickupRun(PlayerPickupItemEvent event) {
-        ItemStack item = event.getItem().getItemStack().clone();
-        if (tryRunCommand(item)) {
-            event.getItem().setItemStack(item);
+    private void moveRun(InventoryMoveItemEvent event) {
+        ItemStack item = tryRunCommand(event.getItem());
+        if (item != null) {
+            event.setItem(item);
         }
     }
 
-    private boolean tryRunCommand(ItemStack item) {
-        if (hasLore(item)) {
-            return false;
+    private void pickupRun(EntityPickupItemEvent event) {
+        if (event.getEntityType() == EntityType.PLAYER) {
+            ItemStack item = tryRunCommand(event.getItem().getItemStack());
+            if (item != null) {
+                event.getItem().setItemStack(item);
+            }
+        }
+    }
+
+    private ItemStack tryRunCommand(ItemStack item) {
+        if (item == null || item.getType() == Material.AIR || hasLore(item)) {
+            return null;
         }
 
-        NbtCompound compound;
+        NBTItem compound;
         try {
-            compound = NbtFactory.asCompound(NbtFactory.fromItemTag(item));
-        } catch (IllegalArgumentException ignored) { return false; }
+            compound = new NBTItem(item);
+        } catch (IllegalArgumentException ignored) { return null; }
 
-        if (!compound.containsKey(AttachTroll.ATTACH_COMPOUND_NAME)) {
-            return false;
+        if (!compound.hasNBTData() || !compound.hasKey(AttachTroll.ATTACH_COMPOUND_NAME)) {
+            return null;
         }
 
         String command = compound.getString(AttachTroll.ATTACH_COMPOUND_NAME);
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command); // TODO: Somehow add @e, @a, etc support
-        compound.remove(AttachTroll.ATTACH_COMPOUND_NAME);
-        NbtFactory.setItemTag(item, compound);
-        return true;
+        compound.removeKey(AttachTroll.ATTACH_COMPOUND_NAME);
+
+        return compound.getItem();
     }
 
     private void clickErase(InventoryClickEvent event) {

@@ -79,29 +79,6 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
                 }
             }
         });
-
-        manager.addPacketListener(new PacketAdapter(plugin, ListenerPriority.HIGH, PacketType.Play.Server.MULTI_BLOCK_CHANGE) {
-            public void onPacketSending(PacketEvent event) {
-                if (event.isCancelled()) {
-                    return;
-                }
-
-                WrapperPlayServerMultiBlockChange packet = new WrapperPlayServerMultiBlockChange(event.getPacket());
-
-                for (MultiBlockChangeInfo record : packet.getRecords()) {
-                    Location location = record.getLocation(event.getPlayer().getWorld());
-                    WrappedBlockData data = record.getData();
-                    FakeBlockData sentData = new FakeBlockData(data.getType(), (byte) data.getData());
-                    FakeBlockData fakeData = CollectionProvider.getFakeBlocks().get(location);
-                    if (fakeData != null && !fakeData.equals(sentData)) {
-                        if (ConfigUtil.getDebugOrFalse()) {
-                            logger.info("Replacing block packet with fake data at " + location);
-                        }
-                        record.setData(WrappedBlockData.createData(fakeData.getType(), fakeData.getData()));
-                    }
-                }
-            }
-        });
     }
 
     public void cancel() {

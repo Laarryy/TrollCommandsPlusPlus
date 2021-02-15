@@ -4,5 +4,5 @@ version: 8.29.57
 author: egg82
 api-version: 1.13
 description: For the people that really hate their friends
-softdepend: [Plan, ProtocolLib]
+softdepend: [Plan, ProtocolLib, NBTAPI]
 loadbefore: [Boss, Confiscate, CoreArena, ChatControl, AutoPlay, Winter, Puncher] # This is absolutely insane, but this somehow solves a random bug. Somehow.
